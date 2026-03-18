@@ -2,95 +2,81 @@
 @tailwind components;
 @tailwind utilities;
 
-/* Definition of the design system. All colors, gradients, fonts, etc should be defined here. 
-All colors MUST be HSL.
-*/
-
 @layer base {
   :root {
-    --background: 0 0% 100%;
-    --foreground: 222.2 84% 4.9%;
+    /* Kreatorz Purple Dark Theme */
+    --background: 270 75% 3%;
+    --foreground: 270 60% 96%;
 
-    --card: 0 0% 100%;
-    --card-foreground: 222.2 84% 4.9%;
+    --card: 270 40% 10%;
+    --card-foreground: 270 60% 96%;
 
-    --popover: 0 0% 100%;
-    --popover-foreground: 222.2 84% 4.9%;
+    --popover: 270 50% 6%;
+    --popover-foreground: 270 60% 96%;
 
-    --primary: 222.2 47.4% 11.2%;
-    --primary-foreground: 210 40% 98%;
+    --primary: 268 69% 50%;
+    --primary-foreground: 0 0% 100%;
 
-    --secondary: 210 40% 96.1%;
-    --secondary-foreground: 222.2 47.4% 11.2%;
+    --secondary: 270 30% 14%;
+    --secondary-foreground: 270 60% 96%;
 
-    --muted: 210 40% 96.1%;
-    --muted-foreground: 215.4 16.3% 46.9%;
+    --muted: 270 20% 14%;
+    --muted-foreground: 270 20% 55%;
 
-    --accent: 210 40% 96.1%;
-    --accent-foreground: 222.2 47.4% 11.2%;
+    --accent: 268 69% 50%;
+    --accent-foreground: 0 0% 100%;
 
-    --destructive: 0 84.2% 60.2%;
-    --destructive-foreground: 210 40% 98%;
+    --destructive: 0 72% 51%;
+    --destructive-foreground: 0 0% 100%;
 
-    --border: 214.3 31.8% 91.4%;
-    --input: 214.3 31.8% 91.4%;
-    --ring: 222.2 84% 4.9%;
+    --border: 268 69% 50% / 0.1;
+    --input: 270 30% 14%;
+    --ring: 268 69% 50%;
 
-    --radius: 0.5rem;
+    --radius: 0.75rem;
 
-    --sidebar-background: 0 0% 98%;
+    /* Kreatorz extended palette */
+    --k-900: 270 75% 3%;
+    --k-850: 270 60% 6%;
+    --k-800: 270 40% 10%;
+    --k-700: 268 35% 15%;
+    --k-600: 268 50% 24%;
+    --k-500: 268 69% 50%;
+    --k-400: 268 85% 61%;
+    --k-300: 268 100% 71%;
+    --k-200: 268 100% 81%;
+    --k-100: 268 100% 90%;
+    --k-50: 270 100% 95%;
 
-    --sidebar-foreground: 240 5.3% 26.1%;
+    --k-glow: 268 69% 50% / 0.12;
+    --k-glow2: 268 69% 50% / 0.22;
+    --k-glow3: 268 69% 50% / 0.40;
 
-    --sidebar-primary: 240 5.9% 10%;
+    --k-ok: 160 64% 52%;
+    --k-warn: 43 96% 56%;
+    --k-err: 0 94% 71%;
 
-    --sidebar-primary-foreground: 0 0% 98%;
+    --k-text-1: 270 60% 96%;
+    --k-text-2: 270 30% 75%;
+    --k-text-3: 270 20% 52%;
+    --k-text-4: 270 20% 38%;
 
-    --sidebar-accent: 240 4.8% 95.9%;
+    --k-shadow: 0 8px 40px hsl(0 0% 0% / 0.5);
+    --k-shadow-purple: 0 8px 40px hsl(268 69% 50% / 0.18);
+    --k-shadow-purple-lg: 0 12px 50px hsl(268 69% 50% / 0.28);
 
-    --sidebar-accent-foreground: 240 5.9% 10%;
+    --font-display: 'Instrument Serif', Georgia, serif;
+    --font-body: 'Plus Jakarta Sans', system-ui, sans-serif;
+    --font-mono: 'JetBrains Mono', monospace;
 
-    --sidebar-border: 220 13% 91%;
-
-    --sidebar-ring: 217.2 91.2% 59.8%;
-  }
-
-  .dark {
-    --background: 222.2 84% 4.9%;
-    --foreground: 210 40% 98%;
-
-    --card: 222.2 84% 4.9%;
-    --card-foreground: 210 40% 98%;
-
-    --popover: 222.2 84% 4.9%;
-    --popover-foreground: 210 40% 98%;
-
-    --primary: 210 40% 98%;
-    --primary-foreground: 222.2 47.4% 11.2%;
-
-    --secondary: 217.2 32.6% 17.5%;
-    --secondary-foreground: 210 40% 98%;
-
-    --muted: 217.2 32.6% 17.5%;
-    --muted-foreground: 215 20.2% 65.1%;
-
-    --accent: 217.2 32.6% 17.5%;
-    --accent-foreground: 210 40% 98%;
-
-    --destructive: 0 62.8% 30.6%;
-    --destructive-foreground: 210 40% 98%;
-
-    --border: 217.2 32.6% 17.5%;
-    --input: 217.2 32.6% 17.5%;
-    --ring: 212.7 26.8% 83.9%;
-    --sidebar-background: 240 5.9% 10%;
-    --sidebar-foreground: 240 4.8% 95.9%;
-    --sidebar-primary: 224.3 76.3% 48%;
+    --sidebar-background: 270 60% 6%;
+    --sidebar-foreground: 270 20% 55%;
+    --sidebar-primary: 268 69% 50%;
     --sidebar-primary-foreground: 0 0% 100%;
-    --sidebar-accent: 240 3.7% 15.9%;
-    --sidebar-accent-foreground: 240 4.8% 95.9%;
-    --sidebar-border: 240 3.7% 15.9%;
-    --sidebar-ring: 217.2 91.2% 59.8%;
+    --sidebar-accent: 270 30% 14%;
+    --sidebar-accent-foreground: 270 60% 96%;
+    --sidebar-border: 268 69% 50% / 0.1;
+    --sidebar-ring: 268 69% 50%;
   }
 }
 
@@ -98,8 +84,114 @@ All colors MUST be HSL.
   * {
     @apply border-border;
   }
-
+  
   body {
     @apply bg-background text-foreground;
+    font-family: var(--font-body);
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    overflow-x: hidden;
   }
+
+  ::-webkit-scrollbar {
+    width: 3px;
+  }
+  ::-webkit-scrollbar-track {
+    background: transparent;
+  }
+  ::-webkit-scrollbar-thumb {
+    background: hsl(var(--k-600));
+    border-radius: 99px;
+  }
+
+  /* Film grain overlay */
+  body::after {
+    content: '';
+    position: fixed;
+    inset: 0;
+    pointer-events: none;
+    z-index: 10000;
+    opacity: 0.022;
+    background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='g'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.65' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23g)'/%3E%3C/svg%3E");
+  }
+}
+
+@layer utilities {
+  .font-display {
+    font-family: var(--font-display);
+  }
+  .font-mono-k {
+    font-family: var(--font-mono);
+  }
+  .text-k-1 { color: hsl(var(--k-text-1)); }
+  .text-k-2 { color: hsl(var(--k-text-2)); }
+  .text-k-3 { color: hsl(var(--k-text-3)); }
+  .text-k-4 { color: hsl(var(--k-text-4)); }
+
+  .bg-k-glow { background: hsl(var(--k-glow)); }
+  .bg-k-glow2 { background: hsl(var(--k-glow2)); }
+
+  .border-k-glow { border-color: hsl(268 69% 50% / 0.28); }
+
+  .shadow-k { box-shadow: var(--k-shadow); }
+  .shadow-k-purple { box-shadow: var(--k-shadow-purple); }
+  .shadow-k-purple-lg { box-shadow: var(--k-shadow-purple-lg); }
+
+  .gradient-primary {
+    background: linear-gradient(135deg, hsl(var(--k-500)), hsl(var(--k-300)));
+  }
+  .gradient-primary-hover {
+    background: linear-gradient(135deg, hsl(var(--k-400)), hsl(var(--k-300)));
+  }
+
+  .glow-ring {
+    box-shadow: 0 0 0 3px hsl(var(--k-glow));
+  }
+}
+
+/* Animations */
+@keyframes k-fade-up {
+  from { opacity: 0; transform: translateY(26px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+@keyframes k-orb {
+  0% { transform: translate(0, 0) scale(1); }
+  100% { transform: translate(25px, -20px) scale(1.1); }
+}
+@keyframes k-pulse {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.4; }
+}
+@keyframes k-shimmer {
+  0% { background-position: -200% 0; }
+  100% { background-position: 200% 0; }
+}
+@keyframes k-glow-pulse {
+  0%, 100% { box-shadow: 0 0 20px hsl(268 69% 50% / 0.2); }
+  50% { box-shadow: 0 0 40px hsl(268 69% 50% / 0.4); }
+}
+@keyframes k-float {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(-8px); }
+}
+@keyframes k-press {
+  0% { transform: scale(1); }
+  50% { transform: scale(0.97); }
+  100% { transform: scale(1); }
+}
+
+.animate-k-fade-up {
+  animation: k-fade-up 0.7s cubic-bezier(0.4, 0, 0.2, 1) both;
+}
+.animate-k-orb {
+  animation: k-orb 12s ease-in-out infinite alternate;
+}
+.animate-k-pulse {
+  animation: k-pulse 2s infinite;
+}
+.animate-k-float {
+  animation: k-float 6s ease-in-out infinite;
+}
+.animate-k-press:active {
+  animation: k-press 0.2s ease-out;
 }
