@@ -1,5 +1,6 @@
 import { useState } from "react";
 import { toast } from "sonner";
+import SocialIcon, { detectPlatform } from "./SocialIcon";
 import type { CreatorProfile, CreatorLink, SocialLink, CreatorProduct, CreatorCampaign } from "@/hooks/useCreatorData";
 
 interface Props {
