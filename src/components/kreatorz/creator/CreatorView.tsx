@@ -62,9 +62,9 @@ export default function CreatorView({ profile, links: rawLinks, socialLinks: raw
           {profile.name && <h1 className="font-display text-[1.85rem] font-normal mt-4 text-primary-foreground tracking-tight">{profile.name}</h1>}
           {profile.handle && <p className="text-sm text-k-3 mt-1">@{profile.handle}</p>}
 
-          {profile.tags.length > 0 && (
+          {tags.length > 0 && (
             <div className="flex justify-center gap-2 mt-3 flex-wrap">
-              {profile.tags.map((tag, i) => (
+              {tags.map((tag, i) => (
                 <span key={i} className="px-3 py-1 rounded-full text-[0.68rem] font-semibold bg-primary/10 text-k-300 border border-primary/20">
                   {tag.label}
                 </span>
@@ -72,9 +72,9 @@ export default function CreatorView({ profile, links: rawLinks, socialLinks: raw
             </div>
           )}
 
-          {profile.stats.length > 0 && (
+          {stats.length > 0 && (
             <div className="flex justify-center gap-7 mt-5 py-4 border-t border-b border-primary-foreground/5">
-              {profile.stats.map((stat, i) => (
+              {stats.map((stat, i) => (
                 <div key={i} className="text-center">
                   <strong className="block text-lg font-extrabold text-primary-foreground tracking-tight">{stat.value}</strong>
                   <span className="text-[0.64rem] text-k-3 uppercase tracking-widest font-semibold">{stat.label}</span>
@@ -83,10 +83,10 @@ export default function CreatorView({ profile, links: rawLinks, socialLinks: raw
             </div>
           )}
 
-          {profile.brands.length > 0 && (
+          {brands.length > 0 && (
             <div className="flex justify-center items-center gap-3 mt-4 flex-wrap">
               <span className="text-[0.62rem] text-k-4 uppercase tracking-widest font-bold">Trabalhou com:</span>
-              {profile.brands.map((brand, i) => (
+              {brands.map((brand, i) => (
                 <span key={i} className="text-[0.65rem] text-k-3 font-semibold px-2 py-0.5 bg-card/80 rounded-md border border-primary/5">{brand}</span>
               ))}
             </div>
