@@ -79,8 +79,8 @@ export default function CreatorEditPanel({
 
   return (
     <div className="max-w-[560px] mx-auto px-6 py-8 pt-20 animate-k-fade-up">
-      <input ref={avatarRef} type="file" accept="image/*" className="hidden" onChange={(e) => e.target.files?.[0] && handleImageUpload(e.target.files[0], "avatar")} />
-      <input ref={coverRef} type="file" accept="image/*" className="hidden" onChange={(e) => e.target.files?.[0] && handleImageUpload(e.target.files[0], "cover")} />
+      <input ref={avatarRef} type="file" accept="image/*" className="hidden" onChange={(e) => e.target.files?.[0] && handleFileSelected(e.target.files[0], "avatar")} />
+      <input ref={coverRef} type="file" accept="image/*" className="hidden" onChange={(e) => e.target.files?.[0] && handleFileSelected(e.target.files[0], "cover")} />
 
       {/* Cover */}
       <div className="mb-6">
