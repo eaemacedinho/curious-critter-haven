@@ -6,26 +6,56 @@ import ImageCropper from "./ImageCropper";
 const iconOptions = ["⭐", "▶", "🎵", "📄", "🛍", "📸", "🎮", "💼", "🎨", "📚", "🔗", "💰", "🎧", "📦", "🎬", "💎"];
 
 const socialEmojiOptions = [
-  { emoji: "📸", label: "Instagram", placeholder: "https://instagram.com/seu_perfil" },
-  { emoji: "▶️", label: "YouTube", placeholder: "https://youtube.com/@seu_canal" },
-  { emoji: "🎵", label: "TikTok", placeholder: "https://tiktok.com/@seu_perfil" },
-  { emoji: "🐦", label: "Twitter/X", placeholder: "https://x.com/seu_perfil" },
-  { emoji: "👤", label: "Facebook", placeholder: "https://facebook.com/sua_pagina" },
-  { emoji: "💼", label: "LinkedIn", placeholder: "https://linkedin.com/in/seu_perfil" },
-  { emoji: "🎮", label: "Twitch", placeholder: "https://twitch.tv/seu_canal" },
-  { emoji: "💬", label: "Discord", placeholder: "https://discord.gg/seu_servidor" },
-  { emoji: "📌", label: "Pinterest", placeholder: "https://pinterest.com/seu_perfil" },
-  { emoji: "👻", label: "Snapchat", placeholder: "https://snapchat.com/add/seu_perfil" },
-  { emoji: "🎧", label: "Spotify", placeholder: "https://open.spotify.com/artist/..." },
-  { emoji: "🍎", label: "Apple", placeholder: "https://music.apple.com/artist/..." },
-  { emoji: "📧", label: "E-mail", placeholder: "mailto:seu@email.com" },
-  { emoji: "🌐", label: "Website", placeholder: "https://seusite.com" },
-  { emoji: "🛒", label: "Loja", placeholder: "https://sua-loja.com" },
-  { emoji: "📱", label: "WhatsApp", placeholder: "https://wa.me/5511999999999" },
-  { emoji: "✈️", label: "Telegram", placeholder: "https://t.me/seu_perfil" },
-  { emoji: "🧵", label: "Threads", placeholder: "https://threads.net/@seu_perfil" },
-  { emoji: "💡", label: "Outro", placeholder: "https://..." },
+  { emoji: "📸", label: "Instagram", baseUrl: "https://instagram.com/", placeholder: "@seu_perfil" },
+  { emoji: "▶️", label: "YouTube", baseUrl: "https://youtube.com/@", placeholder: "@seu_canal" },
+  { emoji: "🎵", label: "TikTok", baseUrl: "https://tiktok.com/@", placeholder: "@seu_perfil" },
+  { emoji: "🐦", label: "Twitter/X", baseUrl: "https://x.com/", placeholder: "@seu_perfil" },
+  { emoji: "👤", label: "Facebook", baseUrl: "https://facebook.com/", placeholder: "@sua_pagina" },
+  { emoji: "💼", label: "LinkedIn", baseUrl: "https://linkedin.com/in/", placeholder: "seu_perfil" },
+  { emoji: "🎮", label: "Twitch", baseUrl: "https://twitch.tv/", placeholder: "@seu_canal" },
+  { emoji: "💬", label: "Discord", baseUrl: "https://discord.gg/", placeholder: "código_convite" },
+  { emoji: "📌", label: "Pinterest", baseUrl: "https://pinterest.com/", placeholder: "@seu_perfil" },
+  { emoji: "👻", label: "Snapchat", baseUrl: "https://snapchat.com/add/", placeholder: "seu_perfil" },
+  { emoji: "🎧", label: "Spotify", baseUrl: "https://open.spotify.com/artist/", placeholder: "cole o link completo" },
+  { emoji: "🍎", label: "Apple", baseUrl: "https://music.apple.com/artist/", placeholder: "cole o link completo" },
+  { emoji: "📧", label: "E-mail", baseUrl: "mailto:", placeholder: "seu@email.com" },
+  { emoji: "🌐", label: "Website", baseUrl: "", placeholder: "https://seusite.com" },
+  { emoji: "🛒", label: "Loja", baseUrl: "", placeholder: "https://sua-loja.com" },
+  { emoji: "📱", label: "WhatsApp", baseUrl: "https://wa.me/", placeholder: "5511999999999" },
+  { emoji: "✈️", label: "Telegram", baseUrl: "https://t.me/", placeholder: "@seu_perfil" },
+  { emoji: "🧵", label: "Threads", baseUrl: "https://threads.net/@", placeholder: "@seu_perfil" },
+  { emoji: "💡", label: "Outro", baseUrl: "", placeholder: "https://..." },
 ];
+
+const getSocialOption = (platform: string) =>
+  socialEmojiOptions.find(o => o.label.toLowerCase() === platform.toLowerCase());
+
+const buildSocialUrl = (platform: string, input: string): string => {
+  if (!input) return "";
+  // If it's already a full URL, keep it
+  if (input.startsWith("http://") || input.startsWith("https://") || input.startsWith("mailto:")) return input;
+  const opt = getSocialOption(platform);
+  if (!opt || !opt.baseUrl) return input;
+  // Strip leading @ if the baseUrl already handles it
+  const handle = input.replace(/^@/, "");
+  return `${opt.baseUrl}${handle}`;
+};
+
+const extractHandle = (platform: string, url: string): string => {
+  if (!url) return "";
+  const opt = getSocialOption(platform);
+  if (!opt || !opt.baseUrl) return url;
+  if (url.startsWith(opt.baseUrl)) {
+    return "@" + url.slice(opt.baseUrl.length).replace(/^@/, "");
+  }
+  // Try common variations
+  if (url.includes(opt.label.toLowerCase().replace("/x", "").replace("twitter", "x"))) {
+    const parts = url.split("/").filter(Boolean);
+    const last = parts[parts.length - 1];
+    if (last && !last.includes(".")) return "@" + last.replace(/^@/, "");
+  }
+  return url;
+};
 
 interface Props {
   profile: CreatorProfile;
@@ -301,7 +331,32 @@ const CreatorEditPanel = forwardRef<CreatorEditPanelHandle, Props>(function Crea
               )}
             </div>
             <input value={s.platform} onChange={(e) => { const arr = [...social]; arr[i] = { ...arr[i], platform: e.target.value }; setSocial(arr); }} placeholder="Ex: Instagram" className={`${inputClass} w-28`} />
-            <input value={s.url} onChange={(e) => { const arr = [...social]; arr[i] = { ...arr[i], url: e.target.value }; setSocial(arr); }} placeholder={socialEmojiOptions.find(o => o.label.toLowerCase() === s.platform.toLowerCase())?.placeholder || "https://..."} className={`${inputClass} flex-1`} />
+            <div className="flex-1 relative">
+              {getSocialOption(s.platform)?.baseUrl && s.url && !s.url.startsWith("http") && !s.url.startsWith("mailto:") ? (
+                <span className="absolute left-3 top-1/2 -translate-y-1/2 text-k-4 text-[0.72rem] pointer-events-none select-none">
+                  {getSocialOption(s.platform)!.baseUrl}
+                </span>
+              ) : null}
+              <input
+                value={extractHandle(s.platform, s.url)}
+                onChange={(e) => {
+                  const arr = [...social];
+                  const raw = e.target.value;
+                  arr[i] = { ...arr[i], url: raw };
+                  setSocial(arr);
+                }}
+                onBlur={() => {
+                  const arr = [...social];
+                  const built = buildSocialUrl(arr[i].platform, arr[i].url);
+                  if (built !== arr[i].url) {
+                    arr[i] = { ...arr[i], url: built };
+                    setSocial(arr);
+                  }
+                }}
+                placeholder={getSocialOption(s.platform)?.placeholder || "https://..."}
+                className={inputClass}
+              />
+            </div>
             <button onClick={() => setSocial(social.filter((_, j) => j !== i))} className="text-k-4 hover:text-k-err px-2">×</button>
           </div>
         ))}
