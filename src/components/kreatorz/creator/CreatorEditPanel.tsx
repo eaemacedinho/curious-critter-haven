@@ -301,7 +301,7 @@ const CreatorEditPanel = forwardRef<CreatorEditPanelHandle, Props>(function Crea
               )}
             </div>
             <input value={s.platform} onChange={(e) => { const arr = [...social]; arr[i] = { ...arr[i], platform: e.target.value }; setSocial(arr); }} placeholder="Ex: Instagram" className={`${inputClass} w-28`} />
-            <input value={s.url} onChange={(e) => { const arr = [...social]; arr[i] = { ...arr[i], url: e.target.value }; setSocial(arr); }} placeholder="https://instagram.com/seu_perfil" className={`${inputClass} flex-1`} />
+            <input value={s.url} onChange={(e) => { const arr = [...social]; arr[i] = { ...arr[i], url: e.target.value }; setSocial(arr); }} placeholder={socialEmojiOptions.find(o => o.label.toLowerCase() === s.platform.toLowerCase())?.placeholder || "https://..."} className={`${inputClass} flex-1`} />
             <button onClick={() => setSocial(social.filter((_, j) => j !== i))} className="text-k-4 hover:text-k-err px-2">×</button>
           </div>
         ))}
