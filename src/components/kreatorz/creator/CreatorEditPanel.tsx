@@ -227,6 +227,7 @@ const CreatorEditPanel = forwardRef<CreatorEditPanelHandle, Props>(function Crea
 
       <div className="mb-8">
         <div className={sectionTitle}>🤝 Marcas parceiras</div>
+        <p className="text-[0.68rem] text-k-4 mb-2">Marcas com quem você já trabalhou ou tem parceria.</p>
         <div className="flex flex-wrap gap-2 mb-2">
           {brands.map((brand, i) => (
             <span key={i} className="px-2.5 py-1 rounded-md text-[0.72rem] font-semibold bg-card/80 text-k-3 border border-primary/10 flex items-center gap-1.5">
@@ -236,7 +237,7 @@ const CreatorEditPanel = forwardRef<CreatorEditPanelHandle, Props>(function Crea
           ))}
         </div>
         <div className="flex gap-2">
-          <input value={newBrand} onChange={(e) => setNewBrand(e.target.value)} placeholder="Nome da marca..." className={inputClass} onKeyDown={(e) => { if (e.key === "Enter" && newBrand.trim()) { setBrands([...brands, newBrand.trim()]); setNewBrand(""); }}} />
+          <input value={newBrand} onChange={(e) => setNewBrand(e.target.value)} placeholder="Ex: Nike, Samsung..." className={inputClass} onKeyDown={(e) => { if (e.key === "Enter" && newBrand.trim()) { setBrands([...brands, newBrand.trim()]); setNewBrand(""); }}} />
           <button onClick={() => { if (newBrand.trim()) { setBrands([...brands, newBrand.trim()]); setNewBrand(""); }}} className="px-4 py-2 bg-primary/20 text-k-300 rounded-xl text-sm font-medium hover:bg-primary/30 transition-colors flex-shrink-0">+</button>
         </div>
       </div>
