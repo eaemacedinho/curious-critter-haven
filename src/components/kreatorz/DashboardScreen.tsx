@@ -80,7 +80,7 @@ export default function DashboardScreen({ onNavigate }: DashboardScreenProps) {
           ].map((item) => (
             <button
               key={item.label}
-              onClick={() => toast.info(`${item.label} — em breve!`)}
+              onClick={() => onNavigate("settings")}
               className="w-full flex items-center gap-2.5 px-3 py-2 rounded-xl text-sm text-k-3 hover:bg-k-700/50 hover:text-k-1 transition-all duration-200 cursor-pointer mb-0.5 text-left"
             >
               <span className="text-xs w-4 text-center">{item.icon}</span>{item.label}
