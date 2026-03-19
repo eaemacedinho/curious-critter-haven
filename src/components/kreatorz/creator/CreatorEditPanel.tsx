@@ -40,6 +40,7 @@ export default function CreatorEditPanel({
   const [showIconPicker, setShowIconPicker] = useState<string | null>(null);
   const [newTag, setNewTag] = useState("");
   const [newBrand, setNewBrand] = useState("");
+  const [cropImage, setCropImage] = useState<{ src: string; type: "avatar" | "cover" } | null>(null);
 
   const avatarRef = useRef<HTMLInputElement>(null);
   const coverRef = useRef<HTMLInputElement>(null);
