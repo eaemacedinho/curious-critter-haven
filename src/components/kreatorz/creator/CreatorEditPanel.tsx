@@ -54,6 +54,7 @@ const CreatorEditPanel = forwardRef<CreatorEditPanelHandle, Props>(function Crea
   const [prods, setProds] = useState(initialProducts);
   const [camps, setCamps] = useState(initialCampaigns);
   const [saving, setSaving] = useState(false);
+  const [uploadingImage, setUploadingImage] = useState<"avatar" | "cover" | null>(null);
   const [showIconPicker, setShowIconPicker] = useState<string | null>(null);
   const [newTag, setNewTag] = useState("");
   const [newBrand, setNewBrand] = useState("");
@@ -69,17 +70,27 @@ const CreatorEditPanel = forwardRef<CreatorEditPanelHandle, Props>(function Crea
   };
 
   const handleCropDone = async (blob: Blob, type: "avatar" | "cover") => {
-    const file = new File([blob], `${type}.jpg`, { type: "image/jpeg" });
-    const url = await onUploadImage(file, type);
-    if (!url) return;
-    if (type === "avatar") setAvatarUrl(url);
-    else setCoverUrl(url);
-    setCropImage(null);
-    toast.success(type === "avatar" ? "Foto atualizada!" : "Capa atualizada!");
+    try {
+      setUploadingImage(type);
+      const file = new File([blob], `${type}.jpg`, { type: "image/jpeg" });
+      const url = await onUploadImage(file, type);
+      if (!url) return;
+      if (type === "avatar") setAvatarUrl(url);
+      else setCoverUrl(url);
+      setCropImage(null);
+      toast.success(type === "avatar" ? "Foto atualizada!" : "Capa atualizada!");
+    } finally {
+      setUploadingImage(null);
+    }
   };
 
   const handleSaveAll = async ({ closeAfterSave = true }: { closeAfterSave?: boolean } = {}): Promise<boolean> => {
     if (saving) return false;
+
+    if (uploadingImage) {
+      toast.info("Aguarde o upload da imagem terminar antes de salvar.");
+      return false;
+    }
 
     try {
       setSaving(true);
@@ -122,7 +133,9 @@ const CreatorEditPanel = forwardRef<CreatorEditPanelHandle, Props>(function Crea
             <div className="w-full h-full bg-k-800 flex items-center justify-center text-k-4 text-sm">Clique para adicionar capa</div>
           )}
           <div className="absolute inset-0 bg-background/60 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center">
-            <span className="text-sm text-primary-foreground font-semibold bg-primary/80 backdrop-blur-sm px-4 py-2 rounded-xl">📷 Alterar capa</span>
+            <span className="text-sm text-primary-foreground font-semibold bg-primary/80 backdrop-blur-sm px-4 py-2 rounded-xl">
+              {uploadingImage === "cover" ? "Enviando capa..." : "📷 Alterar capa"}
+            </span>
           </div>
         </div>
       </div>
@@ -137,7 +150,7 @@ const CreatorEditPanel = forwardRef<CreatorEditPanelHandle, Props>(function Crea
               <div className="w-full h-full bg-k-800 flex items-center justify-center text-2xl text-k-3">{name?.[0] || "?"}</div>
             )}
             <div className="absolute inset-0 bg-background/60 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center rounded-full">
-              <span className="text-lg">📷</span>
+              <span className="text-lg">{uploadingImage === "avatar" ? "⏳" : "📷"}</span>
             </div>
           </div>
           <div>
@@ -303,9 +316,9 @@ const CreatorEditPanel = forwardRef<CreatorEditPanelHandle, Props>(function Crea
       </div>
 
       <div className="sticky bottom-4 z-10">
-        <button onClick={() => void handleSaveAll()} disabled={saving}
+        <button onClick={() => void handleSaveAll()} disabled={saving || Boolean(uploadingImage)}
           className="w-full py-4 gradient-primary text-primary-foreground font-bold text-sm rounded-2xl transition-all duration-300 hover:shadow-k-purple-lg active:scale-[0.98] disabled:opacity-50 shadow-k-purple">
-          {saving ? "Salvando..." : "💾 Salvar tudo"}
+          {uploadingImage ? "Enviando imagem..." : saving ? "Salvando..." : "💾 Salvar tudo"}
         </button>
       </div>
       {cropImage && (
