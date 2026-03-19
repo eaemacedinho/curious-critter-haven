@@ -244,11 +244,12 @@ const CreatorEditPanel = forwardRef<CreatorEditPanelHandle, Props>(function Crea
 
       <div className="mb-8">
         <div className={sectionTitle}>📱 Redes Sociais</div>
+        <p className="text-[0.68rem] text-k-4 mb-2">Emoji no ícone, nome da rede e link do seu perfil.</p>
         {social.map((s, i) => (
           <div key={i} className="flex gap-2 mb-2 items-center">
-            <input value={s.label} onChange={(e) => { const arr = [...social]; arr[i] = { ...arr[i], label: e.target.value }; setSocial(arr); }} placeholder="📸" className={`${inputClass} w-12 text-center`} />
-            <input value={s.platform} onChange={(e) => { const arr = [...social]; arr[i] = { ...arr[i], platform: e.target.value }; setSocial(arr); }} placeholder="Instagram" className={`${inputClass} w-28`} />
-            <input value={s.url} onChange={(e) => { const arr = [...social]; arr[i] = { ...arr[i], url: e.target.value }; setSocial(arr); }} placeholder="https://..." className={`${inputClass} flex-1`} />
+            <input value={s.label} onChange={(e) => { const arr = [...social]; arr[i] = { ...arr[i], label: e.target.value }; setSocial(arr); }} placeholder="📸" className={`${inputClass} w-12 text-center`} title="Emoji da rede" />
+            <input value={s.platform} onChange={(e) => { const arr = [...social]; arr[i] = { ...arr[i], platform: e.target.value }; setSocial(arr); }} placeholder="Ex: Instagram" className={`${inputClass} w-28`} />
+            <input value={s.url} onChange={(e) => { const arr = [...social]; arr[i] = { ...arr[i], url: e.target.value }; setSocial(arr); }} placeholder="https://instagram.com/seu_perfil" className={`${inputClass} flex-1`} />
             <button onClick={() => setSocial(social.filter((_, j) => j !== i))} className="text-k-4 hover:text-k-err px-2">×</button>
           </div>
         ))}
