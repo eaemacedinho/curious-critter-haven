@@ -103,6 +103,9 @@ export default function DashboardScreen({ onNavigate }: DashboardScreenProps) {
           <div className="text-5xl opacity-20">💰</div>
         </div>
 
+        {/* Analytics Charts */}
+        <AnalyticsCharts />
+
         {/* Creators Table */}
         <div className="flex items-center justify-between mb-3.5">
           <h2 className="font-display text-lg font-normal text-primary-foreground">Creators</h2>
