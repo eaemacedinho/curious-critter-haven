@@ -65,7 +65,7 @@ const CreatorEditPanel = forwardRef<CreatorEditPanelHandle, Props>(function Crea
 
   const handleFileSelected = (file: File, type: "avatar" | "cover") => {
     const reader = new FileReader();
-    reader.onload = () => setCropImage({ src: reader.result as string, type });
+    reader.onload = () => setCropImage({ src: reader.result as string, type, file });
     reader.readAsDataURL(file);
   };
 
