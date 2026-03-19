@@ -214,10 +214,11 @@ const CreatorEditPanel = forwardRef<CreatorEditPanelHandle, Props>(function Crea
 
       <div className="mb-8">
         <div className={sectionTitle}>📊 Estatísticas</div>
+        <p className="text-[0.68rem] text-k-4 mb-2">Números que impressionam. Primeiro o valor, depois o rótulo.</p>
         {stats.map((stat, i) => (
           <div key={i} className="flex gap-2 mb-2">
-            <input value={stat.value} onChange={(e) => { const s = [...stats]; s[i] = { ...s[i], value: e.target.value }; setStats(s); }} placeholder="2.4M" className={`${inputClass} w-1/3`} />
-            <input value={stat.label} onChange={(e) => { const s = [...stats]; s[i] = { ...s[i], label: e.target.value }; setStats(s); }} placeholder="Seguidores" className={`${inputClass} flex-1`} />
+            <input value={stat.value} onChange={(e) => { const s = [...stats]; s[i] = { ...s[i], value: e.target.value }; setStats(s); }} placeholder="Ex: 2.4M" className={`${inputClass} w-1/3`} />
+            <input value={stat.label} onChange={(e) => { const s = [...stats]; s[i] = { ...s[i], label: e.target.value }; setStats(s); }} placeholder="Ex: Seguidores" className={`${inputClass} flex-1`} />
             <button onClick={() => setStats(stats.filter((_, j) => j !== i))} className="text-k-4 hover:text-k-err px-2">×</button>
           </div>
         ))}
