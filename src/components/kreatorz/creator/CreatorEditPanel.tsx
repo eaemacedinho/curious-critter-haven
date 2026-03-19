@@ -5,6 +5,28 @@ import ImageCropper from "./ImageCropper";
 
 const iconOptions = ["⭐", "▶", "🎵", "📄", "🛍", "📸", "🎮", "💼", "🎨", "📚", "🔗", "💰", "🎧", "📦", "🎬", "💎"];
 
+const socialEmojiOptions = [
+  { emoji: "📸", label: "Instagram" },
+  { emoji: "▶️", label: "YouTube" },
+  { emoji: "🎵", label: "TikTok" },
+  { emoji: "🐦", label: "Twitter/X" },
+  { emoji: "👤", label: "Facebook" },
+  { emoji: "💼", label: "LinkedIn" },
+  { emoji: "🎮", label: "Twitch" },
+  { emoji: "💬", label: "Discord" },
+  { emoji: "📌", label: "Pinterest" },
+  { emoji: "👻", label: "Snapchat" },
+  { emoji: "🎧", label: "Spotify" },
+  { emoji: "🍎", label: "Apple" },
+  { emoji: "📧", label: "E-mail" },
+  { emoji: "🌐", label: "Website" },
+  { emoji: "🛒", label: "Loja" },
+  { emoji: "📱", label: "WhatsApp" },
+  { emoji: "✈️", label: "Telegram" },
+  { emoji: "🧵", label: "Threads" },
+  { emoji: "💡", label: "Outro" },
+];
+
 interface Props {
   profile: CreatorProfile;
   links: CreatorLink[];
@@ -244,10 +266,40 @@ const CreatorEditPanel = forwardRef<CreatorEditPanelHandle, Props>(function Crea
 
       <div className="mb-8">
         <div className={sectionTitle}>📱 Redes Sociais</div>
-        <p className="text-[0.68rem] text-k-4 mb-2">Emoji no ícone, nome da rede e link do seu perfil.</p>
+        <p className="text-[0.68rem] text-k-4 mb-2">Escolha um ícone, nome da rede e link do seu perfil.</p>
         {social.map((s, i) => (
           <div key={i} className="flex gap-2 mb-2 items-center">
-            <input value={s.label} onChange={(e) => { const arr = [...social]; arr[i] = { ...arr[i], label: e.target.value }; setSocial(arr); }} placeholder="📸" className={`${inputClass} w-12 text-center`} title="Emoji da rede" />
+            <div className="relative">
+              <button
+                onClick={() => setShowIconPicker(showIconPicker === `social-${i}` ? null : `social-${i}`)}
+                className="w-10 h-10 bg-k-800 border border-primary/10 rounded-xl flex items-center justify-center text-lg hover:border-k-400 hover:scale-110 transition-all"
+                title="Escolher ícone"
+              >
+                {s.label || "➕"}
+              </button>
+              {showIconPicker === `social-${i}` && (
+                <div className="absolute top-11 left-0 z-50 bg-k-850 border border-primary/10 rounded-xl p-2.5 shadow-k w-[220px] max-h-[240px] overflow-y-auto">
+                  <div className="grid grid-cols-4 gap-1">
+                    {socialEmojiOptions.map((opt) => (
+                      <button
+                        key={opt.emoji}
+                        onClick={() => {
+                          const arr = [...social];
+                          arr[i] = { ...arr[i], label: opt.emoji, platform: arr[i].platform || opt.label };
+                          setSocial(arr);
+                          setShowIconPicker(null);
+                        }}
+                        className="flex flex-col items-center gap-0.5 p-1.5 rounded-lg hover:bg-k-glow transition-colors"
+                        title={opt.label}
+                      >
+                        <span className="text-lg">{opt.emoji}</span>
+                        <span className="text-[0.58rem] text-k-4 leading-tight">{opt.label}</span>
+                      </button>
+                    ))}
+                  </div>
+                </div>
+              )}
+            </div>
             <input value={s.platform} onChange={(e) => { const arr = [...social]; arr[i] = { ...arr[i], platform: e.target.value }; setSocial(arr); }} placeholder="Ex: Instagram" className={`${inputClass} w-28`} />
             <input value={s.url} onChange={(e) => { const arr = [...social]; arr[i] = { ...arr[i], url: e.target.value }; setSocial(arr); }} placeholder="https://instagram.com/seu_perfil" className={`${inputClass} flex-1`} />
             <button onClick={() => setSocial(social.filter((_, j) => j !== i))} className="text-k-4 hover:text-k-err px-2">×</button>
