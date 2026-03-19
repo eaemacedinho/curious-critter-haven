@@ -6,6 +6,7 @@ import CreatorScreen from "@/components/kreatorz/CreatorScreen";
 import DashboardScreen from "@/components/kreatorz/DashboardScreen";
 import EditorScreen from "@/components/kreatorz/EditorScreen";
 import LoginScreen from "@/components/kreatorz/LoginScreen";
+import SettingsScreen from "@/components/kreatorz/SettingsScreen";
 
 const pageVariants = {
   initial: { opacity: 0, y: 12 },
@@ -31,6 +32,7 @@ const Index = () => {
           {activeTab === "dash" && <DashboardScreen onNavigate={handleNavigate} />}
           {activeTab === "editor" && <EditorScreen onNavigate={handleNavigate} />}
           {activeTab === "login" && <LoginScreen onNavigate={handleNavigate} />}
+          {activeTab === "settings" && <SettingsScreen onNavigate={handleNavigate} />}
         </motion.div>
       </AnimatePresence>
     </>
