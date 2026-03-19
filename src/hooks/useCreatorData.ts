@@ -57,6 +57,13 @@ export interface CreatorCampaign {
   sort_order: number;
 }
 
+const normalizeProfile = (creator: any): CreatorProfile => ({
+  ...creator,
+  tags: Array.isArray(creator.tags) ? (creator.tags as CreatorProfile["tags"]) : [],
+  stats: Array.isArray(creator.stats) ? (creator.stats as CreatorProfile["stats"]) : [],
+  brands: Array.isArray(creator.brands) ? (creator.brands as string[]) : [],
+});
+
 export function useCreatorData(userId: string | undefined) {
   const [profile, setProfile] = useState<CreatorProfile | null>(null);
   const [links, setLinks] = useState<CreatorLink[]>([]);
@@ -66,24 +73,31 @@ export function useCreatorData(userId: string | undefined) {
   const [loading, setLoading] = useState(true);
 
   const fetchData = useCallback(async () => {
-    if (!userId) { setLoading(false); return; }
+    if (!userId) {
+      setLoading(false);
+      return;
+    }
+
     setLoading(true);
 
-    const { data: creator } = await supabase
+    const { data: creator, error: creatorError } = await supabase
       .from("creators")
       .select("*")
       .eq("user_id", userId)
       .maybeSingle();
 
-    if (!creator) { setLoading(false); return; }
+    if (creatorError) {
+      console.error("Error fetching creator profile:", creatorError);
+      setLoading(false);
+      return;
+    }
 
-    const parsed: CreatorProfile = {
-      ...creator,
-      tags: Array.isArray(creator.tags) ? creator.tags as any : [],
-      stats: Array.isArray(creator.stats) ? creator.stats as any : [],
-      brands: Array.isArray(creator.brands) ? creator.brands as any : [],
-    };
-    setProfile(parsed);
+    if (!creator) {
+      setLoading(false);
+      return;
+    }
+
+    setProfile(normalizeProfile(creator));
 
     const [linksRes, socialRes, productsRes, campaignsRes] = await Promise.all([
       supabase.from("creator_links").select("*").eq("creator_id", creator.id).order("sort_order"),
@@ -92,101 +106,220 @@ export function useCreatorData(userId: string | undefined) {
       supabase.from("creator_campaigns").select("*").eq("creator_id", creator.id).order("sort_order"),
     ]);
 
-    setLinks((linksRes.data as any) || []);
-    setSocialLinks((socialRes.data as any) || []);
-    setProducts((productsRes.data as any) || []);
-    setCampaigns((campaignsRes.data as any) || []);
+    setLinks((linksRes.data as CreatorLink[]) || []);
+    setSocialLinks((socialRes.data as SocialLink[]) || []);
+    setProducts((productsRes.data as CreatorProduct[]) || []);
+    setCampaigns((campaignsRes.data as CreatorCampaign[]) || []);
     setLoading(false);
   }, [userId]);
 
-  useEffect(() => { fetchData(); }, [fetchData]);
+  useEffect(() => {
+    void fetchData();
+  }, [fetchData]);
+
+  const persistProfile = useCallback(
+    async (updates: Partial<CreatorProfile>) => {
+      if (!profile || !userId) return null;
+
+      const { data, error } = await supabase
+        .from("creators")
+        .update(updates)
+        .eq("id", profile.id)
+        .eq("user_id", userId)
+        .select("*")
+        .maybeSingle();
+
+      if (error) {
+        console.error("Profile persist error:", error);
+        return null;
+      }
+
+      if (!data) {
+        console.error("Profile persist error: no creator row updated", {
+          profileId: profile.id,
+          userId,
+          updates,
+        });
+        return null;
+      }
+
+      const normalized = normalizeProfile(data);
+      setProfile(normalized);
+      return normalized;
+    },
+    [profile, userId]
+  );
 
   const saveProfile = async (updates: Partial<CreatorProfile>) => {
-    if (!profile) return;
-    const { error } = await supabase.from("creators").update(updates).eq("id", profile.id);
-    if (error) { toast.error("Erro ao salvar perfil"); return; }
-    setProfile({ ...profile, ...updates });
-    toast.success("Perfil salvo!");
+    const updated = await persistProfile(updates);
+    if (!updated) {
+      throw new Error("Erro ao salvar perfil");
+    }
   };
 
   const saveLinks = async (newLinks: CreatorLink[]) => {
     if (!profile) return;
-    // Delete existing, re-insert
-    await supabase.from("creator_links").delete().eq("creator_id", profile.id);
-    if (newLinks.length > 0) {
-      const toInsert = newLinks.map((l, i) => ({
-        creator_id: profile.id,
-        title: l.title,
-        url: l.url,
-        subtitle: l.subtitle || "",
-        icon: l.icon || "🔗",
-        featured: l.featured || false,
-        active: l.active !== false,
-        sort_order: i,
-      }));
-      await supabase.from("creator_links").insert(toInsert);
+
+    const normalizedLinks = newLinks.map((link, index) => ({
+      ...link,
+      creator_id: profile.id,
+      sort_order: index,
+    }));
+
+    const { error: deleteError } = await supabase.from("creator_links").delete().eq("creator_id", profile.id);
+    if (deleteError) {
+      console.error("Error deleting links:", deleteError);
+      throw deleteError;
     }
-    await fetchData();
+
+    if (normalizedLinks.length > 0) {
+      const { error: insertError } = await supabase.from("creator_links").insert(
+        normalizedLinks.map((link) => ({
+          id: link.id,
+          creator_id: link.creator_id,
+          title: link.title,
+          url: link.url,
+          subtitle: link.subtitle || "",
+          icon: link.icon || "🔗",
+          featured: link.featured || false,
+          active: link.active !== false,
+          sort_order: link.sort_order,
+        }))
+      );
+
+      if (insertError) {
+        console.error("Error inserting links:", insertError);
+        throw insertError;
+      }
+    }
+
+    setLinks(normalizedLinks);
   };
 
   const saveSocialLinks = async (newLinks: SocialLink[]) => {
     if (!profile) return;
-    await supabase.from("creator_social_links").delete().eq("creator_id", profile.id);
-    if (newLinks.length > 0) {
-      const toInsert = newLinks.map((l, i) => ({
-        creator_id: profile.id,
-        platform: l.platform,
-        label: l.label || "",
-        url: l.url,
-        sort_order: i,
-      }));
-      await supabase.from("creator_social_links").insert(toInsert);
+
+    const normalizedLinks = newLinks.map((link, index) => ({
+      ...link,
+      creator_id: profile.id,
+      sort_order: index,
+    }));
+
+    const { error: deleteError } = await supabase.from("creator_social_links").delete().eq("creator_id", profile.id);
+    if (deleteError) {
+      console.error("Error deleting social links:", deleteError);
+      throw deleteError;
     }
-    await fetchData();
+
+    if (normalizedLinks.length > 0) {
+      const { error: insertError } = await supabase.from("creator_social_links").insert(
+        normalizedLinks.map((link) => ({
+          id: link.id,
+          creator_id: link.creator_id,
+          platform: link.platform,
+          label: link.label || "",
+          url: link.url,
+          sort_order: link.sort_order,
+        }))
+      );
+
+      if (insertError) {
+        console.error("Error inserting social links:", insertError);
+        throw insertError;
+      }
+    }
+
+    setSocialLinks(normalizedLinks);
   };
 
   const saveProducts = async (newProducts: CreatorProduct[]) => {
     if (!profile) return;
-    await supabase.from("creator_products").delete().eq("creator_id", profile.id);
-    if (newProducts.length > 0) {
-      const toInsert = newProducts.map((p, i) => ({
-        creator_id: profile.id,
-        title: p.title,
-        price: p.price || "",
-        icon: p.icon || "📦",
-        url: p.url || "",
-        sort_order: i,
-      }));
-      await supabase.from("creator_products").insert(toInsert);
+
+    const normalizedProducts = newProducts.map((product, index) => ({
+      ...product,
+      creator_id: profile.id,
+      sort_order: index,
+    }));
+
+    const { error: deleteError } = await supabase.from("creator_products").delete().eq("creator_id", profile.id);
+    if (deleteError) {
+      console.error("Error deleting products:", deleteError);
+      throw deleteError;
     }
-    await fetchData();
+
+    if (normalizedProducts.length > 0) {
+      const { error: insertError } = await supabase.from("creator_products").insert(
+        normalizedProducts.map((product) => ({
+          id: product.id,
+          creator_id: product.creator_id,
+          title: product.title,
+          price: product.price || "",
+          icon: product.icon || "📦",
+          url: product.url || "",
+          sort_order: product.sort_order,
+        }))
+      );
+
+      if (insertError) {
+        console.error("Error inserting products:", insertError);
+        throw insertError;
+      }
+    }
+
+    setProducts(normalizedProducts);
   };
 
   const saveCampaigns = async (newCampaigns: CreatorCampaign[]) => {
     if (!profile) return;
-    await supabase.from("creator_campaigns").delete().eq("creator_id", profile.id);
-    if (newCampaigns.length > 0) {
-      const toInsert = newCampaigns.map((c, i) => ({
-        creator_id: profile.id,
-        title: c.title,
-        description: c.description || "",
-        image_url: c.image_url || "",
-        url: c.url || "",
-        live: c.live || false,
-        sort_order: i,
-      }));
-      await supabase.from("creator_campaigns").insert(toInsert);
+
+    const normalizedCampaigns = newCampaigns.map((campaign, index) => ({
+      ...campaign,
+      creator_id: profile.id,
+      sort_order: index,
+    }));
+
+    const { error: deleteError } = await supabase.from("creator_campaigns").delete().eq("creator_id", profile.id);
+    if (deleteError) {
+      console.error("Error deleting campaigns:", deleteError);
+      throw deleteError;
     }
-    await fetchData();
+
+    if (normalizedCampaigns.length > 0) {
+      const { error: insertError } = await supabase.from("creator_campaigns").insert(
+        normalizedCampaigns.map((campaign) => ({
+          id: campaign.id,
+          creator_id: campaign.creator_id,
+          title: campaign.title,
+          description: campaign.description || "",
+          image_url: campaign.image_url || "",
+          url: campaign.url || "",
+          live: campaign.live || false,
+          sort_order: campaign.sort_order,
+        }))
+      );
+
+      if (insertError) {
+        console.error("Error inserting campaigns:", insertError);
+        throw insertError;
+      }
+    }
+
+    setCampaigns(normalizedCampaigns);
   };
 
   const uploadImage = async (file: File, type: "avatar" | "cover"): Promise<string | null> => {
     if (!userId || !profile) return null;
-    const bucket = type === "avatar" ? "avatars" : "covers";
-    const ext = file.name.split(".").pop() || "jpg";
-    const path = `${userId}/${Date.now()}.${ext}`;
 
-    const { error: uploadError } = await supabase.storage.from(bucket).upload(path, file, { upsert: true });
+    const bucket = type === "avatar" ? "avatars" : "covers";
+    const fileExtension = file.name.split(".").pop()?.toLowerCase() || "jpg";
+    const path = `${userId}/${type}-${Date.now()}.${fileExtension}`;
+
+    const { error: uploadError } = await supabase.storage.from(bucket).upload(path, file, {
+      upsert: true,
+      cacheControl: "3600",
+      contentType: file.type || "image/jpeg",
+    });
+
     if (uploadError) {
       console.error("Upload error:", uploadError);
       toast.error("Erro no upload: " + uploadError.message);
@@ -195,28 +328,31 @@ export function useCreatorData(userId: string | undefined) {
 
     const { data } = supabase.storage.from(bucket).getPublicUrl(path);
     const publicUrl = data.publicUrl;
-
-    // Persist the URL to the database immediately
     const field = type === "avatar" ? "avatar_url" : "cover_url";
-    const { error: updateError } = await supabase
-      .from("creators")
-      .update({ [field]: publicUrl })
-      .eq("id", profile.id);
 
-    if (updateError) {
-      console.error("DB update error:", updateError);
-      toast.error("Erro ao salvar URL da imagem");
+    const updatedProfile = await persistProfile({ [field]: publicUrl } as Partial<CreatorProfile>);
+
+    if (!updatedProfile) {
+      toast.error("A imagem foi enviada, mas não conseguiu ser salva no perfil.");
       return null;
     }
 
-    // Update local state
-    setProfile({ ...profile, [field]: publicUrl });
-    return publicUrl;
+    return updatedProfile[field] || publicUrl;
   };
 
   return {
-    profile, links, socialLinks, products, campaigns, loading,
-    saveProfile, saveLinks, saveSocialLinks, saveProducts, saveCampaigns,
-    uploadImage, refetch: fetchData,
+    profile,
+    links,
+    socialLinks,
+    products,
+    campaigns,
+    loading,
+    saveProfile,
+    saveLinks,
+    saveSocialLinks,
+    saveProducts,
+    saveCampaigns,
+    uploadImage,
+    refetch: fetchData,
   };
 }

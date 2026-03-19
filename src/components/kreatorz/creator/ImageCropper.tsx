@@ -1,4 +1,4 @@
-import { useState, useCallback } from "react";
+import { forwardRef, useState, useCallback } from "react";
 import Cropper, { type Area } from "react-easy-crop";
 
 interface ImageCropperProps {
@@ -9,7 +9,10 @@ interface ImageCropperProps {
   onCancel: () => void;
 }
 
-export default function ImageCropper({ imageSrc, aspect, cropShape = "rect", onCropDone, onCancel }: ImageCropperProps) {
+const ImageCropper = forwardRef<HTMLDivElement, ImageCropperProps>(function ImageCropper(
+  { imageSrc, aspect, cropShape = "rect", onCropDone, onCancel },
+  ref
+) {
   const [crop, setCrop] = useState({ x: 0, y: 0 });
   const [zoom, setZoom] = useState(1);
   const [croppedAreaPixels, setCroppedAreaPixels] = useState<Area | null>(null);
@@ -25,7 +28,7 @@ export default function ImageCropper({ imageSrc, aspect, cropShape = "rect", onC
   };
 
   return (
-    <div className="fixed inset-0 z-[100] bg-background/90 backdrop-blur-md flex flex-col">
+    <div ref={ref} className="fixed inset-0 z-[100] bg-background/90 backdrop-blur-md flex flex-col">
       <div className="relative flex-1">
         <Cropper
           image={imageSrc}
@@ -74,13 +77,17 @@ export default function ImageCropper({ imageSrc, aspect, cropShape = "rect", onC
       </div>
     </div>
   );
-}
+});
+
+export default ImageCropper;
 
 async function getCroppedImg(imageSrc: string, crop: Area): Promise<Blob | null> {
   const image = new Image();
   image.crossOrigin = "anonymous";
   image.src = imageSrc;
-  await new Promise((resolve) => { image.onload = resolve; });
+  await new Promise((resolve) => {
+    image.onload = resolve;
+  });
 
   const canvas = document.createElement("canvas");
   canvas.width = crop.width;
