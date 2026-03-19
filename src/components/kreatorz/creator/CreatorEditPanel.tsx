@@ -1,6 +1,7 @@
 import { useState, useRef } from "react";
 import { toast } from "sonner";
 import type { CreatorProfile, CreatorLink, SocialLink, CreatorProduct, CreatorCampaign } from "@/hooks/useCreatorData";
+import ImageCropper from "./ImageCropper";
 
 const iconOptions = ["⭐", "▶", "🎵", "📄", "🛍", "📸", "🎮", "💼", "🎨", "📚", "🔗", "💰", "🎧", "📦", "🎬", "💎"];
 
@@ -39,15 +40,24 @@ export default function CreatorEditPanel({
   const [showIconPicker, setShowIconPicker] = useState<string | null>(null);
   const [newTag, setNewTag] = useState("");
   const [newBrand, setNewBrand] = useState("");
+  const [cropImage, setCropImage] = useState<{ src: string; type: "avatar" | "cover" } | null>(null);
 
   const avatarRef = useRef<HTMLInputElement>(null);
   const coverRef = useRef<HTMLInputElement>(null);
 
-  const handleImageUpload = async (file: File, type: "avatar" | "cover") => {
+  const handleFileSelected = (file: File, type: "avatar" | "cover") => {
+    const reader = new FileReader();
+    reader.onload = () => setCropImage({ src: reader.result as string, type });
+    reader.readAsDataURL(file);
+  };
+
+  const handleCropDone = async (blob: Blob, type: "avatar" | "cover") => {
+    const file = new File([blob], `${type}.jpg`, { type: "image/jpeg" });
     const url = await onUploadImage(file, type);
     if (!url) return;
     if (type === "avatar") setAvatarUrl(url);
     else setCoverUrl(url);
+    setCropImage(null);
     toast.success(type === "avatar" ? "Foto atualizada!" : "Capa atualizada!");
   };
 
@@ -69,8 +79,8 @@ export default function CreatorEditPanel({
 
   return (
     <div className="max-w-[560px] mx-auto px-6 py-8 pt-20 animate-k-fade-up">
-      <input ref={avatarRef} type="file" accept="image/*" className="hidden" onChange={(e) => e.target.files?.[0] && handleImageUpload(e.target.files[0], "avatar")} />
-      <input ref={coverRef} type="file" accept="image/*" className="hidden" onChange={(e) => e.target.files?.[0] && handleImageUpload(e.target.files[0], "cover")} />
+      <input ref={avatarRef} type="file" accept="image/*" className="hidden" onChange={(e) => e.target.files?.[0] && handleFileSelected(e.target.files[0], "avatar")} />
+      <input ref={coverRef} type="file" accept="image/*" className="hidden" onChange={(e) => e.target.files?.[0] && handleFileSelected(e.target.files[0], "cover")} />
 
       {/* Cover */}
       <div className="mb-6">
@@ -277,6 +287,16 @@ export default function CreatorEditPanel({
           {saving ? "Salvando..." : "💾 Salvar tudo"}
         </button>
       </div>
+      {/* Image Cropper Modal */}
+      {cropImage && (
+        <ImageCropper
+          imageSrc={cropImage.src}
+          aspect={cropImage.type === "avatar" ? 1 : 16 / 5}
+          cropShape={cropImage.type === "avatar" ? "round" : "rect"}
+          onCropDone={(blob) => handleCropDone(blob, cropImage.type)}
+          onCancel={() => setCropImage(null)}
+        />
+      )}
     </div>
   );
 }
