@@ -1,3 +1,5 @@
+import AnalyticsCharts from "./AnalyticsCharts";
+
 interface DashboardScreenProps {
   onNavigate: (tab: string) => void;
 }
