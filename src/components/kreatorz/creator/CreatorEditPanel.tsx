@@ -197,6 +197,7 @@ const CreatorEditPanel = forwardRef<CreatorEditPanelHandle, Props>(function Crea
 
       <div className="mb-8">
         <div className={sectionTitle}>🏷 Tags</div>
+        <p className="text-[0.68rem] text-k-4 mb-2">Palavras-chave que descrevem seu nicho. Ex: lifestyle, tech, fitness</p>
         <div className="flex flex-wrap gap-2 mb-2">
           {tags.map((tag, i) => (
             <span key={i} className="px-3 py-1 rounded-full text-[0.72rem] font-semibold bg-primary/10 text-k-300 border border-primary/20 flex items-center gap-1.5">
@@ -206,7 +207,7 @@ const CreatorEditPanel = forwardRef<CreatorEditPanelHandle, Props>(function Crea
           ))}
         </div>
         <div className="flex gap-2">
-          <input value={newTag} onChange={(e) => setNewTag(e.target.value)} placeholder="Nova tag..." className={inputClass} onKeyDown={(e) => { if (e.key === "Enter" && newTag.trim()) { setTags([...tags, { label: newTag.trim() }]); setNewTag(""); }}} />
+          <input value={newTag} onChange={(e) => setNewTag(e.target.value)} placeholder="Ex: criador de conteúdo" className={inputClass} onKeyDown={(e) => { if (e.key === "Enter" && newTag.trim()) { setTags([...tags, { label: newTag.trim() }]); setNewTag(""); }}} />
           <button onClick={() => { if (newTag.trim()) { setTags([...tags, { label: newTag.trim() }]); setNewTag(""); }}} className="px-4 py-2 bg-primary/20 text-k-300 rounded-xl text-sm font-medium hover:bg-primary/30 transition-colors flex-shrink-0">+</button>
         </div>
       </div>
