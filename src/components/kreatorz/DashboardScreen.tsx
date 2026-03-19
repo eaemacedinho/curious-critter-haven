@@ -1,3 +1,5 @@
+import AnalyticsCharts from "./AnalyticsCharts";
+
 interface DashboardScreenProps {
   onNavigate: (tab: string) => void;
 }
@@ -100,6 +102,9 @@ export default function DashboardScreen({ onNavigate }: DashboardScreenProps) {
           </div>
           <div className="text-5xl opacity-20">💰</div>
         </div>
+
+        {/* Analytics Charts */}
+        <AnalyticsCharts />
 
         {/* Creators Table */}
         <div className="flex items-center justify-between mb-3.5">

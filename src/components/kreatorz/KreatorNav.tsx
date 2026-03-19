@@ -10,6 +10,7 @@ const tabs = [
   { id: "creator", label: "Página do Creator" },
   { id: "dash", label: "Dashboard" },
   { id: "editor", label: "Editor" },
+  { id: "login", label: "Login" },
 ];
 
 export default function KreatorNav({ activeTab, onTabChange }: KreatorNavProps) {
