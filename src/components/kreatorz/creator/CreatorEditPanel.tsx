@@ -181,11 +181,15 @@ const CreatorEditPanel = forwardRef<CreatorEditPanelHandle, Props>(function Crea
           </div>
         </div>
         <div className="space-y-3">
-          <div><label className={labelClass}>Nome</label><input value={name} onChange={(e) => setName(e.target.value)} className={inputClass} /></div>
-          <div><label className={labelClass}>Handle</label><input value={handle} onChange={(e) => setHandle(e.target.value)} className={inputClass} placeholder="seunome" /></div>
+          <div><label className={labelClass}>Nome</label><input value={name} onChange={(e) => setName(e.target.value)} className={inputClass} placeholder="Seu nome ou nome artístico" /></div>
+          <div>
+            <label className={labelClass}>Handle</label>
+            <input value={handle} onChange={(e) => setHandle(e.target.value)} className={inputClass} placeholder="seunome" />
+            <p className="text-[0.68rem] text-k-4 mt-1">Identificador único, sem espaços. Ex: joaosilva, ana.creator</p>
+          </div>
           <div>
             <label className={labelClass}>Bio</label>
-            <textarea value={bio} onChange={(e) => setBio(e.target.value)} maxLength={300} className={`${inputClass} resize-none min-h-[72px]`} />
+            <textarea value={bio} onChange={(e) => setBio(e.target.value)} maxLength={300} className={`${inputClass} resize-none min-h-[72px]`} placeholder="Conte um pouco sobre você, o que faz e o que inspira seu conteúdo..." />
             <div className="text-[0.68rem] text-k-4 text-right mt-1">{bio.length}/300</div>
           </div>
         </div>
@@ -193,6 +197,7 @@ const CreatorEditPanel = forwardRef<CreatorEditPanelHandle, Props>(function Crea
 
       <div className="mb-8">
         <div className={sectionTitle}>🏷 Tags</div>
+        <p className="text-[0.68rem] text-k-4 mb-2">Palavras-chave que descrevem seu nicho. Ex: lifestyle, tech, fitness</p>
         <div className="flex flex-wrap gap-2 mb-2">
           {tags.map((tag, i) => (
             <span key={i} className="px-3 py-1 rounded-full text-[0.72rem] font-semibold bg-primary/10 text-k-300 border border-primary/20 flex items-center gap-1.5">
@@ -202,17 +207,18 @@ const CreatorEditPanel = forwardRef<CreatorEditPanelHandle, Props>(function Crea
           ))}
         </div>
         <div className="flex gap-2">
-          <input value={newTag} onChange={(e) => setNewTag(e.target.value)} placeholder="Nova tag..." className={inputClass} onKeyDown={(e) => { if (e.key === "Enter" && newTag.trim()) { setTags([...tags, { label: newTag.trim() }]); setNewTag(""); }}} />
+          <input value={newTag} onChange={(e) => setNewTag(e.target.value)} placeholder="Ex: criador de conteúdo" className={inputClass} onKeyDown={(e) => { if (e.key === "Enter" && newTag.trim()) { setTags([...tags, { label: newTag.trim() }]); setNewTag(""); }}} />
           <button onClick={() => { if (newTag.trim()) { setTags([...tags, { label: newTag.trim() }]); setNewTag(""); }}} className="px-4 py-2 bg-primary/20 text-k-300 rounded-xl text-sm font-medium hover:bg-primary/30 transition-colors flex-shrink-0">+</button>
         </div>
       </div>
 
       <div className="mb-8">
         <div className={sectionTitle}>📊 Estatísticas</div>
+        <p className="text-[0.68rem] text-k-4 mb-2">Números que impressionam. Primeiro o valor, depois o rótulo.</p>
         {stats.map((stat, i) => (
           <div key={i} className="flex gap-2 mb-2">
-            <input value={stat.value} onChange={(e) => { const s = [...stats]; s[i] = { ...s[i], value: e.target.value }; setStats(s); }} placeholder="2.4M" className={`${inputClass} w-1/3`} />
-            <input value={stat.label} onChange={(e) => { const s = [...stats]; s[i] = { ...s[i], label: e.target.value }; setStats(s); }} placeholder="Seguidores" className={`${inputClass} flex-1`} />
+            <input value={stat.value} onChange={(e) => { const s = [...stats]; s[i] = { ...s[i], value: e.target.value }; setStats(s); }} placeholder="Ex: 2.4M" className={`${inputClass} w-1/3`} />
+            <input value={stat.label} onChange={(e) => { const s = [...stats]; s[i] = { ...s[i], label: e.target.value }; setStats(s); }} placeholder="Ex: Seguidores" className={`${inputClass} flex-1`} />
             <button onClick={() => setStats(stats.filter((_, j) => j !== i))} className="text-k-4 hover:text-k-err px-2">×</button>
           </div>
         ))}
@@ -221,6 +227,7 @@ const CreatorEditPanel = forwardRef<CreatorEditPanelHandle, Props>(function Crea
 
       <div className="mb-8">
         <div className={sectionTitle}>🤝 Marcas parceiras</div>
+        <p className="text-[0.68rem] text-k-4 mb-2">Marcas com quem você já trabalhou ou tem parceria.</p>
         <div className="flex flex-wrap gap-2 mb-2">
           {brands.map((brand, i) => (
             <span key={i} className="px-2.5 py-1 rounded-md text-[0.72rem] font-semibold bg-card/80 text-k-3 border border-primary/10 flex items-center gap-1.5">
@@ -230,18 +237,19 @@ const CreatorEditPanel = forwardRef<CreatorEditPanelHandle, Props>(function Crea
           ))}
         </div>
         <div className="flex gap-2">
-          <input value={newBrand} onChange={(e) => setNewBrand(e.target.value)} placeholder="Nome da marca..." className={inputClass} onKeyDown={(e) => { if (e.key === "Enter" && newBrand.trim()) { setBrands([...brands, newBrand.trim()]); setNewBrand(""); }}} />
+          <input value={newBrand} onChange={(e) => setNewBrand(e.target.value)} placeholder="Ex: Nike, Samsung..." className={inputClass} onKeyDown={(e) => { if (e.key === "Enter" && newBrand.trim()) { setBrands([...brands, newBrand.trim()]); setNewBrand(""); }}} />
           <button onClick={() => { if (newBrand.trim()) { setBrands([...brands, newBrand.trim()]); setNewBrand(""); }}} className="px-4 py-2 bg-primary/20 text-k-300 rounded-xl text-sm font-medium hover:bg-primary/30 transition-colors flex-shrink-0">+</button>
         </div>
       </div>
 
       <div className="mb-8">
         <div className={sectionTitle}>📱 Redes Sociais</div>
+        <p className="text-[0.68rem] text-k-4 mb-2">Emoji no ícone, nome da rede e link do seu perfil.</p>
         {social.map((s, i) => (
           <div key={i} className="flex gap-2 mb-2 items-center">
-            <input value={s.label} onChange={(e) => { const arr = [...social]; arr[i] = { ...arr[i], label: e.target.value }; setSocial(arr); }} placeholder="📸" className={`${inputClass} w-12 text-center`} />
-            <input value={s.platform} onChange={(e) => { const arr = [...social]; arr[i] = { ...arr[i], platform: e.target.value }; setSocial(arr); }} placeholder="Instagram" className={`${inputClass} w-28`} />
-            <input value={s.url} onChange={(e) => { const arr = [...social]; arr[i] = { ...arr[i], url: e.target.value }; setSocial(arr); }} placeholder="https://..." className={`${inputClass} flex-1`} />
+            <input value={s.label} onChange={(e) => { const arr = [...social]; arr[i] = { ...arr[i], label: e.target.value }; setSocial(arr); }} placeholder="📸" className={`${inputClass} w-12 text-center`} title="Emoji da rede" />
+            <input value={s.platform} onChange={(e) => { const arr = [...social]; arr[i] = { ...arr[i], platform: e.target.value }; setSocial(arr); }} placeholder="Ex: Instagram" className={`${inputClass} w-28`} />
+            <input value={s.url} onChange={(e) => { const arr = [...social]; arr[i] = { ...arr[i], url: e.target.value }; setSocial(arr); }} placeholder="https://instagram.com/seu_perfil" className={`${inputClass} flex-1`} />
             <button onClick={() => setSocial(social.filter((_, j) => j !== i))} className="text-k-4 hover:text-k-err px-2">×</button>
           </div>
         ))}
