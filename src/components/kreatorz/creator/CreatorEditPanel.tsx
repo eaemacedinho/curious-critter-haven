@@ -5,6 +5,28 @@ import ImageCropper from "./ImageCropper";
 
 const iconOptions = ["⭐", "▶", "🎵", "📄", "🛍", "📸", "🎮", "💼", "🎨", "📚", "🔗", "💰", "🎧", "📦", "🎬", "💎"];
 
+const socialEmojiOptions = [
+  { emoji: "📸", label: "Instagram" },
+  { emoji: "▶️", label: "YouTube" },
+  { emoji: "🎵", label: "TikTok" },
+  { emoji: "🐦", label: "Twitter/X" },
+  { emoji: "👤", label: "Facebook" },
+  { emoji: "💼", label: "LinkedIn" },
+  { emoji: "🎮", label: "Twitch" },
+  { emoji: "💬", label: "Discord" },
+  { emoji: "📌", label: "Pinterest" },
+  { emoji: "👻", label: "Snapchat" },
+  { emoji: "🎧", label: "Spotify" },
+  { emoji: "🍎", label: "Apple" },
+  { emoji: "📧", label: "E-mail" },
+  { emoji: "🌐", label: "Website" },
+  { emoji: "🛒", label: "Loja" },
+  { emoji: "📱", label: "WhatsApp" },
+  { emoji: "✈️", label: "Telegram" },
+  { emoji: "🧵", label: "Threads" },
+  { emoji: "💡", label: "Outro" },
+];
+
 interface Props {
   profile: CreatorProfile;
   links: CreatorLink[];
