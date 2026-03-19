@@ -45,11 +45,19 @@ export default function CreatorEditPanel({
   const avatarRef = useRef<HTMLInputElement>(null);
   const coverRef = useRef<HTMLInputElement>(null);
 
-  const handleImageUpload = async (file: File, type: "avatar" | "cover") => {
+  const handleFileSelected = (file: File, type: "avatar" | "cover") => {
+    const reader = new FileReader();
+    reader.onload = () => setCropImage({ src: reader.result as string, type });
+    reader.readAsDataURL(file);
+  };
+
+  const handleCropDone = async (blob: Blob, type: "avatar" | "cover") => {
+    const file = new File([blob], `${type}.jpg`, { type: "image/jpeg" });
     const url = await onUploadImage(file, type);
     if (!url) return;
     if (type === "avatar") setAvatarUrl(url);
     else setCoverUrl(url);
+    setCropImage(null);
     toast.success(type === "avatar" ? "Foto atualizada!" : "Capa atualizada!");
   };
 
