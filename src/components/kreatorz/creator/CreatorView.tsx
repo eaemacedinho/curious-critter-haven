@@ -10,17 +10,18 @@ interface Props {
   campaigns: CreatorCampaign[];
 }
 
-export default function CreatorView({ profile, links, socialLinks, products, campaigns }: Props) {
+export default function CreatorView({ profile, links: rawLinks, socialLinks: rawSocial, products: rawProducts, campaigns: rawCampaigns }: Props) {
   const [contactOpen, setContactOpen] = useState(false);
   const [clickedLink, setClickedLink] = useState<number | null>(null);
 
-  const handleLinkClick = (i: number, url: string) => {
-    setClickedLink(i);
-    if (url && url !== "https://") window.open(url, "_blank");
-    setTimeout(() => setClickedLink(null), 400);
-  };
-
-  const hasContent = links.length > 0 || products.length > 0 || campaigns.length > 0;
+  // Filter out incomplete/empty items
+  const links = rawLinks.filter(l => l.title?.trim() && l.url?.trim());
+  const socialLinks = rawSocial.filter(s => s.url?.trim() && (s.label?.trim() || s.platform?.trim()));
+  const products = rawProducts.filter(p => p.title?.trim());
+  const campaigns = rawCampaigns.filter(c => c.title?.trim());
+  const stats = profile.stats.filter(s => s.value?.trim() && s.label?.trim());
+  const tags = profile.tags.filter(t => t.label?.trim());
+  const brands = profile.brands.filter(b => b?.trim());
 
   return (
     <div className="min-h-screen flex items-start justify-center px-6 py-20 pt-24 relative">
