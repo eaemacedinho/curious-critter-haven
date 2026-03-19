@@ -315,7 +315,12 @@ const CreatorEditPanel = forwardRef<CreatorEditPanelHandle, Props>(function Crea
                         key={opt.emoji}
                         onClick={() => {
                           const arr = [...social];
-                          arr[i] = { ...arr[i], label: opt.emoji, platform: arr[i].platform || opt.label };
+                          arr[i] = {
+                            ...arr[i],
+                            label: opt.emoji,
+                            platform: opt.label,
+                            url: arr[i].url?.trim() ? arr[i].url : opt.baseUrl || "",
+                          };
                           setSocial(arr);
                           setShowIconPicker(null);
                         }}
