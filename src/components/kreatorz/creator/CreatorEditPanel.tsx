@@ -287,6 +287,16 @@ export default function CreatorEditPanel({
           {saving ? "Salvando..." : "💾 Salvar tudo"}
         </button>
       </div>
+      {/* Image Cropper Modal */}
+      {cropImage && (
+        <ImageCropper
+          imageSrc={cropImage.src}
+          aspect={cropImage.type === "avatar" ? 1 : 16 / 5}
+          cropShape={cropImage.type === "avatar" ? "round" : "rect"}
+          onCropDone={(blob) => handleCropDone(blob, cropImage.type)}
+          onCancel={() => setCropImage(null)}
+        />
+      )}
     </div>
   );
 }
