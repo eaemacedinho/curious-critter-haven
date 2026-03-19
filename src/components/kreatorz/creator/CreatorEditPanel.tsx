@@ -181,11 +181,15 @@ const CreatorEditPanel = forwardRef<CreatorEditPanelHandle, Props>(function Crea
           </div>
         </div>
         <div className="space-y-3">
-          <div><label className={labelClass}>Nome</label><input value={name} onChange={(e) => setName(e.target.value)} className={inputClass} /></div>
-          <div><label className={labelClass}>Handle</label><input value={handle} onChange={(e) => setHandle(e.target.value)} className={inputClass} placeholder="seunome" /></div>
+          <div><label className={labelClass}>Nome</label><input value={name} onChange={(e) => setName(e.target.value)} className={inputClass} placeholder="Seu nome ou nome artístico" /></div>
+          <div>
+            <label className={labelClass}>Handle</label>
+            <input value={handle} onChange={(e) => setHandle(e.target.value)} className={inputClass} placeholder="seunome" />
+            <p className="text-[0.68rem] text-k-4 mt-1">Identificador único, sem espaços. Ex: joaosilva, ana.creator</p>
+          </div>
           <div>
             <label className={labelClass}>Bio</label>
-            <textarea value={bio} onChange={(e) => setBio(e.target.value)} maxLength={300} className={`${inputClass} resize-none min-h-[72px]`} />
+            <textarea value={bio} onChange={(e) => setBio(e.target.value)} maxLength={300} className={`${inputClass} resize-none min-h-[72px]`} placeholder="Conte um pouco sobre você, o que faz e o que inspira seu conteúdo..." />
             <div className="text-[0.68rem] text-k-4 text-right mt-1">{bio.length}/300</div>
           </div>
         </div>
