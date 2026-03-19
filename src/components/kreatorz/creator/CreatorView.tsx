@@ -23,6 +23,12 @@ export default function CreatorView({ profile, links: rawLinks, socialLinks: raw
   const tags = profile.tags.filter(t => t.label?.trim());
   const brands = profile.brands.filter(b => b?.trim());
 
+  const handleLinkClick = (i: number, url: string) => {
+    setClickedLink(i);
+    if (url && url !== "https://") window.open(url, "_blank");
+    setTimeout(() => setClickedLink(null), 400);
+  };
+
   return (
     <div className="min-h-screen flex items-start justify-center px-6 py-20 pt-24 relative">
       <div className="absolute top-0 left-1/2 -translate-x-1/2 w-[600px] h-[420px] bg-[radial-gradient(ellipse,hsl(268_69%_50%_/_0.4),transparent_70%)] pointer-events-none" />
