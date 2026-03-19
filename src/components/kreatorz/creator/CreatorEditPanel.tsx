@@ -58,14 +58,14 @@ const CreatorEditPanel = forwardRef<CreatorEditPanelHandle, Props>(function Crea
   const [showIconPicker, setShowIconPicker] = useState<string | null>(null);
   const [newTag, setNewTag] = useState("");
   const [newBrand, setNewBrand] = useState("");
-  const [cropImage, setCropImage] = useState<{ src: string; type: "avatar" | "cover" } | null>(null);
+  const [cropImage, setCropImage] = useState<{ src: string; type: "avatar" | "cover"; file: File } | null>(null);
 
   const avatarRef = useRef<HTMLInputElement>(null);
   const coverRef = useRef<HTMLInputElement>(null);
 
   const handleFileSelected = (file: File, type: "avatar" | "cover") => {
     const reader = new FileReader();
-    reader.onload = () => setCropImage({ src: reader.result as string, type });
+    reader.onload = () => setCropImage({ src: reader.result as string, type, file });
     reader.readAsDataURL(file);
   };
 
@@ -94,7 +94,29 @@ const CreatorEditPanel = forwardRef<CreatorEditPanelHandle, Props>(function Crea
 
     try {
       setSaving(true);
-      await onSaveProfile({ name, handle, bio, avatar_url: avatarUrl, cover_url: coverUrl, tags, stats, brands });
+
+      // Auto-apply pending crop image (use original file as-is)
+      if (cropImage) {
+        const { file, type } = cropImage;
+        const url = await onUploadImage(file, type);
+        if (url) {
+          if (type === "avatar") setAvatarUrl(url);
+          else setCoverUrl(url);
+          // Use updated url directly in the profile save below
+          if (type === "avatar") {
+            await onSaveProfile({ name, handle, bio, avatar_url: url, cover_url: coverUrl, tags, stats, brands });
+          } else {
+            await onSaveProfile({ name, handle, bio, avatar_url: avatarUrl, cover_url: url, tags, stats, brands });
+          }
+        } else {
+          toast.error("Falha ao salvar imagem pendente.");
+          return false;
+        }
+        setCropImage(null);
+      } else {
+        await onSaveProfile({ name, handle, bio, avatar_url: avatarUrl, cover_url: coverUrl, tags, stats, brands });
+      }
+
       await onSaveLinks(links);
       await onSaveSocialLinks(social);
       await onSaveProducts(prods);
