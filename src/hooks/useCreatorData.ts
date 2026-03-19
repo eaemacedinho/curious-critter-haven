@@ -181,16 +181,37 @@ export function useCreatorData(userId: string | undefined) {
   };
 
   const uploadImage = async (file: File, type: "avatar" | "cover"): Promise<string | null> => {
-    if (!userId) return null;
+    if (!userId || !profile) return null;
     const bucket = type === "avatar" ? "avatars" : "covers";
-    const ext = file.name.split(".").pop();
+    const ext = file.name.split(".").pop() || "jpg";
     const path = `${userId}/${Date.now()}.${ext}`;
 
-    const { error } = await supabase.storage.from(bucket).upload(path, file, { upsert: true });
-    if (error) { toast.error("Erro no upload"); return null; }
+    const { error: uploadError } = await supabase.storage.from(bucket).upload(path, file, { upsert: true });
+    if (uploadError) {
+      console.error("Upload error:", uploadError);
+      toast.error("Erro no upload: " + uploadError.message);
+      return null;
+    }
 
     const { data } = supabase.storage.from(bucket).getPublicUrl(path);
-    return data.publicUrl;
+    const publicUrl = data.publicUrl;
+
+    // Persist the URL to the database immediately
+    const field = type === "avatar" ? "avatar_url" : "cover_url";
+    const { error: updateError } = await supabase
+      .from("creators")
+      .update({ [field]: publicUrl })
+      .eq("id", profile.id);
+
+    if (updateError) {
+      console.error("DB update error:", updateError);
+      toast.error("Erro ao salvar URL da imagem");
+      return null;
+    }
+
+    // Update local state
+    setProfile({ ...profile, [field]: publicUrl });
+    return publicUrl;
   };
 
   return {
