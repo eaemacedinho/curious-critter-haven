@@ -3,6 +3,7 @@ import { AnimatePresence, motion } from "framer-motion";
 import KreatorNav from "@/components/kreatorz/KreatorNav";
 import LandingScreen from "@/components/kreatorz/LandingScreen";
 import CreatorScreen from "@/components/kreatorz/CreatorScreen";
+import CreatorScreen2 from "@/components/kreatorz/CreatorScreen2";
 import DashboardScreen from "@/components/kreatorz/DashboardScreen";
 import EditorScreen from "@/components/kreatorz/EditorScreen";
 import LoginScreen from "@/components/kreatorz/LoginScreen";
@@ -29,6 +30,7 @@ const Index = () => {
         <motion.div key={activeTab} variants={pageVariants} initial="initial" animate="animate" exit="exit">
           {activeTab === "landing" && <LandingScreen onNavigate={handleNavigate} />}
           {activeTab === "creator" && <CreatorScreen />}
+          {activeTab === "creator2" && <CreatorScreen2 />}
           {activeTab === "dash" && <DashboardScreen onNavigate={handleNavigate} />}
           {activeTab === "editor" && <EditorScreen onNavigate={handleNavigate} />}
           {activeTab === "login" && <LoginScreen onNavigate={handleNavigate} />}

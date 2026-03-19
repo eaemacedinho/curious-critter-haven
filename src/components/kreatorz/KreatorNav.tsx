@@ -8,6 +8,7 @@ interface KreatorNavProps {
 const tabs = [
   { id: "landing", label: "Landing Page" },
   { id: "creator", label: "Página do Creator" },
+  { id: "creator2", label: "Layout 2" },
   { id: "dash", label: "Dashboard" },
   { id: "editor", label: "Editor" },
   { id: "settings", label: "Configurações" },
