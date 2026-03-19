@@ -14,7 +14,212 @@ export type Database = {
   }
   public: {
     Tables: {
-      [_ in never]: never
+      creator_campaigns: {
+        Row: {
+          creator_id: string
+          description: string | null
+          id: string
+          image_url: string | null
+          live: boolean | null
+          sort_order: number | null
+          title: string
+          url: string | null
+        }
+        Insert: {
+          creator_id: string
+          description?: string | null
+          id?: string
+          image_url?: string | null
+          live?: boolean | null
+          sort_order?: number | null
+          title?: string
+          url?: string | null
+        }
+        Update: {
+          creator_id?: string
+          description?: string | null
+          id?: string
+          image_url?: string | null
+          live?: boolean | null
+          sort_order?: number | null
+          title?: string
+          url?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "creator_campaigns_creator_id_fkey"
+            columns: ["creator_id"]
+            isOneToOne: false
+            referencedRelation: "creators"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      creator_links: {
+        Row: {
+          active: boolean | null
+          created_at: string
+          creator_id: string
+          featured: boolean | null
+          icon: string | null
+          id: string
+          sort_order: number | null
+          subtitle: string | null
+          title: string
+          url: string
+        }
+        Insert: {
+          active?: boolean | null
+          created_at?: string
+          creator_id: string
+          featured?: boolean | null
+          icon?: string | null
+          id?: string
+          sort_order?: number | null
+          subtitle?: string | null
+          title?: string
+          url?: string
+        }
+        Update: {
+          active?: boolean | null
+          created_at?: string
+          creator_id?: string
+          featured?: boolean | null
+          icon?: string | null
+          id?: string
+          sort_order?: number | null
+          subtitle?: string | null
+          title?: string
+          url?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "creator_links_creator_id_fkey"
+            columns: ["creator_id"]
+            isOneToOne: false
+            referencedRelation: "creators"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      creator_products: {
+        Row: {
+          creator_id: string
+          icon: string | null
+          id: string
+          price: string | null
+          sort_order: number | null
+          title: string
+          url: string | null
+        }
+        Insert: {
+          creator_id: string
+          icon?: string | null
+          id?: string
+          price?: string | null
+          sort_order?: number | null
+          title?: string
+          url?: string | null
+        }
+        Update: {
+          creator_id?: string
+          icon?: string | null
+          id?: string
+          price?: string | null
+          sort_order?: number | null
+          title?: string
+          url?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "creator_products_creator_id_fkey"
+            columns: ["creator_id"]
+            isOneToOne: false
+            referencedRelation: "creators"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      creator_social_links: {
+        Row: {
+          creator_id: string
+          id: string
+          label: string | null
+          platform: string
+          sort_order: number | null
+          url: string
+        }
+        Insert: {
+          creator_id: string
+          id?: string
+          label?: string | null
+          platform?: string
+          sort_order?: number | null
+          url?: string
+        }
+        Update: {
+          creator_id?: string
+          id?: string
+          label?: string | null
+          platform?: string
+          sort_order?: number | null
+          url?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "creator_social_links_creator_id_fkey"
+            columns: ["creator_id"]
+            isOneToOne: false
+            referencedRelation: "creators"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      creators: {
+        Row: {
+          avatar_url: string | null
+          bio: string | null
+          brands: Json | null
+          cover_url: string | null
+          created_at: string
+          handle: string
+          id: string
+          name: string
+          stats: Json | null
+          tags: Json | null
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          avatar_url?: string | null
+          bio?: string | null
+          brands?: Json | null
+          cover_url?: string | null
+          created_at?: string
+          handle?: string
+          id?: string
+          name?: string
+          stats?: Json | null
+          tags?: Json | null
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          avatar_url?: string | null
+          bio?: string | null
+          brands?: Json | null
+          cover_url?: string | null
+          created_at?: string
+          handle?: string
+          id?: string
+          name?: string
+          stats?: Json | null
+          tags?: Json | null
+          updated_at?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
     }
     Views: {
       [_ in never]: never
