@@ -331,7 +331,32 @@ const CreatorEditPanel = forwardRef<CreatorEditPanelHandle, Props>(function Crea
               )}
             </div>
             <input value={s.platform} onChange={(e) => { const arr = [...social]; arr[i] = { ...arr[i], platform: e.target.value }; setSocial(arr); }} placeholder="Ex: Instagram" className={`${inputClass} w-28`} />
-            <input value={s.url} onChange={(e) => { const arr = [...social]; arr[i] = { ...arr[i], url: e.target.value }; setSocial(arr); }} placeholder={socialEmojiOptions.find(o => o.label.toLowerCase() === s.platform.toLowerCase())?.placeholder || "https://..."} className={`${inputClass} flex-1`} />
+            <div className="flex-1 relative">
+              {getSocialOption(s.platform)?.baseUrl && s.url && !s.url.startsWith("http") && !s.url.startsWith("mailto:") ? (
+                <span className="absolute left-3 top-1/2 -translate-y-1/2 text-k-4 text-[0.72rem] pointer-events-none select-none">
+                  {getSocialOption(s.platform)!.baseUrl}
+                </span>
+              ) : null}
+              <input
+                value={extractHandle(s.platform, s.url)}
+                onChange={(e) => {
+                  const arr = [...social];
+                  const raw = e.target.value;
+                  arr[i] = { ...arr[i], url: raw };
+                  setSocial(arr);
+                }}
+                onBlur={() => {
+                  const arr = [...social];
+                  const built = buildSocialUrl(arr[i].platform, arr[i].url);
+                  if (built !== arr[i].url) {
+                    arr[i] = { ...arr[i], url: built };
+                    setSocial(arr);
+                  }
+                }}
+                placeholder={getSocialOption(s.platform)?.placeholder || "https://..."}
+                className={inputClass}
+              />
+            </div>
             <button onClick={() => setSocial(social.filter((_, j) => j !== i))} className="text-k-4 hover:text-k-err px-2">×</button>
           </div>
         ))}
