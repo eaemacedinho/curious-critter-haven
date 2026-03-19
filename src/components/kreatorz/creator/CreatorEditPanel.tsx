@@ -1,4 +1,4 @@
-import { useState, useRef } from "react";
+import { forwardRef, useImperativeHandle, useRef, useState } from "react";
 import { toast } from "sonner";
 import type { CreatorProfile, CreatorLink, SocialLink, CreatorProduct, CreatorCampaign } from "@/hooks/useCreatorData";
 import ImageCropper from "./ImageCropper";
@@ -20,10 +20,27 @@ interface Props {
   onDone: () => void;
 }
 
-export default function CreatorEditPanel({
-  profile, links: initialLinks, socialLinks: initialSocial, products: initialProducts, campaigns: initialCampaigns,
-  onSaveProfile, onSaveLinks, onSaveSocialLinks, onSaveProducts, onSaveCampaigns, onUploadImage, onDone,
-}: Props) {
+export interface CreatorEditPanelHandle {
+  saveAll: () => Promise<boolean>;
+}
+
+const CreatorEditPanel = forwardRef<CreatorEditPanelHandle, Props>(function CreatorEditPanel(
+  {
+    profile,
+    links: initialLinks,
+    socialLinks: initialSocial,
+    products: initialProducts,
+    campaigns: initialCampaigns,
+    onSaveProfile,
+    onSaveLinks,
+    onSaveSocialLinks,
+    onSaveProducts,
+    onSaveCampaigns,
+    onUploadImage,
+    onDone,
+  }: Props,
+  ref
+) {
   const [name, setName] = useState(profile.name);
   const [handle, setHandle] = useState(profile.handle);
   const [bio, setBio] = useState(profile.bio || "");
@@ -61,17 +78,31 @@ export default function CreatorEditPanel({
     toast.success(type === "avatar" ? "Foto atualizada!" : "Capa atualizada!");
   };
 
-  const handleSaveAll = async () => {
-    setSaving(true);
-    await onSaveProfile({ name, handle, bio, avatar_url: avatarUrl, cover_url: coverUrl, tags, stats, brands });
-    await onSaveLinks(links);
-    await onSaveSocialLinks(social);
-    await onSaveProducts(prods);
-    await onSaveCampaigns(camps);
-    setSaving(false);
-    toast.success("Tudo salvo! 🎉");
-    onDone();
+  const handleSaveAll = async ({ closeAfterSave = true }: { closeAfterSave?: boolean } = {}): Promise<boolean> => {
+    if (saving) return false;
+
+    try {
+      setSaving(true);
+      await onSaveProfile({ name, handle, bio, avatar_url: avatarUrl, cover_url: coverUrl, tags, stats, brands });
+      await onSaveLinks(links);
+      await onSaveSocialLinks(social);
+      await onSaveProducts(prods);
+      await onSaveCampaigns(camps);
+      toast.success("Tudo salvo! 🎉");
+      if (closeAfterSave) onDone();
+      return true;
+    } catch (error) {
+      console.error("Save all error:", error);
+      toast.error("Não foi possível salvar as alterações.");
+      return false;
+    } finally {
+      setSaving(false);
+    }
   };
+
+  useImperativeHandle(ref, () => ({
+    saveAll: () => handleSaveAll({ closeAfterSave: false }),
+  }));
 
   const inputClass = "w-full px-3.5 py-2.5 bg-k-800 border border-primary/10 rounded-xl text-k-1 text-sm outline-none focus:border-k-400 focus:shadow-[0_0_0_3px_hsl(268_69%_50%_/_0.12)] transition-all";
   const labelClass = "block text-[0.72rem] font-semibold text-k-2 mb-1.5";
@@ -82,7 +113,6 @@ export default function CreatorEditPanel({
       <input ref={avatarRef} type="file" accept="image/*" className="hidden" onChange={(e) => e.target.files?.[0] && handleFileSelected(e.target.files[0], "avatar")} />
       <input ref={coverRef} type="file" accept="image/*" className="hidden" onChange={(e) => e.target.files?.[0] && handleFileSelected(e.target.files[0], "cover")} />
 
-      {/* Cover */}
       <div className="mb-6">
         <div className={sectionTitle}>🖼 Foto de Capa</div>
         <div className="relative w-full h-[160px] rounded-2xl overflow-hidden border border-primary/10 group cursor-pointer" onClick={() => coverRef.current?.click()}>
@@ -97,7 +127,6 @@ export default function CreatorEditPanel({
         </div>
       </div>
 
-      {/* Avatar + Profile */}
       <div className="mb-8">
         <div className={sectionTitle}>👤 Perfil</div>
         <div className="flex items-center gap-4 mb-4">
@@ -127,7 +156,6 @@ export default function CreatorEditPanel({
         </div>
       </div>
 
-      {/* Tags */}
       <div className="mb-8">
         <div className={sectionTitle}>🏷 Tags</div>
         <div className="flex flex-wrap gap-2 mb-2">
@@ -144,7 +172,6 @@ export default function CreatorEditPanel({
         </div>
       </div>
 
-      {/* Stats */}
       <div className="mb-8">
         <div className={sectionTitle}>📊 Estatísticas</div>
         {stats.map((stat, i) => (
@@ -157,7 +184,6 @@ export default function CreatorEditPanel({
         <button onClick={() => setStats([...stats, { value: "", label: "" }])} className="text-sm text-k-300 font-medium hover:text-k-200 transition-colors">+ Adicionar estatística</button>
       </div>
 
-      {/* Brands */}
       <div className="mb-8">
         <div className={sectionTitle}>🤝 Marcas parceiras</div>
         <div className="flex flex-wrap gap-2 mb-2">
@@ -174,7 +200,6 @@ export default function CreatorEditPanel({
         </div>
       </div>
 
-      {/* Social Links */}
       <div className="mb-8">
         <div className={sectionTitle}>📱 Redes Sociais</div>
         {social.map((s, i) => (
@@ -188,7 +213,6 @@ export default function CreatorEditPanel({
         <button onClick={() => setSocial([...social, { id: crypto.randomUUID(), creator_id: profile.id, platform: "", label: "", url: "", sort_order: social.length }])} className="text-sm text-k-300 font-medium hover:text-k-200 transition-colors">+ Adicionar rede social</button>
       </div>
 
-      {/* Links */}
       <div className="mb-8">
         <div className={sectionTitle}>🔗 Links <span className="text-k-3 normal-case tracking-normal font-normal">({links.length})</span></div>
         {links.map((link, i) => (
@@ -223,7 +247,6 @@ export default function CreatorEditPanel({
         </button>
       </div>
 
-      {/* Products */}
       <div className="mb-8">
         <div className={sectionTitle}>🛍 Produtos</div>
         {prods.map((prod, i) => (
@@ -254,7 +277,6 @@ export default function CreatorEditPanel({
         </button>
       </div>
 
-      {/* Campaigns */}
       <div className="mb-8">
         <div className={sectionTitle}>📢 Campanhas</div>
         {camps.map((camp, i) => (
@@ -280,14 +302,12 @@ export default function CreatorEditPanel({
         </button>
       </div>
 
-      {/* Save */}
       <div className="sticky bottom-4 z-10">
-        <button onClick={handleSaveAll} disabled={saving}
+        <button onClick={() => void handleSaveAll()} disabled={saving}
           className="w-full py-4 gradient-primary text-primary-foreground font-bold text-sm rounded-2xl transition-all duration-300 hover:shadow-k-purple-lg active:scale-[0.98] disabled:opacity-50 shadow-k-purple">
           {saving ? "Salvando..." : "💾 Salvar tudo"}
         </button>
       </div>
-      {/* Image Cropper Modal */}
       {cropImage && (
         <ImageCropper
           imageSrc={cropImage.src}
@@ -299,4 +319,6 @@ export default function CreatorEditPanel({
       )}
     </div>
   );
-}
+});
+
+export default CreatorEditPanel;
