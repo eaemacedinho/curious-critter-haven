@@ -50,7 +50,7 @@ export default function CreatorViewLinkme({ profile, links: rawLinks, socialLink
     <div className="fixed inset-0 flex justify-center bg-background">
       {/* Single 430px column — all content and hero stay inside */}
       <div className="w-full max-w-[430px] relative overflow-hidden">
-        {/* Hero background — absolute within the column, sticky so it stays visible while scrolling */}
+        {/* Hero background — absolute within the column */}
         {heroImage && (
           <div className="absolute inset-0 z-0">
             <div className="sticky top-0 w-full h-screen">
@@ -68,36 +68,35 @@ export default function CreatorViewLinkme({ profile, links: rawLinks, socialLink
           </div>
         )}
 
-        {/* Sticky top header — fades in on scroll */}
-        <div
-          className="sticky top-0 inset-x-0 z-50 transition-all duration-300"
-          style={{
-            opacity: headerVisible ? 1 : 0,
-            pointerEvents: headerVisible ? "auto" : "none",
-            transform: headerVisible ? "translateY(0)" : "translateY(-100%)",
-          }}
-        >
-          <div className="w-full flex items-center gap-3 px-4 py-2.5 bg-background/90 backdrop-blur-xl border-b border-primary/10">
-            {headerAvatar ? (
-              <img src={headerAvatar} alt="" className="w-8 h-8 rounded-full object-cover ring-2 ring-primary/20" />
-            ) : (
-              <div className="w-8 h-8 rounded-full bg-k-800 flex items-center justify-center text-sm text-k-3 ring-2 ring-primary/20">
-                {profile.name?.[0] || "?"}
-              </div>
-            )}
-            <h1 className="text-sm font-bold text-primary-foreground truncate flex items-center gap-1.5">
-              {profile.name}
-              {profile.verified && <VerifiedBadge size={16} />}
-            </h1>
-          </div>
-        </div>
-
         {/* Scrollable content area */}
         <div
           ref={scrollRef}
           className="w-full h-full relative z-[1] overflow-y-auto overflow-x-hidden"
           style={{ scrollbarWidth: "none" }}
         >
+          {/* Sticky top header — inside scroll container so sticky works */}
+          <div
+            className="sticky top-0 z-50 transition-all duration-300"
+            style={{
+              opacity: headerVisible ? 1 : 0,
+              pointerEvents: headerVisible ? "auto" : "none",
+              transform: headerVisible ? "translateY(0)" : "translateY(-100%)",
+            }}
+          >
+            <div className="w-full flex items-center gap-3 px-4 py-2.5 bg-background/90 backdrop-blur-xl border-b border-primary/10">
+              {headerAvatar ? (
+                <img src={headerAvatar} alt="" className="w-8 h-8 rounded-full object-cover ring-2 ring-primary/20" />
+              ) : (
+                <div className="w-8 h-8 rounded-full bg-k-800 flex items-center justify-center text-sm text-k-3 ring-2 ring-primary/20">
+                  {profile.name?.[0] || "?"}
+                </div>
+              )}
+              <h1 className="text-sm font-bold text-primary-foreground truncate flex items-center gap-1.5">
+                {profile.name}
+                {profile.verified && <VerifiedBadge size={16} />}
+              </h1>
+            </div>
+          </div>
           {/* Hero spacer — transparent area so hero image shows through */}
           <div className="relative w-full" style={{ height: "75vh", minHeight: "480px", maxHeight: "680px" }}>
             {/* Bottom gradient on hero area */}
