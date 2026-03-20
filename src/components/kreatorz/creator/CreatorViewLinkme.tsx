@@ -88,43 +88,46 @@ export default function CreatorViewLinkme({ profile, links: rawLinks, socialLink
             </div>
           </div>
 
-          {/* Hero spacer */}
-          <div className="relative w-full" style={{ height: "52vh", minHeight: "300px", maxHeight: "460px" }}>
+          {/* Hero spacer with name + handle overlaid */}
+          <div className="relative w-full" style={{ height: "58vh", minHeight: "340px", maxHeight: "520px" }}>
             {/* Multi-layer cinematic gradient */}
-            <div className="absolute inset-x-0 bottom-0 h-[70%] pointer-events-none" style={{
-              background: `linear-gradient(to top, hsl(var(--background)) 0%, hsl(var(--background) / 0.85) 25%, hsl(var(--background) / 0.4) 55%, transparent 100%)`
+            <div className="absolute inset-x-0 bottom-0 h-[75%] pointer-events-none" style={{
+              background: `linear-gradient(to top, hsl(var(--background)) 0%, hsl(var(--background) / 0.9) 20%, hsl(var(--background) / 0.5) 50%, transparent 100%)`
             }} />
             {!heroImage && (
               <div className="w-full h-full bg-gradient-to-b from-primary/30 to-background flex items-center justify-center">
                 <span className="text-7xl text-muted-foreground">{profile.name?.[0] || "?"}</span>
               </div>
             )}
-          </div>
 
-          {/* Content */}
-          <div className="relative pb-12" style={{ background: "hsl(var(--background))" }}>
-            <div className="text-center pt-6 px-5">
-              <h2 className="font-display text-[2rem] font-bold text-foreground tracking-tight leading-tight inline-flex items-center justify-center gap-2">
+            {/* Name + handle + socials overlaid at bottom of hero */}
+            <div className="absolute inset-x-0 bottom-0 z-10 flex flex-col items-center pb-4 px-5">
+              <h2 className="font-display text-[2rem] font-bold text-white tracking-tight leading-tight inline-flex items-center justify-center gap-2 drop-shadow-[0_2px_12px_rgba(0,0,0,0.5)]"
+                style={{ textShadow: "0 2px 16px rgba(0,0,0,0.6)" }}>
                 {profile.name}
                 {profile.verified && <VerifiedBadge size={24} />}
               </h2>
               {profile.handle && (
-                <p className="text-sm text-muted-foreground mt-1">@{profile.handle.replace(/^@+/, "")}</p>
+                <p className="text-sm text-white/70 mt-0.5 drop-shadow-[0_1px_6px_rgba(0,0,0,0.4)]">@{profile.handle.replace(/^@+/, "")}</p>
+              )}
+
+              {/* Social Icons - right in the gradient zone */}
+              {socialLinks.length > 0 && (
+                <div className="flex justify-center gap-3 mt-3">
+                  {socialLinks.map((soc) => (
+                    <a key={soc.id} href={soc.url} target="_blank" rel="noopener noreferrer"
+                      className="w-11 h-11 flex items-center justify-center rounded-full bg-white/15 backdrop-blur-md border border-white/20 transition-all duration-300 hover:scale-110 hover:bg-white/25 active:scale-95"
+                      title={soc.platform}>
+                      <SocialIcon platform={soc.platform || soc.url} url={soc.url} size={20} />
+                    </a>
+                  ))}
+                </div>
               )}
             </div>
+          </div>
 
-            {/* Social Icons */}
-            {socialLinks.length > 0 && (
-              <div className="flex justify-center gap-3 mt-4 px-5">
-                {socialLinks.map((soc) => (
-                  <a key={soc.id} href={soc.url} target="_blank" rel="noopener noreferrer"
-                    className="w-10 h-10 flex items-center justify-center rounded-xl bg-card border border-border transition-all duration-300 hover:scale-110 active:scale-95"
-                    title={soc.platform}>
-                    <SocialIcon platform={soc.platform || soc.url} url={soc.url} size={18} />
-                  </a>
-                ))}
-              </div>
-            )}
+          {/* Content */}
+          <div className="relative pb-12" style={{ background: "hsl(var(--background))" }}>
 
             {/* Stats */}
             {stats.length > 0 && (
