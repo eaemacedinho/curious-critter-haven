@@ -134,7 +134,7 @@ export function useCreatorData(userId: string | undefined) {
 
       const { data, error } = await supabase
         .from("creators")
-        .update(updates)
+        .update(updates as any)
         .eq("id", profile.id)
         .eq("user_id", userId)
         .select("*")
