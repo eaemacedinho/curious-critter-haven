@@ -5,7 +5,15 @@ import SocialIcon from "./SocialIcon";
 import VerifiedBadge from "./VerifiedBadge";
 import SpotlightCampaign from "./SpotlightCampaign";
 
-const shapeClass = (shape?: string) => shape === "circular" ? "rounded-full" : shape === "pill" ? "rounded-[2rem]" : "rounded-2xl";
+const shapeClass = (shape?: string) => {
+  switch (shape) {
+    case "circular": return "rounded-full";
+    case "pill": return "rounded-[2rem]";
+    case "shadow": return "rounded-2xl shadow-[0_6px_24px_-4px_hsl(var(--primary)/0.25)] border-transparent";
+    case "polaroid": return "rounded-sm bg-card p-1.5 pb-4 shadow-[0_4px_20px_-2px_rgba(0,0,0,0.25)] border border-border/40";
+    default: return "rounded-2xl";
+  }
+};
 
 interface Props {
   profile: CreatorProfile;
