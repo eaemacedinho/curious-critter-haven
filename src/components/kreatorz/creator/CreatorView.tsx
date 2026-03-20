@@ -171,24 +171,27 @@ export default function CreatorView({ profile, links: rawLinks, socialLinks: raw
           </div>
         )}
 
-        {/* Campaigns */}
-        {campaigns.length > 0 && (
+        {/* Spotlight Campaigns (live = top priority) */}
+        {campaigns.filter(c => c.live).length > 0 && (
+          <div className="flex flex-col gap-3 mb-8" style={{ animationDelay: ".05s" }}>
+            {campaigns.filter(c => c.live).map((camp) => (
+              <SpotlightCampaign key={camp.id} campaign={camp} variant="layout1" />
+            ))}
+          </div>
+        )}
+
+        {/* Past / Inactive Campaigns */}
+        {campaigns.filter(c => !c.live).length > 0 && (
           <div className="animate-k-fade-up" style={{ animationDelay: ".3s" }}>
             <div className="text-[0.66rem] font-bold text-k-4 tracking-[0.14em] uppercase mb-3.5 flex items-center gap-2.5">
-              Campanhas {campaigns.some(c => c.live) && "Ativas"} <span className="flex-1 h-px bg-primary/10" />
+              Campanhas Anteriores <span className="flex-1 h-px bg-primary/10" />
             </div>
             <div className="flex flex-col gap-2.5 mb-8">
-              {campaigns.map((camp) => (
+              {campaigns.filter(c => !c.live).map((camp) => (
                 <div key={camp.id} onClick={() => camp.url && window.open(camp.url, "_blank")}
-                  className="bg-gradient-to-br from-primary/20 to-k-600/10 border border-primary/20 rounded-2xl p-4 transition-all duration-300 hover:border-k-400 group cursor-pointer active:scale-[0.98]">
-                  {camp.live && (
-                    <div className="flex items-center gap-2 mb-2">
-                      <span className="w-2 h-2 rounded-full bg-k-ok animate-k-pulse" />
-                      <span className="text-[0.65rem] text-k-ok font-bold uppercase tracking-wider">Ao vivo</span>
-                    </div>
-                  )}
+                  className="bg-card/65 backdrop-blur-xl border border-primary/10 rounded-2xl p-4 transition-all duration-300 hover:border-k-glow group cursor-pointer active:scale-[0.98] opacity-75 hover:opacity-100">
                   {camp.image_url && (
-                    <div className="w-full h-[120px] rounded-xl overflow-hidden mb-3">
+                    <div className="w-full h-[100px] rounded-xl overflow-hidden mb-3">
                       <img src={camp.image_url} alt="" className="w-full h-full object-cover" />
                     </div>
                   )}
