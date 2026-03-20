@@ -36,6 +36,9 @@ export interface CreatorLink {
   featured: boolean;
   active: boolean;
   sort_order: number;
+  bg_color: string | null;
+  text_color: string | null;
+  border_color: string | null;
 }
 
 export interface SocialLink {
@@ -56,6 +59,9 @@ export interface CreatorProduct {
   url: string;
   image_url: string;
   sort_order: number;
+  bg_color: string | null;
+  text_color: string | null;
+  border_color: string | null;
 }
 
 export interface CreatorCampaign {
@@ -68,6 +74,9 @@ export interface CreatorCampaign {
   live: boolean;
   sort_order: number;
   expires_at: string | null;
+  bg_color: string | null;
+  text_color: string | null;
+  border_color: string | null;
 }
 
 const normalizeProfile = (creator: any): CreatorProfile => ({
@@ -199,7 +208,7 @@ export function useCreatorData(userId: string | undefined, creatorId?: string) {
     if (deleteError) throw deleteError;
     if (normalizedLinks.length > 0) {
       const { error } = await supabase.from("creator_links").insert(
-        normalizedLinks.map((link) => ({ id: link.id, creator_id: link.creator_id, title: link.title, url: link.url, subtitle: link.subtitle || "", icon: link.icon || "🔗", featured: link.featured || false, active: link.active !== false, sort_order: link.sort_order }))
+        normalizedLinks.map((link) => ({ id: link.id, creator_id: link.creator_id, title: link.title, url: link.url, subtitle: link.subtitle || "", icon: link.icon || "🔗", featured: link.featured || false, active: link.active !== false, sort_order: link.sort_order, bg_color: link.bg_color || null, text_color: link.text_color || null, border_color: link.border_color || null }))
       );
       if (error) throw error;
     }
@@ -227,7 +236,7 @@ export function useCreatorData(userId: string | undefined, creatorId?: string) {
     if (deleteError) throw deleteError;
     if (normalized.length > 0) {
       const { error } = await supabase.from("creator_products").insert(
-        normalized.map((p) => ({ id: p.id, creator_id: p.creator_id, title: p.title, price: p.price || "", icon: p.icon || "📦", url: p.url || "", image_url: p.image_url || "", sort_order: p.sort_order }))
+        normalized.map((p) => ({ id: p.id, creator_id: p.creator_id, title: p.title, price: p.price || "", icon: p.icon || "📦", url: p.url || "", image_url: p.image_url || "", sort_order: p.sort_order, bg_color: p.bg_color || null, text_color: p.text_color || null, border_color: p.border_color || null }))
       );
       if (error) throw error;
     }
@@ -241,7 +250,7 @@ export function useCreatorData(userId: string | undefined, creatorId?: string) {
     if (deleteError) throw deleteError;
     if (normalized.length > 0) {
       const { error } = await supabase.from("creator_campaigns").insert(
-        normalized.map((c) => ({ id: c.id, creator_id: c.creator_id, title: c.title, description: c.description || "", image_url: c.image_url || "", url: c.url || "", live: c.live || false, sort_order: c.sort_order, expires_at: c.expires_at || null }))
+        normalized.map((c) => ({ id: c.id, creator_id: c.creator_id, title: c.title, description: c.description || "", image_url: c.image_url || "", url: c.url || "", live: c.live || false, sort_order: c.sort_order, expires_at: c.expires_at || null, bg_color: c.bg_color || null, text_color: c.text_color || null, border_color: c.border_color || null }))
       );
       if (error) throw error;
     }

@@ -223,7 +223,12 @@ export default function CreatorViewLinkme({ profile, links: rawLinks, socialLink
                       <div className="grid grid-cols-2 gap-3">
                         {products.map((prod) => (
                           <div key={prod.id} onClick={() => prod.url && window.open(prod.url, "_blank")}
-                            className={`bg-card/70 backdrop-blur-xl border border-border ${shapeClass(profile.image_shape_products)} overflow-hidden cursor-pointer transition-all duration-300 group hover:border-primary/30 hover:-translate-y-1 active:scale-[0.97]`}>
+                            className={`backdrop-blur-xl ${shapeClass(profile.image_shape_products)} overflow-hidden cursor-pointer transition-all duration-300 group hover:-translate-y-1 active:scale-[0.97] ${!prod.bg_color ? "bg-card/70 border border-border hover:border-primary/30" : ""}`}
+                            style={{
+                              ...(prod.bg_color ? { backgroundColor: prod.bg_color } : {}),
+                              ...(prod.text_color ? { color: prod.text_color } : {}),
+                              ...(prod.border_color ? { borderColor: prod.border_color, borderWidth: "1px", borderStyle: "solid" } : {}),
+                            }}>
                             {prod.image_url ? (
                               <div className="w-full aspect-square overflow-hidden">
                                 <img src={prod.image_url} alt="" className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105" />
@@ -234,8 +239,8 @@ export default function CreatorViewLinkme({ profile, links: rawLinks, socialLink
                               </div>
                             )}
                             <div className="p-3.5">
-                              <h5 className="text-[0.82rem] font-semibold text-foreground mb-1">{prod.title}</h5>
-                              {prod.price && <span className="text-[0.72rem] text-primary font-bold">{prod.price}</span>}
+                              <h5 className="text-[0.82rem] font-semibold mb-1">{prod.title}</h5>
+                              {prod.price && <span className="text-[0.72rem] font-bold" style={{ color: prod.text_color || "hsl(var(--primary))" }}>{prod.price}</span>}
                             </div>
                           </div>
                         ))}
@@ -250,7 +255,12 @@ export default function CreatorViewLinkme({ profile, links: rawLinks, socialLink
                       <div className="flex flex-col gap-3">
                         {pastCamps.map((camp) => (
                           <div key={camp.id} onClick={() => camp.url && window.open(camp.url, "_blank")}
-                            className={`relative ${shapeClass(profile.image_shape_campaigns)} overflow-hidden cursor-pointer group transition-all duration-300 hover:-translate-y-1 active:scale-[0.98] opacity-75 hover:opacity-100`}>
+                            className={`relative ${shapeClass(profile.image_shape_campaigns)} overflow-hidden cursor-pointer group transition-all duration-300 hover:-translate-y-1 active:scale-[0.98] opacity-75 hover:opacity-100`}
+                            style={{
+                              ...(camp.bg_color ? { backgroundColor: camp.bg_color } : {}),
+                              ...(camp.text_color ? { color: camp.text_color } : {}),
+                              ...(camp.border_color ? { borderColor: camp.border_color, borderWidth: "1px", borderStyle: "solid" } : {}),
+                            }}>
                             {camp.image_url ? (
                               <>
                                 <div className="w-full aspect-[16/9] overflow-hidden">
@@ -317,20 +327,27 @@ export default function CreatorViewLinkme({ profile, links: rawLinks, socialLink
 
 function LinkmeCard({ link, shape }: { link: CreatorLink; shape?: string }) {
   const sc = shapeClass(shape);
+  const customStyle: React.CSSProperties = {
+    ...(link.bg_color ? { backgroundColor: link.bg_color } : {}),
+    ...(link.text_color ? { color: link.text_color } : {}),
+    ...(link.border_color ? { borderColor: link.border_color, borderWidth: "1px", borderStyle: "solid" } : {}),
+  };
+  const hasCustomBg = Boolean(link.bg_color);
   return (
     <a href={link.url} target="_blank" rel="noopener noreferrer"
       className={`group relative block w-full ${sc} overflow-hidden transition-all duration-300 hover:-translate-y-1 active:scale-[0.98]`}>
       <div className={`flex items-center gap-4 p-4 sm:p-5 min-h-[56px] ${
-        link.featured
+        !hasCustomBg ? (link.featured
           ? "bg-gradient-to-r from-primary/25 to-primary/10 border border-primary/25"
-          : "bg-card/70 backdrop-blur-xl border border-border"
-      } ${sc} transition-all duration-300 group-hover:border-primary/30`}>
+          : "bg-card/70 backdrop-blur-xl border border-border") : ""
+      } ${sc} transition-all duration-300 group-hover:border-primary/30`}
+        style={customStyle}>
         <div className="w-11 h-11 rounded-xl bg-primary/10 flex items-center justify-center flex-shrink-0 text-lg transition-transform group-hover:scale-110">
           {link.icon}
         </div>
         <div className="flex-1 min-w-0">
-          <h4 className="text-sm font-semibold text-foreground leading-snug">{link.title}</h4>
-          {link.subtitle && <span className="font-body text-[0.72rem] text-muted-foreground line-clamp-1">{link.subtitle}</span>}
+          <h4 className="text-sm font-semibold leading-snug">{link.title}</h4>
+          {link.subtitle && <span className="font-body text-[0.72rem] opacity-55 line-clamp-1">{link.subtitle}</span>}
         </div>
         <div className="opacity-30 group-hover:opacity-60 transition-opacity">
           <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M5 12h14M12 5l7 7-7 7" /></svg>

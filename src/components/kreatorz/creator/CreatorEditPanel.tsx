@@ -631,9 +631,24 @@ const CreatorEditPanel = forwardRef<CreatorEditPanelHandle, Props>(function Crea
             </div>
             <input value={link.url} onChange={(e) => { const arr = [...links]; arr[i] = { ...arr[i], url: e.target.value }; setLinks(arr); }} placeholder="https://..." className={inputClass} />
             <input value={link.subtitle || ""} onChange={(e) => { const arr = [...links]; arr[i] = { ...arr[i], subtitle: e.target.value }; setLinks(arr); }} placeholder="Descrição (opcional)" className={inputClass} />
+            <div className="flex items-center gap-2 pt-1">
+              <span className="text-[0.62rem] text-k-4 font-semibold">Cores:</span>
+              <label className="flex items-center gap-1 text-[0.6rem] text-k-4" title="Fundo">
+                🎨 <input type="color" value={link.bg_color || "#1a1a2e"} onChange={(e) => { const arr = [...links]; arr[i] = { ...arr[i], bg_color: e.target.value }; setLinks(arr); }} className="w-5 h-5 rounded cursor-pointer border-0 bg-transparent" />
+                {link.bg_color && <button onClick={() => { const arr = [...links]; arr[i] = { ...arr[i], bg_color: null }; setLinks(arr); }} className="text-k-4 hover:text-k-err text-[0.6rem]">✕</button>}
+              </label>
+              <label className="flex items-center gap-1 text-[0.6rem] text-k-4" title="Texto">
+                Aa <input type="color" value={link.text_color || "#ffffff"} onChange={(e) => { const arr = [...links]; arr[i] = { ...arr[i], text_color: e.target.value }; setLinks(arr); }} className="w-5 h-5 rounded cursor-pointer border-0 bg-transparent" />
+                {link.text_color && <button onClick={() => { const arr = [...links]; arr[i] = { ...arr[i], text_color: null }; setLinks(arr); }} className="text-k-4 hover:text-k-err text-[0.6rem]">✕</button>}
+              </label>
+              <label className="flex items-center gap-1 text-[0.6rem] text-k-4" title="Borda">
+                ▢ <input type="color" value={link.border_color || "#333355"} onChange={(e) => { const arr = [...links]; arr[i] = { ...arr[i], border_color: e.target.value }; setLinks(arr); }} className="w-5 h-5 rounded cursor-pointer border-0 bg-transparent" />
+                {link.border_color && <button onClick={() => { const arr = [...links]; arr[i] = { ...arr[i], border_color: null }; setLinks(arr); }} className="text-k-4 hover:text-k-err text-[0.6rem]">✕</button>}
+              </label>
+            </div>
           </div>
         ))}
-        <button onClick={() => setLinks([...links, { id: crypto.randomUUID(), creator_id: profile.id, title: "", url: "", subtitle: "", icon: "🔗", featured: false, active: true, sort_order: links.length }])}
+        <button onClick={() => setLinks([...links, { id: crypto.randomUUID(), creator_id: profile.id, title: "", url: "", subtitle: "", icon: "🔗", featured: false, active: true, sort_order: links.length, bg_color: null, text_color: null, border_color: null }])}
           className="flex items-center justify-center gap-2 w-full p-3 border border-dashed border-k-glow rounded-xl text-k-4 text-sm font-medium mt-2 transition-all hover:border-k-400 hover:text-k-300 hover:bg-k-glow active:scale-[0.98]">
           + Adicionar link
         </button>
@@ -703,10 +718,25 @@ const CreatorEditPanel = forwardRef<CreatorEditPanelHandle, Props>(function Crea
                 <input value={prod.url || ""} onChange={(e) => { const arr = [...prods]; arr[i] = { ...arr[i], url: e.target.value }; setProds(arr); }} placeholder="Link de compra" className={`${inputClass} flex-1`} />
               </div>
             </div>
+            <div className="flex items-center gap-2 pt-1">
+              <span className="text-[0.62rem] text-k-4 font-semibold">Cores:</span>
+              <label className="flex items-center gap-1 text-[0.6rem] text-k-4" title="Fundo">
+                🎨 <input type="color" value={prod.bg_color || "#1a1a2e"} onChange={(e) => { const arr = [...prods]; arr[i] = { ...arr[i], bg_color: e.target.value }; setProds(arr); }} className="w-5 h-5 rounded cursor-pointer border-0 bg-transparent" />
+                {prod.bg_color && <button onClick={() => { const arr = [...prods]; arr[i] = { ...arr[i], bg_color: null }; setProds(arr); }} className="text-k-4 hover:text-k-err text-[0.6rem]">✕</button>}
+              </label>
+              <label className="flex items-center gap-1 text-[0.6rem] text-k-4" title="Texto">
+                Aa <input type="color" value={prod.text_color || "#ffffff"} onChange={(e) => { const arr = [...prods]; arr[i] = { ...arr[i], text_color: e.target.value }; setProds(arr); }} className="w-5 h-5 rounded cursor-pointer border-0 bg-transparent" />
+                {prod.text_color && <button onClick={() => { const arr = [...prods]; arr[i] = { ...arr[i], text_color: null }; setProds(arr); }} className="text-k-4 hover:text-k-err text-[0.6rem]">✕</button>}
+              </label>
+              <label className="flex items-center gap-1 text-[0.6rem] text-k-4" title="Borda">
+                ▢ <input type="color" value={prod.border_color || "#333355"} onChange={(e) => { const arr = [...prods]; arr[i] = { ...arr[i], border_color: e.target.value }; setProds(arr); }} className="w-5 h-5 rounded cursor-pointer border-0 bg-transparent" />
+                {prod.border_color && <button onClick={() => { const arr = [...prods]; arr[i] = { ...arr[i], border_color: null }; setProds(arr); }} className="text-k-4 hover:text-k-err text-[0.6rem]">✕</button>}
+              </label>
+            </div>
           </div>
         ))}
         <p className={sizeHint}>📐 Imagem ideal: <strong>400×400px</strong> (1:1, quadrada)</p>
-        <button onClick={() => setProds([...prods, { id: crypto.randomUUID(), creator_id: profile.id, title: "", price: "", icon: "📦", url: "", image_url: "", sort_order: prods.length }])}
+        <button onClick={() => setProds([...prods, { id: crypto.randomUUID(), creator_id: profile.id, title: "", price: "", icon: "📦", url: "", image_url: "", sort_order: prods.length, bg_color: null, text_color: null, border_color: null }])}
           className="flex items-center justify-center gap-2 w-full p-3 border border-dashed border-k-glow rounded-xl text-k-4 text-sm font-medium mt-2 transition-all hover:border-k-400 hover:text-k-300 hover:bg-k-glow active:scale-[0.98]">
           + Adicionar produto
         </button>
@@ -768,6 +798,21 @@ const CreatorEditPanel = forwardRef<CreatorEditPanelHandle, Props>(function Crea
             )}
             <input value={camp.description || ""} onChange={(e) => { const arr = [...camps]; arr[i] = { ...arr[i], description: e.target.value }; setCamps(arr); }} placeholder="Descrição" className={inputClass} />
             <input value={camp.url || ""} onChange={(e) => { const arr = [...camps]; arr[i] = { ...arr[i], url: e.target.value }; setCamps(arr); }} placeholder="URL da campanha" className={inputClass} />
+            <div className="flex items-center gap-2 pt-1">
+              <span className="text-[0.62rem] text-k-4 font-semibold">Cores:</span>
+              <label className="flex items-center gap-1 text-[0.6rem] text-k-4" title="Fundo">
+                🎨 <input type="color" value={camp.bg_color || "#1a1a2e"} onChange={(e) => { const arr = [...camps]; arr[i] = { ...arr[i], bg_color: e.target.value }; setCamps(arr); }} className="w-5 h-5 rounded cursor-pointer border-0 bg-transparent" />
+                {camp.bg_color && <button onClick={() => { const arr = [...camps]; arr[i] = { ...arr[i], bg_color: null }; setCamps(arr); }} className="text-k-4 hover:text-k-err text-[0.6rem]">✕</button>}
+              </label>
+              <label className="flex items-center gap-1 text-[0.6rem] text-k-4" title="Texto">
+                Aa <input type="color" value={camp.text_color || "#ffffff"} onChange={(e) => { const arr = [...camps]; arr[i] = { ...arr[i], text_color: e.target.value }; setCamps(arr); }} className="w-5 h-5 rounded cursor-pointer border-0 bg-transparent" />
+                {camp.text_color && <button onClick={() => { const arr = [...camps]; arr[i] = { ...arr[i], text_color: null }; setCamps(arr); }} className="text-k-4 hover:text-k-err text-[0.6rem]">✕</button>}
+              </label>
+              <label className="flex items-center gap-1 text-[0.6rem] text-k-4" title="Borda">
+                ▢ <input type="color" value={camp.border_color || "#333355"} onChange={(e) => { const arr = [...camps]; arr[i] = { ...arr[i], border_color: e.target.value }; setCamps(arr); }} className="w-5 h-5 rounded cursor-pointer border-0 bg-transparent" />
+                {camp.border_color && <button onClick={() => { const arr = [...camps]; arr[i] = { ...arr[i], border_color: null }; setCamps(arr); }} className="text-k-4 hover:text-k-err text-[0.6rem]">✕</button>}
+              </label>
+            </div>
             {/* Campaign image upload with crop */}
             {camp.image_url ? (
               <div className="relative w-full h-32 rounded-xl overflow-hidden border border-primary/10 group">
@@ -816,7 +861,7 @@ const CreatorEditPanel = forwardRef<CreatorEditPanelHandle, Props>(function Crea
           </div>
         ))}
         <p className={sizeHint}>📐 Imagem ideal: <strong>1280×720px</strong> (16:9, paisagem)</p>
-        <button onClick={() => setCamps([...camps, { id: crypto.randomUUID(), creator_id: profile.id, title: "", description: "", image_url: "", url: "", live: false, sort_order: camps.length, expires_at: null }])}
+        <button onClick={() => setCamps([...camps, { id: crypto.randomUUID(), creator_id: profile.id, title: "", description: "", image_url: "", url: "", live: false, sort_order: camps.length, expires_at: null, bg_color: null, text_color: null, border_color: null }])}
           className="flex items-center justify-center gap-2 w-full p-3 border border-dashed border-k-glow rounded-xl text-k-4 text-sm font-medium mt-2 transition-all hover:border-k-400 hover:text-k-300 hover:bg-k-glow active:scale-[0.98]">
           + Adicionar campanha
         </button>

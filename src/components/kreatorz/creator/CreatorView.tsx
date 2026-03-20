@@ -168,10 +168,15 @@ export default function CreatorView({ profile, links: rawLinks, socialLinks: raw
               <div key={link.id} onClick={() => handleLinkClick(i, link.url)}
                 className={`flex items-center gap-4 p-4 sm:p-5 ${shapeClass(profile.image_shape_links)} cursor-pointer transition-all duration-300 relative overflow-hidden group min-h-[56px]
                   ${clickedLink === i ? "scale-[0.97]" : ""}
-                  ${link.featured
+                  ${link.featured && !link.bg_color
                     ? "gradient-primary border-transparent shadow-k-purple-lg hover:-translate-y-1"
-                    : "bg-card/65 backdrop-blur-2xl border border-border hover:border-primary/20 hover:-translate-y-1 hover:shadow-k-purple"
-                  } active:scale-[0.97]`}>
+                    : !link.bg_color ? "bg-card/65 backdrop-blur-2xl border border-border hover:border-primary/20 hover:-translate-y-1 hover:shadow-k-purple" : "hover:-translate-y-1"
+                  } active:scale-[0.97]`}
+                style={{
+                  ...(link.bg_color ? { backgroundColor: link.bg_color } : {}),
+                  ...(link.text_color ? { color: link.text_color } : {}),
+                  ...(link.border_color ? { borderColor: link.border_color, borderWidth: "1px", borderStyle: "solid" } : {}),
+                }}>
                 <div className={`w-[44px] h-[44px] rounded-xl flex items-center justify-center flex-shrink-0 text-lg transition-transform duration-300 group-hover:scale-110 ${link.featured ? "bg-primary-foreground/15" : "bg-primary/5"}`}>
                   {link.icon}
                 </div>
@@ -196,15 +201,20 @@ export default function CreatorView({ profile, links: rawLinks, socialLinks: raw
             <div className="grid grid-cols-2 gap-3 mb-8">
               {products.map((prod) => (
                 <div key={prod.id} onClick={() => prod.url && window.open(prod.url, "_blank")}
-                  className={`bg-card/65 backdrop-blur-xl border border-border ${shapeClass(profile.image_shape_products)} overflow-hidden transition-all duration-300 cursor-pointer group hover:border-primary/20 hover:-translate-y-1 hover:shadow-k-purple active:scale-[0.97]`}>
+                  className={`backdrop-blur-xl ${shapeClass(profile.image_shape_products)} overflow-hidden transition-all duration-300 cursor-pointer group hover:-translate-y-1 hover:shadow-k-purple active:scale-[0.97] ${!prod.bg_color ? "bg-card/65 border border-border hover:border-primary/20" : ""}`}
+                  style={{
+                    ...(prod.bg_color ? { backgroundColor: prod.bg_color } : {}),
+                    ...(prod.text_color ? { color: prod.text_color } : {}),
+                    ...(prod.border_color ? { borderColor: prod.border_color, borderWidth: "1px", borderStyle: "solid" } : {}),
+                  }}>
                   {prod.image_url ? (
                     <img src={prod.image_url} alt={prod.title} className="w-full h-28 object-cover" />
                   ) : (
                     <div className="w-full h-28 flex items-center justify-center bg-primary/5 text-3xl">{prod.icon}</div>
                   )}
                   <div className="p-3.5">
-                    <h5 className="text-[0.82rem] font-semibold text-foreground mb-1">{prod.title}</h5>
-                    {prod.price && <span className="text-[0.72rem] text-primary font-bold">{prod.price}</span>}
+                    <h5 className="text-[0.82rem] font-semibold mb-1">{prod.title}</h5>
+                    {prod.price && <span className="text-[0.72rem] font-bold" style={{ color: prod.text_color || "hsl(var(--primary))" }}>{prod.price}</span>}
                   </div>
                 </div>
               ))}
@@ -221,14 +231,19 @@ export default function CreatorView({ profile, links: rawLinks, socialLinks: raw
             <div className="flex flex-col gap-3 mb-8">
               {pastCampaigns.map((camp) => (
                 <div key={camp.id} onClick={() => camp.url && window.open(camp.url, "_blank")}
-                  className={`bg-card/65 backdrop-blur-xl border border-border ${shapeClass(profile.image_shape_campaigns)} p-4 sm:p-5 transition-all duration-300 hover:border-primary/20 group cursor-pointer active:scale-[0.98] opacity-75 hover:opacity-100`}>
+                  className={`backdrop-blur-xl ${shapeClass(profile.image_shape_campaigns)} p-4 sm:p-5 transition-all duration-300 group cursor-pointer active:scale-[0.98] opacity-75 hover:opacity-100 ${!camp.bg_color ? "bg-card/65 border border-border hover:border-primary/20" : ""}`}
+                  style={{
+                    ...(camp.bg_color ? { backgroundColor: camp.bg_color } : {}),
+                    ...(camp.text_color ? { color: camp.text_color } : {}),
+                    ...(camp.border_color ? { borderColor: camp.border_color, borderWidth: "1px", borderStyle: "solid" } : {}),
+                  }}>
                   {camp.image_url && (
                     <div className={`w-full h-[100px] ${shapeClass(profile.image_shape_campaigns)} overflow-hidden mb-3`}>
                       <img src={camp.image_url} alt="" className="w-full h-full object-cover" />
                     </div>
                   )}
-                  <h5 className="text-[0.82rem] font-semibold text-foreground mb-1">{camp.title}</h5>
-                  {camp.description && <span className="text-[0.68rem] text-muted-foreground">{camp.description}</span>}
+                  <h5 className="text-[0.82rem] font-semibold mb-1">{camp.title}</h5>
+                  {camp.description && <span className="text-[0.68rem] opacity-70">{camp.description}</span>}
                 </div>
               ))}
             </div>
