@@ -446,55 +446,85 @@ const CreatorEditPanel = forwardRef<CreatorEditPanelHandle, Props>(function Crea
             </button>
           </div>
 
-          {/* Per-section image shape selectors */}
+          {/* Per-section image shape selectors with live preview */}
           <div className="mt-4 p-3 bg-k-800/50 border border-primary/10 rounded-xl space-y-4">
             <span className="text-sm font-semibold text-primary-foreground flex items-center gap-1.5">
               🖼 Formato das imagens
             </span>
-            <p className="text-[0.65rem] text-k-4 -mt-2">Escolha o formato das imagens para cada seção da página pública.</p>
+            <p className="text-[0.65rem] text-k-4 -mt-2">Escolha o formato das imagens para cada seção. Veja a pré-visualização ao lado.</p>
 
             {([
-              { label: "🔗 Links", value: shapeLinks, setter: setShapeLinks },
-              { label: "📦 Produtos", value: shapeProducts, setter: setShapeProducts },
-              { label: "📢 Campanhas", value: shapeCampaigns, setter: setShapeCampaigns },
-            ] as const).map((section) => (
-              <div key={section.label}>
-                <div className="flex items-center justify-between mb-1.5">
-                  <span className="text-[0.7rem] font-semibold text-k-3">{section.label}</span>
-                  {section.value !== "rounded" && (
-                    <button
-                      onClick={() => section.setter("rounded" as any)}
-                      className="px-2 py-0.5 rounded-lg bg-destructive/10 text-destructive text-[0.58rem] font-semibold hover:bg-destructive/20 transition-colors"
-                      title="Resetar para formato padrão (Arredondado)"
-                    >
-                      ↺ Padrão
-                    </button>
-                  )}
+              { label: "🔗 Links", value: shapeLinks, setter: setShapeLinks, previewType: "link" as const },
+              { label: "📦 Produtos", value: shapeProducts, setter: setShapeProducts, previewType: "product" as const },
+              { label: "📢 Campanhas", value: shapeCampaigns, setter: setShapeCampaigns, previewType: "campaign" as const },
+            ] as const).map((section) => {
+              const previewShapeClass = (() => {
+                switch (section.value) {
+                  case "circular": return "rounded-full";
+                  case "pill": return "rounded-[2rem]";
+                  case "shadow": return "rounded-2xl shadow-[0_6px_24px_-4px_hsl(var(--primary)/0.25)]";
+                  case "polaroid": return "rounded-sm bg-card p-1 pb-2.5 shadow-[0_4px_20px_-2px_rgba(0,0,0,0.25)] border border-border/40";
+                  default: return "rounded-2xl";
+                }
+              })();
+
+              return (
+                <div key={section.label}>
+                  <div className="flex items-center justify-between mb-1.5">
+                    <span className="text-[0.7rem] font-semibold text-k-3">{section.label}</span>
+                    {section.value !== "rounded" && (
+                      <button
+                        onClick={() => section.setter("rounded" as any)}
+                        className="px-2 py-0.5 rounded-lg bg-destructive/10 text-destructive text-[0.58rem] font-semibold hover:bg-destructive/20 transition-colors"
+                        title="Resetar para formato padrão (Arredondado)"
+                      >
+                        ↺ Padrão
+                      </button>
+                    )}
+                  </div>
+                  <div className="flex gap-3">
+                    {/* Shape options */}
+                    <div className="grid grid-cols-5 gap-1.5 flex-1">
+                      {([
+                        { value: "rounded" as const, label: "Arredondado", cls: "rounded-2xl border border-primary/30" },
+                        { value: "circular" as const, label: "Circular", cls: "rounded-full border border-primary/30" },
+                        { value: "pill" as const, label: "Cápsula", cls: "rounded-[2rem] border border-primary/30" },
+                        { value: "shadow" as const, label: "Sombra", cls: "rounded-2xl shadow-[0_4px_16px_-2px_hsl(268_69%_50%_/_0.4)]" },
+                        { value: "polaroid" as const, label: "Polaroid", cls: "rounded-sm bg-card p-0.5 pb-1.5 shadow-[0_3px_12px_-2px_rgba(0,0,0,0.3)] border border-border/40" },
+                      ]).map((opt) => (
+                        <button
+                          key={opt.value}
+                          onClick={() => section.setter(opt.value)}
+                          className={`flex flex-col items-center gap-1.5 p-2 rounded-xl border transition-all duration-200 active:scale-[0.97] ${
+                            section.value === opt.value
+                              ? "border-primary bg-primary/10 text-primary"
+                              : "border-primary/10 bg-k-800 text-k-3 hover:border-primary/30"
+                          }`}
+                        >
+                          <div className={`w-7 h-7 bg-primary/20 ${opt.cls}`} />
+                          <span className="text-[0.58rem] font-semibold leading-tight text-center">{opt.label}</span>
+                        </button>
+                      ))}
+                    </div>
+                    {/* Live preview */}
+                    <div className="w-[100px] flex-shrink-0 flex items-center justify-center">
+                      <div className={`transition-all duration-500 ease-out ${previewShapeClass} overflow-hidden`}
+                        style={{ width: section.previewType === "campaign" ? 96 : 72, height: section.previewType === "campaign" ? 56 : 72 }}>
+                        <div className="w-full h-full bg-gradient-to-br from-primary/30 via-primary/15 to-primary/5 flex items-center justify-center">
+                          <span className="text-[0.55rem] font-bold text-primary/60 text-center leading-tight px-1">
+                            {section.value === "rounded" && "Arredondado"}
+                            {section.value === "circular" && "Circular"}
+                            {section.value === "pill" && "Cápsula"}
+                            {section.value === "shadow" && "Sombra"}
+                            {section.value === "polaroid" && "Polaroid"}
+                          </span>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
                 </div>
-                <div className="grid grid-cols-5 gap-1.5">
-                  {([
-                    { value: "rounded" as const, label: "Arredondado", cls: "rounded-2xl border border-primary/30" },
-                    { value: "circular" as const, label: "Circular", cls: "rounded-full border border-primary/30" },
-                    { value: "pill" as const, label: "Cápsula", cls: "rounded-[2rem] border border-primary/30" },
-                    { value: "shadow" as const, label: "Sombra", cls: "rounded-2xl shadow-[0_4px_16px_-2px_hsl(268_69%_50%_/_0.4)]" },
-                    { value: "polaroid" as const, label: "Polaroid", cls: "rounded-sm bg-card p-0.5 pb-1.5 shadow-[0_3px_12px_-2px_rgba(0,0,0,0.3)] border border-border/40" },
-                  ]).map((opt) => (
-                    <button
-                      key={opt.value}
-                      onClick={() => section.setter(opt.value)}
-                      className={`flex flex-col items-center gap-1.5 p-2 rounded-xl border transition-all duration-200 active:scale-[0.97] ${
-                        section.value === opt.value
-                          ? "border-primary bg-primary/10 text-primary"
-                          : "border-primary/10 bg-k-800 text-k-3 hover:border-primary/30"
-                      }`}
-                    >
-                      <div className={`w-7 h-7 bg-primary/20 ${opt.cls}`} />
-                      <span className="text-[0.58rem] font-semibold leading-tight text-center">{opt.label}</span>
-                    </button>
-                  ))}
-                </div>
-              </div>
-            ))}
+              );
+            })}
           </div>
         </div>
       </div>
