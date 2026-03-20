@@ -154,6 +154,8 @@ const CreatorEditPanel = forwardRef<CreatorEditPanelHandle, Props>(function Crea
   const [effectColor, setEffectColor] = useState<string>(profile.page_effects?.color || "#8B5CF6");
   const [effectEmojis, setEffectEmojis] = useState<string[]>(profile.page_effects?.emojis || [...DEFAULT_EMOJIS]);
   const [effectIntensity, setEffectIntensity] = useState<Record<string, number>>(profile.page_effects?.intensity || {});
+  const [fontFamily, setFontFamily] = useState(profile.font_family || "default");
+  const [fontSize, setFontSize] = useState(profile.font_size || "medium");
   const [links, setLinks] = useState(initialLinks);
   const [social, setSocial] = useState(() =>
     initialSocial.map((s) => {
