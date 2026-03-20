@@ -144,6 +144,17 @@ const CreatorEditPanel = forwardRef<CreatorEditPanelHandle, Props>(function Crea
     try { new URL(url); return true; } catch { return false; }
   };
 
+  const normalizeExternalUrl = (url?: string | null) => {
+    const trimmed = (url || "").trim();
+    if (!trimmed) return "";
+    if (/^(https?:\/\/|mailto:|tel:)/i.test(trimmed)) return trimmed;
+    return `https://${trimmed.replace(/^\/+/, "")}`;
+  };
+
+  const isEmptyLinkEntry = (link: CreatorLink) => !link.title.trim() && !link.url.trim();
+  const isEmptyProductEntry = (prod: CreatorProduct) => !prod.title.trim() && !prod.url?.trim() && !prod.image_url?.trim();
+  const isEmptyCampaignEntry = (camp: CreatorCampaign) => !camp.title.trim() && !camp.url?.trim() && !camp.image_url?.trim();
+
   const validate = (): boolean => {
     const errors: Record<string, string> = {};
     if (!name.trim()) errors.name = "Nome é obrigatório";
@@ -152,22 +163,25 @@ const CreatorEditPanel = forwardRef<CreatorEditPanelHandle, Props>(function Crea
     else if (!/^[a-zA-Z0-9._-]+$/.test(handle.replace(/^@/, ""))) errors.handle = "Handle contém caracteres inválidos";
 
     links.forEach((link, i) => {
+      const normalizedUrl = normalizeExternalUrl(link.url);
       // Skip completely empty links (no title AND no url)
       if (!link.title.trim() && !link.url.trim()) return;
       if (link.active && !link.title.trim()) errors[`link-title-${i}`] = "Título obrigatório";
-      if (link.active && link.url && !isValidUrl(link.url)) errors[`link-url-${i}`] = "URL inválida";
+      if (link.active && normalizedUrl && !isValidUrl(normalizedUrl)) errors[`link-url-${i}`] = "URL inválida";
     });
 
     prods.forEach((prod, i) => {
+      const normalizedUrl = normalizeExternalUrl(prod.url);
       if (!prod.title.trim() && !prod.url?.trim() && !prod.image_url?.trim()) return;
       if (!prod.title.trim()) errors[`prod-title-${i}`] = "Nome obrigatório";
-      if (prod.url && !isValidUrl(prod.url)) errors[`prod-url-${i}`] = "URL inválida";
+      if (normalizedUrl && !isValidUrl(normalizedUrl)) errors[`prod-url-${i}`] = "URL inválida";
     });
 
     camps.forEach((camp, i) => {
+      const normalizedUrl = normalizeExternalUrl(camp.url);
       if (!camp.title.trim() && !camp.url?.trim() && !camp.image_url?.trim()) return;
       if (!camp.title.trim()) errors[`camp-title-${i}`] = "Título obrigatório";
-      if (camp.url && !isValidUrl(camp.url)) errors[`camp-url-${i}`] = "URL inválida";
+      if (normalizedUrl && !isValidUrl(normalizedUrl)) errors[`camp-url-${i}`] = "URL inválida";
     });
 
     setValidationErrors(errors);
@@ -224,6 +238,35 @@ const CreatorEditPanel = forwardRef<CreatorEditPanelHandle, Props>(function Crea
     try {
       setSaving(true);
 
+        const sanitizedLinks = links
+          .map((link) => ({
+            ...link,
+            title: link.title.trim(),
+            url: normalizeExternalUrl(link.url),
+            subtitle: (link.subtitle || "").trim(),
+          }))
+          .filter((link) => !isEmptyLinkEntry(link));
+
+        const sanitizedProducts = prods
+          .map((prod) => ({
+            ...prod,
+            title: prod.title.trim(),
+            price: (prod.price || "").trim(),
+            url: normalizeExternalUrl(prod.url),
+            image_url: (prod.image_url || "").trim(),
+          }))
+          .filter((prod) => !isEmptyProductEntry(prod));
+
+        const sanitizedCampaigns = camps
+          .map((camp) => ({
+            ...camp,
+            title: camp.title.trim(),
+            description: (camp.description || "").trim(),
+            url: normalizeExternalUrl(camp.url),
+            image_url: (camp.image_url || "").trim(),
+          }))
+          .filter((camp) => !isEmptyCampaignEntry(camp));
+
       const baseProfile = { name, handle, bio, avatar_url: avatarUrl, cover_url: coverUrl, avatar_url_layout2: avatarUrlL2, cover_url_layout2: coverUrlL2, verified, tags, stats, brands, image_shape_products: shapeProducts, image_shape_campaigns: shapeCampaigns, image_shape_links: shapeLinks };
 
       if (cropImage) {
@@ -243,10 +286,10 @@ const CreatorEditPanel = forwardRef<CreatorEditPanelHandle, Props>(function Crea
 
       await onSaveProfile(baseProfile);
 
-      await onSaveLinks(links);
+        await onSaveLinks(sanitizedLinks);
       await onSaveSocialLinks(social);
-      await onSaveProducts(prods);
-      await onSaveCampaigns(camps);
+        await onSaveProducts(sanitizedProducts);
+        await onSaveCampaigns(sanitizedCampaigns);
       toast.success("Tudo salvo! 🎉");
       if (closeAfterSave) onDone();
       return true;
@@ -624,7 +667,7 @@ const CreatorEditPanel = forwardRef<CreatorEditPanelHandle, Props>(function Crea
                   </div>
                 )}
               </div>
-              <input value={link.title} onChange={(e) => { const arr = [...links]; arr[i] = { ...arr[i], title: e.target.value }; setLinks(arr); }} placeholder="Título" className={`${inputClass} flex-1`} />
+              <input value={link.title} onChange={(e) => { const arr = [...links]; arr[i] = { ...arr[i], title: e.target.value }; setLinks(arr); setValidationErrors((v) => { const n = { ...v }; delete n[`link-title-${i}`]; return n; }); }} placeholder="Título" className={`${inputClass} flex-1 ${validationErrors[`link-title-${i}`] ? "border-destructive/50 focus:border-destructive" : ""}`} />
               <button onClick={() => { const arr = [...links]; arr[i] = { ...arr[i], featured: !arr[i].featured }; setLinks(arr); }}
                 className={`text-xs px-2 py-1 rounded-md transition-all ${link.featured ? "bg-primary/20 text-k-300" : "text-k-4 hover:text-k-3"}`}>⭐</button>
               <button onClick={() => { const arr = [...links]; arr[i] = { ...arr[i], active: !arr[i].active }; setLinks(arr); }}
@@ -633,7 +676,9 @@ const CreatorEditPanel = forwardRef<CreatorEditPanelHandle, Props>(function Crea
               </button>
               <button onClick={() => setLinks(links.filter((_, j) => j !== i))} className="text-k-4 hover:text-k-err text-xs">✕</button>
             </div>
-            <input value={link.url} onChange={(e) => { const arr = [...links]; arr[i] = { ...arr[i], url: e.target.value }; setLinks(arr); }} placeholder="https://..." className={inputClass} />
+            {validationErrors[`link-title-${i}`] && <p className="text-[0.68rem] text-destructive -mt-1">{validationErrors[`link-title-${i}`]}</p>}
+            <input value={link.url} onChange={(e) => { const arr = [...links]; arr[i] = { ...arr[i], url: e.target.value }; setLinks(arr); setValidationErrors((v) => { const n = { ...v }; delete n[`link-url-${i}`]; return n; }); }} placeholder="https://..." className={`${inputClass} ${validationErrors[`link-url-${i}`] ? "border-destructive/50 focus:border-destructive" : ""}`} />
+            {validationErrors[`link-url-${i}`] && <p className="text-[0.68rem] text-destructive -mt-1">{validationErrors[`link-url-${i}`]}</p>}
             <input value={link.subtitle || ""} onChange={(e) => { const arr = [...links]; arr[i] = { ...arr[i], subtitle: e.target.value }; setLinks(arr); }} placeholder="Descrição (opcional)" className={inputClass} />
             <div className="flex items-center gap-2 pt-1">
               <span className="text-[0.62rem] text-k-4 font-semibold">Cores:</span>
@@ -673,9 +718,10 @@ const CreatorEditPanel = forwardRef<CreatorEditPanelHandle, Props>(function Crea
                   </div>
                 )}
               </div>
-              <input value={prod.title} onChange={(e) => { const arr = [...prods]; arr[i] = { ...arr[i], title: e.target.value }; setProds(arr); }} placeholder="Nome do produto" className={`${inputClass} flex-1`} />
+              <input value={prod.title} onChange={(e) => { const arr = [...prods]; arr[i] = { ...arr[i], title: e.target.value }; setProds(arr); setValidationErrors((v) => { const n = { ...v }; delete n[`prod-title-${i}`]; return n; }); }} placeholder="Nome do produto" className={`${inputClass} flex-1 ${validationErrors[`prod-title-${i}`] ? "border-destructive/50 focus:border-destructive" : ""}`} />
               <button onClick={() => setProds(prods.filter((_, j) => j !== i))} className="text-k-4 hover:text-k-err text-xs">✕</button>
             </div>
+            {validationErrors[`prod-title-${i}`] && <p className="text-[0.68rem] text-destructive -mt-1">{validationErrors[`prod-title-${i}`]}</p>}
             {/* Product image upload with crop */}
             <div className="flex gap-2 items-center">
               {prod.image_url ? (
@@ -719,9 +765,10 @@ const CreatorEditPanel = forwardRef<CreatorEditPanelHandle, Props>(function Crea
               )}
               <div className="flex-1 flex gap-2">
                 <input value={prod.price} onChange={(e) => { const arr = [...prods]; arr[i] = { ...arr[i], price: e.target.value }; setProds(arr); }} placeholder="R$ 0,00" className={`${inputClass} w-28`} />
-                <input value={prod.url || ""} onChange={(e) => { const arr = [...prods]; arr[i] = { ...arr[i], url: e.target.value }; setProds(arr); }} placeholder="Link de compra" className={`${inputClass} flex-1`} />
+                <input value={prod.url || ""} onChange={(e) => { const arr = [...prods]; arr[i] = { ...arr[i], url: e.target.value }; setProds(arr); setValidationErrors((v) => { const n = { ...v }; delete n[`prod-url-${i}`]; return n; }); }} placeholder="Link de compra" className={`${inputClass} flex-1 ${validationErrors[`prod-url-${i}`] ? "border-destructive/50 focus:border-destructive" : ""}`} />
               </div>
             </div>
+            {validationErrors[`prod-url-${i}`] && <p className="text-[0.68rem] text-destructive -mt-1">{validationErrors[`prod-url-${i}`]}</p>}
             <div className="flex items-center gap-2 pt-1">
               <span className="text-[0.62rem] text-k-4 font-semibold">Cores:</span>
               <label className="flex items-center gap-1 text-[0.6rem] text-k-4" title="Fundo">
@@ -752,13 +799,14 @@ const CreatorEditPanel = forwardRef<CreatorEditPanelHandle, Props>(function Crea
         {camps.map((camp, i) => (
           <div key={i} className={`border rounded-xl p-3.5 mb-2 space-y-2 transition-all ${camp.live ? "bg-primary/5 border-primary/25 shadow-k-purple" : "bg-k-800 border-primary/10"}`}>
             <div className="flex gap-2 items-center">
-              <input value={camp.title} onChange={(e) => { const arr = [...camps]; arr[i] = { ...arr[i], title: e.target.value }; setCamps(arr); }} placeholder="Título da campanha" className={`${inputClass} flex-1`} />
+              <input value={camp.title} onChange={(e) => { const arr = [...camps]; arr[i] = { ...arr[i], title: e.target.value }; setCamps(arr); setValidationErrors((v) => { const n = { ...v }; delete n[`camp-title-${i}`]; return n; }); }} placeholder="Título da campanha" className={`${inputClass} flex-1 ${validationErrors[`camp-title-${i}`] ? "border-destructive/50 focus:border-destructive" : ""}`} />
               <label className={`flex items-center gap-1.5 text-[0.72rem] cursor-pointer px-2 py-1 rounded-lg transition-all ${camp.live ? "text-k-err font-bold bg-k-err/10" : "text-k-3"}`}>
                 <input type="checkbox" checked={camp.live} onChange={(e) => { const arr = [...camps]; arr[i] = { ...arr[i], live: e.target.checked }; setCamps(arr); }} className="accent-primary" />
                 {camp.live ? "🔥 Spotlight" : "Ao vivo"}
               </label>
               <button onClick={() => setDeleteCampTarget(i)} className="text-k-4 hover:text-k-err text-xs">✕</button>
             </div>
+            {validationErrors[`camp-title-${i}`] && <p className="text-[0.68rem] text-destructive -mt-1">{validationErrors[`camp-title-${i}`]}</p>}
             {camp.live && (
               <div className="space-y-2">
                 <div className="flex items-center gap-2 px-2 py-1.5 bg-primary/10 rounded-lg">
@@ -801,7 +849,8 @@ const CreatorEditPanel = forwardRef<CreatorEditPanelHandle, Props>(function Crea
               </div>
             )}
             <input value={camp.description || ""} onChange={(e) => { const arr = [...camps]; arr[i] = { ...arr[i], description: e.target.value }; setCamps(arr); }} placeholder="Descrição" className={inputClass} />
-            <input value={camp.url || ""} onChange={(e) => { const arr = [...camps]; arr[i] = { ...arr[i], url: e.target.value }; setCamps(arr); }} placeholder="URL da campanha" className={inputClass} />
+            <input value={camp.url || ""} onChange={(e) => { const arr = [...camps]; arr[i] = { ...arr[i], url: e.target.value }; setCamps(arr); setValidationErrors((v) => { const n = { ...v }; delete n[`camp-url-${i}`]; return n; }); }} placeholder="URL da campanha" className={`${inputClass} ${validationErrors[`camp-url-${i}`] ? "border-destructive/50 focus:border-destructive" : ""}`} />
+            {validationErrors[`camp-url-${i}`] && <p className="text-[0.68rem] text-destructive -mt-1">{validationErrors[`camp-url-${i}`]}</p>}
             <div className="flex items-center gap-2 pt-1">
               <span className="text-[0.62rem] text-k-4 font-semibold">Cores:</span>
               <label className="flex items-center gap-1 text-[0.6rem] text-k-4" title="Fundo">
