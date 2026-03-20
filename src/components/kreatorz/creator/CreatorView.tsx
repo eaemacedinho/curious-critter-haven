@@ -72,6 +72,13 @@ export default function CreatorView({ profile, links: rawLinks, socialLinks: raw
   const effectEmojis = pe.emojis;
   const effectIntensity = pe.intensity;
 
+  const fontFam = getFontFamily(profile.font_family || "default");
+  const fontScale = getFontSizeScale(profile.font_size || "medium");
+
+  useEffect(() => {
+    loadGoogleFont(profile.font_family || "default");
+  }, [profile.font_family]);
+
   const content = (
     <div className={embedded
       ? "min-h-full h-full flex items-start justify-center px-4 sm:px-6 py-16 pt-20 sm:pt-24 relative"
