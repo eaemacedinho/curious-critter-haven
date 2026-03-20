@@ -633,7 +633,7 @@ const CreatorEditPanel = forwardRef<CreatorEditPanelHandle, Props>(function Crea
             <input value={link.subtitle || ""} onChange={(e) => { const arr = [...links]; arr[i] = { ...arr[i], subtitle: e.target.value }; setLinks(arr); }} placeholder="Descrição (opcional)" className={inputClass} />
           </div>
         ))}
-        <button onClick={() => setLinks([...links, { id: crypto.randomUUID(), creator_id: profile.id, title: "", url: "", subtitle: "", icon: "🔗", featured: false, active: true, sort_order: links.length }])}
+        <button onClick={() => setLinks([...links, { id: crypto.randomUUID(), creator_id: profile.id, title: "", url: "", subtitle: "", icon: "🔗", featured: false, active: true, sort_order: links.length, bg_color: null, text_color: null, border_color: null }])}
           className="flex items-center justify-center gap-2 w-full p-3 border border-dashed border-k-glow rounded-xl text-k-4 text-sm font-medium mt-2 transition-all hover:border-k-400 hover:text-k-300 hover:bg-k-glow active:scale-[0.98]">
           + Adicionar link
         </button>
