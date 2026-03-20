@@ -76,7 +76,10 @@ export default function CreatorViewLinkme({ profile, links: rawLinks, socialLink
             {headerAvatar && (
               <img src={headerAvatar} alt="" className="w-8 h-8 rounded-full object-cover" />
             )}
-            <h1 className="text-sm font-bold text-primary-foreground truncate">{profile.name}</h1>
+            <h1 className="text-sm font-bold text-primary-foreground truncate flex items-center gap-1.5">
+              {profile.name}
+              {profile.verified && <VerifiedBadge size={16} />}
+            </h1>
           </div>
         </div>
 
