@@ -3,6 +3,7 @@ import type { CreatorProfile, CreatorLink, SocialLink, CreatorProduct, CreatorCa
 import { useState } from "react";
 import SocialIcon from "./SocialIcon";
 import VerifiedBadge from "./VerifiedBadge";
+import SpotlightCampaign from "./SpotlightCampaign";
 
 interface Props {
   profile: CreatorProfile;
