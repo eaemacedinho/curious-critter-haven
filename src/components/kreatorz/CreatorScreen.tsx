@@ -60,6 +60,11 @@ export default function CreatorScreen() {
     await refetch();
   };
 
+  const handleCancelEditing = async () => {
+    setEditing(false);
+    await refetch();
+  };
+
   const handleSetPublicLayout = async (layout: LayoutTheme) => {
     if (!profile) return;
     try {
