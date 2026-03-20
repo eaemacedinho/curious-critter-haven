@@ -215,7 +215,7 @@ export default function CreatorView({ profile, links: rawLinks, socialLinks: raw
                 <div key={camp.id} onClick={() => camp.url && window.open(camp.url, "_blank")}
                   className={`bg-card/65 backdrop-blur-xl border border-border ${shapeClass(profile.image_shape)} p-4 sm:p-5 transition-all duration-300 hover:border-primary/20 group cursor-pointer active:scale-[0.98] opacity-75 hover:opacity-100`}>
                   {camp.image_url && (
-                    <div className="w-full h-[100px] rounded-xl overflow-hidden mb-3">
+                    <div className={`w-full h-[100px] ${shapeClass(profile.image_shape)} overflow-hidden mb-3`}>
                       <img src={camp.image_url} alt="" className="w-full h-full object-cover" />
                     </div>
                   )}
