@@ -149,7 +149,8 @@ const CreatorEditPanel = forwardRef<CreatorEditPanelHandle, Props>(function Crea
   const [shapeProducts, setShapeProducts] = useState<"rounded" | "circular" | "pill" | "shadow" | "polaroid">(profile.image_shape_products || "rounded");
   const [shapeCampaigns, setShapeCampaigns] = useState<"rounded" | "circular" | "pill" | "shadow" | "polaroid">(profile.image_shape_campaigns || "rounded");
   const [shapeLinks, setShapeLinks] = useState<"rounded" | "circular" | "pill" | "shadow" | "polaroid">(profile.image_shape_links || "rounded");
-  const [pageEffects, setPageEffects] = useState<PageEffect[]>((profile.page_effects || []) as PageEffect[]);
+  const [pageEffects, setPageEffects] = useState<PageEffect[]>((profile.page_effects?.effects || []) as PageEffect[]);
+  const [effectColor, setEffectColor] = useState<string>(profile.page_effects?.color || "#8B5CF6");
   const [links, setLinks] = useState(initialLinks);
   const [social, setSocial] = useState(() =>
     initialSocial.map((s) => {
@@ -193,8 +194,8 @@ const CreatorEditPanel = forwardRef<CreatorEditPanelHandle, Props>(function Crea
     image_shape_products: shapeProducts,
     image_shape_campaigns: shapeCampaigns,
     image_shape_links: shapeLinks,
-    page_effects: pageEffects,
-  }), [profile, name, handle, bio, avatarUrl, coverUrl, avatarUrlL2, coverUrlL2, verified, tags, stats, brands, shapeProducts, shapeCampaigns, shapeLinks, pageEffects]);
+    page_effects: { effects: pageEffects, color: effectColor },
+  }), [profile, name, handle, bio, avatarUrl, coverUrl, avatarUrlL2, coverUrlL2, verified, tags, stats, brands, shapeProducts, shapeCampaigns, shapeLinks, pageEffects, effectColor]);
 
   const isValidUrl = (url: string) => {
     if (!url) return true;
@@ -324,7 +325,7 @@ const CreatorEditPanel = forwardRef<CreatorEditPanelHandle, Props>(function Crea
           }))
           .filter((camp) => !isEmptyCampaignEntry(camp));
 
-      const baseProfile = { name, handle, bio, avatar_url: avatarUrl, cover_url: coverUrl, avatar_url_layout2: avatarUrlL2, cover_url_layout2: coverUrlL2, verified, tags, stats, brands, image_shape: shapeProducts, image_shape_products: shapeProducts, image_shape_campaigns: shapeCampaigns, image_shape_links: shapeLinks, page_effects: pageEffects };
+      const baseProfile = { name, handle, bio, avatar_url: avatarUrl, cover_url: coverUrl, avatar_url_layout2: avatarUrlL2, cover_url_layout2: coverUrlL2, verified, tags, stats, brands, image_shape: shapeProducts, image_shape_products: shapeProducts, image_shape_campaigns: shapeCampaigns, image_shape_links: shapeLinks, page_effects: { effects: pageEffects, color: effectColor } };
 
       if (cropImage) {
         const { file, type } = cropImage;
@@ -644,12 +645,47 @@ const CreatorEditPanel = forwardRef<CreatorEditPanelHandle, Props>(function Crea
           })}
         </div>
         {pageEffects.length > 0 && (
-          <button
-            onClick={() => setPageEffects([])}
-            className="mt-2 px-3 py-1.5 rounded-lg bg-destructive/10 text-destructive text-[0.68rem] font-semibold hover:bg-destructive/20 transition-colors"
-          >
-            ✕ Remover todos os efeitos
-          </button>
+          <div className="mt-3 space-y-2">
+            {/* Color picker */}
+            <div className="flex items-center gap-3 p-3 bg-k-800/50 border border-primary/10 rounded-xl">
+              <label
+                className="w-9 h-9 rounded-xl border-2 border-primary/20 cursor-pointer overflow-hidden flex-shrink-0 transition-all hover:border-primary/50 shadow-lg"
+                style={{ backgroundColor: effectColor }}
+                title="Cor dos efeitos"
+              >
+                <input
+                  type="color"
+                  value={effectColor}
+                  onChange={(e) => setEffectColor(e.target.value)}
+                  className="opacity-0 w-full h-full cursor-pointer"
+                />
+              </label>
+              <div>
+                <span className="text-[0.72rem] font-semibold text-k-2">Cor dos efeitos</span>
+                <p className="text-[0.58rem] text-k-4">Personalize a cor para combinar com sua marca</p>
+              </div>
+              <span className="ml-auto font-mono-k text-[0.62rem] text-k-4 bg-k-800 px-2 py-1 rounded-lg">{effectColor}</span>
+            </div>
+            {/* Presets */}
+            <div className="flex gap-1.5 flex-wrap px-1">
+              {["#8B5CF6", "#EC4899", "#F59E0B", "#10B981", "#3B82F6", "#EF4444", "#06B6D4", "#F97316", "#A855F7", "#6366F1"].map((c) => (
+                <button
+                  key={c}
+                  onClick={() => setEffectColor(c)}
+                  className={`w-6 h-6 rounded-full transition-all hover:scale-110 active:scale-95 ${effectColor === c ? "ring-2 ring-offset-2 ring-offset-background ring-primary" : ""}`}
+                  style={{ backgroundColor: c }}
+                  title={c}
+                />
+              ))}
+            </div>
+            {/* Remove all */}
+            <button
+              onClick={() => setPageEffects([])}
+              className="px-3 py-1.5 rounded-lg bg-destructive/10 text-destructive text-[0.68rem] font-semibold hover:bg-destructive/20 transition-colors"
+            >
+              ✕ Remover todos os efeitos
+            </button>
+          </div>
         )}
       </div>
       <div className="mb-8">

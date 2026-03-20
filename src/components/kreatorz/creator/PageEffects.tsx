@@ -9,28 +9,55 @@ export type PageEffect =
   | "glow-borders"
   | "gradient-bg"
   | "sparkle-cursor"
-  | "aurora";
+  | "aurora"
+  | "star-rain"
+  | "bubbles"
+  | "matrix";
 
 export interface EffectOption {
   id: PageEffect;
   label: string;
   emoji: string;
   description: string;
-  preview: string; // CSS class for preview animation
+  preview: string;
 }
 
 export const EFFECT_OPTIONS: EffectOption[] = [
-  { id: "snow", label: "Neve", emoji: "❄️", description: "Flocos de neve caindo suavemente", preview: "effect-preview-snow" },
-  { id: "floating-emojis", label: "Emojis Flutuantes", emoji: "🎈", description: "Emojis subindo pela tela continuamente", preview: "effect-preview-emojis" },
-  { id: "sparkle-cursor", label: "Rastro de Brilho", emoji: "⭐", description: "Rastro de partículas ao mover o dedo/mouse", preview: "effect-preview-sparkle" },
-  { id: "aurora", label: "Aurora Boreal", emoji: "🌌", description: "Ondas coloridas de aurora no fundo", preview: "effect-preview-aurora" },
+  { id: "snow", label: "Neve", emoji: "❄️", description: "Flocos de neve caindo suavemente", preview: "" },
+  { id: "floating-emojis", label: "Emojis Flutuantes", emoji: "🎈", description: "Emojis subindo pela tela continuamente", preview: "" },
+  { id: "sparkle-cursor", label: "Rastro de Brilho", emoji: "⭐", description: "Rastro de partículas ao mover o dedo/mouse", preview: "" },
+  { id: "aurora", label: "Aurora Boreal", emoji: "🌌", description: "Ondas coloridas de aurora no fundo", preview: "" },
+  { id: "star-rain", label: "Chuva de Estrelas", emoji: "🌠", description: "Estrelas cadentes cruzando a tela", preview: "" },
+  { id: "bubbles", label: "Bolhas de Sabão", emoji: "🫧", description: "Bolhas translúcidas subindo suavemente", preview: "" },
+  { id: "matrix", label: "Código Matrix", emoji: "💻", description: "Caracteres de código caindo estilo Matrix", preview: "" },
 ];
 
+// ====== Helper: hex to HSL components ======
+function hexToHslParts(hex: string): { h: number; s: number; l: number } | null {
+  if (!hex || !hex.startsWith("#") || hex.length < 7) return null;
+  const r = parseInt(hex.slice(1, 3), 16) / 255;
+  const g = parseInt(hex.slice(3, 5), 16) / 255;
+  const b = parseInt(hex.slice(5, 7), 16) / 255;
+  const max = Math.max(r, g, b), min = Math.min(r, g, b);
+  const l = (max + min) / 2;
+  if (max === min) return { h: 0, s: 0, l: Math.round(l * 100) };
+  const d = max - min;
+  const s = l > 0.5 ? d / (2 - max - min) : d / (max + min);
+  let h = 0;
+  if (max === r) h = ((g - b) / d + (g < b ? 6 : 0)) / 6;
+  else if (max === g) h = ((b - r) / d + 2) / 6;
+  else h = ((r - g) / d + 4) / 6;
+  return { h: Math.round(h * 360), s: Math.round(s * 100), l: Math.round(l * 100) };
+}
+
 // ====== Canvas-based particle effects ======
+type CanvasType = "snow" | "floating-emojis" | "star-rain" | "bubbles";
+
 function useParticleCanvas(
   canvasRef: React.RefObject<HTMLCanvasElement | null>,
-  type: "particles" | "fireflies" | "snow" | "floating-emojis",
+  type: CanvasType,
   active: boolean,
+  color?: string | null,
   container?: HTMLElement | null
 ) {
   useEffect(() => {
@@ -42,6 +69,10 @@ function useParticleCanvas(
 
     let animId: number;
     const dpr = window.devicePixelRatio || 1;
+    const hsl = color ? hexToHslParts(color) : null;
+    const baseH = hsl?.h ?? 268;
+    const baseS = hsl?.s ?? 69;
+    const baseL = hsl?.l ?? 50;
 
     const resize = () => {
       const parent = container || canvas.parentElement;
@@ -63,10 +94,14 @@ function useParticleCanvas(
       x: number; y: number; vx: number; vy: number;
       size: number; opacity: number; life: number; maxLife: number;
       emoji?: string; color?: string; angle?: number; spin?: number;
+      // bubble-specific
+      wobblePhase?: number; wobbleSpeed?: number;
+      // star-rain specific
+      length?: number; speed?: number;
     }
 
     const particles: Particle[] = [];
-    const count = type === "snow" ? 40 : type === "floating-emojis" ? 12 : type === "fireflies" ? 18 : 30;
+    const count = type === "snow" ? 40 : type === "floating-emojis" ? 12 : type === "bubbles" ? 16 : type === "star-rain" ? 8 : 30;
 
     const spawn = (): Particle => {
       const base: Particle = {
@@ -83,7 +118,7 @@ function useParticleCanvas(
         base.vx = (Math.random() - 0.5) * 0.4;
         base.size = 2 + Math.random() * 4;
         base.opacity = 0.3 + Math.random() * 0.5;
-        base.color = "hsl(0 0% 100%)";
+        base.color = `hsl(${baseH} ${Math.max(baseS - 40, 0)}% ${Math.min(baseL + 40, 100)}%)`;
       } else if (type === "floating-emojis") {
         base.y = h() + 20;
         base.vy = -(0.4 + Math.random() * 0.6);
@@ -91,17 +126,28 @@ function useParticleCanvas(
         base.size = 14 + Math.random() * 10;
         base.emoji = emojis[Math.floor(Math.random() * emojis.length)];
         base.opacity = 0.7;
-      } else if (type === "fireflies") {
-        base.vx = (Math.random() - 0.5) * 0.3;
-        base.vy = (Math.random() - 0.5) * 0.3;
-        base.size = 2 + Math.random() * 3;
-        base.color = `hsl(${45 + Math.random() * 20} 100% ${70 + Math.random() * 20}%)`;
-      } else {
-        // particles
-        base.vx = (Math.random() - 0.5) * 0.5;
-        base.vy = -(0.2 + Math.random() * 0.5);
-        base.size = 1.5 + Math.random() * 2.5;
-        base.color = `hsl(268 ${60 + Math.random() * 40}% ${60 + Math.random() * 30}%)`;
+      } else if (type === "bubbles") {
+        base.y = h() + 20;
+        base.vy = -(0.3 + Math.random() * 0.5);
+        base.vx = 0;
+        base.size = 8 + Math.random() * 20;
+        base.opacity = 0.15 + Math.random() * 0.2;
+        base.wobblePhase = Math.random() * Math.PI * 2;
+        base.wobbleSpeed = 0.01 + Math.random() * 0.02;
+        base.maxLife = 800 + Math.random() * 600;
+        base.color = `hsl(${baseH} ${baseS}% ${baseL + 15}%)`;
+      } else if (type === "star-rain") {
+        base.x = Math.random() * w() * 1.5;
+        base.y = -20;
+        base.angle = Math.PI / 4 + (Math.random() - 0.5) * 0.3;
+        base.speed = 3 + Math.random() * 4;
+        base.vx = Math.cos(base.angle) * base.speed!;
+        base.vy = Math.sin(base.angle) * base.speed!;
+        base.length = 20 + Math.random() * 40;
+        base.size = 1 + Math.random() * 1.5;
+        base.opacity = 0.5 + Math.random() * 0.4;
+        base.maxLife = 200 + Math.random() * 200;
+        base.color = `hsl(${baseH} ${baseS}% ${baseL + 20}%)`;
       }
       return base;
     };
@@ -120,23 +166,18 @@ function useParticleCanvas(
         p.life++;
         p.x += p.vx;
         p.y += p.vy;
-        if (p.angle !== undefined && p.spin) p.angle += p.spin;
 
-        // Firefly wobble
-        if (type === "fireflies") {
-          p.vx += (Math.random() - 0.5) * 0.05;
-          p.vy += (Math.random() - 0.5) * 0.05;
-          p.vx *= 0.99;
-          p.vy *= 0.99;
+        // Bubble wobble
+        if (type === "bubbles" && p.wobblePhase !== undefined) {
+          p.wobblePhase += p.wobbleSpeed || 0.015;
+          p.x += Math.sin(p.wobblePhase) * 0.5;
         }
 
-        // Fade in/out
         const fadeIn = Math.min(p.life / 60, 1);
         const fadeOut = Math.max(1 - (p.life - p.maxLife + 60) / 60, 0);
         const alpha = p.opacity * fadeIn * fadeOut;
 
-        // Reset if offscreen or expired
-        if (p.life > p.maxLife || p.y < -30 || p.y > h() + 30 || p.x < -30 || p.x > w() + 30) {
+        if (p.life > p.maxLife || p.y < -50 || p.y > h() + 50 || p.x < -50 || p.x > w() + 50) {
           Object.assign(p, spawn());
           continue;
         }
@@ -147,38 +188,54 @@ function useParticleCanvas(
           ctx.textAlign = "center";
           ctx.textBaseline = "middle";
           ctx.fillText(p.emoji, p.x, p.y);
-        } else if (type === "fireflies") {
-          // Glow effect
-          const gradient = ctx.createRadialGradient(p.x, p.y, 0, p.x, p.y, p.size * 4);
-          gradient.addColorStop(0, `hsla(48 100% 80% / ${alpha * 0.6})`);
-          gradient.addColorStop(0.5, `hsla(48 100% 70% / ${alpha * 0.15})`);
-          gradient.addColorStop(1, "transparent");
-          ctx.fillStyle = gradient;
-          ctx.fillRect(p.x - p.size * 4, p.y - p.size * 4, p.size * 8, p.size * 8);
-
+        } else if (type === "bubbles") {
+          // Bubble with highlight
+          ctx.globalAlpha = alpha;
+          ctx.strokeStyle = p.color || `hsl(${baseH} ${baseS}% ${baseL + 20}%)`;
+          ctx.lineWidth = 1;
+          ctx.beginPath();
+          ctx.arc(p.x, p.y, p.size, 0, Math.PI * 2);
+          ctx.stroke();
+          // Inner glow
+          const grad = ctx.createRadialGradient(p.x - p.size * 0.3, p.y - p.size * 0.3, 0, p.x, p.y, p.size);
+          grad.addColorStop(0, `hsla(${baseH} ${baseS}% ${Math.min(baseL + 35, 95)}% / ${alpha * 0.4})`);
+          grad.addColorStop(0.7, `hsla(${baseH} ${baseS}% ${baseL + 20}% / ${alpha * 0.08})`);
+          grad.addColorStop(1, "transparent");
+          ctx.fillStyle = grad;
+          ctx.fill();
+          // Highlight spot
+          ctx.globalAlpha = alpha * 0.6;
+          ctx.fillStyle = `hsl(0 0% 100%)`;
+          ctx.beginPath();
+          ctx.arc(p.x - p.size * 0.25, p.y - p.size * 0.25, p.size * 0.15, 0, Math.PI * 2);
+          ctx.fill();
+        } else if (type === "star-rain") {
+          // Shooting star trail
+          ctx.globalAlpha = alpha;
+          const tailX = p.x - (p.vx / (p.speed || 1)) * (p.length || 30);
+          const tailY = p.y - (p.vy / (p.speed || 1)) * (p.length || 30);
+          const grad = ctx.createLinearGradient(tailX, tailY, p.x, p.y);
+          grad.addColorStop(0, "transparent");
+          grad.addColorStop(1, p.color || "#fff");
+          ctx.strokeStyle = grad;
+          ctx.lineWidth = p.size;
+          ctx.lineCap = "round";
+          ctx.beginPath();
+          ctx.moveTo(tailX, tailY);
+          ctx.lineTo(p.x, p.y);
+          ctx.stroke();
+          // Head glow
+          ctx.globalAlpha = alpha * 0.7;
+          ctx.fillStyle = `hsl(0 0% 100%)`;
+          ctx.beginPath();
+          ctx.arc(p.x, p.y, p.size * 1.5, 0, Math.PI * 2);
+          ctx.fill();
+        } else if (type === "snow") {
           ctx.globalAlpha = alpha;
           ctx.fillStyle = p.color || "#fff";
           ctx.beginPath();
-          ctx.arc(p.x, p.y, p.size * 0.8, 0, Math.PI * 2);
+          ctx.arc(p.x, p.y, p.size, 0, Math.PI * 2);
           ctx.fill();
-        } else {
-          ctx.globalAlpha = alpha;
-          ctx.fillStyle = p.color || "#fff";
-          if (type === "snow") {
-            ctx.beginPath();
-            ctx.arc(p.x, p.y, p.size, 0, Math.PI * 2);
-            ctx.fill();
-          } else {
-            // Star-like particle
-            ctx.beginPath();
-            ctx.arc(p.x, p.y, p.size, 0, Math.PI * 2);
-            ctx.fill();
-            // Subtle glow
-            ctx.globalAlpha = alpha * 0.3;
-            ctx.beginPath();
-            ctx.arc(p.x, p.y, p.size * 2.5, 0, Math.PI * 2);
-            ctx.fill();
-          }
         }
       }
       ctx.globalAlpha = 1;
@@ -193,11 +250,11 @@ function useParticleCanvas(
       cancelAnimationFrame(animId);
       ro.disconnect();
     };
-  }, [canvasRef, type, active, container]);
+  }, [canvasRef, type, active, color, container]);
 }
 
-// ====== Confetti burst ======
-function ConfettiBurst({ active }: { active: boolean }) {
+// ====== Matrix effect ======
+function MatrixEffect({ active, color }: { active: boolean; color?: string }) {
   const canvasRef = useRef<HTMLCanvasElement>(null);
 
   useEffect(() => {
@@ -210,79 +267,92 @@ function ConfettiBurst({ active }: { active: boolean }) {
     const dpr = window.devicePixelRatio || 1;
     const parent = canvas.parentElement;
     if (!parent) return;
-    const rect = parent.getBoundingClientRect();
-    canvas.width = rect.width * dpr;
-    canvas.height = rect.height * dpr;
-    canvas.style.width = rect.width + "px";
-    canvas.style.height = rect.height + "px";
-    ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
 
-    const w = rect.width;
-    const h = rect.height;
-    const colors = [
-      "hsl(268 69% 50%)", "hsl(268 85% 61%)", "hsl(268 100% 71%)",
-      "hsl(43 96% 56%)", "hsl(160 64% 52%)", "hsl(0 94% 71%)",
-      "hsl(200 90% 60%)", "hsl(320 80% 60%)"
-    ];
+    const hsl = color ? hexToHslParts(color) : null;
+    const baseH = hsl?.h ?? 120;
+    const baseS = hsl?.s ?? 100;
+    const baseL = hsl?.l ?? 50;
 
-    interface Confetto {
-      x: number; y: number; vx: number; vy: number;
-      w: number; h: number; color: string; rotation: number; rotSpeed: number;
-      gravity: number; life: number;
-    }
+    const chars = "アイウエオカキクケコサシスセソタチツテトナニヌネノハヒフヘホマミムメモヤユヨラリルレロワヲン01234567890ABCDEFabcdef<>{}[]=/\\|;:.,~!@#$%^&*";
+    const charArray = chars.split("");
+    const fontSize = 12;
 
-    const confetti: Confetto[] = [];
-    for (let i = 0; i < 80; i++) {
-      confetti.push({
-        x: w / 2 + (Math.random() - 0.5) * 100,
-        y: h * 0.3,
-        vx: (Math.random() - 0.5) * 12,
-        vy: -(3 + Math.random() * 8),
-        w: 4 + Math.random() * 6,
-        h: 3 + Math.random() * 4,
-        color: colors[Math.floor(Math.random() * colors.length)],
-        rotation: Math.random() * Math.PI * 2,
-        rotSpeed: (Math.random() - 0.5) * 0.2,
-        gravity: 0.12 + Math.random() * 0.06,
-        life: 0,
-      });
-    }
+    let columns: number[] = [];
+    let cw = 0;
+
+    const resize = () => {
+      const rect = parent.getBoundingClientRect();
+      canvas.width = rect.width * dpr;
+      canvas.height = rect.height * dpr;
+      canvas.style.width = rect.width + "px";
+      canvas.style.height = rect.height + "px";
+      ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+      cw = rect.width;
+      const colCount = Math.ceil(rect.width / fontSize);
+      columns = Array.from({ length: colCount }, () => Math.random() * -100);
+    };
+    resize();
 
     let animId: number;
-    const draw = () => {
-      ctx.clearRect(0, 0, w, h);
-      let alive = false;
-      for (const c of confetti) {
-        c.life++;
-        c.x += c.vx;
-        c.y += c.vy;
-        c.vy += c.gravity;
-        c.vx *= 0.99;
-        c.rotation += c.rotSpeed;
-        const alpha = Math.max(0, 1 - c.life / 180);
-        if (alpha <= 0) continue;
-        alive = true;
-        ctx.save();
-        ctx.translate(c.x, c.y);
-        ctx.rotate(c.rotation);
-        ctx.globalAlpha = alpha;
-        ctx.fillStyle = c.color;
-        ctx.fillRect(-c.w / 2, -c.h / 2, c.w, c.h);
-        ctx.restore();
-      }
-      if (alive) animId = requestAnimationFrame(draw);
-    };
-    draw();
+    let lastTime = 0;
+    const interval = 50;
 
-    return () => cancelAnimationFrame(animId);
-  }, [active]);
+    const draw = (time: number) => {
+      if (time - lastTime < interval) {
+        animId = requestAnimationFrame(draw);
+        return;
+      }
+      lastTime = time;
+
+      const ch = canvas.height / dpr;
+      ctx.fillStyle = `hsla(var(--background) / 0.08)`;
+      ctx.fillRect(0, 0, cw, ch);
+
+      ctx.font = `${fontSize}px monospace`;
+
+      for (let i = 0; i < columns.length; i++) {
+        const char = charArray[Math.floor(Math.random() * charArray.length)];
+        const x = i * fontSize;
+        const y = columns[i] * fontSize;
+
+        // Bright head character
+        ctx.fillStyle = `hsl(${baseH} ${baseS}% ${Math.min(baseL + 30, 90)}%)`;
+        ctx.globalAlpha = 0.9;
+        ctx.fillText(char, x, y);
+
+        // Trail chars with fading
+        ctx.globalAlpha = 0.15;
+        ctx.fillStyle = `hsl(${baseH} ${baseS}% ${baseL}%)`;
+
+        if (y > ch && Math.random() > 0.975) {
+          columns[i] = 0;
+        }
+        columns[i]++;
+      }
+      ctx.globalAlpha = 1;
+      animId = requestAnimationFrame(draw);
+    };
+
+    // Initial black fill
+    ctx.fillStyle = "transparent";
+    ctx.fillRect(0, 0, cw, canvas.height / dpr);
+
+    animId = requestAnimationFrame(draw);
+    const ro = new ResizeObserver(resize);
+    ro.observe(parent);
+
+    return () => {
+      cancelAnimationFrame(animId);
+      ro.disconnect();
+    };
+  }, [active, color]);
 
   if (!active) return null;
-  return <canvas ref={canvasRef} className="absolute inset-0 pointer-events-none z-[100]" />;
+  return <canvas ref={canvasRef} className="absolute inset-0 pointer-events-none z-[48] opacity-40" />;
 }
 
 // ====== Sparkle cursor ======
-function SparkleCursor({ active }: { active: boolean }) {
+function SparkleCursor({ active, color }: { active: boolean; color?: string }) {
   const canvasRef = useRef<HTMLCanvasElement>(null);
 
   useEffect(() => {
@@ -295,6 +365,10 @@ function SparkleCursor({ active }: { active: boolean }) {
     const dpr = window.devicePixelRatio || 1;
     const parent = canvas.parentElement;
     if (!parent) return;
+
+    const hsl = color ? hexToHslParts(color) : null;
+    const baseH = hsl?.h ?? 268;
+    const baseS = hsl?.s ?? 69;
 
     const resize = () => {
       const rect = parent.getBoundingClientRect();
@@ -346,11 +420,10 @@ function SparkleCursor({ active }: { active: boolean }) {
         const alpha = 1 - s.life / s.maxLife;
         if (alpha <= 0) { sparks.splice(i, 1); continue; }
         ctx.globalAlpha = alpha * 0.8;
-        ctx.fillStyle = `hsl(268 ${70 + Math.random() * 30}% ${65 + Math.random() * 25}%)`;
+        ctx.fillStyle = `hsl(${baseH} ${baseS + Math.random() * 20}% ${60 + Math.random() * 25}%)`;
         ctx.beginPath();
         ctx.arc(s.x, s.y, s.size * (1 - s.life / s.maxLife * 0.5), 0, Math.PI * 2);
         ctx.fill();
-        // glow
         ctx.globalAlpha = alpha * 0.2;
         ctx.beginPath();
         ctx.arc(s.x, s.y, s.size * 3, 0, Math.PI * 2);
@@ -370,21 +443,28 @@ function SparkleCursor({ active }: { active: boolean }) {
       parent.removeEventListener("touchmove", onMove);
       ro.disconnect();
     };
-  }, [active]);
+  }, [active, color]);
 
   if (!active) return null;
   return <canvas ref={canvasRef} className="absolute inset-0 pointer-events-none z-[99]" />;
 }
 
 // ====== Aurora background ======
-function AuroraEffect({ active }: { active: boolean }) {
+function AuroraEffect({ active, color }: { active: boolean; color?: string }) {
   if (!active) return null;
+  const hsl = color ? hexToHslParts(color) : null;
+  const h1 = hsl?.h ?? 268;
+  const s1 = hsl?.s ?? 69;
+  const l1 = hsl?.l ?? 50;
+  const h2 = (h1 + 60) % 360;
+  const h3 = (h1 + 150) % 360;
+
   return (
     <div className="fixed inset-0 pointer-events-none z-[2] overflow-hidden" style={{ opacity: 0.45 }}>
       <div
         className="absolute w-[200%] h-[50%] top-[5%] -left-[50%]"
         style={{
-          background: "linear-gradient(90deg, transparent 0%, hsl(268 69% 50% / 0.4) 15%, hsl(200 80% 50% / 0.3) 35%, hsl(160 64% 52% / 0.35) 55%, hsl(268 85% 61% / 0.4) 75%, transparent 100%)",
+          background: `linear-gradient(90deg, transparent 0%, hsl(${h1} ${s1}% ${l1}% / 0.4) 15%, hsl(${h2} 80% 50% / 0.3) 35%, hsl(${h3} 64% 52% / 0.35) 55%, hsl(${h1} ${Math.min(s1 + 16, 100)}% ${Math.min(l1 + 11, 80)}% / 0.4) 75%, transparent 100%)`,
           filter: "blur(50px)",
           animation: "aurora-drift 10s ease-in-out infinite alternate",
         }}
@@ -392,7 +472,7 @@ function AuroraEffect({ active }: { active: boolean }) {
       <div
         className="absolute w-[200%] h-[35%] top-[25%] -left-[40%]"
         style={{
-          background: "linear-gradient(90deg, transparent, hsl(268 100% 71% / 0.25), hsl(320 80% 60% / 0.3), hsl(200 90% 60% / 0.2), hsl(268 69% 50% / 0.25), transparent)",
+          background: `linear-gradient(90deg, transparent, hsl(${h1} 100% ${Math.min(l1 + 21, 85)}% / 0.25), hsl(${(h1 + 100) % 360} 80% 60% / 0.3), hsl(${h2} 90% 60% / 0.2), hsl(${h1} ${s1}% ${l1}% / 0.25), transparent)`,
           filter: "blur(70px)",
           animation: "aurora-drift 14s ease-in-out infinite alternate-reverse",
         }}
@@ -400,7 +480,7 @@ function AuroraEffect({ active }: { active: boolean }) {
       <div
         className="absolute w-[180%] h-[30%] top-[40%] -left-[30%]"
         style={{
-          background: "linear-gradient(90deg, transparent, hsl(160 64% 52% / 0.2), hsl(268 69% 50% / 0.25), hsl(200 80% 50% / 0.2), transparent)",
+          background: `linear-gradient(90deg, transparent, hsl(${h3} 64% 52% / 0.2), hsl(${h1} ${s1}% ${l1}% / 0.25), hsl(${h2} 80% 50% / 0.2), transparent)`,
           filter: "blur(60px)",
           animation: "aurora-drift 18s ease-in-out infinite alternate",
           animationDelay: "3s",
@@ -410,24 +490,7 @@ function AuroraEffect({ active }: { active: boolean }) {
   );
 }
 
-// ====== Gradient animated background ======
-function GradientBg({ active }: { active: boolean }) {
-  if (!active) return null;
-  return (
-    <div className="absolute inset-0 pointer-events-none z-0 overflow-hidden opacity-20">
-      <div
-        className="absolute inset-[-50%] w-[200%] h-[200%]"
-        style={{
-          background: "conic-gradient(from 0deg at 50% 50%, hsl(268 69% 50% / 0.3), hsl(200 80% 50% / 0.15), hsl(160 64% 52% / 0.2), hsl(320 80% 60% / 0.15), hsl(268 69% 50% / 0.3))",
-          filter: "blur(80px)",
-          animation: "gradient-spin 20s linear infinite",
-        }}
-      />
-    </div>
-  );
-}
-
-// ====== Glow Borders — CSS only, adds class context ======
+// ====== Glow Borders ======
 export function GlowBorderProvider({ active, children }: { active: boolean; children: React.ReactNode }) {
   return (
     <div className={active ? "glow-borders-active" : ""}>
@@ -439,40 +502,39 @@ export function GlowBorderProvider({ active, children }: { active: boolean; chil
 // ====== Main PageEffects renderer ======
 interface PageEffectsProps {
   effects: PageEffect[];
+  color?: string;
   containerRef?: React.RefObject<HTMLElement | null>;
 }
 
-export default function PageEffects({ effects, containerRef }: PageEffectsProps) {
+export default function PageEffects({ effects, color, containerRef }: PageEffectsProps) {
   const particleRef = useRef<HTMLCanvasElement>(null);
   const container = containerRef?.current || null;
 
-  const hasParticles = effects.includes("particles");
-  const hasFireflies = effects.includes("fireflies");
   const hasSnow = effects.includes("snow");
   const hasEmojis = effects.includes("floating-emojis");
-  const hasConfetti = effects.includes("confetti");
+  const hasStarRain = effects.includes("star-rain");
+  const hasBubbles = effects.includes("bubbles");
+  const hasMatrix = effects.includes("matrix");
   const hasSparkleCursor = effects.includes("sparkle-cursor");
   const hasAurora = effects.includes("aurora");
-  const hasGradientBg = effects.includes("gradient-bg");
 
   // Pick the first canvas-based particle effect (only one canvas at a time)
-  const canvasEffect = hasParticles ? "particles" as const
-    : hasFireflies ? "fireflies" as const
-    : hasSnow ? "snow" as const
-    : hasEmojis ? "floating-emojis" as const
+  const canvasEffect: CanvasType | null = hasSnow ? "snow"
+    : hasEmojis ? "floating-emojis"
+    : hasStarRain ? "star-rain"
+    : hasBubbles ? "bubbles"
     : null;
 
-  useParticleCanvas(particleRef, canvasEffect || "particles", !!canvasEffect, container);
+  useParticleCanvas(particleRef, canvasEffect || "snow", !!canvasEffect, color, container);
 
   return (
     <>
       {canvasEffect && (
         <canvas ref={particleRef} className="absolute inset-0 pointer-events-none z-[50]" />
       )}
-      <ConfettiBurst active={hasConfetti} />
-      <SparkleCursor active={hasSparkleCursor} />
-      <AuroraEffect active={hasAurora} />
-      <GradientBg active={hasGradientBg} />
+      <MatrixEffect active={hasMatrix} color={color} />
+      <SparkleCursor active={hasSparkleCursor} color={color} />
+      <AuroraEffect active={hasAurora} color={color} />
     </>
   );
 }

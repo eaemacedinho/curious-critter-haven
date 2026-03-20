@@ -24,7 +24,7 @@ export interface CreatorProfile {
   tags: { label: string; color?: string }[];
   stats: { value: string; label: string }[];
   brands: { name: string; logo_url?: string }[];
-  page_effects: string[];
+  page_effects: { effects: string[]; color?: string };
 }
 
 export interface CreatorLink {
@@ -98,7 +98,13 @@ const normalizeProfile = (creator: any): CreatorProfile => ({
   brands: Array.isArray(creator.brands)
     ? (creator.brands as any[]).map((b: any) => typeof b === "string" ? { name: b } : b)
     : [],
-  page_effects: Array.isArray(creator.page_effects) ? creator.page_effects : [],
+  page_effects: (() => {
+    const pe = creator.page_effects;
+    if (!pe) return { effects: [], color: undefined };
+    if (Array.isArray(pe)) return { effects: pe, color: undefined };
+    if (typeof pe === "object" && Array.isArray((pe as any).effects)) return { effects: (pe as any).effects, color: (pe as any).color };
+    return { effects: [], color: undefined };
+  })(),
 });
 
 /**
