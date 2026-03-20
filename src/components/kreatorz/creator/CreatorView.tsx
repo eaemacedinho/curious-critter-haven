@@ -88,7 +88,10 @@ export default function CreatorView({ profile, links: rawLinks, socialLinks: raw
             <div className="flex justify-center items-center gap-3 mt-4 flex-wrap">
               <span className="text-[0.62rem] text-k-4 uppercase tracking-widest font-bold">Trabalhou com:</span>
               {brands.map((brand, i) => (
-                <span key={i} className="text-[0.65rem] text-k-3 font-semibold px-2 py-0.5 bg-card/80 rounded-md border border-primary/5">{brand}</span>
+                <span key={i} className="text-[0.65rem] text-k-3 font-semibold px-2 py-0.5 bg-card/80 rounded-md border border-primary/5 flex items-center gap-1.5">
+                  {brand.logo_url && <img src={brand.logo_url} alt="" className="w-4 h-4 rounded-sm object-contain" />}
+                  {brand.name}
+                </span>
               ))}
             </div>
           )}

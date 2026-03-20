@@ -62,7 +62,9 @@ const normalizeProfile = (creator: any): CreatorProfile => ({
   ...creator,
   tags: Array.isArray(creator.tags) ? (creator.tags as CreatorProfile["tags"]) : [],
   stats: Array.isArray(creator.stats) ? (creator.stats as CreatorProfile["stats"]) : [],
-  brands: Array.isArray(creator.brands) ? (creator.brands as string[]) : [],
+  brands: Array.isArray(creator.brands)
+    ? (creator.brands as any[]).map((b: any) => typeof b === "string" ? { name: b } : b)
+    : [],
 });
 
 export function useCreatorData(userId: string | undefined) {
