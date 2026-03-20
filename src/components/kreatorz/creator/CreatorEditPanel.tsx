@@ -282,18 +282,52 @@ const CreatorEditPanel = forwardRef<CreatorEditPanelHandle, Props>(function Crea
 
       <div className="mb-8">
         <div className={sectionTitle}>🤝 Marcas parceiras</div>
-        <p className="text-[0.68rem] text-k-4 mb-2">Marcas com quem você já trabalhou ou tem parceria.</p>
-        <div className="flex flex-wrap gap-2 mb-2">
+        <p className="text-[0.68rem] text-k-4 mb-2">Marcas com quem você já trabalhou ou tem parceria. Adicione o logo!</p>
+        <div className="flex flex-col gap-2 mb-3">
           {brands.map((brand, i) => (
-            <span key={i} className="px-2.5 py-1 rounded-md text-[0.72rem] font-semibold bg-card/80 text-k-3 border border-primary/10 flex items-center gap-1.5">
-              {brand}
-              <button onClick={() => setBrands(brands.filter((_, j) => j !== i))} className="text-k-4 hover:text-k-err">×</button>
-            </span>
+            <div key={i} className="bg-k-800 border border-primary/10 rounded-xl p-3 flex items-center gap-3">
+              {/* Brand logo upload */}
+              {brand.logo_url ? (
+                <div className="relative w-12 h-12 rounded-xl overflow-hidden border border-primary/10 group flex-shrink-0">
+                  <img src={brand.logo_url} alt="" className="w-full h-full object-contain bg-white/5" />
+                  <label className="absolute inset-0 bg-background/60 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center cursor-pointer">
+                    <input type="file" accept="image/*" className="hidden" onChange={async (e) => {
+                      const file = e.target.files?.[0];
+                      if (!file) return;
+                      setUploadingContent(`brand-${i}`);
+                      const url = await onUploadContentImage(file, "brand");
+                      setUploadingContent(null);
+                      if (url) { const arr = [...brands]; arr[i] = { ...arr[i], logo_url: url }; setBrands(arr); toast.success("Logo atualizado!"); }
+                    }} />
+                    <span className="text-xs">📷</span>
+                  </label>
+                </div>
+              ) : (
+                <label className="w-12 h-12 rounded-xl border border-dashed border-primary/20 flex items-center justify-center cursor-pointer hover:border-k-400 hover:bg-k-glow transition-all flex-shrink-0">
+                  <input type="file" accept="image/*" className="hidden" onChange={async (e) => {
+                    const file = e.target.files?.[0];
+                    if (!file) return;
+                    setUploadingContent(`brand-${i}`);
+                    const url = await onUploadContentImage(file, "brand");
+                    setUploadingContent(null);
+                    if (url) { const arr = [...brands]; arr[i] = { ...arr[i], logo_url: url }; setBrands(arr); toast.success("Logo da marca enviado!"); }
+                  }} />
+                  {uploadingContent === `brand-${i}` ? <span className="text-xs text-k-4 animate-pulse">⏳</span> : <span className="text-k-4 text-sm">📷</span>}
+                </label>
+              )}
+              <input
+                value={brand.name}
+                onChange={(e) => { const arr = [...brands]; arr[i] = { ...arr[i], name: e.target.value }; setBrands(arr); }}
+                placeholder="Nome da marca"
+                className={`${inputClass} flex-1`}
+              />
+              <button onClick={() => setBrands(brands.filter((_, j) => j !== i))} className="text-k-4 hover:text-k-err px-1">✕</button>
+            </div>
           ))}
         </div>
         <div className="flex gap-2">
-          <input value={newBrand} onChange={(e) => setNewBrand(e.target.value)} placeholder="Ex: Nike, Samsung..." className={inputClass} onKeyDown={(e) => { if (e.key === "Enter" && newBrand.trim()) { setBrands([...brands, newBrand.trim()]); setNewBrand(""); }}} />
-          <button onClick={() => { if (newBrand.trim()) { setBrands([...brands, newBrand.trim()]); setNewBrand(""); }}} className="px-4 py-2 bg-primary/20 text-k-300 rounded-xl text-sm font-medium hover:bg-primary/30 transition-colors flex-shrink-0">+</button>
+          <input value={newBrand} onChange={(e) => setNewBrand(e.target.value)} placeholder="Ex: Nike, Samsung..." className={inputClass} onKeyDown={(e) => { if (e.key === "Enter" && newBrand.trim()) { setBrands([...brands, { name: newBrand.trim() }]); setNewBrand(""); }}} />
+          <button onClick={() => { if (newBrand.trim()) { setBrands([...brands, { name: newBrand.trim() }]); setNewBrand(""); }}} className="px-4 py-2 bg-primary/20 text-k-300 rounded-xl text-sm font-medium hover:bg-primary/30 transition-colors flex-shrink-0">+</button>
         </div>
       </div>
 
