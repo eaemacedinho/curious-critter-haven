@@ -302,6 +302,7 @@ export type Database = {
           image_shape_links: string
           image_shape_products: string
           name: string
+          page_effects: Json | null
           public_layout: string
           stats: Json | null
           tags: Json | null
@@ -325,6 +326,7 @@ export type Database = {
           image_shape_links?: string
           image_shape_products?: string
           name?: string
+          page_effects?: Json | null
           public_layout?: string
           stats?: Json | null
           tags?: Json | null
@@ -348,6 +350,7 @@ export type Database = {
           image_shape_links?: string
           image_shape_products?: string
           name?: string
+          page_effects?: Json | null
           public_layout?: string
           stats?: Json | null
           tags?: Json | null

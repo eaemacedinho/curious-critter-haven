@@ -6,6 +6,7 @@ import VerifiedBadge from "./VerifiedBadge";
 import { ConfirmDialog } from "@/components/ui/confirm-dialog";
 import CreatorLivePreview from "./CreatorLivePreview";
 import { LinkIcon, detectPlatform } from "./SocialIcon";
+import { EFFECT_OPTIONS, type PageEffect } from "./PageEffects";
 
 const emojiIcons = ["⭐", "▶", "🎵", "📄", "🛍", "📸", "🎮", "💼", "🎨", "📚", "🔗", "💰", "🎧", "📦", "🎬", "💎"];
 
@@ -148,6 +149,7 @@ const CreatorEditPanel = forwardRef<CreatorEditPanelHandle, Props>(function Crea
   const [shapeProducts, setShapeProducts] = useState<"rounded" | "circular" | "pill" | "shadow" | "polaroid">(profile.image_shape_products || "rounded");
   const [shapeCampaigns, setShapeCampaigns] = useState<"rounded" | "circular" | "pill" | "shadow" | "polaroid">(profile.image_shape_campaigns || "rounded");
   const [shapeLinks, setShapeLinks] = useState<"rounded" | "circular" | "pill" | "shadow" | "polaroid">(profile.image_shape_links || "rounded");
+  const [pageEffects, setPageEffects] = useState<PageEffect[]>((profile.page_effects || []) as PageEffect[]);
   const [links, setLinks] = useState(initialLinks);
   const [social, setSocial] = useState(() =>
     initialSocial.map((s) => {
@@ -189,7 +191,8 @@ const CreatorEditPanel = forwardRef<CreatorEditPanelHandle, Props>(function Crea
     image_shape_products: shapeProducts,
     image_shape_campaigns: shapeCampaigns,
     image_shape_links: shapeLinks,
-  }), [profile, name, handle, bio, avatarUrl, coverUrl, avatarUrlL2, coverUrlL2, verified, tags, stats, brands, shapeProducts, shapeCampaigns, shapeLinks]);
+    page_effects: pageEffects,
+  }), [profile, name, handle, bio, avatarUrl, coverUrl, avatarUrlL2, coverUrlL2, verified, tags, stats, brands, shapeProducts, shapeCampaigns, shapeLinks, pageEffects]);
 
   const isValidUrl = (url: string) => {
     if (!url) return true;
@@ -319,7 +322,7 @@ const CreatorEditPanel = forwardRef<CreatorEditPanelHandle, Props>(function Crea
           }))
           .filter((camp) => !isEmptyCampaignEntry(camp));
 
-      const baseProfile = { name, handle, bio, avatar_url: avatarUrl, cover_url: coverUrl, avatar_url_layout2: avatarUrlL2, cover_url_layout2: coverUrlL2, verified, tags, stats, brands, image_shape: shapeProducts, image_shape_products: shapeProducts, image_shape_campaigns: shapeCampaigns, image_shape_links: shapeLinks };
+      const baseProfile = { name, handle, bio, avatar_url: avatarUrl, cover_url: coverUrl, avatar_url_layout2: avatarUrlL2, cover_url_layout2: coverUrlL2, verified, tags, stats, brands, image_shape: shapeProducts, image_shape_products: shapeProducts, image_shape_campaigns: shapeCampaigns, image_shape_links: shapeLinks, page_effects: pageEffects };
 
       if (cropImage) {
         const { file, type } = cropImage;
@@ -599,6 +602,54 @@ const CreatorEditPanel = forwardRef<CreatorEditPanelHandle, Props>(function Crea
         </div>
       </div>
 
+      {/* ✨ Efeitos Visuais */}
+      <div className="mb-8">
+        <div className={sectionTitle}>✨ Efeitos Visuais</div>
+        <p className="text-[0.68rem] text-k-4 mb-3">Adicione efeitos animados à sua página pública. Selecione quantos quiser.</p>
+        <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
+          {EFFECT_OPTIONS.map((effect) => {
+            const isActive = pageEffects.includes(effect.id);
+            return (
+              <button
+                key={effect.id}
+                onClick={() => {
+                  setPageEffects((prev) =>
+                    prev.includes(effect.id)
+                      ? prev.filter((e) => e !== effect.id)
+                      : [...prev, effect.id]
+                  );
+                }}
+                className={`flex items-start gap-3 p-3 rounded-xl border transition-all duration-200 text-left active:scale-[0.97] ${
+                  isActive
+                    ? "border-primary bg-primary/10 shadow-[0_0_12px_hsl(268_69%_50%_/_0.15)]"
+                    : "border-primary/10 bg-k-800 hover:border-primary/30"
+                }`}
+              >
+                <span className="text-xl flex-shrink-0 mt-0.5">{effect.emoji}</span>
+                <div className="min-w-0">
+                  <div className="flex items-center gap-2">
+                    <span className={`text-[0.78rem] font-semibold ${isActive ? "text-primary" : "text-k-2"}`}>
+                      {effect.label}
+                    </span>
+                    {isActive && (
+                      <span className="px-1.5 py-0.5 rounded-md bg-primary/20 text-primary text-[0.58rem] font-bold">ATIVO</span>
+                    )}
+                  </div>
+                  <p className="text-[0.62rem] text-k-4 mt-0.5 leading-relaxed">{effect.description}</p>
+                </div>
+              </button>
+            );
+          })}
+        </div>
+        {pageEffects.length > 0 && (
+          <button
+            onClick={() => setPageEffects([])}
+            className="mt-2 px-3 py-1.5 rounded-lg bg-destructive/10 text-destructive text-[0.68rem] font-semibold hover:bg-destructive/20 transition-colors"
+          >
+            ✕ Remover todos os efeitos
+          </button>
+        )}
+      </div>
       <div className="mb-8">
         <div className={sectionTitle}>🏷 Tags</div>
         <p className="text-[0.68rem] text-k-4 mb-2">Palavras-chave que descrevem seu nicho. Ex: lifestyle, tech, fitness</p>
