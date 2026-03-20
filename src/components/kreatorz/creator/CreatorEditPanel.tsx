@@ -109,6 +109,7 @@ const CreatorEditPanel = forwardRef<CreatorEditPanelHandle, Props>(function Crea
   const [camps, setCamps] = useState(initialCampaigns);
   const [saving, setSaving] = useState(false);
   const [uploadingImage, setUploadingImage] = useState<"avatar" | "cover" | null>(null);
+  const [uploadingContent, setUploadingContent] = useState<string | null>(null);
   const [showIconPicker, setShowIconPicker] = useState<string | null>(null);
   const [newTag, setNewTag] = useState("");
   const [newBrand, setNewBrand] = useState("");
