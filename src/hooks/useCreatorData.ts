@@ -25,6 +25,8 @@ export interface CreatorProfile {
   stats: { value: string; label: string }[];
   brands: { name: string; logo_url?: string }[];
   page_effects: { effects: string[]; color?: string; emojis?: string[]; intensity?: Record<string, number> };
+  font_family: string;
+  font_size: string;
 }
 
 export interface CreatorLink {
