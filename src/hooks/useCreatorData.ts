@@ -59,6 +59,9 @@ export interface CreatorProduct {
   url: string;
   image_url: string;
   sort_order: number;
+  bg_color: string | null;
+  text_color: string | null;
+  border_color: string | null;
 }
 
 export interface CreatorCampaign {
