@@ -170,6 +170,18 @@ export default function Settings() {
                 </div>
               </div>
 
+              {/* Footer text */}
+              <div>
+                <label className="block text-xs font-semibold text-muted-foreground uppercase tracking-wider mb-1.5">Texto do footer</label>
+                <input
+                  value={footerText}
+                  onChange={(e) => setFooterText(e.target.value)}
+                  placeholder="Powered by"
+                  className="w-full px-4 py-3 bg-background border border-border rounded-xl text-sm text-foreground outline-none focus:border-primary transition-all"
+                />
+                <p className="text-[0.66rem] text-muted-foreground mt-1.5">Texto exibido antes do nome da agência no rodapé das páginas.</p>
+              </div>
+
               {/* Preview */}
               <div className="bg-card border border-border rounded-2xl p-5 flex items-center gap-4">
                 <div
