@@ -1,18 +1,12 @@
 import { useEffect, useRef, useState, useMemo } from "react";
 
 export type PageEffect =
-  | "particles"
-  | "fireflies"
   | "snow"
-  | "confetti"
   | "floating-emojis"
-  | "glow-borders"
-  | "gradient-bg"
   | "sparkle-cursor"
   | "aurora"
   | "star-rain"
-  | "bubbles"
-  | "matrix";
+  | "bubbles";
 
 export interface EffectOption {
   id: PageEffect;
@@ -29,8 +23,10 @@ export const EFFECT_OPTIONS: EffectOption[] = [
   { id: "aurora", label: "Aurora Boreal", emoji: "🌌", description: "Ondas coloridas de aurora no fundo", preview: "" },
   { id: "star-rain", label: "Chuva de Estrelas", emoji: "🌠", description: "Estrelas cadentes cruzando a tela", preview: "" },
   { id: "bubbles", label: "Bolhas de Sabão", emoji: "🫧", description: "Bolhas translúcidas subindo suavemente", preview: "" },
-  { id: "matrix", label: "Código Matrix", emoji: "💻", description: "Caracteres de código caindo estilo Matrix", preview: "" },
 ];
+
+export const DEFAULT_EMOJIS = ["🎈", "⭐", "💜", "🎵", "✨", "🦋", "🌸", "💎"];
+export const EMOJI_PALETTE = ["🎈","⭐","💜","🎵","✨","🦋","🌸","💎","❤️","🔥","🎉","🌈","💫","🎀","🍀","🌺","💖","🎶","🥳","😍","🦄","🍕","☕","🌙","💐","🏆","👑","💝","🫶","🪄","🎯","🧸"];
 
 // ====== Helper: hex to HSL components ======
 function hexToHslParts(hex: string): { h: number; s: number; l: number } | null {
