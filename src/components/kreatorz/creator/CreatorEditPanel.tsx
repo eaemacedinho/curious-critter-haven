@@ -3,6 +3,7 @@ import { toast } from "sonner";
 import type { CreatorProfile, CreatorLink, SocialLink, CreatorProduct, CreatorCampaign } from "@/hooks/useCreatorData";
 import ImageCropper from "./ImageCropper";
 import VerifiedBadge from "./VerifiedBadge";
+import { ConfirmDialog } from "@/components/ui/confirm-dialog";
 
 const iconOptions = ["⭐", "▶", "🎵", "📄", "🛍", "📸", "🎮", "💼", "🎨", "📚", "🔗", "💰", "🎧", "📦", "🎬", "💎"];
 
@@ -132,6 +133,43 @@ const CreatorEditPanel = forwardRef<CreatorEditPanelHandle, Props>(function Crea
   const [newBrand, setNewBrand] = useState("");
   const [cropImage, setCropImage] = useState<{ src: string; type: "avatar" | "cover" | "avatar_layout2" | "cover_layout2"; file: File } | null>(null);
   const [contentCrop, setContentCrop] = useState<ContentCropState>(null);
+  const [deleteCampTarget, setDeleteCampTarget] = useState<number | null>(null);
+  const [validationErrors, setValidationErrors] = useState<Record<string, string>>({});
+
+  const isValidUrl = (url: string) => {
+    if (!url) return true;
+    try { new URL(url); return true; } catch { return false; }
+  };
+
+  const validate = (): boolean => {
+    const errors: Record<string, string> = {};
+    if (!name.trim()) errors.name = "Nome é obrigatório";
+    if (!handle.trim()) errors.handle = "Handle é obrigatório";
+    else if (/\s/.test(handle)) errors.handle = "Handle não pode conter espaços";
+    else if (!/^[a-zA-Z0-9._-]+$/.test(handle.replace(/^@/, ""))) errors.handle = "Handle contém caracteres inválidos";
+
+    links.forEach((link, i) => {
+      if (link.active && !link.title.trim()) errors[`link-title-${i}`] = "Título obrigatório";
+      if (link.active && link.url && !isValidUrl(link.url)) errors[`link-url-${i}`] = "URL inválida";
+    });
+
+    prods.forEach((prod, i) => {
+      if (!prod.title.trim()) errors[`prod-title-${i}`] = "Nome obrigatório";
+      if (prod.url && !isValidUrl(prod.url)) errors[`prod-url-${i}`] = "URL inválida";
+    });
+
+    camps.forEach((camp, i) => {
+      if (!camp.title.trim()) errors[`camp-title-${i}`] = "Título obrigatório";
+      if (camp.url && !isValidUrl(camp.url)) errors[`camp-url-${i}`] = "URL inválida";
+    });
+
+    setValidationErrors(errors);
+    if (Object.keys(errors).length > 0) {
+      toast.error("Corrija os campos destacados antes de salvar.");
+      return false;
+    }
+    return true;
+  };
 
   const avatarRef = useRef<HTMLInputElement>(null);
   const coverRef = useRef<HTMLInputElement>(null);
@@ -173,6 +211,8 @@ const CreatorEditPanel = forwardRef<CreatorEditPanelHandle, Props>(function Crea
       toast.info("Aguarde o upload da imagem terminar antes de salvar.");
       return false;
     }
+
+    if (!validate()) return false;
 
     try {
       setSaving(true);
@@ -324,11 +364,15 @@ const CreatorEditPanel = forwardRef<CreatorEditPanelHandle, Props>(function Crea
       <div className="mb-8">
         <div className={sectionTitle}>👤 Dados do Perfil</div>
         <div className="space-y-3">
-          <div><label className={labelClass}>Nome</label><input value={name} onChange={(e) => setName(e.target.value)} className={inputClass} placeholder="Seu nome ou nome artístico" /></div>
           <div>
-            <label className={labelClass}>Handle</label>
-            <input value={handle} onChange={(e) => setHandle(e.target.value)} className={inputClass} placeholder="seunome" />
-            <p className="text-[0.68rem] text-k-4 mt-1">Identificador único, sem espaços. Ex: joaosilva, ana.creator</p>
+            <label className={labelClass}>Nome <span className="text-destructive">*</span></label>
+            <input value={name} onChange={(e) => { setName(e.target.value); setValidationErrors((v) => { const n = { ...v }; delete n.name; return n; }); }} className={`${inputClass} ${validationErrors.name ? "border-destructive/50 focus:border-destructive" : ""}`} placeholder="Seu nome ou nome artístico" />
+            {validationErrors.name && <p className="text-[0.68rem] text-destructive mt-1">{validationErrors.name}</p>}
+          </div>
+          <div>
+            <label className={labelClass}>Handle <span className="text-destructive">*</span></label>
+            <input value={handle} onChange={(e) => { setHandle(e.target.value); setValidationErrors((v) => { const n = { ...v }; delete n.handle; return n; }); }} className={`${inputClass} ${validationErrors.handle ? "border-destructive/50 focus:border-destructive" : ""}`} placeholder="seunome" />
+            {validationErrors.handle ? <p className="text-[0.68rem] text-destructive mt-1">{validationErrors.handle}</p> : <p className="text-[0.68rem] text-k-4 mt-1">Identificador único, sem espaços. Ex: joaosilva, ana.creator</p>}
           </div>
           <div>
             <label className={labelClass}>Bio</label>
@@ -636,7 +680,7 @@ const CreatorEditPanel = forwardRef<CreatorEditPanelHandle, Props>(function Crea
                 <input type="checkbox" checked={camp.live} onChange={(e) => { const arr = [...camps]; arr[i] = { ...arr[i], live: e.target.checked }; setCamps(arr); }} className="accent-primary" />
                 {camp.live ? "🔥 Spotlight" : "Ao vivo"}
               </label>
-              <button onClick={() => setCamps(camps.filter((_, j) => j !== i))} className="text-k-4 hover:text-k-err text-xs">✕</button>
+              <button onClick={() => setDeleteCampTarget(i)} className="text-k-4 hover:text-k-err text-xs">✕</button>
             </div>
             {camp.live && (
               <div className="space-y-2">
@@ -767,6 +811,23 @@ const CreatorEditPanel = forwardRef<CreatorEditPanelHandle, Props>(function Crea
           onCancel={() => setContentCrop(null)}
         />
       )}
+
+      {/* Campaign delete confirmation */}
+      <ConfirmDialog
+        open={deleteCampTarget !== null}
+        onOpenChange={(open) => !open && setDeleteCampTarget(null)}
+        title="Excluir Campanha"
+        description={`Tem certeza que deseja excluir a campanha "${deleteCampTarget !== null ? camps[deleteCampTarget]?.title || "Sem título" : ""}"? Esta ação não pode ser desfeita.`}
+        confirmLabel="Excluir campanha"
+        variant="destructive"
+        onConfirm={() => {
+          if (deleteCampTarget !== null) {
+            setCamps(camps.filter((_, j) => j !== deleteCampTarget));
+            setDeleteCampTarget(null);
+            toast.success("Campanha removida. Salve para confirmar.");
+          }
+        }}
+      />
     </div>
   );
 });

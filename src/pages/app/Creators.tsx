@@ -1,9 +1,10 @@
 import { useState, useEffect } from "react";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/hooks/useAuth";
 import { useTenant } from "@/hooks/useTenant";
 import { toast } from "sonner";
+import { ConfirmDialog } from "@/components/ui/confirm-dialog";
 
 interface CreatorRow {
   id: string;
@@ -18,10 +19,15 @@ interface CreatorRow {
 export default function Creators() {
   const { user } = useAuth();
   const { agency } = useTenant();
+  const navigate = useNavigate();
   const [creators, setCreators] = useState<CreatorRow[]>([]);
   const [loading, setLoading] = useState(true);
   const [search, setSearch] = useState("");
   const [creating, setCreating] = useState(false);
+
+  // Delete confirmation state
+  const [deleteTarget, setDeleteTarget] = useState<{ id: string; name: string } | null>(null);
+  const [deleting, setDeleting] = useState(false);
 
   useEffect(() => {
     if (!user) return;
@@ -54,53 +60,57 @@ export default function Creators() {
     if (!user || !agency) return;
     setCreating(true);
     const count = creators.length + 1;
+    const uniqueSuffix = Date.now().toString(36);
     const { data, error } = await supabase
       .from("creators")
       .insert({
         user_id: user.id,
         agency_id: agency.id,
         name: `Creator ${count}`,
-        handle: `creator-${count}-${Date.now().toString(36)}`,
+        handle: `creator-${count}-${uniqueSuffix}`,
       })
       .select("id, name, handle, avatar_url, bio, public_layout, verified")
       .single();
 
     if (error) {
       if (error.code === "23505") {
-        toast.error("Já existe um creator com esses dados. Tente um nome diferente.");
+        toast.error("Já existe um creator com esses dados. Tente novamente.");
       } else {
         toast.error("Não foi possível criar o creator. Tente novamente.");
       }
-      console.error("Creator creation error:", error);
       setCreating(false);
       return;
     }
 
     setCreators([data as CreatorRow, ...creators]);
     setCreating(false);
-    toast.success("Creator criado! Edite os dados agora.");
+    toast.success("Creator criado! Redirecionando para edição...");
+    navigate(`/app/creators/${data.id}/edit`);
   };
 
-  const handleDelete = async (id: string, name: string) => {
-    if (!confirm(`Tem certeza que deseja excluir "${name}"?`)) return;
+  const confirmDelete = async () => {
+    if (!deleteTarget) return;
+    setDeleting(true);
 
-    // Delete related data first, then creator
     await Promise.all([
-      supabase.from("creator_links").delete().eq("creator_id", id),
-      supabase.from("creator_social_links").delete().eq("creator_id", id),
-      supabase.from("creator_products").delete().eq("creator_id", id),
-      supabase.from("creator_campaigns").delete().eq("creator_id", id),
+      supabase.from("creator_links").delete().eq("creator_id", deleteTarget.id),
+      supabase.from("creator_social_links").delete().eq("creator_id", deleteTarget.id),
+      supabase.from("creator_products").delete().eq("creator_id", deleteTarget.id),
+      supabase.from("creator_campaigns").delete().eq("creator_id", deleteTarget.id),
     ]);
 
-    // Note: creator DELETE requires RLS policy — if it fails, inform user
-    const { error } = await supabase.from("creators").delete().eq("id", id);
+    const { error } = await supabase.from("creators").delete().eq("id", deleteTarget.id);
     if (error) {
       toast.error("Não foi possível excluir. Verifique permissões.");
+      setDeleting(false);
+      setDeleteTarget(null);
       return;
     }
 
-    setCreators(creators.filter((c) => c.id !== id));
-    toast.success("Creator excluído.");
+    setCreators(creators.filter((c) => c.id !== deleteTarget.id));
+    toast.success("Creator excluído com sucesso.");
+    setDeleting(false);
+    setDeleteTarget(null);
   };
 
   if (loading) {
@@ -123,7 +133,14 @@ export default function Creators() {
           disabled={creating}
           className="flex items-center gap-2 px-5 py-2.5 bg-primary text-primary-foreground font-semibold text-sm rounded-xl transition-all hover:opacity-90 active:scale-[0.97] disabled:opacity-60"
         >
-          {creating ? "Criando..." : "+ Novo Creator"}
+          {creating ? (
+            <>
+              <span className="w-4 h-4 border-2 border-primary-foreground border-t-transparent rounded-full animate-spin" />
+              Criando...
+            </>
+          ) : (
+            "+ Novo Creator"
+          )}
         </button>
       </div>
 
@@ -215,7 +232,7 @@ export default function Creators() {
                   ✏
                 </Link>
                 <button
-                  onClick={() => handleDelete(cr.id, cr.name)}
+                  onClick={() => setDeleteTarget({ id: cr.id, name: cr.name })}
                   className="w-9 h-9 rounded-lg bg-background border border-border flex items-center justify-center text-xs text-muted-foreground hover:text-destructive hover:border-destructive/30 transition-all"
                   title="Excluir"
                 >
@@ -232,6 +249,19 @@ export default function Creators() {
           Nenhum creator encontrado para "{search}"
         </div>
       )}
+
+      {/* Delete confirmation modal */}
+      <ConfirmDialog
+        open={!!deleteTarget}
+        onOpenChange={(open) => !open && setDeleteTarget(null)}
+        title="Excluir Creator"
+        description={`Tem certeza que deseja excluir "${deleteTarget?.name || ""}"? Todos os links, produtos, campanhas e redes sociais associados serão removidos permanentemente. Esta ação não pode ser desfeita.`}
+        confirmLabel="Excluir permanentemente"
+        cancelLabel="Cancelar"
+        variant="destructive"
+        onConfirm={confirmDelete}
+        loading={deleting}
+      />
     </div>
   );
 }
