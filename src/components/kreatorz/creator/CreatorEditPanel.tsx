@@ -218,7 +218,7 @@ const CreatorEditPanel = forwardRef<CreatorEditPanelHandle, Props>(function Crea
     try {
       setSaving(true);
 
-      const baseProfile = { name, handle, bio, avatar_url: avatarUrl, cover_url: coverUrl, avatar_url_layout2: avatarUrlL2, cover_url_layout2: coverUrlL2, verified, tags, stats, brands };
+      const baseProfile = { name, handle, bio, avatar_url: avatarUrl, cover_url: coverUrl, avatar_url_layout2: avatarUrlL2, cover_url_layout2: coverUrlL2, verified, tags, stats, brands, image_shape: imageShape };
 
       if (cropImage) {
         const { file, type } = cropImage;
