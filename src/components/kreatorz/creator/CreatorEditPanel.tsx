@@ -112,6 +112,7 @@ const CreatorEditPanel = forwardRef<CreatorEditPanelHandle, Props>(function Crea
   const [coverUrl, setCoverUrl] = useState(profile.cover_url || "");
   const [avatarUrlL2, setAvatarUrlL2] = useState(profile.avatar_url_layout2 || "");
   const [coverUrlL2, setCoverUrlL2] = useState(profile.cover_url_layout2 || "");
+  const [verified, setVerified] = useState(profile.verified ?? false);
   const [links, setLinks] = useState(initialLinks);
   const [social, setSocial] = useState(initialSocial);
   const [prods, setProds] = useState(initialProducts);
