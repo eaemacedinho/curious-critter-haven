@@ -115,7 +115,9 @@ const CreatorEditPanel = forwardRef<CreatorEditPanelHandle, Props>(function Crea
   const [avatarUrlL2, setAvatarUrlL2] = useState(profile.avatar_url_layout2 || "");
   const [coverUrlL2, setCoverUrlL2] = useState(profile.cover_url_layout2 || "");
   const [verified, setVerified] = useState(profile.verified ?? false);
-  const [imageShape, setImageShape] = useState<"rounded" | "circular" | "pill" | "shadow" | "polaroid">(profile.image_shape || "rounded");
+  const [shapeProducts, setShapeProducts] = useState<"rounded" | "circular" | "pill" | "shadow" | "polaroid">(profile.image_shape_products || "rounded");
+  const [shapeCampaigns, setShapeCampaigns] = useState<"rounded" | "circular" | "pill" | "shadow" | "polaroid">(profile.image_shape_campaigns || "rounded");
+  const [shapeLinks, setShapeLinks] = useState<"rounded" | "circular" | "pill" | "shadow" | "polaroid">(profile.image_shape_links || "rounded");
   const [links, setLinks] = useState(initialLinks);
   const [social, setSocial] = useState(() =>
     initialSocial.map((s) => {
