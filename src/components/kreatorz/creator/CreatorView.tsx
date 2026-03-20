@@ -154,10 +154,16 @@ export default function CreatorView({ profile, links: rawLinks, socialLinks: raw
             <div className="grid grid-cols-2 gap-2.5 mb-8">
               {products.map((prod) => (
                 <div key={prod.id} onClick={() => prod.url && window.open(prod.url, "_blank")}
-                  className="bg-card/65 backdrop-blur-xl border border-primary/10 rounded-2xl p-4 transition-all duration-300 cursor-pointer group hover:border-k-glow hover:-translate-y-1 hover:shadow-k-purple active:scale-[0.97]">
-                  <div className="text-2xl mb-2 transition-transform group-hover:scale-110">{prod.icon}</div>
-                  <h5 className="text-[0.82rem] font-semibold text-primary-foreground mb-1">{prod.title}</h5>
-                  {prod.price && <span className="text-[0.72rem] text-k-300 font-bold">{prod.price}</span>}
+                  className="bg-card/65 backdrop-blur-xl border border-primary/10 rounded-2xl overflow-hidden transition-all duration-300 cursor-pointer group hover:border-k-glow hover:-translate-y-1 hover:shadow-k-purple active:scale-[0.97]">
+                  {prod.image_url ? (
+                    <img src={prod.image_url} alt={prod.title} className="w-full h-28 object-cover" />
+                  ) : (
+                    <div className="w-full h-28 flex items-center justify-center bg-primary/5 text-3xl">{prod.icon}</div>
+                  )}
+                  <div className="p-3">
+                    <h5 className="text-[0.82rem] font-semibold text-primary-foreground mb-1">{prod.title}</h5>
+                    {prod.price && <span className="text-[0.72rem] text-k-300 font-bold">{prod.price}</span>}
+                  </div>
                 </div>
               ))}
             </div>
