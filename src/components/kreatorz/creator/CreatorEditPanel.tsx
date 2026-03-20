@@ -8,6 +8,51 @@ import CreatorLivePreview from "./CreatorLivePreview";
 
 const iconOptions = ["⭐", "▶", "🎵", "📄", "🛍", "📸", "🎮", "💼", "🎨", "📚", "🔗", "💰", "🎧", "📦", "🎬", "💎"];
 
+const socialIconOptions = [
+  { emoji: "📸", label: "Instagram" },
+  { emoji: "▶️", label: "YouTube" },
+  { emoji: "🎵", label: "TikTok" },
+  { emoji: "🐦", label: "Twitter/X" },
+  { emoji: "👤", label: "Facebook" },
+  { emoji: "💼", label: "LinkedIn" },
+  { emoji: "🎮", label: "Twitch" },
+  { emoji: "💬", label: "Discord" },
+  { emoji: "📌", label: "Pinterest" },
+  { emoji: "👻", label: "Snapchat" },
+  { emoji: "🎧", label: "Spotify" },
+  { emoji: "🍎", label: "Apple Music" },
+  { emoji: "📧", label: "E-mail" },
+  { emoji: "🌐", label: "Website" },
+  { emoji: "🛒", label: "Loja" },
+  { emoji: "📱", label: "WhatsApp" },
+  { emoji: "✈️", label: "Telegram" },
+  { emoji: "🧵", label: "Threads" },
+];
+
+const domainToIcon: Record<string, string> = {
+  "instagram.com": "📸", "youtube.com": "▶️", "youtu.be": "▶️",
+  "tiktok.com": "🎵", "twitter.com": "🐦", "x.com": "🐦",
+  "facebook.com": "👤", "fb.com": "👤", "linkedin.com": "💼",
+  "twitch.tv": "🎮", "discord.gg": "💬", "discord.com": "💬",
+  "pinterest.com": "📌", "snapchat.com": "👻",
+  "open.spotify.com": "🎧", "spotify.com": "🎧",
+  "music.apple.com": "🍎", "wa.me": "📱", "whatsapp.com": "📱",
+  "t.me": "✈️", "telegram.me": "✈️", "threads.net": "🧵",
+  "github.com": "💻", "behance.net": "🎨", "dribbble.com": "🎨",
+  "amazon.com": "🛒", "shopee.com.br": "🛒", "mercadolivre.com.br": "🛒",
+};
+
+const detectIconFromUrl = (url: string): string | null => {
+  if (!url) return null;
+  try {
+    const hostname = new URL(url.startsWith("http") ? url : `https://${url}`).hostname.replace(/^www\./, "");
+    for (const [domain, icon] of Object.entries(domainToIcon)) {
+      if (hostname === domain || hostname.endsWith(`.${domain}`)) return icon;
+    }
+  } catch { /* ignore */ }
+  return null;
+};
+
 const socialEmojiOptions = [
   { emoji: "📸", label: "Instagram", baseUrl: "https://instagram.com/", placeholder: "@seu_perfil" },
   { emoji: "▶️", label: "YouTube", baseUrl: "https://youtube.com/@", placeholder: "@seu_canal" },
