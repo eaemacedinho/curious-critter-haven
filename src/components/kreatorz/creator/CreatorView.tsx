@@ -17,7 +17,6 @@ export default function CreatorView({ profile, links: rawLinks, socialLinks: raw
   const [contactOpen, setContactOpen] = useState(false);
   const [clickedLink, setClickedLink] = useState<number | null>(null);
 
-  // Filter out incomplete/empty items
   const links = rawLinks.filter(l => l.title?.trim() && l.url?.trim());
   const socialLinks = rawSocial.filter(s => s.url?.trim() && (s.label?.trim() || s.platform?.trim()));
   const products = rawProducts.filter(p => p.title?.trim());
@@ -25,6 +24,9 @@ export default function CreatorView({ profile, links: rawLinks, socialLinks: raw
   const stats = profile.stats.filter(s => s.value?.trim() && s.label?.trim());
   const tags = profile.tags.filter(t => t.label?.trim());
   const brands = profile.brands.filter(b => b?.name?.trim());
+
+  const liveCampaigns = campaigns.filter(c => c.live);
+  const pastCampaigns = campaigns.filter(c => !c.live);
 
   const handleLinkClick = (i: number, url: string) => {
     setClickedLink(i);
@@ -106,7 +108,6 @@ export default function CreatorView({ profile, links: rawLinks, socialLinks: raw
             <p className="text-sm text-k-2 leading-relaxed mt-5 max-w-[380px] mx-auto">{profile.bio}</p>
           )}
 
-          {/* Social Icons */}
           {socialLinks.length > 0 && (
             <div className="flex justify-center gap-2.5 mt-5 mb-7">
               {socialLinks.map((soc) => (
@@ -119,6 +120,15 @@ export default function CreatorView({ profile, links: rawLinks, socialLinks: raw
             </div>
           )}
         </div>
+
+        {/* 🔥 SPOTLIGHT — Live campaigns always on top */}
+        {liveCampaigns.length > 0 && (
+          <div className="flex flex-col gap-3 mb-6">
+            {liveCampaigns.map((camp) => (
+              <SpotlightCampaign key={camp.id} campaign={camp} variant="layout1" />
+            ))}
+          </div>
+        )}
 
         {/* Links */}
         {links.length > 0 && (
@@ -171,23 +181,14 @@ export default function CreatorView({ profile, links: rawLinks, socialLinks: raw
           </div>
         )}
 
-        {/* Spotlight Campaigns (live = top priority) */}
-        {campaigns.filter(c => c.live).length > 0 && (
-          <div className="flex flex-col gap-3 mb-8" style={{ animationDelay: ".05s" }}>
-            {campaigns.filter(c => c.live).map((camp) => (
-              <SpotlightCampaign key={camp.id} campaign={camp} variant="layout1" />
-            ))}
-          </div>
-        )}
-
         {/* Past / Inactive Campaigns */}
-        {campaigns.filter(c => !c.live).length > 0 && (
+        {pastCampaigns.length > 0 && (
           <div className="animate-k-fade-up" style={{ animationDelay: ".3s" }}>
             <div className="text-[0.66rem] font-bold text-k-4 tracking-[0.14em] uppercase mb-3.5 flex items-center gap-2.5">
               Campanhas Anteriores <span className="flex-1 h-px bg-primary/10" />
             </div>
             <div className="flex flex-col gap-2.5 mb-8">
-              {campaigns.filter(c => !c.live).map((camp) => (
+              {pastCampaigns.map((camp) => (
                 <div key={camp.id} onClick={() => camp.url && window.open(camp.url, "_blank")}
                   className="bg-card/65 backdrop-blur-xl border border-primary/10 rounded-2xl p-4 transition-all duration-300 hover:border-k-glow group cursor-pointer active:scale-[0.98] opacity-75 hover:opacity-100">
                   {camp.image_url && (
