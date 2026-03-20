@@ -47,7 +47,7 @@ const App = () => (
               >
                 <Route index element={<Dashboard />} />
                 <Route path="creators" element={<Creators />} />
-                <Route path="creators/edit" element={<CreatorEdit />} />
+                <Route path="creators/:creatorId/edit" element={<CreatorEdit />} />
                 <Route path="campaigns" element={<Campaigns />} />
                 <Route path="analytics" element={<Analytics />} />
                 <Route path="settings" element={<Settings />} />

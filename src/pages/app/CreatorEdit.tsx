@@ -1,5 +1,5 @@
 import { useRef, useState } from "react";
-import { Link } from "react-router-dom";
+import { Link, useParams } from "react-router-dom";
 import { toast } from "sonner";
 import { useAuth } from "@/hooks/useAuth";
 import { useCreatorData } from "@/hooks/useCreatorData";
@@ -7,22 +7,12 @@ import CreatorEditPanel, { type CreatorEditPanelHandle } from "@/components/krea
 
 export default function CreatorEdit() {
   const { user } = useAuth();
+  const { creatorId } = useParams<{ creatorId: string }>();
   const {
-    profile,
-    links,
-    socialLinks,
-    products,
-    campaigns,
-    loading,
-    saveProfile,
-    saveLinks,
-    saveSocialLinks,
-    saveProducts,
-    saveCampaigns,
-    uploadImage,
-    uploadContentImage,
-    refetch,
-  } = useCreatorData(user?.id);
+    profile, links, socialLinks, products, campaigns, loading,
+    saveProfile, saveLinks, saveSocialLinks, saveProducts, saveCampaigns,
+    uploadImage, uploadContentImage, refetch,
+  } = useCreatorData(user?.id, creatorId);
   const editorRef = useRef<CreatorEditPanelHandle>(null);
   const [saving, setSaving] = useState(false);
 
@@ -55,7 +45,7 @@ export default function CreatorEdit() {
   if (!profile) {
     return (
       <div className="flex items-center justify-center py-20">
-        <p className="text-muted-foreground text-sm">Perfil não encontrado. Tente recarregar.</p>
+        <p className="text-muted-foreground text-sm">Creator não encontrado. Tente recarregar.</p>
       </div>
     );
   }
@@ -79,12 +69,14 @@ export default function CreatorEdit() {
               ← Creators
             </Link>
           </div>
-          <h1 className="font-display text-2xl text-foreground">Editar Creator</h1>
+          <h1 className="font-display text-2xl text-foreground">
+            {profile.name || "Editar Creator"}
+          </h1>
           <p className="text-sm text-muted-foreground mt-0.5">
             As alterações aparecerão na página pública após salvar.
           </p>
         </div>
-        <div className="flex items-center gap-2.5">
+        <div className="flex items-center gap-2.5 flex-wrap">
           {/* Layout toggle */}
           <div className="flex bg-card border border-border rounded-xl overflow-hidden">
             <button
