@@ -101,7 +101,7 @@ export default function AppLayout() {
             {agency?.name || "Minha Agência"}
           </div>
           <div className="text-[0.65rem] text-muted-foreground truncate">
-            {agency?.slug ? `${agency.slug}.kreatorz.ai` : ""}
+            {agency?.slug ? `${agency.slug}.automationmi.com.br` : ""}
           </div>
         </div>
       </div>

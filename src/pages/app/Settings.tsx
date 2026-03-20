@@ -138,7 +138,7 @@ export default function Settings() {
               <div>
                 <label className="block text-xs font-semibold text-muted-foreground uppercase tracking-wider mb-1.5">Slug</label>
                 <div className="flex items-center bg-background border border-border rounded-xl overflow-hidden focus-within:border-primary transition-all">
-                  <span className="px-3 text-muted-foreground text-sm border-r border-border">kreatorz.ai/</span>
+                  <span className="px-3 text-muted-foreground text-sm border-r border-border">automationmi.com.br/</span>
                   <input
                     value={agencySlug}
                     onChange={(e) => setAgencySlug(e.target.value)}
@@ -178,7 +178,7 @@ export default function Settings() {
                 </div>
                 <div>
                   <div className="font-bold text-foreground">{agencyName || "Sua Agência"}</div>
-                  <div className="text-[0.7rem] text-muted-foreground">{agencySlug}.kreatorz.ai</div>
+                  <div className="text-[0.7rem] text-muted-foreground">{agencySlug}.automationmi.com.br</div>
                 </div>
               </div>
 
@@ -203,7 +203,7 @@ export default function Settings() {
                 <div className="flex items-center justify-between">
                   <div>
                     <div className="text-[0.66rem] text-muted-foreground uppercase tracking-wider font-bold mb-1">Domínio padrão</div>
-                    <div className="text-sm text-foreground font-semibold font-mono">{agencySlug || agency?.slug}.kreatorz.ai</div>
+                    <div className="text-sm text-foreground font-semibold font-mono">{agencySlug || agency?.slug}.automationmi.com.br</div>
                   </div>
                   <span className="px-2.5 py-1 rounded-full text-[0.68rem] font-semibold bg-emerald-500/10 text-emerald-500 flex items-center gap-1.5">
                     <span className="w-1.5 h-1.5 rounded-full bg-current" /> Ativo
