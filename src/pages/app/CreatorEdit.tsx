@@ -60,7 +60,7 @@ export default function CreatorEdit() {
   };
 
   return (
-    <div className="max-w-[980px] mx-auto">
+    <div className="max-w-[1400px] mx-auto">
       {/* Header */}
       <div className="flex items-center justify-between gap-3 flex-wrap mb-6">
         <div>
