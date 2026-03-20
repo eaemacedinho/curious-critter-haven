@@ -29,7 +29,7 @@ interface Props {
   embedded?: boolean;
 }
 
-export default function CreatorViewLinkme({ profile, links: rawLinks, socialLinks: rawSocial, products: rawProducts, campaigns: rawCampaigns, agencyName, embedded }: Props) {
+export default function CreatorViewLinkme({ profile, links: rawLinks, socialLinks: rawSocial, products: rawProducts, campaigns: rawCampaigns, agencyName, agencyLogoUrl, agencyFooterText, embedded }: Props) {
   const [contactOpen, setContactOpen] = useState(false);
   const [overlayOpacity, setOverlayOpacity] = useState(0);
   const [headerVisible, setHeaderVisible] = useState(false);
