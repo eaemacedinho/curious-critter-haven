@@ -1,9 +1,11 @@
-import { forwardRef, useImperativeHandle, useRef, useState, useCallback } from "react";
+import { forwardRef, useImperativeHandle, useRef, useState, useCallback, useMemo } from "react";
 import { toast } from "sonner";
 import type { CreatorProfile, CreatorLink, SocialLink, CreatorProduct, CreatorCampaign } from "@/hooks/useCreatorData";
 import ImageCropper from "./ImageCropper";
 import VerifiedBadge from "./VerifiedBadge";
 import { ConfirmDialog } from "@/components/ui/confirm-dialog";
+import CreatorView from "./CreatorView";
+import CreatorViewLinkme from "./CreatorViewLinkme";
 
 const iconOptions = ["⭐", "▶", "🎵", "📄", "🛍", "📸", "🎮", "💼", "🎨", "📚", "🔗", "💰", "🎧", "📦", "🎬", "💎"];
 
@@ -138,6 +140,27 @@ const CreatorEditPanel = forwardRef<CreatorEditPanelHandle, Props>(function Crea
   const [contentCrop, setContentCrop] = useState<ContentCropState>(null);
   const [deleteCampTarget, setDeleteCampTarget] = useState<number | null>(null);
   const [validationErrors, setValidationErrors] = useState<Record<string, string>>({});
+  const [showPreview, setShowPreview] = useState(false);
+
+  // Build a live preview profile from current editor state
+  const liveProfile = useMemo<CreatorProfile>(() => ({
+    ...profile,
+    name,
+    handle,
+    bio,
+    avatar_url: avatarUrl,
+    cover_url: coverUrl,
+    avatar_url_layout2: avatarUrlL2,
+    cover_url_layout2: coverUrlL2,
+    verified,
+    tags,
+    stats,
+    brands,
+    image_shape: shapeProducts,
+    image_shape_products: shapeProducts,
+    image_shape_campaigns: shapeCampaigns,
+    image_shape_links: shapeLinks,
+  }), [profile, name, handle, bio, avatarUrl, coverUrl, avatarUrlL2, coverUrlL2, verified, tags, stats, brands, shapeProducts, shapeCampaigns, shapeLinks]);
 
   const isValidUrl = (url: string) => {
     if (!url) return true;
@@ -311,7 +334,52 @@ const CreatorEditPanel = forwardRef<CreatorEditPanelHandle, Props>(function Crea
   const sectionTitle = "text-[0.66rem] font-bold text-k-4 tracking-[0.12em] uppercase mb-3.5 flex items-center gap-2";
   const sizeHint = "text-[0.62rem] text-k-4 mt-1";
 
+  const PreviewComponent = activeLayout === "layout2" ? CreatorViewLinkme : CreatorView;
+
   return (
+    <div className="relative">
+      {/* Preview toggle */}
+      <div className="sticky top-0 z-30 mb-4">
+        <button
+          onClick={() => setShowPreview(!showPreview)}
+          className={`w-full px-4 py-2.5 rounded-xl text-sm font-semibold transition-all duration-300 active:scale-[0.98] flex items-center justify-center gap-2 ${
+            showPreview
+              ? "bg-primary text-primary-foreground shadow-lg shadow-primary/20"
+              : "bg-card border border-border text-muted-foreground hover:text-foreground hover:border-primary/30"
+          }`}
+        >
+          {showPreview ? "✕ Fechar pré-visualização" : "👁 Pré-visualização em tempo real"}
+        </button>
+      </div>
+
+      {/* Live preview panel */}
+      {showPreview && (
+        <div className="mb-6 rounded-2xl border border-primary/20 bg-background overflow-hidden shadow-xl">
+          <div className="px-3 py-2 bg-card border-b border-border flex items-center gap-2">
+            <div className="flex gap-1.5">
+              <div className="w-2.5 h-2.5 rounded-full bg-destructive/60" />
+              <div className="w-2.5 h-2.5 rounded-full bg-yellow-500/60" />
+              <div className="w-2.5 h-2.5 rounded-full bg-green-500/60" />
+            </div>
+            <span className="text-[0.65rem] text-muted-foreground font-medium ml-1">
+              Pré-visualização — {activeLayout === "layout2" ? "Layout 2" : "Layout 1"}
+            </span>
+            <span className="text-[0.55rem] text-muted-foreground/60 ml-auto">As alterações aparecem aqui em tempo real</span>
+          </div>
+          <div className="relative overflow-y-auto max-h-[500px]" style={{ transform: "scale(0.55)", transformOrigin: "top center", height: "500px" }}>
+            <div style={{ width: "182%", marginLeft: "-41%" }}>
+              <PreviewComponent
+                profile={liveProfile}
+                links={links}
+                socialLinks={social}
+                products={prods}
+                campaigns={camps}
+              />
+            </div>
+          </div>
+        </div>
+      )}
+
     <div className="max-w-[560px] mx-auto px-6 py-8 pt-20 animate-k-fade-up">
       <input ref={avatarRef} type="file" accept="image/*" className="hidden" onChange={(e) => e.target.files?.[0] && handleFileSelected(e.target.files[0], "avatar")} />
       <input ref={coverRef} type="file" accept="image/*" className="hidden" onChange={(e) => e.target.files?.[0] && handleFileSelected(e.target.files[0], "cover")} />
@@ -1028,6 +1096,7 @@ const CreatorEditPanel = forwardRef<CreatorEditPanelHandle, Props>(function Crea
           }
         }}
       />
+    </div>
     </div>
   );
 });
