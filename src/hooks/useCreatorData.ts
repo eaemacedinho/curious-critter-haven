@@ -257,6 +257,7 @@ export function useCreatorData(userId: string | undefined) {
           price: product.price || "",
           icon: product.icon || "📦",
           url: product.url || "",
+          image_url: product.image_url || "",
           sort_order: product.sort_order,
         }))
       );
