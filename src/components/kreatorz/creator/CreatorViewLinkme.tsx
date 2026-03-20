@@ -211,9 +211,27 @@ export default function CreatorViewLinkme({ profile, links: rawLinks, socialLink
                   {/* Links */}
                   {links.length > 0 && (
                     <div className="flex flex-col gap-3 mt-6 px-4">
-                      {links.map((link) => (
-                        <LinkmeCard key={link.id} link={link} shape={profile.image_shape_links} />
-                      ))}
+                      {(() => {
+                        const elements: React.ReactNode[] = [];
+                        let i = 0;
+                        while (i < links.length) {
+                          const link = links[i];
+                          if (link.display_mode === "half") {
+                            const next = links[i + 1]?.display_mode === "half" ? links[i + 1] : null;
+                            elements.push(
+                              <div key={link.id + "-row"} className="grid grid-cols-2 gap-3">
+                                <LinkmeCard link={link} shape={profile.image_shape_links} />
+                                {next && <LinkmeCard link={next} shape={profile.image_shape_links} />}
+                              </div>
+                            );
+                            i += next ? 2 : 1;
+                          } else {
+                            elements.push(<LinkmeCard key={link.id} link={link} shape={profile.image_shape_links} />);
+                            i++;
+                          }
+                        }
+                        return elements;
+                      })()}
                     </div>
                   )}
 
@@ -334,6 +352,32 @@ function LinkmeCard({ link, shape }: { link: CreatorLink; shape?: string }) {
     ...(link.border_color ? { borderColor: link.border_color, borderWidth: "1px", borderStyle: "solid" } : {}),
   };
   const hasCustomBg = Boolean(link.bg_color);
+  const isHalf = link.display_mode === "half";
+
+  if (link.image_url) {
+    return (
+      <a href={link.url} target="_blank" rel="noopener noreferrer"
+        className={`group relative block w-full ${sc} overflow-hidden transition-all duration-300 hover:-translate-y-1 active:scale-[0.98]`}
+        style={customStyle}>
+        <div className={`relative w-full ${isHalf ? "aspect-square" : "aspect-[16/9]"} overflow-hidden`}>
+          <img src={link.image_url} alt={link.title} className="absolute inset-0 w-full h-full object-cover transition-transform duration-500 group-hover:scale-105" />
+          {link.icon && (
+            <div className="absolute top-2.5 left-2.5 w-9 h-9 rounded-xl bg-black/50 backdrop-blur-md flex items-center justify-center text-base z-10">
+              {link.icon}
+            </div>
+          )}
+          <div className="absolute inset-x-0 bottom-0 p-3 z-10">
+            <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/40 to-transparent" />
+            <div className="relative">
+              <h4 className="text-white text-[0.82rem] font-semibold leading-snug drop-shadow-[0_1px_4px_rgba(0,0,0,0.6)]">{link.title}</h4>
+              {link.subtitle && !isHalf && <span className="text-white/70 text-[0.7rem] line-clamp-1">{link.subtitle}</span>}
+            </div>
+          </div>
+        </div>
+      </a>
+    );
+  }
+
   return (
     <a href={link.url} target="_blank" rel="noopener noreferrer"
       className={`group relative block w-full ${sc} overflow-hidden transition-all duration-300 hover:-translate-y-1 active:scale-[0.98]`}>
