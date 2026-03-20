@@ -112,24 +112,24 @@ export default function CreatorViewLinkme({ profile, links: rawLinks, socialLink
             )}
 
             {/* Name + handle + socials overlaid at bottom of hero */}
-              <div className="absolute inset-x-0 bottom-0 z-10 flex flex-col items-center pb-6 px-5">
-              <h2 className="font-display text-[2rem] font-bold text-white tracking-tight leading-tight inline-flex items-center justify-center gap-2 drop-shadow-[0_2px_12px_rgba(0,0,0,0.5)]"
-                style={{ textShadow: "0 2px 16px rgba(0,0,0,0.6)" }}>
+              <div className="absolute inset-x-0 bottom-0 z-10 flex flex-col items-center pb-5 px-5">
+              <h2 className="font-display text-[1.85rem] font-normal text-white tracking-[-0.01em] leading-[1.1] inline-flex items-center justify-center gap-2 drop-shadow-[0_2px_12px_rgba(0,0,0,0.5)]"
+                style={{ textShadow: "0 2px 16px rgba(0,0,0,0.6)", fontStyle: "italic" }}>
                 {profile.name}
                 {profile.verified && <VerifiedBadge size={24} />}
               </h2>
               {profile.handle && (
-                <p className="text-sm text-white/70 mt-0.5 drop-shadow-[0_1px_6px_rgba(0,0,0,0.4)]">@{profile.handle.replace(/^@+/, "")}</p>
+                <p className="font-body text-[0.82rem] text-white/60 mt-1 tracking-wide drop-shadow-[0_1px_6px_rgba(0,0,0,0.4)]">@{profile.handle.replace(/^@+/, "")}</p>
               )}
 
               {/* Social Icons */}
               {socialLinks.length > 0 && (
-                <div className="flex justify-center gap-3 mt-3">
+                <div className="flex justify-center gap-2.5 mt-3.5">
                   {socialLinks.map((soc) => (
                     <a key={soc.id} href={soc.url} target="_blank" rel="noopener noreferrer"
-                      className="w-11 h-11 flex items-center justify-center rounded-full bg-white/15 backdrop-blur-md border border-white/20 transition-all duration-300 hover:scale-110 hover:bg-white/25 active:scale-95"
+                      className="w-[46px] h-[46px] flex items-center justify-center rounded-full bg-white/12 backdrop-blur-md border border-white/15 transition-all duration-300 hover:scale-110 hover:bg-white/20 active:scale-95"
                       title={soc.platform}>
-                      <SocialIcon platform={soc.platform || soc.url} url={soc.url} size={20} />
+                      <SocialIcon platform={soc.platform || soc.url} url={soc.url} size={22} />
                     </a>
                   ))}
                 </div>
@@ -138,25 +138,25 @@ export default function CreatorViewLinkme({ profile, links: rawLinks, socialLink
           </div>
 
           {/* Content — no gap, seamless transition */}
-          <div className="relative pb-12 -mt-6 pt-2" style={{ background: "hsl(var(--background))" }}>
+          <div className="relative pb-12 -mt-6 pt-1" style={{ background: "hsl(var(--background))" }}>
 
             {/* Stats */}
             {stats.length > 0 && (
-              <div className="flex justify-center items-center gap-1.5 mt-4 px-5">
+              <div className="flex justify-center items-center gap-4 mt-5 px-5">
                 {stats.map((stat, i) => (
-                  <p key={i} className="text-sm text-foreground flex items-center gap-1">
-                    <span className="font-semibold">{stat.value}</span>
-                    <span className="text-muted-foreground">{stat.label}</span>
-                  </p>
+                  <div key={i} className="flex items-baseline gap-1.5">
+                    <span className="font-body text-[1rem] font-bold text-primary tracking-tight">{stat.value}</span>
+                    <span className="font-body text-[0.78rem] text-muted-foreground">{stat.label}</span>
+                  </div>
                 ))}
               </div>
             )}
 
             {/* Tags */}
             {tags.length > 0 && (
-              <div className="flex justify-center gap-2 mt-3 px-5 flex-wrap">
+              <div className="flex justify-center gap-2 mt-4 px-5 flex-wrap">
                 {tags.map((tag, i) => (
-                  <span key={i} className="px-3 py-1.5 rounded-full text-[0.72rem] font-semibold bg-primary/10 text-primary border border-primary/20">
+                  <span key={i} className="font-body px-3 py-1 rounded-full text-[0.7rem] font-semibold bg-primary/10 text-primary border border-primary/20">
                     {tag.label}
                   </span>
                 ))}
@@ -165,11 +165,11 @@ export default function CreatorViewLinkme({ profile, links: rawLinks, socialLink
 
             {/* Brands */}
             {brands.length > 0 && (
-              <div className="flex justify-center items-center gap-3 mt-4 flex-wrap px-5">
-                <span className="text-[0.62rem] text-muted-foreground uppercase tracking-widest font-bold">Trabalhou com:</span>
+              <div className="flex justify-center items-center gap-2.5 mt-4 flex-wrap px-5">
+                <span className="font-body text-[0.6rem] text-muted-foreground uppercase tracking-[0.16em] font-bold">Trabalhou com:</span>
                 {brands.map((brand, i) => (
-                  <span key={i} className="text-[0.65rem] text-foreground font-semibold px-2.5 py-1 bg-primary/10 rounded-md border border-primary/10 flex items-center gap-1.5">
-                    {brand.logo_url && <img src={brand.logo_url} alt="" className="w-4 h-4 rounded-sm object-contain" />}
+                  <span key={i} className="font-body text-[0.68rem] text-foreground font-semibold px-2.5 py-1 bg-card/80 rounded-lg border border-border/50 flex items-center gap-1.5">
+                    {brand.logo_url && <img src={brand.logo_url} alt="" className="w-3.5 h-3.5 rounded-sm object-contain" />}
                     {brand.name}
                   </span>
                 ))}
@@ -177,7 +177,7 @@ export default function CreatorViewLinkme({ profile, links: rawLinks, socialLink
             )}
 
             {profile.bio && (
-              <p className="text-sm text-foreground text-center leading-relaxed mt-3 px-6 max-w-[380px] mx-auto" style={{ whiteSpace: "pre-wrap" }}>
+              <p className="font-body text-[0.88rem] text-foreground/90 text-center leading-relaxed mt-5 px-6 max-w-[360px] mx-auto" style={{ whiteSpace: "pre-wrap" }}>
                 {profile.bio}
               </p>
             )}
@@ -270,7 +270,7 @@ export default function CreatorViewLinkme({ profile, links: rawLinks, socialLink
             {/* Contact CTA */}
             <div className="px-4 mt-8">
               <button onClick={() => setContactOpen(!contactOpen)}
-                className="w-full p-4 sm:p-5 bg-card/70 backdrop-blur-xl border border-border rounded-2xl text-foreground font-semibold text-sm flex items-center justify-center gap-2.5 transition-all duration-300 hover:border-primary/30 active:scale-[0.98] min-h-[52px]">
+                className="w-full p-4 sm:p-5 bg-card/70 backdrop-blur-xl border border-border rounded-2xl text-foreground font-body font-semibold text-sm flex items-center justify-center gap-2.5 transition-all duration-300 hover:border-primary/30 active:scale-[0.98] min-h-[52px]">
                 ✉️ Contato comercial
               </button>
 
@@ -319,7 +319,7 @@ function LinkmeCard({ link }: { link: CreatorLink }) {
         </div>
         <div className="flex-1 min-w-0">
           <h4 className="text-sm font-semibold text-foreground leading-snug">{link.title}</h4>
-          {link.subtitle && <span className="text-[0.72rem] text-muted-foreground line-clamp-1">{link.subtitle}</span>}
+          {link.subtitle && <span className="font-body text-[0.72rem] text-muted-foreground line-clamp-1">{link.subtitle}</span>}
         </div>
         <div className="opacity-30 group-hover:opacity-60 transition-opacity">
           <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M5 12h14M12 5l7 7-7 7" /></svg>
@@ -331,7 +331,7 @@ function LinkmeCard({ link }: { link: CreatorLink }) {
 
 function SectionLabel({ label }: { label: string }) {
   return (
-    <div className="text-[0.66rem] font-bold text-muted-foreground tracking-[0.14em] uppercase mb-3 flex items-center gap-2.5 px-1">
+    <div className="font-body text-[0.64rem] font-bold text-muted-foreground tracking-[0.16em] uppercase mb-3 flex items-center gap-2.5 px-1">
       {label} <span className="flex-1 h-px bg-border" />
     </div>
   );
