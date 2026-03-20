@@ -128,7 +128,7 @@ function useParticleCanvas(
         base.opacity = 0.7;
       } else if (type === "bubbles") {
         base.y = h() + 20;
-        base.vy = -(0.3 + Math.random() * 0.5);
+        base.vy = -(0.3 + Math.random() * 0.5) * intMul;
         base.vx = 0;
         base.size = 8 + Math.random() * 20;
         base.opacity = 0.15 + Math.random() * 0.2;
