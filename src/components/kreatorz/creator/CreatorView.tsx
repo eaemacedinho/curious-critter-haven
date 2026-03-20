@@ -201,15 +201,20 @@ export default function CreatorView({ profile, links: rawLinks, socialLinks: raw
             <div className="grid grid-cols-2 gap-3 mb-8">
               {products.map((prod) => (
                 <div key={prod.id} onClick={() => prod.url && window.open(prod.url, "_blank")}
-                  className={`bg-card/65 backdrop-blur-xl border border-border ${shapeClass(profile.image_shape_products)} overflow-hidden transition-all duration-300 cursor-pointer group hover:border-primary/20 hover:-translate-y-1 hover:shadow-k-purple active:scale-[0.97]`}>
+                  className={`backdrop-blur-xl ${shapeClass(profile.image_shape_products)} overflow-hidden transition-all duration-300 cursor-pointer group hover:-translate-y-1 hover:shadow-k-purple active:scale-[0.97] ${!prod.bg_color ? "bg-card/65 border border-border hover:border-primary/20" : ""}`}
+                  style={{
+                    ...(prod.bg_color ? { backgroundColor: prod.bg_color } : {}),
+                    ...(prod.text_color ? { color: prod.text_color } : {}),
+                    ...(prod.border_color ? { borderColor: prod.border_color, borderWidth: "1px", borderStyle: "solid" } : {}),
+                  }}>
                   {prod.image_url ? (
                     <img src={prod.image_url} alt={prod.title} className="w-full h-28 object-cover" />
                   ) : (
                     <div className="w-full h-28 flex items-center justify-center bg-primary/5 text-3xl">{prod.icon}</div>
                   )}
                   <div className="p-3.5">
-                    <h5 className="text-[0.82rem] font-semibold text-foreground mb-1">{prod.title}</h5>
-                    {prod.price && <span className="text-[0.72rem] text-primary font-bold">{prod.price}</span>}
+                    <h5 className="text-[0.82rem] font-semibold mb-1">{prod.title}</h5>
+                    {prod.price && <span className="text-[0.72rem] font-bold" style={{ color: prod.text_color || "hsl(var(--primary))" }}>{prod.price}</span>}
                   </div>
                 </div>
               ))}
