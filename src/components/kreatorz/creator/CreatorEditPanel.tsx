@@ -212,6 +212,8 @@ const CreatorEditPanel = forwardRef<CreatorEditPanelHandle, Props>(function Crea
       return false;
     }
 
+    if (!validate()) return false;
+
     try {
       setSaving(true);
 
