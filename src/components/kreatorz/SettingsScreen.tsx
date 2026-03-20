@@ -170,7 +170,13 @@ export default function SettingsScreen({ onNavigate }: SettingsScreenProps) {
               </div>
             </div>
 
-            <button onClick={() => toast.success("Branding salvo com sucesso!")} className="px-6 py-3 bg-primary text-primary-foreground font-semibold text-sm rounded-xl transition-all hover:bg-k-400 hover:shadow-k-purple active:scale-[0.97]">
+            <button onClick={() => {
+              localStorage.setItem("kreatorz-agency-name", agencyName);
+              localStorage.setItem("kreatorz-agency-slug", agencySlug);
+              localStorage.setItem("kreatorz-primary-color", primaryColor);
+              localStorage.setItem("kreatorz-accent-color", accentColor);
+              toast.success("Branding salvo com sucesso!");
+            }} className="px-6 py-3 bg-primary text-primary-foreground font-semibold text-sm rounded-xl transition-all hover:bg-k-400 hover:shadow-k-purple active:scale-[0.97]">
               Salvar alterações
             </button>
           </div>
