@@ -54,19 +54,22 @@ export default function CreatorViewLinkme({ profile, links: rawLinks, socialLink
       <div className="w-full sm:max-w-[480px] md:max-w-[520px] relative overflow-hidden">
         {/* Hero background */}
         {heroImage && (
-          <div className="absolute inset-0 z-0">
-            <div className="sticky top-0 w-full h-screen">
-              <img src={heroImage} alt={profile.name} className="w-full h-full object-cover transition-transform duration-[1.2s] ease-out" />
-              {/* Cinematic vignette overlay */}
-              <div className="absolute inset-0 pointer-events-none" style={{
-                background: `radial-gradient(ellipse 80% 60% at 50% 40%, transparent 0%, hsl(var(--background) / 0.15) 50%, hsl(var(--background) / 0.5) 100%)`
-              }} />
-              {/* Scroll-driven fade */}
-              <div className="absolute inset-0 transition-opacity duration-500 ease-out" style={{
-                background: `linear-gradient(to top, hsl(var(--background)) 0%, hsl(var(--background) / 0.7) 30%, transparent 60%)`,
-                opacity: Math.max(0.3, overlayOpacity),
-              }} />
-            </div>
+          <div className="absolute inset-0 z-0 overflow-hidden">
+            <img
+              src={heroImage}
+              alt={profile.name}
+              className="w-full h-[120%] object-cover will-change-transform"
+              style={{ transform: `translateY(-${parallaxY}px)` }}
+            />
+            {/* Cinematic vignette overlay */}
+            <div className="absolute inset-0 pointer-events-none" style={{
+              background: `radial-gradient(ellipse 80% 60% at 50% 40%, transparent 0%, hsl(var(--background) / 0.15) 50%, hsl(var(--background) / 0.5) 100%)`
+            }} />
+            {/* Scroll-driven fade */}
+            <div className="absolute inset-0 transition-opacity duration-500 ease-out" style={{
+              background: `linear-gradient(to top, hsl(var(--background)) 0%, hsl(var(--background) / 0.7) 30%, transparent 60%)`,
+              opacity: Math.max(0.3, overlayOpacity),
+            }} />
           </div>
         )}
 
