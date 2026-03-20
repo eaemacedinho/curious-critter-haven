@@ -4,6 +4,7 @@ import { useCreatorData } from "@/hooks/useCreatorData";
 import CreatorView from "./creator/CreatorView";
 import CreatorViewLinkme from "./creator/CreatorViewLinkme";
 import CreatorEditPanel, { type CreatorEditPanelHandle } from "./creator/CreatorEditPanel";
+import { toast } from "sonner";
 
 type LayoutTheme = "layout1" | "layout2";
 
@@ -59,6 +60,20 @@ export default function CreatorScreen() {
     await refetch();
   };
 
+  const handleSetPublicLayout = async (layout: LayoutTheme) => {
+    if (!profile) return;
+    try {
+      await saveProfile({ public_layout: layout } as any);
+      toast.success(
+        layout === "layout1"
+          ? "Layout 1 definido como página pública"
+          : "Layout 2 definido como página pública"
+      );
+    } catch {
+      toast.error("Erro ao salvar layout público");
+    }
+  };
+
   if (loading) {
     return (
       <div className="min-h-screen flex items-center justify-center">
@@ -88,35 +103,51 @@ export default function CreatorScreen() {
   }
 
   const activeLinks = links.filter((link) => link.active);
+  const isPublic = profile.public_layout === layoutTheme;
 
   return (
     <div className="min-h-screen pt-14 relative">
-      {/* Top bar: theme toggle + edit button */}
+      {/* Top bar: theme toggle + public indicator + edit button */}
       <div className="fixed top-16 right-6 z-50 flex items-center gap-2">
         {/* Theme toggle */}
         {!editing && (
-          <div className="flex bg-card/80 backdrop-blur-xl border border-primary/10 rounded-xl overflow-hidden">
+          <>
+            <div className="flex bg-card/80 backdrop-blur-xl border border-primary/10 rounded-xl overflow-hidden">
+              <button
+                onClick={() => setLayoutTheme("layout1")}
+                className={`px-3 py-2 text-xs font-semibold transition-all ${
+                  layoutTheme === "layout1"
+                    ? "bg-primary text-primary-foreground"
+                    : "text-k-3 hover:text-k-1"
+                }`}
+              >
+                Layout 1
+              </button>
+              <button
+                onClick={() => setLayoutTheme("layout2")}
+                className={`px-3 py-2 text-xs font-semibold transition-all ${
+                  layoutTheme === "layout2"
+                    ? "bg-primary text-primary-foreground"
+                    : "text-k-3 hover:text-k-1"
+                }`}
+              >
+                Layout 2
+              </button>
+            </div>
+
+            {/* Public layout button */}
             <button
-              onClick={() => setLayoutTheme("layout1")}
-              className={`px-3 py-2 text-xs font-semibold transition-all ${
-                layoutTheme === "layout1"
-                  ? "bg-primary text-primary-foreground"
-                  : "text-k-3 hover:text-k-1"
+              onClick={() => void handleSetPublicLayout(layoutTheme)}
+              disabled={isPublic}
+              className={`px-3 py-2 rounded-xl text-xs font-semibold transition-all border ${
+                isPublic
+                  ? "bg-emerald-500/20 text-emerald-400 border-emerald-500/30 cursor-default"
+                  : "bg-card/80 backdrop-blur-xl text-k-3 border-primary/10 hover:bg-primary/10 hover:text-primary"
               }`}
             >
-              Layout 1
+              {isPublic ? "✓ Página pública" : "Ativar como pública"}
             </button>
-            <button
-              onClick={() => setLayoutTheme("layout2")}
-              className={`px-3 py-2 text-xs font-semibold transition-all ${
-                layoutTheme === "layout2"
-                  ? "bg-primary text-primary-foreground"
-                  : "text-k-3 hover:text-k-1"
-              }`}
-            >
-              Layout 2
-            </button>
-          </div>
+          </>
         )}
 
         <button
