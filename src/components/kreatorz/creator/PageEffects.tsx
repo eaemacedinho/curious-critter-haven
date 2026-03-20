@@ -20,13 +20,8 @@ export interface EffectOption {
 }
 
 export const EFFECT_OPTIONS: EffectOption[] = [
-  { id: "particles", label: "Partículas", emoji: "✨", description: "Partículas brilhantes flutuando pela tela", preview: "effect-preview-particles" },
-  { id: "fireflies", label: "Vagalumes", emoji: "🟡", description: "Pontos luminosos suaves se movendo lentamente", preview: "effect-preview-fireflies" },
   { id: "snow", label: "Neve", emoji: "❄️", description: "Flocos de neve caindo suavemente", preview: "effect-preview-snow" },
-  { id: "confetti", label: "Confete", emoji: "🎉", description: "Explosão de confete ao carregar a página", preview: "effect-preview-confetti" },
   { id: "floating-emojis", label: "Emojis Flutuantes", emoji: "🎈", description: "Emojis subindo pela tela continuamente", preview: "effect-preview-emojis" },
-  { id: "glow-borders", label: "Bordas Luminosas", emoji: "💜", description: "Bordas dos cards com brilho animado", preview: "effect-preview-glow" },
-  { id: "gradient-bg", label: "Gradiente Animado", emoji: "🌈", description: "Fundo com gradiente em movimento suave", preview: "effect-preview-gradient" },
   { id: "sparkle-cursor", label: "Rastro de Brilho", emoji: "⭐", description: "Rastro de partículas ao mover o dedo/mouse", preview: "effect-preview-sparkle" },
   { id: "aurora", label: "Aurora Boreal", emoji: "🌌", description: "Ondas coloridas de aurora no fundo", preview: "effect-preview-aurora" },
 ];
@@ -385,21 +380,30 @@ function SparkleCursor({ active }: { active: boolean }) {
 function AuroraEffect({ active }: { active: boolean }) {
   if (!active) return null;
   return (
-    <div className="absolute inset-0 pointer-events-none z-0 overflow-hidden opacity-30">
+    <div className="fixed inset-0 pointer-events-none z-[2] overflow-hidden" style={{ opacity: 0.45 }}>
       <div
-        className="absolute w-[200%] h-[60%] top-[10%] -left-[50%]"
+        className="absolute w-[200%] h-[50%] top-[5%] -left-[50%]"
         style={{
-          background: "linear-gradient(90deg, transparent 0%, hsl(268 69% 50% / 0.3) 20%, hsl(200 80% 50% / 0.2) 40%, hsl(160 64% 52% / 0.25) 60%, hsl(268 85% 61% / 0.3) 80%, transparent 100%)",
-          filter: "blur(60px)",
-          animation: "aurora-drift 12s ease-in-out infinite alternate",
+          background: "linear-gradient(90deg, transparent 0%, hsl(268 69% 50% / 0.4) 15%, hsl(200 80% 50% / 0.3) 35%, hsl(160 64% 52% / 0.35) 55%, hsl(268 85% 61% / 0.4) 75%, transparent 100%)",
+          filter: "blur(50px)",
+          animation: "aurora-drift 10s ease-in-out infinite alternate",
         }}
       />
       <div
-        className="absolute w-[180%] h-[40%] top-[30%] -left-[40%]"
+        className="absolute w-[200%] h-[35%] top-[25%] -left-[40%]"
         style={{
-          background: "linear-gradient(90deg, transparent, hsl(268 100% 71% / 0.15), hsl(320 80% 60% / 0.2), hsl(268 69% 50% / 0.15), transparent)",
-          filter: "blur(80px)",
-          animation: "aurora-drift 16s ease-in-out infinite alternate-reverse",
+          background: "linear-gradient(90deg, transparent, hsl(268 100% 71% / 0.25), hsl(320 80% 60% / 0.3), hsl(200 90% 60% / 0.2), hsl(268 69% 50% / 0.25), transparent)",
+          filter: "blur(70px)",
+          animation: "aurora-drift 14s ease-in-out infinite alternate-reverse",
+        }}
+      />
+      <div
+        className="absolute w-[180%] h-[30%] top-[40%] -left-[30%]"
+        style={{
+          background: "linear-gradient(90deg, transparent, hsl(160 64% 52% / 0.2), hsl(268 69% 50% / 0.25), hsl(200 80% 50% / 0.2), transparent)",
+          filter: "blur(60px)",
+          animation: "aurora-drift 18s ease-in-out infinite alternate",
+          animationDelay: "3s",
         }}
       />
     </div>
