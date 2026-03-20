@@ -152,6 +152,8 @@ const CreatorEditPanel = forwardRef<CreatorEditPanelHandle, Props>(function Crea
   const [shapeLinks, setShapeLinks] = useState<"rounded" | "circular" | "pill" | "shadow" | "polaroid">(profile.image_shape_links || "rounded");
   const [pageEffects, setPageEffects] = useState<PageEffect[]>((profile.page_effects?.effects || []) as PageEffect[]);
   const [effectColor, setEffectColor] = useState<string>(profile.page_effects?.color || "#8B5CF6");
+  const [effectEmojis, setEffectEmojis] = useState<string[]>(profile.page_effects?.emojis || [...DEFAULT_EMOJIS]);
+  const [effectIntensity, setEffectIntensity] = useState<Record<string, number>>(profile.page_effects?.intensity || {});
   const [links, setLinks] = useState(initialLinks);
   const [social, setSocial] = useState(() =>
     initialSocial.map((s) => {
