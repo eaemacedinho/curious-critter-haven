@@ -2,6 +2,7 @@ import { toast } from "sonner";
 import type { CreatorProfile, CreatorLink, SocialLink, CreatorProduct, CreatorCampaign } from "@/hooks/useCreatorData";
 import { useState } from "react";
 import SocialIcon from "./SocialIcon";
+import VerifiedBadge from "./VerifiedBadge";
 
 interface Props {
   profile: CreatorProfile;
