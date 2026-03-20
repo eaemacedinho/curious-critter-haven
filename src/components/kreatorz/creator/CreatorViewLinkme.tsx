@@ -90,7 +90,10 @@ export default function CreatorViewLinkme({ profile, links: rawLinks, socialLink
 
           {/* Hero spacer */}
           <div className="relative w-full" style={{ height: "52vh", minHeight: "300px", maxHeight: "460px" }}>
-            <div className="absolute inset-x-0 bottom-0 h-[55%] bg-gradient-to-t from-background via-background/70 to-transparent pointer-events-none" />
+            {/* Multi-layer cinematic gradient */}
+            <div className="absolute inset-x-0 bottom-0 h-[70%] pointer-events-none" style={{
+              background: `linear-gradient(to top, hsl(var(--background)) 0%, hsl(var(--background) / 0.85) 25%, hsl(var(--background) / 0.4) 55%, transparent 100%)`
+            }} />
             {!heroImage && (
               <div className="w-full h-full bg-gradient-to-b from-primary/30 to-background flex items-center justify-center">
                 <span className="text-7xl text-muted-foreground">{profile.name?.[0] || "?"}</span>
@@ -99,7 +102,7 @@ export default function CreatorViewLinkme({ profile, links: rawLinks, socialLink
           </div>
 
           {/* Content */}
-          <div className="relative bg-background rounded-t-[2rem] -mt-8 pb-12">
+          <div className="relative pb-12" style={{ background: "hsl(var(--background))" }}>
             <div className="text-center pt-6 px-5">
               <h2 className="font-display text-[2rem] font-bold text-foreground tracking-tight leading-tight inline-flex items-center justify-center gap-2">
                 {profile.name}
