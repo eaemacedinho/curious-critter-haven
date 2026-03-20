@@ -81,12 +81,13 @@ export default function CreatorPublic() {
       if (creator.agency_id) {
         const { data: agencyData } = await supabase
           .from("agencies")
-          .select("name, primary_color, accent_color")
+          .select("name, primary_color, accent_color, logo_url, footer_text")
           .eq("id", creator.agency_id)
           .maybeSingle();
         if (agencyData) {
           setAgencyName(agencyData.name || "");
-          // Apply agency colors to public page
+          setAgencyLogoUrl(agencyData.logo_url || "");
+          setAgencyFooterText(agencyData.footer_text || "Powered by");
           const root = document.documentElement;
           if (agencyData.primary_color) {
             const hsl = hexToHsl(agencyData.primary_color);
