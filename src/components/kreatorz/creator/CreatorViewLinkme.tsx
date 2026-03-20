@@ -211,9 +211,27 @@ export default function CreatorViewLinkme({ profile, links: rawLinks, socialLink
                   {/* Links */}
                   {links.length > 0 && (
                     <div className="flex flex-col gap-3 mt-6 px-4">
-                      {links.map((link) => (
-                        <LinkmeCard key={link.id} link={link} shape={profile.image_shape_links} />
-                      ))}
+                      {(() => {
+                        const elements: React.ReactNode[] = [];
+                        let i = 0;
+                        while (i < links.length) {
+                          const link = links[i];
+                          if (link.display_mode === "half") {
+                            const next = links[i + 1]?.display_mode === "half" ? links[i + 1] : null;
+                            elements.push(
+                              <div key={link.id + "-row"} className="grid grid-cols-2 gap-3">
+                                <LinkmeCard link={link} shape={profile.image_shape_links} />
+                                {next && <LinkmeCard link={next} shape={profile.image_shape_links} />}
+                              </div>
+                            );
+                            i += next ? 2 : 1;
+                          } else {
+                            elements.push(<LinkmeCard key={link.id} link={link} shape={profile.image_shape_links} />);
+                            i++;
+                          }
+                        }
+                        return elements;
+                      })()}
                     </div>
                   )}
 
