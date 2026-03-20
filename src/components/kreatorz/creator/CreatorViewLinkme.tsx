@@ -66,12 +66,12 @@ export default function CreatorViewLinkme({ profile, links: rawLinks, socialLink
             />
             {/* Cinematic vignette overlay */}
             <div className="absolute inset-0 pointer-events-none" style={{
-              background: `radial-gradient(ellipse 90% 70% at 50% 40%, transparent 0%, hsl(var(--background) / 0.08) 55%, hsl(var(--background) / 0.3) 100%)`
+              background: `radial-gradient(ellipse 90% 70% at 50% 40%, transparent 0%, hsl(var(--background) / 0.04) 60%, hsl(var(--background) / 0.12) 100%)`
             }} />
             {/* Scroll-driven fade */}
             <div className="absolute inset-0 transition-opacity duration-500 ease-out" style={{
               background: `linear-gradient(to top, hsl(var(--background)) 0%, hsl(var(--background) / 0.7) 30%, transparent 60%)`,
-              opacity: Math.max(0.15, overlayOpacity * 0.7),
+              opacity: Math.max(0.0, overlayOpacity * 0.4),
             }} />
           </div>
         )}
@@ -100,7 +100,7 @@ export default function CreatorViewLinkme({ profile, links: rawLinks, socialLink
           <div className="relative w-full" style={{ height: "52vh", minHeight: "320px", maxHeight: "460px" }}>
             {/* Multi-layer cinematic gradient — extends full height, solid at bottom */}
             <div className="absolute inset-0 pointer-events-none" style={{
-              background: `linear-gradient(to top, hsl(var(--background)) 0%, hsl(var(--background)) 24%, hsl(var(--background) / 0.98) 34%, hsl(var(--background) / 0.88) 46%, hsl(var(--background) / 0.58) 62%, hsl(var(--background) / 0.2) 78%, transparent 92%)`
+              background: `linear-gradient(to top, hsl(var(--background)) 0%, hsl(var(--background)) 16%, hsl(var(--background) / 0.9) 28%, hsl(var(--background) / 0.5) 46%, hsl(var(--background) / 0.1) 65%, transparent 85%)`
             }} />
             <div className="absolute inset-x-0 bottom-0 h-32 pointer-events-none" style={{
               background: `linear-gradient(to top, hsl(var(--background)) 0%, hsl(var(--background)) 52%, hsl(var(--background) / 0.86) 74%, transparent 100%)`
@@ -145,8 +145,8 @@ export default function CreatorViewLinkme({ profile, links: rawLinks, socialLink
               <div className="flex justify-center items-center gap-4 mt-5 px-5">
                 {stats.map((stat, i) => (
                   <div key={i} className="flex items-baseline gap-1.5">
-                    <span className="font-body text-[1rem] font-bold text-primary tracking-tight">{stat.value}</span>
-                    <span className="font-body text-[0.78rem] text-muted-foreground">{stat.label}</span>
+                    <span className="font-body text-[1rem] font-bold text-foreground tracking-tight">{stat.value}</span>
+                    <span className="font-body text-[0.78rem] text-foreground/50">{stat.label}</span>
                   </div>
                 ))}
               </div>
