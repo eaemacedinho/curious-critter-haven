@@ -155,6 +155,16 @@ export default function CreatorScreen() {
           </>
         )}
 
+        {editing && (
+          <button
+            onClick={() => void handleCancelEditing()}
+            disabled={transitionSaving}
+            className="px-4 py-2 rounded-xl text-sm font-semibold transition-all duration-300 bg-k-800 border border-primary/10 text-k-3 hover:border-k-400 hover:text-primary-foreground active:scale-[0.97] disabled:opacity-60 disabled:cursor-not-allowed"
+          >
+            ✕ Cancelar
+          </button>
+        )}
+
         <button
           onClick={() => void handleToggleEditing()}
           disabled={transitionSaving}
@@ -164,7 +174,7 @@ export default function CreatorScreen() {
               : "gradient-primary text-primary-foreground hover:shadow-k-purple-lg"
           } active:scale-[0.97]`}
         >
-          {transitionSaving ? "Salvando..." : editing ? "✓ Visualizar" : "✏️ Editar página"}
+          {transitionSaving ? "Salvando..." : editing ? "✓ Salvar e visualizar" : "✏️ Editar página"}
         </button>
       </div>
 
