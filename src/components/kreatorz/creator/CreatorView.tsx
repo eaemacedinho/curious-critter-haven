@@ -60,7 +60,7 @@ export default function CreatorView({ profile, links: rawLinks, socialLinks: raw
   };
 
   return (
-    <div className="min-h-screen flex items-start justify-center px-4 sm:px-6 py-16 pt-20 sm:pt-24 relative">
+    <div className={`${embedded ? "min-h-[100vh]" : "min-h-screen"} flex items-start justify-center px-4 sm:px-6 py-16 pt-20 sm:pt-24 relative`}>
       <div className="absolute top-0 left-1/2 -translate-x-1/2 w-[600px] h-[420px] bg-[radial-gradient(ellipse,hsl(268_69%_50%_/_0.4),transparent_70%)] pointer-events-none" />
 
       <div className="w-full sm:max-w-[480px] md:max-w-[520px] relative z-[1]">
