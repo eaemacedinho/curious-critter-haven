@@ -90,6 +90,7 @@ const CreatorEditPanel = forwardRef<CreatorEditPanelHandle, Props>(function Crea
     onSaveProducts,
     onSaveCampaigns,
     onUploadImage,
+    onUploadContentImage,
     onDone,
   }: Props,
   ref
