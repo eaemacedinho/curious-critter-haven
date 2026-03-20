@@ -346,6 +346,8 @@ export default function CreatorViewLinkme({ profile, links: rawLinks, socialLink
       </div>
     </div>
   );
+
+  return hasGlowBorders ? <GlowBorderProvider active>{content}</GlowBorderProvider> : content;
 }
 
 /* ── Sub-components ── */
