@@ -97,10 +97,13 @@ export default function CreatorViewLinkme({ profile, links: rawLinks, socialLink
           </div>
 
           {/* Hero spacer with name + handle overlaid */}
-          <div className="relative w-full" style={{ height: "58vh", minHeight: "340px", maxHeight: "520px" }}>
+          <div className="relative w-full" style={{ height: "52vh", minHeight: "320px", maxHeight: "460px" }}>
             {/* Multi-layer cinematic gradient — extends full height, solid at bottom */}
             <div className="absolute inset-0 pointer-events-none" style={{
-              background: `linear-gradient(to top, hsl(var(--background)) 0%, hsl(var(--background)) 8%, hsl(var(--background) / 0.95) 15%, hsl(var(--background) / 0.7) 35%, hsl(var(--background) / 0.3) 55%, transparent 80%)`
+              background: `linear-gradient(to top, hsl(var(--background)) 0%, hsl(var(--background)) 24%, hsl(var(--background) / 0.98) 34%, hsl(var(--background) / 0.88) 46%, hsl(var(--background) / 0.58) 62%, hsl(var(--background) / 0.2) 78%, transparent 92%)`
+            }} />
+            <div className="absolute inset-x-0 bottom-0 h-32 pointer-events-none" style={{
+              background: `linear-gradient(to top, hsl(var(--background)) 0%, hsl(var(--background)) 52%, hsl(var(--background) / 0.86) 74%, transparent 100%)`
             }} />
             {!heroImage && (
               <div className="w-full h-full bg-gradient-to-b from-primary/30 to-background flex items-center justify-center">
@@ -109,7 +112,7 @@ export default function CreatorViewLinkme({ profile, links: rawLinks, socialLink
             )}
 
             {/* Name + handle + socials overlaid at bottom of hero */}
-            <div className="absolute inset-x-0 bottom-0 z-10 flex flex-col items-center pb-4 px-5">
+              <div className="absolute inset-x-0 bottom-0 z-10 flex flex-col items-center pb-6 px-5">
               <h2 className="font-display text-[2rem] font-bold text-white tracking-tight leading-tight inline-flex items-center justify-center gap-2 drop-shadow-[0_2px_12px_rgba(0,0,0,0.5)]"
                 style={{ textShadow: "0 2px 16px rgba(0,0,0,0.6)" }}>
                 {profile.name}
@@ -135,7 +138,7 @@ export default function CreatorViewLinkme({ profile, links: rawLinks, socialLink
           </div>
 
           {/* Content — no gap, seamless transition */}
-          <div className="relative pb-12 -mt-px" style={{ background: "hsl(var(--background))" }}>
+          <div className="relative pb-12 -mt-6 pt-2" style={{ background: "hsl(var(--background))" }}>
 
             {/* Stats */}
             {stats.length > 0 && (
