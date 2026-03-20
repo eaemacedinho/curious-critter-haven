@@ -40,6 +40,8 @@ export default function CreatorPublic() {
   const [agencyName, setAgencyName] = useState<string>("");
   const [agencyLogoUrl, setAgencyLogoUrl] = useState<string>("");
   const [agencyFooterText, setAgencyFooterText] = useState<string>("Powered by");
+  const [agencyFooterVisible, setAgencyFooterVisible] = useState<boolean>(true);
+  const [agencyFooterLink, setAgencyFooterLink] = useState<string>("");
   const [loading, setLoading] = useState(true);
   const [notFound, setNotFound] = useState(false);
 
@@ -81,13 +83,15 @@ export default function CreatorPublic() {
       if (creator.agency_id) {
         const { data: agencyData } = await supabase
           .from("agencies")
-          .select("name, primary_color, accent_color, logo_url, footer_text")
+          .select("name, primary_color, accent_color, logo_url, footer_text, footer_visible, footer_link")
           .eq("id", creator.agency_id)
           .maybeSingle();
         if (agencyData) {
           setAgencyName(agencyData.name || "");
           setAgencyLogoUrl(agencyData.logo_url || "");
           setAgencyFooterText(agencyData.footer_text || "Powered by");
+          setAgencyFooterVisible(agencyData.footer_visible ?? true);
+          setAgencyFooterLink(agencyData.footer_link || "");
           const root = document.documentElement;
           if (agencyData.primary_color) {
             const hsl = hexToHsl(agencyData.primary_color);
@@ -147,9 +151,9 @@ export default function CreatorPublic() {
   const useLayout2 = profile.public_layout === "layout2";
 
   return useLayout2 ? (
-    <CreatorViewLinkme profile={profile} links={links} socialLinks={socialLinks} products={products} campaigns={campaigns} agencyName={agencyName} agencyLogoUrl={agencyLogoUrl} agencyFooterText={agencyFooterText} />
+    <CreatorViewLinkme profile={profile} links={links} socialLinks={socialLinks} products={products} campaigns={campaigns} agencyName={agencyName} agencyLogoUrl={agencyLogoUrl} agencyFooterText={agencyFooterText} agencyFooterVisible={agencyFooterVisible} agencyFooterLink={agencyFooterLink} />
   ) : (
-    <CreatorView profile={profile} links={links} socialLinks={socialLinks} products={products} campaigns={campaigns} agencyName={agencyName} agencyLogoUrl={agencyLogoUrl} agencyFooterText={agencyFooterText} />
+    <CreatorView profile={profile} links={links} socialLinks={socialLinks} products={products} campaigns={campaigns} agencyName={agencyName} agencyLogoUrl={agencyLogoUrl} agencyFooterText={agencyFooterText} agencyFooterVisible={agencyFooterVisible} agencyFooterLink={agencyFooterLink} />
   );
 }
 

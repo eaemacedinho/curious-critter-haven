@@ -16,6 +16,8 @@ export default function Settings() {
   const [logoUrl, setLogoUrl] = useState(agency?.logo_url || "");
   const [customDomain, setCustomDomain] = useState(agency?.domain || "");
   const [footerText, setFooterText] = useState(agency?.footer_text || "Powered by");
+  const [footerVisible, setFooterVisible] = useState(agency?.footer_visible ?? true);
+  const [footerLink, setFooterLink] = useState(agency?.footer_link || "");
   const [uploadingLogo, setUploadingLogo] = useState(false);
   const [saving, setSaving] = useState(false);
 
@@ -35,6 +37,8 @@ export default function Settings() {
         accent_color: accentColor,
         logo_url: logoUrl,
         footer_text: footerText,
+        footer_visible: footerVisible,
+        footer_link: footerLink,
       });
       toast.success("Branding salvo com sucesso!");
     } catch (err: any) {
@@ -170,16 +174,46 @@ export default function Settings() {
                 </div>
               </div>
 
-              {/* Footer text */}
-              <div>
-                <label className="block text-xs font-semibold text-muted-foreground uppercase tracking-wider mb-1.5">Texto do footer</label>
-                <input
-                  value={footerText}
-                  onChange={(e) => setFooterText(e.target.value)}
-                  placeholder="Powered by"
-                  className="w-full px-4 py-3 bg-background border border-border rounded-xl text-sm text-foreground outline-none focus:border-primary transition-all"
-                />
-                <p className="text-[0.66rem] text-muted-foreground mt-1.5">Texto exibido antes do nome da agência no rodapé das páginas.</p>
+              {/* Footer settings */}
+              <div className="space-y-4">
+                <label className="block text-xs font-semibold text-muted-foreground uppercase tracking-wider">Rodapé das páginas</label>
+                
+                <div className="flex items-center justify-between bg-background border border-border rounded-xl px-4 py-3">
+                  <div>
+                    <div className="text-sm text-foreground font-medium">Exibir footer</div>
+                    <div className="text-[0.66rem] text-muted-foreground">Mostrar "Powered by" nas páginas dos creators</div>
+                  </div>
+                  <button
+                    onClick={() => setFooterVisible(!footerVisible)}
+                    className={`w-11 h-6 rounded-full transition-colors relative ${footerVisible ? "bg-primary" : "bg-border"}`}
+                  >
+                    <span className={`block w-5 h-5 rounded-full bg-white shadow transition-transform absolute top-0.5 ${footerVisible ? "translate-x-[22px]" : "translate-x-0.5"}`} />
+                  </button>
+                </div>
+
+                {footerVisible && (
+                  <>
+                    <div>
+                      <label className="block text-[0.68rem] text-muted-foreground mb-1.5">Texto do footer</label>
+                      <input
+                        value={footerText}
+                        onChange={(e) => setFooterText(e.target.value)}
+                        placeholder="Powered by"
+                        className="w-full px-4 py-3 bg-background border border-border rounded-xl text-sm text-foreground outline-none focus:border-primary transition-all"
+                      />
+                    </div>
+                    <div>
+                      <label className="block text-[0.68rem] text-muted-foreground mb-1.5">Link do footer (opcional)</label>
+                      <input
+                        value={footerLink}
+                        onChange={(e) => setFooterLink(e.target.value)}
+                        placeholder="https://suaagencia.com"
+                        className="w-full px-4 py-3 bg-background border border-border rounded-xl text-sm text-foreground outline-none focus:border-primary transition-all"
+                      />
+                      <p className="text-[0.66rem] text-muted-foreground mt-1">Ao clicar no footer, o visitante será redirecionado para este link.</p>
+                    </div>
+                  </>
+                )}
               </div>
 
               {/* Preview */}
