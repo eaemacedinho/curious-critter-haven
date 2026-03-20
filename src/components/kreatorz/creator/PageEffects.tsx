@@ -84,22 +84,24 @@ function useParticleCanvas(
     };
     resize();
 
-    const emojis = ["🎈", "⭐", "💜", "🎵", "✨", "🦋", "🌸", "💎"];
+    const emojis = customEmojis && customEmojis.length > 0 ? customEmojis : DEFAULT_EMOJIS;
     const w = () => canvas.width / dpr;
     const h = () => canvas.height / dpr;
+
+    // Intensity multiplier: 0-100 mapped to 0.2-2.0
+    const intMul = intensity !== undefined ? 0.2 + (intensity / 100) * 1.8 : 1;
 
     interface Particle {
       x: number; y: number; vx: number; vy: number;
       size: number; opacity: number; life: number; maxLife: number;
       emoji?: string; color?: string; angle?: number; spin?: number;
-      // bubble-specific
       wobblePhase?: number; wobbleSpeed?: number;
-      // star-rain specific
       length?: number; speed?: number;
     }
 
     const particles: Particle[] = [];
-    const count = type === "snow" ? 40 : type === "floating-emojis" ? 12 : type === "bubbles" ? 16 : type === "star-rain" ? 8 : 30;
+    const baseCount = type === "snow" ? 40 : type === "floating-emojis" ? 12 : type === "bubbles" ? 16 : type === "star-rain" ? 8 : 30;
+    const count = Math.max(2, Math.round(baseCount * intMul));
 
     const spawn = (): Particle => {
       const base: Particle = {
