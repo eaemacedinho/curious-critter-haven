@@ -6,6 +6,7 @@ import VerifiedBadge from "./VerifiedBadge";
 import SpotlightCampaign from "./SpotlightCampaign";
 import PageEffects from "./PageEffects";
 import type { PageEffect } from "./PageEffects";
+import { getFontFamily, getFontSizeScale, loadGoogleFont } from "@/lib/fontUtils";
 
 const shapeClass = (shape?: string) => {
   switch (shape) {

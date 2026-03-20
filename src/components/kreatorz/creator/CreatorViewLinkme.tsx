@@ -6,6 +6,7 @@ import SpotlightCampaign from "./SpotlightCampaign";
 import type { CreatorProfile, CreatorLink, SocialLink, CreatorProduct, CreatorCampaign } from "@/hooks/useCreatorData";
 import PageEffects from "./PageEffects";
 import type { PageEffect } from "./PageEffects";
+import { getFontFamily, getFontSizeScale, loadGoogleFont } from "@/lib/fontUtils";
 
 const shapeClass = (shape?: string) => {
   switch (shape) {
