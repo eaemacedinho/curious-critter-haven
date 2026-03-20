@@ -261,7 +261,7 @@ export default function CreatorViewLinkme({ profile, links: rawLinks, socialLink
                   {/* Products */}
                   {products.length > 0 && (
                     <div className="mt-8 px-4">
-                      <SectionLabel label="Produtos" />
+                      <SectionLabel label="Produtos" color={profile.color_section_titles} />
                       <div className="grid grid-cols-2 gap-3">
                         {products.map((prod) => (
                           <div key={prod.id} onClick={() => prod.url && window.open(prod.url, "_blank")}
