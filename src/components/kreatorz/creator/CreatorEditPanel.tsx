@@ -519,9 +519,9 @@ const CreatorEditPanel = forwardRef<CreatorEditPanelHandle, Props>(function Crea
       </div>
 
       <div className="sticky bottom-4 z-10">
-        <button onClick={() => void handleSaveAll()} disabled={saving || Boolean(uploadingImage)}
+        <button onClick={() => void handleSaveAll()} disabled={saving || Boolean(uploadingImage) || Boolean(uploadingContent)}
           className="w-full py-4 gradient-primary text-primary-foreground font-bold text-sm rounded-2xl transition-all duration-300 hover:shadow-k-purple-lg active:scale-[0.98] disabled:opacity-50 shadow-k-purple">
-          {uploadingImage ? "Enviando imagem..." : saving ? "Salvando..." : "💾 Salvar tudo"}
+          {uploadingImage || uploadingContent ? "Enviando imagem..." : saving ? "Salvando..." : "💾 Salvar tudo"}
         </button>
       </div>
       {cropImage && (
