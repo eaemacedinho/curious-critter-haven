@@ -50,10 +50,19 @@ export default function CreatorEdit() {
     );
   }
 
+  const layoutOptions = [
+    { id: "layout1", label: "Padrão" },
+    { id: "layout2", label: "Imersivo" },
+    { id: "minimal", label: "Minimalista" },
+    { id: "grid", label: "Grid" },
+    { id: "dark", label: "Dark" },
+  ];
+
   const handleSetPublicLayout = async (layout: string) => {
     try {
       await saveProfile({ public_layout: layout } as any);
-      toast.success(`${layout === "layout2" ? "Layout 2" : "Layout 1"} definido como página pública`);
+      const name = layoutOptions.find(l => l.id === layout)?.label || layout;
+      toast.success(`Layout "${name}" definido como página pública`);
     } catch {
       toast.error("Erro ao salvar layout");
     }
@@ -79,26 +88,19 @@ export default function CreatorEdit() {
         <div className="flex items-center gap-2.5 flex-wrap">
           {/* Layout toggle */}
           <div className="flex bg-card border border-border rounded-xl overflow-hidden">
-            <button
-              onClick={() => void handleSetPublicLayout("layout1")}
-              className={`px-3 py-2 text-xs font-semibold transition-all ${
-                profile.public_layout === "layout1"
-                  ? "bg-primary text-primary-foreground"
-                  : "text-muted-foreground hover:text-foreground"
-              }`}
-            >
-              Layout 1
-            </button>
-            <button
-              onClick={() => void handleSetPublicLayout("layout2")}
-              className={`px-3 py-2 text-xs font-semibold transition-all ${
-                profile.public_layout === "layout2"
-                  ? "bg-primary text-primary-foreground"
-                  : "text-muted-foreground hover:text-foreground"
-              }`}
-            >
-              Layout 2
-            </button>
+            {layoutOptions.map((opt) => (
+              <button
+                key={opt.id}
+                onClick={() => void handleSetPublicLayout(opt.id)}
+                className={`px-3 py-2 text-xs font-semibold transition-all ${
+                  profile.public_layout === opt.id
+                    ? "bg-primary text-primary-foreground"
+                    : "text-muted-foreground hover:text-foreground"
+                }`}
+              >
+                {opt.label}
+              </button>
+            ))}
           </div>
           {/* Preview */}
           <button
@@ -129,7 +131,7 @@ export default function CreatorEdit() {
         socialLinks={socialLinks}
         products={products}
         campaigns={campaigns}
-        activeLayout={profile.public_layout as "layout1" | "layout2"}
+        activeLayout={profile.public_layout}
         onSaveProfile={saveProfile}
         onSaveLinks={saveLinks}
         onSaveSocialLinks={saveSocialLinks}

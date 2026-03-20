@@ -121,7 +121,8 @@ export default function CreatorView({ profile, links: rawLinks, socialLinks: raw
           </div>
 
           {profile.name && (
-            <h1 className="font-display text-[1.85rem] font-normal mt-4 text-foreground tracking-tight">
+            <h1 className="font-display text-[1.85rem] font-normal mt-4 tracking-tight"
+              style={profile.color_name ? { color: profile.color_name } : { color: "hsl(var(--foreground))" }}>
               {profile.name}
             </h1>
           )}
@@ -161,7 +162,8 @@ export default function CreatorView({ profile, links: rawLinks, socialLinks: raw
           )}
 
           {profile.bio && (
-            <p className="text-sm text-muted-foreground leading-relaxed mt-5 max-w-[380px] mx-auto">{profile.bio}</p>
+            <p className="text-sm leading-relaxed mt-5 max-w-[380px] mx-auto"
+              style={profile.color_bio ? { color: profile.color_bio } : { color: "hsl(var(--muted-foreground))" }}>{profile.bio}</p>
           )}
 
           {socialLinks.length > 0 && (
@@ -280,7 +282,8 @@ export default function CreatorView({ profile, links: rawLinks, socialLinks: raw
         {/* Products */}
         {products.length > 0 && (
           <div className="animate-k-fade-up" style={{ animationDelay: ".25s" }}>
-            <div className="text-[0.66rem] font-bold text-muted-foreground tracking-[0.14em] uppercase mb-3.5 flex items-center gap-2.5">
+            <div className="text-[0.66rem] font-bold tracking-[0.14em] uppercase mb-3.5 flex items-center gap-2.5"
+              style={profile.color_section_titles ? { color: profile.color_section_titles } : { color: "hsl(var(--muted-foreground))" }}>
               Meus Produtos <span className="flex-1 h-px bg-border" />
             </div>
             <div className="grid grid-cols-2 gap-3 mb-8">
@@ -310,7 +313,8 @@ export default function CreatorView({ profile, links: rawLinks, socialLinks: raw
         {/* Past / Inactive Campaigns */}
         {pastCampaigns.length > 0 && (
           <div className="animate-k-fade-up" style={{ animationDelay: ".3s" }}>
-            <div className="text-[0.66rem] font-bold text-muted-foreground tracking-[0.14em] uppercase mb-3.5 flex items-center gap-2.5">
+            <div className="text-[0.66rem] font-bold tracking-[0.14em] uppercase mb-3.5 flex items-center gap-2.5"
+              style={profile.color_section_titles ? { color: profile.color_section_titles } : { color: "hsl(var(--muted-foreground))" }}>
               Campanhas Anteriores <span className="flex-1 h-px bg-border" />
             </div>
             <div className="flex flex-col gap-3 mb-8">

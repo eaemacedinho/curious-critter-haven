@@ -146,8 +146,8 @@ export default function CreatorViewLinkme({ profile, links: rawLinks, socialLink
 
             {/* Name + handle + socials overlaid at bottom of hero */}
               <div className="absolute inset-x-0 bottom-0 z-10 flex flex-col items-center pb-5 px-5">
-              <h2 className="font-display text-[1.85rem] font-bold text-white tracking-[-0.01em] leading-[1.1] inline-flex items-center justify-center gap-2 drop-shadow-[0_2px_12px_rgba(0,0,0,0.5)]"
-                style={{ textShadow: "0 2px 16px rgba(0,0,0,0.6)" }}>
+              <h2 className="font-display text-[1.85rem] font-bold tracking-[-0.01em] leading-[1.1] inline-flex items-center justify-center gap-2 drop-shadow-[0_2px_12px_rgba(0,0,0,0.5)]"
+                style={{ textShadow: "0 2px 16px rgba(0,0,0,0.6)", color: profile.color_name || "white" }}>
                 {profile.name}
                 {profile.verified && <VerifiedBadge size={24} />}
               </h2>
@@ -210,7 +210,8 @@ export default function CreatorViewLinkme({ profile, links: rawLinks, socialLink
             )}
 
             {profile.bio && (
-              <p className="font-body text-[0.88rem] text-foreground/90 text-center leading-relaxed mt-5 px-6 max-w-[360px] mx-auto" style={{ whiteSpace: "pre-wrap" }}>
+              <p className="font-body text-[0.88rem] text-center leading-relaxed mt-5 px-6 max-w-[360px] mx-auto"
+                style={{ whiteSpace: "pre-wrap", color: profile.color_bio || "hsl(var(--foreground) / 0.9)" }}>
                 {profile.bio}
               </p>
             )}
@@ -260,7 +261,7 @@ export default function CreatorViewLinkme({ profile, links: rawLinks, socialLink
                   {/* Products */}
                   {products.length > 0 && (
                     <div className="mt-8 px-4">
-                      <SectionLabel label="Produtos" />
+                      <SectionLabel label="Produtos" color={profile.color_section_titles} />
                       <div className="grid grid-cols-2 gap-3">
                         {products.map((prod) => (
                           <div key={prod.id} onClick={() => prod.url && window.open(prod.url, "_blank")}
@@ -292,7 +293,7 @@ export default function CreatorViewLinkme({ profile, links: rawLinks, socialLink
                   {/* Past Campaigns */}
                   {pastCamps.length > 0 && (
                     <div className="mt-8 px-4">
-                      <SectionLabel label="Campanhas Anteriores" />
+                      <SectionLabel label="Campanhas Anteriores" color={profile.color_section_titles} />
                       <div className="flex flex-col gap-3">
                         {pastCamps.map((camp) => (
                           <div key={camp.id} onClick={() => camp.url && window.open(camp.url, "_blank")}
@@ -435,9 +436,10 @@ function LinkmeCard({ link, shape }: { link: CreatorLink; shape?: string }) {
   );
 }
 
-function SectionLabel({ label }: { label: string }) {
+function SectionLabel({ label, color }: { label: string; color?: string | null }) {
   return (
-    <div className="font-body text-[0.64rem] font-bold text-muted-foreground tracking-[0.16em] uppercase mb-3 flex items-center gap-2.5 px-1">
+    <div className="font-body text-[0.64rem] font-bold tracking-[0.16em] uppercase mb-3 flex items-center gap-2.5 px-1"
+      style={color ? { color } : { color: "hsl(var(--muted-foreground))" }}>
       {label} <span className="flex-1 h-px bg-border" />
     </div>
   );

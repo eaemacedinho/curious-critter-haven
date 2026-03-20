@@ -3,6 +3,9 @@ import type { CreatorCampaign, CreatorLink, CreatorProduct, CreatorProfile, Soci
 import { useTenant } from "@/hooks/useTenant";
 import CreatorView from "./CreatorView";
 import CreatorViewLinkme from "./CreatorViewLinkme";
+import CreatorViewMinimal from "./CreatorViewMinimal";
+import CreatorViewGrid from "./CreatorViewGrid";
+import CreatorViewDark from "./CreatorViewDark";
 
 const DEVICE = { w: 390, h: 844 };
 
@@ -12,7 +15,7 @@ interface Props {
   socialLinks: SocialLink[];
   products: CreatorProduct[];
   campaigns: CreatorCampaign[];
-  activeLayout?: "layout1" | "layout2";
+  activeLayout?: string;
 }
 
 function hexToHsl(hex: string): string | null {
@@ -94,7 +97,15 @@ export default function CreatorLivePreview({
     return style;
   }, [agency?.accent_color, agency?.primary_color]);
 
-  const PreviewComponent = activeLayout === "layout2" ? CreatorViewLinkme : CreatorView;
+  const PreviewComponent = (() => {
+    switch (activeLayout) {
+      case "layout2": return CreatorViewLinkme;
+      case "minimal": return CreatorViewMinimal;
+      case "grid": return CreatorViewGrid;
+      case "dark": return CreatorViewDark;
+      default: return CreatorView;
+    }
+  })();
   const renderedWidth = DEVICE.w * scale;
   const renderedHeight = DEVICE.h * scale;
 
@@ -111,7 +122,7 @@ export default function CreatorLivePreview({
         </p>
         <div className="flex items-center gap-2">
           <span className="rounded-full border border-border bg-background px-2.5 py-1 text-[0.62rem] font-semibold text-muted-foreground">
-            {activeLayout === "layout2" ? "Layout 2" : "Layout 1"}
+            {{ layout1: "Layout 1", layout2: "Layout 2", minimal: "Minimalista", grid: "Grid/Bento", dark: "Dark Premium" }[activeLayout] || "Layout 1"}
           </span>
           {publicUrl && (
             <button
@@ -149,32 +160,16 @@ export default function CreatorLivePreview({
             <div className="relative h-full w-full overflow-hidden" style={previewTheme}>
               {activeLayout === "layout2" ? (
                 <PreviewComponent
-                  profile={profile}
-                  links={links}
-                  socialLinks={socialLinks}
-                  products={products}
-                  campaigns={campaigns}
-                  agencyName={agency?.name}
-                  agencyLogoUrl={agency?.logo_url}
-                  agencyFooterText={agency?.footer_text}
-                  agencyFooterVisible={agency?.footer_visible}
-                  agencyFooterLink={agency?.footer_link}
-                  embedded
+                  profile={profile} links={links} socialLinks={socialLinks} products={products} campaigns={campaigns}
+                  agencyName={agency?.name} agencyLogoUrl={agency?.logo_url} agencyFooterText={agency?.footer_text}
+                  agencyFooterVisible={agency?.footer_visible} agencyFooterLink={agency?.footer_link} embedded
                 />
               ) : (
                 <div className="h-full overflow-y-auto overflow-x-hidden">
                   <PreviewComponent
-                    profile={profile}
-                    links={links}
-                    socialLinks={socialLinks}
-                    products={products}
-                    campaigns={campaigns}
-                    agencyName={agency?.name}
-                    agencyLogoUrl={agency?.logo_url}
-                    agencyFooterText={agency?.footer_text}
-                    agencyFooterVisible={agency?.footer_visible}
-                    agencyFooterLink={agency?.footer_link}
-                    embedded
+                    profile={profile} links={links} socialLinks={socialLinks} products={products} campaigns={campaigns}
+                    agencyName={agency?.name} agencyLogoUrl={agency?.logo_url} agencyFooterText={agency?.footer_text}
+                    agencyFooterVisible={agency?.footer_visible} agencyFooterLink={agency?.footer_link} embedded
                   />
                 </div>
               )}

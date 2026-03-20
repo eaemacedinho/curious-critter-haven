@@ -4,6 +4,9 @@ import { supabase } from "@/integrations/supabase/client";
 import type { CreatorProfile, CreatorLink, SocialLink, CreatorProduct, CreatorCampaign } from "@/hooks/useCreatorData";
 import CreatorView from "@/components/kreatorz/creator/CreatorView";
 import CreatorViewLinkme from "@/components/kreatorz/creator/CreatorViewLinkme";
+import CreatorViewMinimal from "@/components/kreatorz/creator/CreatorViewMinimal";
+import CreatorViewGrid from "@/components/kreatorz/creator/CreatorViewGrid";
+import CreatorViewDark from "@/components/kreatorz/creator/CreatorViewDark";
 
 const normalizeProfile = (creator: any): CreatorProfile => ({
   ...creator,
@@ -18,6 +21,9 @@ const normalizeProfile = (creator: any): CreatorProfile => ({
   image_shape_links: creator.image_shape_links || creator.image_shape || "rounded",
   font_family: creator.font_family || "default",
   font_size: creator.font_size || "medium",
+  color_name: creator.color_name || null,
+  color_bio: creator.color_bio || null,
+  color_section_titles: creator.color_section_titles || null,
   tags: Array.isArray(creator.tags) ? creator.tags : [],
   stats: Array.isArray(creator.stats) ? creator.stats : [],
   brands: Array.isArray(creator.brands)
@@ -150,13 +156,19 @@ export default function CreatorPublic() {
     );
   }
 
-  const useLayout2 = profile.public_layout === "layout2";
+  const layoutProps = { profile, links, socialLinks, products, campaigns, agencyName, agencyLogoUrl, agencyFooterText, agencyFooterVisible, agencyFooterLink };
 
-  return useLayout2 ? (
-    <CreatorViewLinkme profile={profile} links={links} socialLinks={socialLinks} products={products} campaigns={campaigns} agencyName={agencyName} agencyLogoUrl={agencyLogoUrl} agencyFooterText={agencyFooterText} agencyFooterVisible={agencyFooterVisible} agencyFooterLink={agencyFooterLink} />
-  ) : (
-    <CreatorView profile={profile} links={links} socialLinks={socialLinks} products={products} campaigns={campaigns} agencyName={agencyName} agencyLogoUrl={agencyLogoUrl} agencyFooterText={agencyFooterText} agencyFooterVisible={agencyFooterVisible} agencyFooterLink={agencyFooterLink} />
-  );
+  const LayoutComponent = (() => {
+    switch (profile.public_layout) {
+      case "layout2": return CreatorViewLinkme;
+      case "minimal": return CreatorViewMinimal;
+      case "grid": return CreatorViewGrid;
+      case "dark": return CreatorViewDark;
+      default: return CreatorView;
+    }
+  })();
+
+  return <LayoutComponent {...layoutProps} />;
 }
 
 function hexToHsl(hex: string): string | null {

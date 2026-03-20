@@ -301,6 +301,9 @@ export type Database = {
           avatar_url_layout2: string | null
           bio: string | null
           brands: Json | null
+          color_bio: string | null
+          color_name: string | null
+          color_section_titles: string | null
           cover_url: string | null
           cover_url_layout2: string | null
           created_at: string
@@ -327,6 +330,9 @@ export type Database = {
           avatar_url_layout2?: string | null
           bio?: string | null
           brands?: Json | null
+          color_bio?: string | null
+          color_name?: string | null
+          color_section_titles?: string | null
           cover_url?: string | null
           cover_url_layout2?: string | null
           created_at?: string
@@ -353,6 +359,9 @@ export type Database = {
           avatar_url_layout2?: string | null
           bio?: string | null
           brands?: Json | null
+          color_bio?: string | null
+          color_name?: string | null
+          color_section_titles?: string | null
           cover_url?: string | null
           cover_url_layout2?: string | null
           created_at?: string

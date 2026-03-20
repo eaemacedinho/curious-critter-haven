@@ -94,7 +94,7 @@ interface Props {
   socialLinks: SocialLink[];
   products: CreatorProduct[];
   campaigns: CreatorCampaign[];
-  activeLayout?: "layout1" | "layout2";
+  activeLayout?: string;
   onSaveProfile: (updates: Partial<CreatorProfile>) => Promise<void>;
   onSaveLinks: (links: CreatorLink[]) => Promise<void>;
   onSaveSocialLinks: (links: SocialLink[]) => Promise<void>;
@@ -156,6 +156,9 @@ const CreatorEditPanel = forwardRef<CreatorEditPanelHandle, Props>(function Crea
   const [effectIntensity, setEffectIntensity] = useState<Record<string, number>>(profile.page_effects?.intensity || {});
   const [fontFamily, setFontFamily] = useState(profile.font_family || "default");
   const [fontSize, setFontSize] = useState(profile.font_size || "medium");
+  const [colorName, setColorName] = useState(profile.color_name || "");
+  const [colorBio, setColorBio] = useState(profile.color_bio || "");
+  const [colorSectionTitles, setColorSectionTitles] = useState(profile.color_section_titles || "");
   const [links, setLinks] = useState(initialLinks);
   const [social, setSocial] = useState(() =>
     initialSocial.map((s) => {
@@ -202,7 +205,10 @@ const CreatorEditPanel = forwardRef<CreatorEditPanelHandle, Props>(function Crea
     page_effects: { effects: pageEffects, color: effectColor, emojis: effectEmojis, intensity: effectIntensity },
     font_family: fontFamily,
     font_size: fontSize,
-  }), [profile, name, handle, bio, avatarUrl, coverUrl, avatarUrlL2, coverUrlL2, verified, tags, stats, brands, shapeProducts, shapeCampaigns, shapeLinks, pageEffects, effectColor, effectEmojis, effectIntensity, fontFamily, fontSize]);
+    color_name: colorName || null,
+    color_bio: colorBio || null,
+    color_section_titles: colorSectionTitles || null,
+  }), [profile, name, handle, bio, avatarUrl, coverUrl, avatarUrlL2, coverUrlL2, verified, tags, stats, brands, shapeProducts, shapeCampaigns, shapeLinks, pageEffects, effectColor, effectEmojis, effectIntensity, fontFamily, fontSize, colorName, colorBio, colorSectionTitles]);
 
   const isValidUrl = (url: string) => {
     if (!url) return true;
@@ -332,7 +338,7 @@ const CreatorEditPanel = forwardRef<CreatorEditPanelHandle, Props>(function Crea
           }))
           .filter((camp) => !isEmptyCampaignEntry(camp));
 
-      const baseProfile = { name, handle, bio, avatar_url: avatarUrl, cover_url: coverUrl, avatar_url_layout2: avatarUrlL2, cover_url_layout2: coverUrlL2, verified, tags, stats, brands, image_shape: shapeProducts, image_shape_products: shapeProducts, image_shape_campaigns: shapeCampaigns, image_shape_links: shapeLinks, page_effects: { effects: pageEffects, color: effectColor, emojis: effectEmojis, intensity: effectIntensity }, font_family: fontFamily, font_size: fontSize };
+      const baseProfile = { name, handle, bio, avatar_url: avatarUrl, cover_url: coverUrl, avatar_url_layout2: avatarUrlL2, cover_url_layout2: coverUrlL2, verified, tags, stats, brands, image_shape: shapeProducts, image_shape_products: shapeProducts, image_shape_campaigns: shapeCampaigns, image_shape_links: shapeLinks, page_effects: { effects: pageEffects, color: effectColor, emojis: effectEmojis, intensity: effectIntensity }, font_family: fontFamily, font_size: fontSize, color_name: colorName || null, color_bio: colorBio || null, color_section_titles: colorSectionTitles || null };
 
       if (cropImage) {
         const { file, type } = cropImage;
@@ -669,6 +675,42 @@ const CreatorEditPanel = forwardRef<CreatorEditPanelHandle, Props>(function Crea
                   <span className={`block font-bold mb-0.5 ${size.sizeClass}`}>{size.icon}</span>
                   <span className="block text-[0.62rem]">{size.label}</span>
                 </button>
+              ))}
+            </div>
+          </div>
+
+          <div>
+            <label className={labelClass}>Cores do texto</label>
+            <div className="space-y-2.5">
+              {[
+                { label: "Nome", value: colorName, setter: setColorName },
+                { label: "Bio", value: colorBio, setter: setColorBio },
+                { label: "Títulos de seção", value: colorSectionTitles, setter: setColorSectionTitles },
+              ].map((item) => (
+                <div key={item.label} className="flex items-center gap-3 bg-k-800 border border-primary/10 rounded-xl px-3 py-2.5">
+                  <input
+                    type="color"
+                    value={item.value || "#ffffff"}
+                    onChange={(e) => item.setter(e.target.value)}
+                    className="w-7 h-7 rounded-lg border-0 cursor-pointer bg-transparent flex-shrink-0"
+                  />
+                  <div className="flex-1 min-w-0">
+                    <span className="text-[0.72rem] font-semibold text-k-2">{item.label}</span>
+                  </div>
+                  <input
+                    value={item.value || ""}
+                    onChange={(e) => item.setter(e.target.value)}
+                    placeholder="Automático"
+                    className="w-[90px] text-right bg-transparent text-k-2 text-[0.72rem] font-mono outline-none placeholder:text-k-4"
+                  />
+                  {item.value && (
+                    <button
+                      onClick={() => item.setter("")}
+                      className="text-[0.62rem] text-k-4 hover:text-k-2 transition-colors"
+                      title="Resetar"
+                    >✕</button>
+                  )}
+                </div>
               ))}
             </div>
           </div>

@@ -27,6 +27,9 @@ export interface CreatorProfile {
   page_effects: { effects: string[]; color?: string; emojis?: string[]; intensity?: Record<string, number> };
   font_family: string;
   font_size: string;
+  color_name: string | null;
+  color_bio: string | null;
+  color_section_titles: string | null;
 }
 
 export interface CreatorLink {
@@ -97,6 +100,9 @@ const normalizeProfile = (creator: any): CreatorProfile => ({
   image_shape_links: creator.image_shape_links || creator.image_shape || "rounded",
   font_family: creator.font_family || "default",
   font_size: creator.font_size || "medium",
+  color_name: creator.color_name || null,
+  color_bio: creator.color_bio || null,
+  color_section_titles: creator.color_section_titles || null,
   tags: Array.isArray(creator.tags) ? (creator.tags as CreatorProfile["tags"]) : [],
   stats: Array.isArray(creator.stats) ? (creator.stats as CreatorProfile["stats"]) : [],
   brands: Array.isArray(creator.brands)
