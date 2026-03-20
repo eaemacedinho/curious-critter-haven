@@ -47,11 +47,11 @@ export default function CreatorViewLinkme({ profile, links: rawLinks, socialLink
 
   return (
     <div className="fixed inset-0 flex justify-center bg-background">
-      {/* Container column — everything is inside this 430px wrapper */}
-      <div className="w-full max-w-[430px] relative">
-        {/* Fixed-position hero background — clipped to the column */}
+      {/* Single 430px column — all content and hero stay inside */}
+      <div className="w-full max-w-[430px] relative overflow-hidden">
+        {/* Hero background — absolute within the column, sticky so it stays visible while scrolling */}
         {heroImage && (
-          <div className="absolute inset-0 z-0 overflow-hidden">
+          <div className="absolute inset-0 z-0">
             <div className="sticky top-0 w-full h-screen">
               <img
                 src={heroImage}
@@ -67,204 +67,205 @@ export default function CreatorViewLinkme({ profile, links: rawLinks, socialLink
           </div>
         )}
 
-      {/* Sticky top header — fades in on scroll */}
-      <div
-        className="fixed top-0 inset-x-0 z-50 flex items-center justify-center transition-opacity duration-300"
-        style={{ opacity: headerVisible ? 1 : 0, pointerEvents: headerVisible ? "auto" : "none" }}
-      >
-        <div className="w-full max-w-[430px] flex items-center gap-3 px-4 py-2.5 bg-background/90 backdrop-blur-xl border-b border-primary/10">
-          {headerAvatar && (
-            <img src={headerAvatar} alt="" className="w-8 h-8 rounded-full object-cover" />
-          )}
-          <h1 className="text-sm font-bold text-primary-foreground truncate">{profile.name}</h1>
+        {/* Sticky top header — fades in on scroll */}
+        <div
+          className="absolute top-0 inset-x-0 z-50 flex items-center justify-center transition-opacity duration-300"
+          style={{ opacity: headerVisible ? 1 : 0, pointerEvents: headerVisible ? "auto" : "none" }}
+        >
+          <div className="w-full flex items-center gap-3 px-4 py-2.5 bg-background/90 backdrop-blur-xl border-b border-primary/10">
+            {headerAvatar && (
+              <img src={headerAvatar} alt="" className="w-8 h-8 rounded-full object-cover" />
+            )}
+            <h1 className="text-sm font-bold text-primary-foreground truncate">{profile.name}</h1>
+          </div>
         </div>
-      </div>
 
-      {/* Scrollable content area */}
-      <div
-        ref={scrollRef}
-        className="w-full max-w-[430px] relative z-[1] overflow-y-auto overflow-x-hidden"
-        style={{ scrollbarWidth: "none" }}
-      >
-        {/* Hero spacer — transparent area so hero image shows through */}
-        <div className="relative w-full" style={{ height: "75vh", minHeight: "480px", maxHeight: "680px" }}>
-          {/* Bottom gradient on hero area */}
-          <div className="absolute inset-x-0 bottom-0 h-[50%] bg-gradient-to-t from-background via-background/60 to-transparent pointer-events-none" />
-          
-          {/* Fallback if no image */}
-          {!heroImage && (
-            <div className="w-full h-full bg-gradient-to-b from-primary/30 to-background flex items-center justify-center">
-              <span className="text-7xl text-k-3">{profile.name?.[0] || "?"}</span>
+        {/* Scrollable content area */}
+        <div
+          ref={scrollRef}
+          className="w-full h-full relative z-[1] overflow-y-auto overflow-x-hidden"
+          style={{ scrollbarWidth: "none" }}
+        >
+          {/* Hero spacer — transparent area so hero image shows through */}
+          <div className="relative w-full" style={{ height: "75vh", minHeight: "480px", maxHeight: "680px" }}>
+            {/* Bottom gradient on hero area */}
+            <div className="absolute inset-x-0 bottom-0 h-[50%] bg-gradient-to-t from-background via-background/60 to-transparent pointer-events-none" />
+            
+            {/* Fallback if no image */}
+            {!heroImage && (
+              <div className="w-full h-full bg-gradient-to-b from-primary/30 to-background flex items-center justify-center">
+                <span className="text-7xl text-k-3">{profile.name?.[0] || "?"}</span>
+              </div>
+            )}
+          </div>
+
+          {/* Content section — dark bg that scrolls over the hero */}
+          <div className="relative bg-background rounded-t-[2rem] -mt-8 pb-12">
+            {/* Name + handle */}
+            <div className="text-center pt-6 px-6">
+              <h2 className="font-display text-[2rem] font-bold text-primary-foreground tracking-tight leading-tight">
+                {profile.name}
+              </h2>
+              {profile.handle && (
+                <p className="text-sm text-k-3 mt-1">
+                  @{profile.handle}
+                </p>
+              )}
             </div>
-          )}
-        </div>
 
-        {/* Content section — dark bg that scrolls over the hero */}
-        <div className="relative bg-background rounded-t-[2rem] -mt-8 pb-12">
-          {/* Name + handle */}
-          <div className="text-center pt-6 px-6">
-            <h2 className="font-display text-[2rem] font-bold text-primary-foreground tracking-tight leading-tight">
-              {profile.name}
-            </h2>
-            {profile.handle && (
-              <p className="text-sm text-k-3 mt-1" style={{ color: "var(--colorTextUsername, hsl(var(--k-text-3)))" }}>
-                @{profile.handle}
+            {/* Social Icons Row */}
+            {socialLinks.length > 0 && (
+              <div className="flex justify-center gap-2.5 mt-4 px-6">
+                {socialLinks.map((soc) => (
+                  <a
+                    key={soc.id}
+                    href={soc.url}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="w-11 h-11 rounded-full bg-card/80 backdrop-blur-xl border border-primary/15 flex items-center justify-center text-primary-foreground transition-all duration-300 hover:scale-110 hover:border-primary/40 active:scale-95"
+                    title={soc.platform}
+                  >
+                    <SocialIcon platform={soc.platform || soc.url} size={20} />
+                  </a>
+                ))}
+              </div>
+            )}
+
+            {/* Total Followers / Stats */}
+            {stats.length > 0 && (
+              <div className="flex justify-center items-center gap-1.5 mt-4 px-6">
+                {stats.map((stat, i) => (
+                  <p key={i} className="text-sm text-primary-foreground flex items-center gap-1">
+                    <span className="font-semibold">{stat.value}</span>
+                    <span className="text-k-2">{stat.label}</span>
+                  </p>
+                ))}
+              </div>
+            )}
+
+            {/* Tags */}
+            {tags.length > 0 && (
+              <div className="flex justify-center gap-2 mt-3 px-6 flex-wrap">
+                {tags.map((tag, i) => (
+                  <span key={i} className="px-3 py-1 rounded-full text-[0.7rem] font-semibold bg-primary/10 text-k-300 border border-primary/20">
+                    {tag.label}
+                  </span>
+                ))}
+              </div>
+            )}
+
+            {/* Bio */}
+            {profile.bio && (
+              <p className="text-sm text-primary-foreground text-center leading-relaxed mt-3 px-8 max-w-[380px] mx-auto" style={{ whiteSpace: "pre-wrap" }}>
+                {profile.bio}
               </p>
             )}
-          </div>
 
-          {/* Social Icons Row */}
-          {socialLinks.length > 0 && (
-            <div className="flex justify-center gap-2.5 mt-4 px-6">
-              {socialLinks.map((soc) => (
-                <a
-                  key={soc.id}
-                  href={soc.url}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="w-11 h-11 rounded-full bg-card/80 backdrop-blur-xl border border-primary/15 flex items-center justify-center text-primary-foreground transition-all duration-300 hover:scale-110 hover:border-primary/40 active:scale-95"
-                  title={soc.platform}
-                >
-                  <SocialIcon platform={soc.platform || soc.url} size={20} />
-                </a>
-              ))}
-            </div>
-          )}
-
-          {/* Total Followers / Stats */}
-          {stats.length > 0 && (
-            <div className="flex justify-center items-center gap-1.5 mt-4 px-6">
-              {stats.map((stat, i) => (
-                <p key={i} className="text-sm text-primary-foreground flex items-center gap-1">
-                  <span className="font-semibold">{stat.value}</span>
-                  <span className="text-k-2">{stat.label}</span>
-                </p>
-              ))}
-            </div>
-          )}
-
-          {/* Tags */}
-          {tags.length > 0 && (
-            <div className="flex justify-center gap-2 mt-3 px-6 flex-wrap">
-              {tags.map((tag, i) => (
-                <span key={i} className="px-3 py-1 rounded-full text-[0.7rem] font-semibold bg-primary/10 text-k-300 border border-primary/20">
-                  {tag.label}
-                </span>
-              ))}
-            </div>
-          )}
-
-          {/* Bio */}
-          {profile.bio && (
-            <p className="text-sm text-primary-foreground text-center leading-relaxed mt-3 px-8 max-w-[380px] mx-auto" style={{ whiteSpace: "pre-wrap" }}>
-              {profile.bio}
-            </p>
-          )}
-
-          {/* Links as large image cards (Linkme style) */}
-          {links.length > 0 && (
-            <div className="flex flex-col gap-3 mt-6 px-4">
-              {links.map((link) => (
-                <LinkmeCard key={link.id} link={link} />
-              ))}
-            </div>
-          )}
-
-          {/* Products */}
-          {products.length > 0 && (
-            <div className="mt-8 px-4">
-              <SectionLabel label="Produtos" />
-              <div className="grid grid-cols-2 gap-2.5">
-                {products.map((prod) => (
-                  <div
-                    key={prod.id}
-                    onClick={() => prod.url && window.open(prod.url, "_blank")}
-                    className="bg-card/70 backdrop-blur-xl border border-primary/10 rounded-2xl overflow-hidden cursor-pointer transition-all duration-300 group hover:border-primary/30 hover:-translate-y-1 active:scale-[0.97]"
-                  >
-                    {prod.image_url ? (
-                      <div className="w-full aspect-square overflow-hidden">
-                        <img src={prod.image_url} alt="" className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105" />
-                      </div>
-                    ) : (
-                      <div className="p-4">
-                        <div className="text-2xl mb-2 transition-transform group-hover:scale-110">{prod.icon}</div>
-                      </div>
-                    )}
-                    <div className="p-3">
-                      <h5 className="text-[0.82rem] font-semibold text-primary-foreground mb-1">{prod.title}</h5>
-                      {prod.price && <span className="text-[0.72rem] text-k-300 font-bold">{prod.price}</span>}
-                    </div>
-                  </div>
+            {/* Links as large image cards (Linkme style) */}
+            {links.length > 0 && (
+              <div className="flex flex-col gap-3 mt-6 px-4">
+                {links.map((link) => (
+                  <LinkmeCard key={link.id} link={link} />
                 ))}
-              </div>
-            </div>
-          )}
-
-          {/* Campaigns */}
-          {campaigns.length > 0 && (
-            <div className="mt-8 px-4">
-              <SectionLabel label={`Campanhas ${campaigns.some(c => c.live) ? "Ativas" : ""}`} />
-              <div className="flex flex-col gap-3">
-                {campaigns.map((camp) => (
-                  <div
-                    key={camp.id}
-                    onClick={() => camp.url && window.open(camp.url, "_blank")}
-                    className="relative rounded-2xl overflow-hidden cursor-pointer group transition-all duration-300 hover:-translate-y-1 active:scale-[0.98]"
-                  >
-                    {camp.image_url ? (
-                      <>
-                        <div className="w-full aspect-[16/9] overflow-hidden">
-                          <img src={camp.image_url} alt="" className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105" />
-                        </div>
-                        <div className="absolute inset-0 bg-gradient-to-t from-background/90 via-background/30 to-transparent" />
-                        <div className="absolute inset-x-0 bottom-0 p-4">
-                          {camp.live && <LiveBadge />}
-                          <h5 className="text-sm font-bold text-primary-foreground">{camp.title}</h5>
-                          {camp.description && <p className="text-[0.7rem] text-k-2 mt-1 line-clamp-2">{camp.description}</p>}
-                        </div>
-                      </>
-                    ) : (
-                      <div className="bg-gradient-to-br from-primary/20 to-primary/5 border border-primary/20 rounded-2xl p-5">
-                        {camp.live && <LiveBadge />}
-                        <h5 className="text-sm font-bold text-primary-foreground">{camp.title}</h5>
-                        {camp.description && <p className="text-[0.7rem] text-k-3 mt-1">{camp.description}</p>}
-                      </div>
-                    )}
-                  </div>
-                ))}
-              </div>
-            </div>
-          )}
-
-          {/* Contact CTA */}
-          <div className="px-4 mt-8">
-            <button
-              onClick={() => setContactOpen(!contactOpen)}
-              className="w-full p-4 bg-card/70 backdrop-blur-xl border border-primary/10 rounded-2xl text-primary-foreground font-semibold text-sm flex items-center justify-center gap-2.5 transition-all duration-300 hover:border-primary/30 active:scale-[0.98]"
-            >
-              ✉️ Contato comercial
-            </button>
-
-            {contactOpen && (
-              <div className="bg-card/80 backdrop-blur-xl border border-primary/10 rounded-2xl p-5 mt-3 animate-k-fade-up space-y-3">
-                <h4 className="text-sm font-bold text-primary-foreground">Entre em contato</h4>
-                <input placeholder="Seu nome" className="w-full px-3.5 py-2.5 bg-k-800 border border-primary/10 rounded-xl text-k-1 text-sm outline-none focus:border-k-400 transition-all placeholder:text-k-4" />
-                <input placeholder="seu@email.com" className="w-full px-3.5 py-2.5 bg-k-800 border border-primary/10 rounded-xl text-k-1 text-sm outline-none focus:border-k-400 transition-all placeholder:text-k-4" />
-                <textarea placeholder="Mensagem..." className="w-full px-3.5 py-2.5 bg-k-800 border border-primary/10 rounded-xl text-k-1 text-sm outline-none focus:border-k-400 transition-all resize-none min-h-[80px] placeholder:text-k-4" />
-                <button
-                  onClick={() => { toast.success("Mensagem enviada! ✉️"); setContactOpen(false); }}
-                  className="w-full py-3 bg-primary text-primary-foreground font-semibold text-sm rounded-xl transition-all hover:bg-k-400 hover:shadow-k-purple active:scale-[0.97]"
-                >
-                  Enviar mensagem
-                </button>
               </div>
             )}
-          </div>
 
-          {/* Footer */}
-          <div className="flex items-center justify-center gap-2 text-[0.7rem] text-k-4 opacity-50 hover:opacity-90 transition-opacity py-4 mt-6">
-            <span className="font-extrabold text-k-300">K</span>
-            managed by Kreatorz
+            {/* Products */}
+            {products.length > 0 && (
+              <div className="mt-8 px-4">
+                <SectionLabel label="Produtos" />
+                <div className="grid grid-cols-2 gap-2.5">
+                  {products.map((prod) => (
+                    <div
+                      key={prod.id}
+                      onClick={() => prod.url && window.open(prod.url, "_blank")}
+                      className="bg-card/70 backdrop-blur-xl border border-primary/10 rounded-2xl overflow-hidden cursor-pointer transition-all duration-300 group hover:border-primary/30 hover:-translate-y-1 active:scale-[0.97]"
+                    >
+                      {prod.image_url ? (
+                        <div className="w-full aspect-square overflow-hidden">
+                          <img src={prod.image_url} alt="" className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105" />
+                        </div>
+                      ) : (
+                        <div className="p-4">
+                          <div className="text-2xl mb-2 transition-transform group-hover:scale-110">{prod.icon}</div>
+                        </div>
+                      )}
+                      <div className="p-3">
+                        <h5 className="text-[0.82rem] font-semibold text-primary-foreground mb-1">{prod.title}</h5>
+                        {prod.price && <span className="text-[0.72rem] text-k-300 font-bold">{prod.price}</span>}
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              </div>
+            )}
+
+            {/* Campaigns */}
+            {campaigns.length > 0 && (
+              <div className="mt-8 px-4">
+                <SectionLabel label={`Campanhas ${campaigns.some(c => c.live) ? "Ativas" : ""}`} />
+                <div className="flex flex-col gap-3">
+                  {campaigns.map((camp) => (
+                    <div
+                      key={camp.id}
+                      onClick={() => camp.url && window.open(camp.url, "_blank")}
+                      className="relative rounded-2xl overflow-hidden cursor-pointer group transition-all duration-300 hover:-translate-y-1 active:scale-[0.98]"
+                    >
+                      {camp.image_url ? (
+                        <>
+                          <div className="w-full aspect-[16/9] overflow-hidden">
+                            <img src={camp.image_url} alt="" className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105" />
+                          </div>
+                          <div className="absolute inset-0 bg-gradient-to-t from-background/90 via-background/30 to-transparent" />
+                          <div className="absolute inset-x-0 bottom-0 p-4">
+                            {camp.live && <LiveBadge />}
+                            <h5 className="text-sm font-bold text-primary-foreground">{camp.title}</h5>
+                            {camp.description && <p className="text-[0.7rem] text-k-2 mt-1 line-clamp-2">{camp.description}</p>}
+                          </div>
+                        </>
+                      ) : (
+                        <div className="bg-gradient-to-br from-primary/20 to-primary/5 border border-primary/20 rounded-2xl p-5">
+                          {camp.live && <LiveBadge />}
+                          <h5 className="text-sm font-bold text-primary-foreground">{camp.title}</h5>
+                          {camp.description && <p className="text-[0.7rem] text-k-3 mt-1">{camp.description}</p>}
+                        </div>
+                      )}
+                    </div>
+                  ))}
+                </div>
+              </div>
+            )}
+
+            {/* Contact CTA */}
+            <div className="px-4 mt-8">
+              <button
+                onClick={() => setContactOpen(!contactOpen)}
+                className="w-full p-4 bg-card/70 backdrop-blur-xl border border-primary/10 rounded-2xl text-primary-foreground font-semibold text-sm flex items-center justify-center gap-2.5 transition-all duration-300 hover:border-primary/30 active:scale-[0.98]"
+              >
+                ✉️ Contato comercial
+              </button>
+
+              {contactOpen && (
+                <div className="bg-card/80 backdrop-blur-xl border border-primary/10 rounded-2xl p-5 mt-3 animate-k-fade-up space-y-3">
+                  <h4 className="text-sm font-bold text-primary-foreground">Entre em contato</h4>
+                  <input placeholder="Seu nome" className="w-full px-3.5 py-2.5 bg-k-800 border border-primary/10 rounded-xl text-k-1 text-sm outline-none focus:border-k-400 transition-all placeholder:text-k-4" />
+                  <input placeholder="seu@email.com" className="w-full px-3.5 py-2.5 bg-k-800 border border-primary/10 rounded-xl text-k-1 text-sm outline-none focus:border-k-400 transition-all placeholder:text-k-4" />
+                  <textarea placeholder="Mensagem..." className="w-full px-3.5 py-2.5 bg-k-800 border border-primary/10 rounded-xl text-k-1 text-sm outline-none focus:border-k-400 transition-all resize-none min-h-[80px] placeholder:text-k-4" />
+                  <button
+                    onClick={() => { toast.success("Mensagem enviada! ✉️"); setContactOpen(false); }}
+                    className="w-full py-3 bg-primary text-primary-foreground font-semibold text-sm rounded-xl transition-all hover:bg-k-400 hover:shadow-k-purple active:scale-[0.97]"
+                  >
+                    Enviar mensagem
+                  </button>
+                </div>
+              )}
+            </div>
+
+            {/* Footer */}
+            <div className="flex items-center justify-center gap-2 text-[0.7rem] text-k-4 opacity-50 hover:opacity-90 transition-opacity py-4 mt-6">
+              <span className="font-extrabold text-k-300">K</span>
+              managed by Kreatorz
+            </div>
           </div>
         </div>
       </div>
