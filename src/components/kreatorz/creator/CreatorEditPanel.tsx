@@ -425,6 +425,39 @@ const CreatorEditPanel = forwardRef<CreatorEditPanelHandle, Props>(function Crea
                 </button>
               ))}
             </div>
+
+            {/* Live preview */}
+            <div className="mt-3 pt-3 border-t border-primary/10">
+              <span className="text-[0.65rem] text-k-4 mb-2 block">Pré-visualização:</span>
+              <div className="flex items-center gap-3">
+                {(() => {
+                  const previewSrc = avatarUrl || "/placeholder.svg";
+                  const base = "w-16 h-16 object-cover bg-primary/10 transition-all duration-300";
+                  switch (imageShape) {
+                    case "circular":
+                      return <img src={previewSrc} alt="preview" className={`${base} rounded-full border border-primary/30`} />;
+                    case "pill":
+                      return <img src={previewSrc} alt="preview" className={`${base} rounded-[2rem] border border-primary/30`} />;
+                    case "shadow":
+                      return <img src={previewSrc} alt="preview" className={`${base} rounded-2xl shadow-[0_6px_24px_-4px_hsl(var(--primary)/0.25)]`} />;
+                    case "polaroid":
+                      return (
+                        <div className="bg-card p-1.5 pb-4 rounded-sm shadow-[0_3px_12px_-2px_rgba(0,0,0,0.3)] border border-border/40 transition-all duration-300">
+                          <img src={previewSrc} alt="preview" className="w-14 h-14 object-cover rounded-[1px]" />
+                        </div>
+                      );
+                    default:
+                      return <img src={previewSrc} alt="preview" className={`${base} rounded-2xl border border-primary/30`} />;
+                  }
+                })()}
+                <div className="text-[0.68rem] text-k-3">
+                  <span className="font-semibold text-primary-foreground block mb-0.5">
+                    {imageShape === "rounded" ? "Arredondado" : imageShape === "circular" ? "Circular" : imageShape === "pill" ? "Cápsula" : imageShape === "shadow" ? "Sombra" : "Polaroid"}
+                  </span>
+                  Assim ficarão as imagens de produtos, campanhas e links.
+                </div>
+              </div>
+            </div>
           </div>
         </div>
       </div>
