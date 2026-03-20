@@ -61,7 +61,9 @@ export default function CreatorView({ profile, links: rawLinks, socialLinks: raw
     setTimeout(() => setClickedLink(null), 400);
   };
 
-  const effects = (profile.page_effects || []) as PageEffect[];
+  const pe = profile.page_effects || { effects: [], color: undefined };
+  const effects = (pe.effects || []) as PageEffect[];
+  const effectColor = pe.color;
   const hasGlowBorders = effects.includes("glow-borders");
 
   const content = (

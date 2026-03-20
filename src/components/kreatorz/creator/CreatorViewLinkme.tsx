@@ -62,7 +62,9 @@ export default function CreatorViewLinkme({ profile, links: rawLinks, socialLink
     return () => el.removeEventListener("scroll", handleScroll);
   }, [handleScroll]);
 
-  const effects = (profile.page_effects || []) as PageEffect[];
+  const pe = profile.page_effects || { effects: [], color: undefined };
+  const effects = (pe.effects || []) as PageEffect[];
+  const effectColor = pe.color;
   const hasGlowBorders = effects.includes("glow-borders");
 
   const content = (
