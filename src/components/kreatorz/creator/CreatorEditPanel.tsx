@@ -132,16 +132,18 @@ const CreatorEditPanel = forwardRef<CreatorEditPanelHandle, Props>(function Crea
     reader.readAsDataURL(file);
   };
 
-  const handleCropDone = async (blob: Blob, type: "avatar" | "cover") => {
+  const handleCropDone = async (blob: Blob, type: "avatar" | "cover" | "avatar_layout2" | "cover_layout2") => {
     try {
-      setUploadingImage(type);
+      setUploadingImage(type as any);
       const file = new File([blob], `${type}.jpg`, { type: "image/jpeg" });
       const url = await onUploadImage(file, type);
       if (!url) return;
       if (type === "avatar") setAvatarUrl(url);
-      else setCoverUrl(url);
+      else if (type === "cover") setCoverUrl(url);
+      else if (type === "avatar_layout2") setAvatarUrlL2(url);
+      else if (type === "cover_layout2") setCoverUrlL2(url);
       setCropImage(null);
-      toast.success(type === "avatar" ? "Foto atualizada!" : "Capa atualizada!");
+      toast.success("Imagem atualizada!");
     } finally {
       setUploadingImage(null);
     }
