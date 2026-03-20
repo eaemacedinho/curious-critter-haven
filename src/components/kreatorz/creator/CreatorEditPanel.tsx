@@ -396,6 +396,34 @@ const CreatorEditPanel = forwardRef<CreatorEditPanelHandle, Props>(function Crea
               <span className={`block w-4.5 h-4.5 rounded-full bg-primary-foreground shadow-sm absolute top-[3px] transition-transform duration-200 ${verified ? "translate-x-[22px]" : "translate-x-[3px]"}`} />
             </button>
           </div>
+
+          {/* Image shape selector */}
+          <div className="mt-4 p-3 bg-k-800/50 border border-primary/10 rounded-xl">
+            <span className="text-sm font-semibold text-primary-foreground flex items-center gap-1.5 mb-1">
+              🖼 Formato das imagens
+            </span>
+            <p className="text-[0.65rem] text-k-4 mb-3">Escolha como as imagens de produtos, campanhas e links aparecem na página pública.</p>
+            <div className="flex gap-2">
+              {([
+                { value: "rounded" as const, label: "Arredondado", preview: "rounded-2xl" },
+                { value: "circular" as const, label: "Circular", preview: "rounded-full" },
+                { value: "pill" as const, label: "Cápsula", preview: "rounded-[2rem]" },
+              ]).map((opt) => (
+                <button
+                  key={opt.value}
+                  onClick={() => setImageShape(opt.value)}
+                  className={`flex-1 flex flex-col items-center gap-2 p-3 rounded-xl border transition-all duration-200 active:scale-[0.97] ${
+                    imageShape === opt.value
+                      ? "border-primary bg-primary/10 text-primary"
+                      : "border-primary/10 bg-k-800 text-k-3 hover:border-primary/30"
+                  }`}
+                >
+                  <div className={`w-10 h-10 bg-primary/20 ${opt.preview} border border-primary/30`} />
+                  <span className="text-[0.68rem] font-semibold">{opt.label}</span>
+                </button>
+              ))}
+            </div>
+          </div>
         </div>
       </div>
 
