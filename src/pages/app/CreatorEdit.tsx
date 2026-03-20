@@ -1,0 +1,152 @@
+import { useRef, useState } from "react";
+import { Link } from "react-router-dom";
+import { toast } from "sonner";
+import { useAuth } from "@/hooks/useAuth";
+import { useCreatorData } from "@/hooks/useCreatorData";
+import CreatorEditPanel, { type CreatorEditPanelHandle } from "@/components/kreatorz/creator/CreatorEditPanel";
+
+export default function CreatorEdit() {
+  const { user } = useAuth();
+  const {
+    profile,
+    links,
+    socialLinks,
+    products,
+    campaigns,
+    loading,
+    saveProfile,
+    saveLinks,
+    saveSocialLinks,
+    saveProducts,
+    saveCampaigns,
+    uploadImage,
+    uploadContentImage,
+    refetch,
+  } = useCreatorData(user?.id);
+  const editorRef = useRef<CreatorEditPanelHandle>(null);
+  const [saving, setSaving] = useState(false);
+
+  const handleSave = async () => {
+    if (!editorRef.current) return;
+    setSaving(true);
+    const saved = await editorRef.current.saveAll();
+    setSaving(false);
+    if (!saved) return;
+    await refetch();
+    toast.success("Alterações salvas com sucesso!");
+  };
+
+  if (loading) {
+    return (
+      <div className="flex items-center justify-center py-20">
+        <div className="w-6 h-6 border-2 border-primary border-t-transparent rounded-full animate-spin" />
+      </div>
+    );
+  }
+
+  if (!user) {
+    return (
+      <div className="flex items-center justify-center py-20">
+        <p className="text-muted-foreground text-sm">Faça login para editar.</p>
+      </div>
+    );
+  }
+
+  if (!profile) {
+    return (
+      <div className="flex items-center justify-center py-20">
+        <p className="text-muted-foreground text-sm">Perfil não encontrado. Tente recarregar.</p>
+      </div>
+    );
+  }
+
+  const handleSetPublicLayout = async (layout: string) => {
+    try {
+      await saveProfile({ public_layout: layout } as any);
+      toast.success(`${layout === "layout2" ? "Layout 2" : "Layout 1"} definido como página pública`);
+    } catch {
+      toast.error("Erro ao salvar layout");
+    }
+  };
+
+  return (
+    <div className="max-w-[980px] mx-auto">
+      {/* Header */}
+      <div className="flex items-center justify-between gap-3 flex-wrap mb-6">
+        <div>
+          <div className="flex items-center gap-2 mb-1">
+            <Link to="/app/creators" className="text-sm text-muted-foreground hover:text-foreground transition-colors">
+              ← Creators
+            </Link>
+          </div>
+          <h1 className="font-display text-2xl text-foreground">Editar Creator</h1>
+          <p className="text-sm text-muted-foreground mt-0.5">
+            As alterações aparecerão na página pública após salvar.
+          </p>
+        </div>
+        <div className="flex items-center gap-2.5">
+          {/* Layout toggle */}
+          <div className="flex bg-card border border-border rounded-xl overflow-hidden">
+            <button
+              onClick={() => void handleSetPublicLayout("layout1")}
+              className={`px-3 py-2 text-xs font-semibold transition-all ${
+                profile.public_layout === "layout1"
+                  ? "bg-primary text-primary-foreground"
+                  : "text-muted-foreground hover:text-foreground"
+              }`}
+            >
+              Layout 1
+            </button>
+            <button
+              onClick={() => void handleSetPublicLayout("layout2")}
+              className={`px-3 py-2 text-xs font-semibold transition-all ${
+                profile.public_layout === "layout2"
+                  ? "bg-primary text-primary-foreground"
+                  : "text-muted-foreground hover:text-foreground"
+              }`}
+            >
+              Layout 2
+            </button>
+          </div>
+          {/* Preview */}
+          <button
+            onClick={() => {
+              const handle = profile.handle?.replace(/^@+/, "");
+              if (handle) window.open(`/c/${handle}`, "_blank");
+            }}
+            className="px-4 py-2 bg-card border border-border text-muted-foreground font-medium text-sm rounded-xl transition-all hover:border-primary/30 hover:text-foreground"
+          >
+            👁 Ver página
+          </button>
+          {/* Save */}
+          <button
+            onClick={() => void handleSave()}
+            disabled={saving}
+            className="px-5 py-2 bg-primary text-primary-foreground font-semibold text-sm rounded-xl transition-all hover:opacity-90 active:scale-[0.97] disabled:opacity-60"
+          >
+            {saving ? "Salvando..." : "Salvar alterações"}
+          </button>
+        </div>
+      </div>
+
+      {/* Editor */}
+      <CreatorEditPanel
+        ref={editorRef}
+        profile={profile}
+        links={links}
+        socialLinks={socialLinks}
+        products={products}
+        campaigns={campaigns}
+        activeLayout={profile.public_layout as "layout1" | "layout2"}
+        onSaveProfile={saveProfile}
+        onSaveLinks={saveLinks}
+        onSaveSocialLinks={saveSocialLinks}
+        onSaveProducts={saveProducts}
+        onSaveCampaigns={saveCampaigns}
+        onUploadImage={uploadImage}
+        onUploadContentImage={uploadContentImage}
+        onDone={() => void refetch()}
+      />
+    </div>
+  );
+}
