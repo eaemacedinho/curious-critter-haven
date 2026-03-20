@@ -152,16 +152,20 @@ const CreatorEditPanel = forwardRef<CreatorEditPanelHandle, Props>(function Crea
     else if (!/^[a-zA-Z0-9._-]+$/.test(handle.replace(/^@/, ""))) errors.handle = "Handle contém caracteres inválidos";
 
     links.forEach((link, i) => {
+      // Skip completely empty links (no title AND no url)
+      if (!link.title.trim() && !link.url.trim()) return;
       if (link.active && !link.title.trim()) errors[`link-title-${i}`] = "Título obrigatório";
       if (link.active && link.url && !isValidUrl(link.url)) errors[`link-url-${i}`] = "URL inválida";
     });
 
     prods.forEach((prod, i) => {
+      if (!prod.title.trim() && !prod.url?.trim() && !prod.image_url?.trim()) return;
       if (!prod.title.trim()) errors[`prod-title-${i}`] = "Nome obrigatório";
       if (prod.url && !isValidUrl(prod.url)) errors[`prod-url-${i}`] = "URL inválida";
     });
 
     camps.forEach((camp, i) => {
+      if (!camp.title.trim() && !camp.url?.trim() && !camp.image_url?.trim()) return;
       if (!camp.title.trim()) errors[`camp-title-${i}`] = "Título obrigatório";
       if (camp.url && !isValidUrl(camp.url)) errors[`camp-url-${i}`] = "URL inválida";
     });
