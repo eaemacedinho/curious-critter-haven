@@ -265,6 +265,9 @@ export type Database = {
           handle: string
           id: string
           image_shape: string
+          image_shape_campaigns: string
+          image_shape_links: string
+          image_shape_products: string
           name: string
           public_layout: string
           stats: Json | null
@@ -285,6 +288,9 @@ export type Database = {
           handle?: string
           id?: string
           image_shape?: string
+          image_shape_campaigns?: string
+          image_shape_links?: string
+          image_shape_products?: string
           name?: string
           public_layout?: string
           stats?: Json | null
@@ -305,6 +311,9 @@ export type Database = {
           handle?: string
           id?: string
           image_shape?: string
+          image_shape_campaigns?: string
+          image_shape_links?: string
+          image_shape_products?: string
           name?: string
           public_layout?: string
           stats?: Json | null
