@@ -218,93 +218,100 @@ const CreatorEditPanel = forwardRef<CreatorEditPanelHandle, Props>(function Crea
       <input ref={avatarRef} type="file" accept="image/*" className="hidden" onChange={(e) => e.target.files?.[0] && handleFileSelected(e.target.files[0], "avatar")} />
       <input ref={coverRef} type="file" accept="image/*" className="hidden" onChange={(e) => e.target.files?.[0] && handleFileSelected(e.target.files[0], "cover")} />
 
-      <div className="mb-6">
-        <div className={sectionTitle}>🖼 Foto de Capa — Layout 1</div>
-        <div className="relative w-full h-[160px] rounded-2xl overflow-hidden border border-primary/10 group cursor-pointer" onClick={() => coverRef.current?.click()}>
-          {coverUrl ? (
-            <img src={coverUrl} alt="cover" className="w-full h-full object-cover transition-transform duration-300 group-hover:scale-105" />
-          ) : (
-            <div className="w-full h-full bg-k-800 flex items-center justify-center text-k-4 text-sm">Clique para adicionar capa</div>
-          )}
-          <div className="absolute inset-0 bg-background/60 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center">
-            <span className="text-sm text-primary-foreground font-semibold bg-primary/80 backdrop-blur-sm px-4 py-2 rounded-xl">
-              {uploadingImage === "cover" ? "Enviando capa..." : "📷 Alterar capa"}
-            </span>
-          </div>
-        </div>
-        <p className={sizeHint}>📐 Tamanho ideal: <strong>1600×500px</strong> (proporção 16:5)</p>
-      </div>
-
-      <div className="mb-6">
-        <div className={sectionTitle}>👤 Foto de Perfil — Layout 1</div>
-        <div className="flex items-center gap-4">
-          <div className="w-20 h-20 rounded-full overflow-hidden border-[2.5px] border-primary flex-shrink-0 shadow-[0_4px_18px] shadow-primary/20 relative group cursor-pointer" onClick={() => avatarRef.current?.click()}>
-            {avatarUrl ? (
-              <img src={avatarUrl} alt="" className="w-full h-full object-cover" />
-            ) : (
-              <div className="w-full h-full bg-k-800 flex items-center justify-center text-2xl text-k-3">{name?.[0] || "?"}</div>
-            )}
-            <div className="absolute inset-0 bg-background/60 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center rounded-full">
-              <span className="text-lg">{uploadingImage === "avatar" ? "⏳" : "📷"}</span>
-            </div>
-          </div>
-          <div>
-            <button onClick={() => avatarRef.current?.click()} className="text-sm text-k-300 font-medium hover:text-k-200 transition-colors">Alterar foto</button>
-            <br /><span className="text-[0.62rem] text-k-4">📐 Ideal: <strong>500×500px</strong> (1:1) · JPG/PNG · máx 2MB</span>
-          </div>
-        </div>
-      </div>
-
-      {/* Layout 2 images */}
-      <div className="mb-6 bg-card/40 border border-primary/10 rounded-2xl p-4">
-        <div className={sectionTitle}>🎨 Imagens — Layout 2 (Linkme)</div>
-        <p className="text-[0.68rem] text-k-4 mb-3">Imagens independentes que aparecem apenas no Layout 2. Use uma foto em retrato/vertical para melhor resultado.</p>
-
-        <div className="mb-4">
-          <label className={labelClass}>Foto Hero / Capa (Layout 2)</label>
-          <div className="relative w-full h-[200px] rounded-2xl overflow-hidden border border-primary/10 group cursor-pointer" onClick={() => {
-            const input = document.createElement("input");
-            input.type = "file"; input.accept = "image/*";
-            input.onchange = (e) => { const f = (e.target as HTMLInputElement).files?.[0]; if (f) handleFileSelected(f, "cover_layout2"); };
-            input.click();
-          }}>
-            {coverUrlL2 ? (
-              <img src={coverUrlL2} alt="cover layout 2" className="w-full h-full object-cover transition-transform duration-300 group-hover:scale-105" />
-            ) : (
-              <div className="w-full h-full bg-k-800 flex items-center justify-center text-k-4 text-sm">Clique para adicionar foto hero</div>
-            )}
-            <div className="absolute inset-0 bg-background/60 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center">
-              <span className="text-sm text-primary-foreground font-semibold bg-primary/80 backdrop-blur-sm px-4 py-2 rounded-xl">📷 Alterar hero</span>
-            </div>
-          </div>
-          <p className={sizeHint}>📐 Tamanho ideal: <strong>1080×1350px</strong> (proporção 4:5, retrato)</p>
-        </div>
-
-        <div>
-          <label className={labelClass}>Foto de Perfil (Layout 2)</label>
-          <div className="flex items-center gap-4">
-            <div className="w-20 h-20 rounded-full overflow-hidden border-[2.5px] border-primary flex-shrink-0 shadow-[0_4px_18px] shadow-primary/20 relative group cursor-pointer" onClick={() => {
-              const input = document.createElement("input");
-              input.type = "file"; input.accept = "image/*";
-              input.onchange = (e) => { const f = (e.target as HTMLInputElement).files?.[0]; if (f) handleFileSelected(f, "avatar_layout2"); };
-              input.click();
-            }}>
-              {avatarUrlL2 ? (
-                <img src={avatarUrlL2} alt="" className="w-full h-full object-cover" />
+      {/* Layout 1 images — only when editing layout1 or no layout specified */}
+      {(!activeLayout || activeLayout === "layout1") && (
+        <>
+          <div className="mb-6">
+            <div className={sectionTitle}>🖼 Foto de Capa</div>
+            <div className="relative w-full h-[160px] rounded-2xl overflow-hidden border border-primary/10 group cursor-pointer" onClick={() => coverRef.current?.click()}>
+              {coverUrl ? (
+                <img src={coverUrl} alt="cover" className="w-full h-full object-cover transition-transform duration-300 group-hover:scale-105" />
               ) : (
-                <div className="w-full h-full bg-k-800 flex items-center justify-center text-2xl text-k-3">{name?.[0] || "?"}</div>
+                <div className="w-full h-full bg-k-800 flex items-center justify-center text-k-4 text-sm">Clique para adicionar capa</div>
               )}
-              <div className="absolute inset-0 bg-background/60 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center rounded-full">
-                <span className="text-lg">📷</span>
+              <div className="absolute inset-0 bg-background/60 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center">
+                <span className="text-sm text-primary-foreground font-semibold bg-primary/80 backdrop-blur-sm px-4 py-2 rounded-xl">
+                  {uploadingImage === "cover" ? "Enviando capa..." : "📷 Alterar capa"}
+                </span>
               </div>
             </div>
-            <div>
-              <span className="text-sm text-k-300 font-medium">Foto do header sticky</span>
-              <br /><span className="text-[0.62rem] text-k-4">📐 Ideal: <strong>500×500px</strong> (1:1) · aparece no topo ao rolar</span>
+            <p className={sizeHint}>📐 Tamanho ideal: <strong>1600×500px</strong> (proporção 16:5)</p>
+          </div>
+
+          <div className="mb-6">
+            <div className={sectionTitle}>👤 Foto de Perfil</div>
+            <div className="flex items-center gap-4">
+              <div className="w-20 h-20 rounded-full overflow-hidden border-[2.5px] border-primary flex-shrink-0 shadow-[0_4px_18px] shadow-primary/20 relative group cursor-pointer" onClick={() => avatarRef.current?.click()}>
+                {avatarUrl ? (
+                  <img src={avatarUrl} alt="" className="w-full h-full object-cover" />
+                ) : (
+                  <div className="w-full h-full bg-k-800 flex items-center justify-center text-2xl text-k-3">{name?.[0] || "?"}</div>
+                )}
+                <div className="absolute inset-0 bg-background/60 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center rounded-full">
+                  <span className="text-lg">{uploadingImage === "avatar" ? "⏳" : "📷"}</span>
+                </div>
+              </div>
+              <div>
+                <button onClick={() => avatarRef.current?.click()} className="text-sm text-k-300 font-medium hover:text-k-200 transition-colors">Alterar foto</button>
+                <br /><span className="text-[0.62rem] text-k-4">📐 Ideal: <strong>500×500px</strong> (1:1) · JPG/PNG · máx 2MB</span>
+              </div>
+            </div>
+          </div>
+        </>
+      )}
+
+      {/* Layout 2 images — only when editing layout2 */}
+      {activeLayout === "layout2" && (
+        <div className="mb-6 bg-card/40 border border-primary/10 rounded-2xl p-4">
+          <div className={sectionTitle}>🎨 Imagens — Layout 2 (Linkme)</div>
+          <p className="text-[0.68rem] text-k-4 mb-3">Use uma foto em retrato/vertical para melhor resultado.</p>
+
+          <div className="mb-4">
+            <label className={labelClass}>Foto Hero / Capa</label>
+            <div className="relative w-full h-[200px] rounded-2xl overflow-hidden border border-primary/10 group cursor-pointer" onClick={() => {
+              const input = document.createElement("input");
+              input.type = "file"; input.accept = "image/*";
+              input.onchange = (e) => { const f = (e.target as HTMLInputElement).files?.[0]; if (f) handleFileSelected(f, "cover_layout2"); };
+              input.click();
+            }}>
+              {coverUrlL2 ? (
+                <img src={coverUrlL2} alt="cover layout 2" className="w-full h-full object-cover transition-transform duration-300 group-hover:scale-105" />
+              ) : (
+                <div className="w-full h-full bg-k-800 flex items-center justify-center text-k-4 text-sm">Clique para adicionar foto hero</div>
+              )}
+              <div className="absolute inset-0 bg-background/60 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center">
+                <span className="text-sm text-primary-foreground font-semibold bg-primary/80 backdrop-blur-sm px-4 py-2 rounded-xl">📷 Alterar hero</span>
+              </div>
+            </div>
+            <p className={sizeHint}>📐 Tamanho ideal: <strong>1080×1350px</strong> (proporção 4:5, retrato)</p>
+          </div>
+
+          <div>
+            <label className={labelClass}>Foto de Perfil (header sticky)</label>
+            <div className="flex items-center gap-4">
+              <div className="w-20 h-20 rounded-full overflow-hidden border-[2.5px] border-primary flex-shrink-0 shadow-[0_4px_18px] shadow-primary/20 relative group cursor-pointer" onClick={() => {
+                const input = document.createElement("input");
+                input.type = "file"; input.accept = "image/*";
+                input.onchange = (e) => { const f = (e.target as HTMLInputElement).files?.[0]; if (f) handleFileSelected(f, "avatar_layout2"); };
+                input.click();
+              }}>
+                {avatarUrlL2 ? (
+                  <img src={avatarUrlL2} alt="" className="w-full h-full object-cover" />
+                ) : (
+                  <div className="w-full h-full bg-k-800 flex items-center justify-center text-2xl text-k-3">{name?.[0] || "?"}</div>
+                )}
+                <div className="absolute inset-0 bg-background/60 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center rounded-full">
+                  <span className="text-lg">📷</span>
+                </div>
+              </div>
+              <div>
+                <span className="text-sm text-k-300 font-medium">Foto do header sticky</span>
+                <br /><span className="text-[0.62rem] text-k-4">📐 Ideal: <strong>500×500px</strong> (1:1) · aparece no topo ao rolar</span>
+              </div>
             </div>
           </div>
         </div>
-      </div>
+      )}
 
       <div className="mb-8">
         <div className={sectionTitle}>👤 Dados do Perfil</div>

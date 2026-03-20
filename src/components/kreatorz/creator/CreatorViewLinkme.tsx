@@ -108,7 +108,7 @@ export default function CreatorViewLinkme({ profile, links: rawLinks, socialLink
               </h2>
               {profile.handle && (
                 <p className="text-sm text-k-3 mt-1">
-                  @{profile.handle}
+                  @{profile.handle.replace(/^@+/, "")}
                 </p>
               )}
             </div>

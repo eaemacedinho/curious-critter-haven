@@ -140,6 +140,7 @@ export default function CreatorScreen() {
           socialLinks={socialLinks}
           products={products}
           campaigns={campaigns}
+          activeLayout={layoutTheme}
           onSaveProfile={saveProfile}
           onSaveLinks={saveLinks}
           onSaveSocialLinks={saveSocialLinks}
