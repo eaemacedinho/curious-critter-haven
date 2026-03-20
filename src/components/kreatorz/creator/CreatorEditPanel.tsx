@@ -1074,23 +1074,25 @@ const CreatorEditPanel = forwardRef<CreatorEditPanelHandle, Props>(function Crea
     </div>
         </div>
 
-        {/* Preview column — sticky on the right */}
+        {/* Preview column — phone mockup sticky on the right */}
         {showPreview && (
-          <div className="w-[420px] flex-shrink-0 hidden lg:block">
+          <div className="w-[340px] flex-shrink-0 hidden lg:block">
             <div className="sticky top-4">
-              <div className="rounded-2xl border border-primary/20 bg-background overflow-hidden shadow-2xl shadow-primary/10">
-                <div className="px-3 py-1.5 bg-card border-b border-border flex items-center gap-2">
-                  <div className="flex gap-1.5">
-                    <div className="w-2 h-2 rounded-full bg-destructive/60" />
-                    <div className="w-2 h-2 rounded-full bg-yellow-500/60" />
-                    <div className="w-2 h-2 rounded-full bg-green-500/60" />
-                  </div>
-                  <span className="text-[0.62rem] text-muted-foreground font-medium ml-1">
-                    {activeLayout === "layout2" ? "Layout 2" : "Layout 1"}
-                  </span>
+              {/* Phone frame */}
+              <div className="mx-auto w-[300px] rounded-[2.5rem] border-[6px] border-foreground/20 bg-background overflow-hidden shadow-2xl shadow-black/30"
+                style={{ height: "calc(100vh - 100px)", maxHeight: "640px" }}>
+                {/* Notch */}
+                <div className="relative z-50 flex justify-center pt-2 pb-1 bg-background">
+                  <div className="w-24 h-5 rounded-full bg-foreground/15" />
                 </div>
-                <div className="overflow-y-auto overflow-x-hidden" style={{ maxHeight: "calc(100vh - 120px)" }}>
-                  <div style={{ transform: "scale(0.52)", transformOrigin: "top center", width: "192.3%", marginLeft: "-46.15%" }}>
+                {/* Screen content */}
+                <div className="w-full overflow-y-auto overflow-x-hidden" style={{ height: "calc(100% - 32px)" }}>
+                  <div style={{ 
+                    transform: "scale(0.58)", 
+                    transformOrigin: "top center", 
+                    width: `${100 / 0.58}%`,
+                    marginLeft: `${-(100 / 0.58 - 100) / 2}%`,
+                  }}>
                     <PreviewComponent
                       profile={liveProfile}
                       links={links}
@@ -1102,6 +1104,9 @@ const CreatorEditPanel = forwardRef<CreatorEditPanelHandle, Props>(function Crea
                   </div>
                 </div>
               </div>
+              <p className="text-center text-[0.6rem] text-muted-foreground mt-3 opacity-60">
+                {activeLayout === "layout2" ? "Layout 2 — Linkme" : "Layout 1 — Padrão"}
+              </p>
             </div>
           </div>
         )}
