@@ -203,7 +203,7 @@ export default function CreatorViewLinkme({ profile, links: rawLinks, socialLink
                   {links.length > 0 && (
                     <div className="flex flex-col gap-3 mt-6 px-4">
                       {links.map((link) => (
-                        <LinkmeCard key={link.id} link={link} />
+                        <LinkmeCard key={link.id} link={link} shape={profile.image_shape} />
                       ))}
                     </div>
                   )}
