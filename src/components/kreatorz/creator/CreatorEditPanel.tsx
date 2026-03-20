@@ -423,13 +423,37 @@ const CreatorEditPanel = forwardRef<CreatorEditPanelHandle, Props>(function Crea
               <input value={prod.title} onChange={(e) => { const arr = [...prods]; arr[i] = { ...arr[i], title: e.target.value }; setProds(arr); }} placeholder="Nome do produto" className={`${inputClass} flex-1`} />
               <button onClick={() => setProds(prods.filter((_, j) => j !== i))} className="text-k-4 hover:text-k-err text-xs">✕</button>
             </div>
-            <div className="flex gap-2">
-              <input value={prod.price} onChange={(e) => { const arr = [...prods]; arr[i] = { ...arr[i], price: e.target.value }; setProds(arr); }} placeholder="R$ 0,00" className={`${inputClass} w-28`} />
-              <input value={prod.url || ""} onChange={(e) => { const arr = [...prods]; arr[i] = { ...arr[i], url: e.target.value }; setProds(arr); }} placeholder="Link de compra" className={`${inputClass} flex-1`} />
+            {/* Product image upload */}
+            <div className="flex gap-2 items-center">
+              {prod.image_url ? (
+                <div className="relative w-16 h-16 rounded-xl overflow-hidden border border-primary/10 group flex-shrink-0">
+                  <img src={prod.image_url} alt="" className="w-full h-full object-cover" />
+                  <button
+                    onClick={() => { const arr = [...prods]; arr[i] = { ...arr[i], image_url: "" }; setProds(arr); }}
+                    className="absolute inset-0 bg-background/70 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center text-k-err text-xs font-bold"
+                  >✕</button>
+                </div>
+              ) : (
+                <label className="w-16 h-16 rounded-xl border border-dashed border-primary/20 flex items-center justify-center cursor-pointer hover:border-k-400 hover:bg-k-glow transition-all flex-shrink-0">
+                  <input type="file" accept="image/*" className="hidden" onChange={async (e) => {
+                    const file = e.target.files?.[0];
+                    if (!file) return;
+                    setUploadingContent(`prod-${i}`);
+                    const url = await onUploadContentImage(file, "product");
+                    setUploadingContent(null);
+                    if (url) { const arr = [...prods]; arr[i] = { ...arr[i], image_url: url }; setProds(arr); toast.success("Imagem do produto enviada!"); }
+                  }} />
+                  {uploadingContent === `prod-${i}` ? <span className="text-xs text-k-4 animate-pulse">⏳</span> : <span className="text-k-4 text-lg">📷</span>}
+                </label>
+              )}
+              <div className="flex-1 flex gap-2">
+                <input value={prod.price} onChange={(e) => { const arr = [...prods]; arr[i] = { ...arr[i], price: e.target.value }; setProds(arr); }} placeholder="R$ 0,00" className={`${inputClass} w-28`} />
+                <input value={prod.url || ""} onChange={(e) => { const arr = [...prods]; arr[i] = { ...arr[i], url: e.target.value }; setProds(arr); }} placeholder="Link de compra" className={`${inputClass} flex-1`} />
+              </div>
             </div>
           </div>
         ))}
-        <button onClick={() => setProds([...prods, { id: crypto.randomUUID(), creator_id: profile.id, title: "", price: "", icon: "📦", url: "", sort_order: prods.length }])}
+        <button onClick={() => setProds([...prods, { id: crypto.randomUUID(), creator_id: profile.id, title: "", price: "", icon: "📦", url: "", image_url: "", sort_order: prods.length }])}
           className="flex items-center justify-center gap-2 w-full p-3 border border-dashed border-k-glow rounded-xl text-k-4 text-sm font-medium mt-2 transition-all hover:border-k-400 hover:text-k-300 hover:bg-k-glow active:scale-[0.98]">
           + Adicionar produto
         </button>
@@ -448,10 +472,44 @@ const CreatorEditPanel = forwardRef<CreatorEditPanelHandle, Props>(function Crea
               <button onClick={() => setCamps(camps.filter((_, j) => j !== i))} className="text-k-4 hover:text-k-err text-xs">✕</button>
             </div>
             <input value={camp.description || ""} onChange={(e) => { const arr = [...camps]; arr[i] = { ...arr[i], description: e.target.value }; setCamps(arr); }} placeholder="Descrição" className={inputClass} />
-            <div className="flex gap-2">
-              <input value={camp.url || ""} onChange={(e) => { const arr = [...camps]; arr[i] = { ...arr[i], url: e.target.value }; setCamps(arr); }} placeholder="URL" className={`${inputClass} flex-1`} />
-              <input value={camp.image_url || ""} onChange={(e) => { const arr = [...camps]; arr[i] = { ...arr[i], image_url: e.target.value }; setCamps(arr); }} placeholder="URL da imagem" className={`${inputClass} flex-1`} />
-            </div>
+            <input value={camp.url || ""} onChange={(e) => { const arr = [...camps]; arr[i] = { ...arr[i], url: e.target.value }; setCamps(arr); }} placeholder="URL da campanha" className={inputClass} />
+            {/* Campaign image upload */}
+            {camp.image_url ? (
+              <div className="relative w-full h-32 rounded-xl overflow-hidden border border-primary/10 group">
+                <img src={camp.image_url} alt="" className="w-full h-full object-cover" />
+                <button
+                  onClick={() => { const arr = [...camps]; arr[i] = { ...arr[i], image_url: "" }; setCamps(arr); }}
+                  className="absolute top-2 right-2 w-7 h-7 rounded-lg bg-background/80 backdrop-blur-sm flex items-center justify-center text-k-err text-xs font-bold opacity-0 group-hover:opacity-100 transition-opacity border border-primary/10"
+                >✕</button>
+                <label className="absolute inset-0 bg-background/50 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center cursor-pointer">
+                  <input type="file" accept="image/*" className="hidden" onChange={async (e) => {
+                    const file = e.target.files?.[0];
+                    if (!file) return;
+                    setUploadingContent(`camp-${i}`);
+                    const url = await onUploadContentImage(file, "campaign");
+                    setUploadingContent(null);
+                    if (url) { const arr = [...camps]; arr[i] = { ...arr[i], image_url: url }; setCamps(arr); toast.success("Imagem da campanha atualizada!"); }
+                  }} />
+                  <span className="text-sm text-primary-foreground font-semibold bg-primary/80 backdrop-blur-sm px-4 py-2 rounded-xl">📷 Trocar imagem</span>
+                </label>
+              </div>
+            ) : (
+              <label className="flex items-center justify-center gap-2 w-full h-24 border border-dashed border-primary/20 rounded-xl cursor-pointer hover:border-k-400 hover:bg-k-glow transition-all">
+                <input type="file" accept="image/*" className="hidden" onChange={async (e) => {
+                  const file = e.target.files?.[0];
+                  if (!file) return;
+                  setUploadingContent(`camp-${i}`);
+                  const url = await onUploadContentImage(file, "campaign");
+                  setUploadingContent(null);
+                  if (url) { const arr = [...camps]; arr[i] = { ...arr[i], image_url: url }; setCamps(arr); toast.success("Imagem da campanha enviada!"); }
+                }} />
+                {uploadingContent === `camp-${i}` ? (
+                  <span className="text-sm text-k-4 animate-pulse">Enviando imagem...</span>
+                ) : (
+                  <span className="text-sm text-k-4">📷 Adicionar imagem da campanha</span>
+                )}
+              </label>
+            )}
           </div>
         ))}
         <button onClick={() => setCamps([...camps, { id: crypto.randomUUID(), creator_id: profile.id, title: "", description: "", image_url: "", url: "", live: false, sort_order: camps.length }])}
