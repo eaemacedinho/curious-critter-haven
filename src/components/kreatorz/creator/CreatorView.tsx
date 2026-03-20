@@ -65,7 +65,7 @@ export default function CreatorView({ profile, links: rawLinks, socialLinks: raw
       : "min-h-screen flex items-start justify-center px-4 sm:px-6 py-16 pt-20 sm:pt-24 relative"}>
       <div className="absolute top-0 left-1/2 -translate-x-1/2 w-[600px] h-[420px] bg-[radial-gradient(ellipse,hsl(268_69%_50%_/_0.4),transparent_70%)] pointer-events-none" />
 
-      <div className={`${embedded ? "w-full max-w-[390px]" : "w-full sm:max-w-[480px] md:max-w-[520px]"} relative z-[1]">
+      <div className={`${embedded ? "w-full max-w-[390px]" : "w-full sm:max-w-[480px] md:max-w-[520px]"} relative z-[1]`}>
         {/* Cover */}
         {profile.cover_url && (
           <div ref={coverRef} className="w-full h-[200px] rounded-3xl overflow-hidden relative mb-[-56px]">

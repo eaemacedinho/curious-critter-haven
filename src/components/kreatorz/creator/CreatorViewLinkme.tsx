@@ -62,7 +62,7 @@ export default function CreatorViewLinkme({ profile, links: rawLinks, socialLink
 
   return (
     <div className={embedded ? "relative w-full h-full flex justify-center bg-background" : "fixed inset-0 flex justify-center bg-background"}>
-      <div className={`${embedded ? "w-full max-w-[390px]" : "w-full sm:max-w-[480px] md:max-w-[520px]"} relative overflow-hidden h-full">
+      <div className={`${embedded ? "w-full max-w-[390px]" : "w-full sm:max-w-[480px] md:max-w-[520px]"} relative overflow-hidden h-full`}>
         {/* Hero background */}
         {heroImage && (
           <div className="absolute inset-0 z-0 overflow-hidden">
