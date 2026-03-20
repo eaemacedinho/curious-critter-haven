@@ -181,9 +181,11 @@ export type Database = {
       creators: {
         Row: {
           avatar_url: string | null
+          avatar_url_layout2: string | null
           bio: string | null
           brands: Json | null
           cover_url: string | null
+          cover_url_layout2: string | null
           created_at: string
           handle: string
           id: string
@@ -195,9 +197,11 @@ export type Database = {
         }
         Insert: {
           avatar_url?: string | null
+          avatar_url_layout2?: string | null
           bio?: string | null
           brands?: Json | null
           cover_url?: string | null
+          cover_url_layout2?: string | null
           created_at?: string
           handle?: string
           id?: string
@@ -209,9 +213,11 @@ export type Database = {
         }
         Update: {
           avatar_url?: string | null
+          avatar_url_layout2?: string | null
           bio?: string | null
           brands?: Json | null
           cover_url?: string | null
+          cover_url_layout2?: string | null
           created_at?: string
           handle?: string
           id?: string

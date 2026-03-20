@@ -65,7 +65,7 @@ interface Props {
   onSaveSocialLinks: (links: SocialLink[]) => Promise<void>;
   onSaveProducts: (products: CreatorProduct[]) => Promise<void>;
   onSaveCampaigns: (campaigns: CreatorCampaign[]) => Promise<void>;
-  onUploadImage: (file: File, type: "avatar" | "cover") => Promise<string | null>;
+  onUploadImage: (file: File, type: "avatar" | "cover" | "avatar_layout2" | "cover_layout2") => Promise<string | null>;
   onUploadContentImage: (file: File, folder: string) => Promise<string | null>;
   onDone: () => void;
 }
@@ -108,6 +108,8 @@ const CreatorEditPanel = forwardRef<CreatorEditPanelHandle, Props>(function Crea
   const [brands, setBrands] = useState(profile.brands || []);
   const [avatarUrl, setAvatarUrl] = useState(profile.avatar_url || "");
   const [coverUrl, setCoverUrl] = useState(profile.cover_url || "");
+  const [avatarUrlL2, setAvatarUrlL2] = useState(profile.avatar_url_layout2 || "");
+  const [coverUrlL2, setCoverUrlL2] = useState(profile.cover_url_layout2 || "");
   const [links, setLinks] = useState(initialLinks);
   const [social, setSocial] = useState(initialSocial);
   const [prods, setProds] = useState(initialProducts);
@@ -118,28 +120,30 @@ const CreatorEditPanel = forwardRef<CreatorEditPanelHandle, Props>(function Crea
   const [showIconPicker, setShowIconPicker] = useState<string | null>(null);
   const [newTag, setNewTag] = useState("");
   const [newBrand, setNewBrand] = useState("");
-  const [cropImage, setCropImage] = useState<{ src: string; type: "avatar" | "cover"; file: File } | null>(null);
+  const [cropImage, setCropImage] = useState<{ src: string; type: "avatar" | "cover" | "avatar_layout2" | "cover_layout2"; file: File } | null>(null);
   const [contentCrop, setContentCrop] = useState<ContentCropState>(null);
 
   const avatarRef = useRef<HTMLInputElement>(null);
   const coverRef = useRef<HTMLInputElement>(null);
 
-  const handleFileSelected = (file: File, type: "avatar" | "cover") => {
+  const handleFileSelected = (file: File, type: "avatar" | "cover" | "avatar_layout2" | "cover_layout2") => {
     const reader = new FileReader();
     reader.onload = () => setCropImage({ src: reader.result as string, type, file });
     reader.readAsDataURL(file);
   };
 
-  const handleCropDone = async (blob: Blob, type: "avatar" | "cover") => {
+  const handleCropDone = async (blob: Blob, type: "avatar" | "cover" | "avatar_layout2" | "cover_layout2") => {
     try {
-      setUploadingImage(type);
+      setUploadingImage(type as any);
       const file = new File([blob], `${type}.jpg`, { type: "image/jpeg" });
       const url = await onUploadImage(file, type);
       if (!url) return;
       if (type === "avatar") setAvatarUrl(url);
-      else setCoverUrl(url);
+      else if (type === "cover") setCoverUrl(url);
+      else if (type === "avatar_layout2") setAvatarUrlL2(url);
+      else if (type === "cover_layout2") setCoverUrlL2(url);
       setCropImage(null);
-      toast.success(type === "avatar" ? "Foto atualizada!" : "Capa atualizada!");
+      toast.success("Imagem atualizada!");
     } finally {
       setUploadingImage(null);
     }
@@ -163,25 +167,24 @@ const CreatorEditPanel = forwardRef<CreatorEditPanelHandle, Props>(function Crea
     try {
       setSaving(true);
 
+      const baseProfile = { name, handle, bio, avatar_url: avatarUrl, cover_url: coverUrl, avatar_url_layout2: avatarUrlL2, cover_url_layout2: coverUrlL2, tags, stats, brands };
+
       if (cropImage) {
         const { file, type } = cropImage;
         const url = await onUploadImage(file, type);
         if (url) {
-          if (type === "avatar") setAvatarUrl(url);
-          else setCoverUrl(url);
-          if (type === "avatar") {
-            await onSaveProfile({ name, handle, bio, avatar_url: url, cover_url: coverUrl, tags, stats, brands });
-          } else {
-            await onSaveProfile({ name, handle, bio, avatar_url: avatarUrl, cover_url: url, tags, stats, brands });
-          }
+          if (type === "avatar") baseProfile.avatar_url = url;
+          else if (type === "cover") baseProfile.cover_url = url;
+          else if (type === "avatar_layout2") baseProfile.avatar_url_layout2 = url;
+          else if (type === "cover_layout2") baseProfile.cover_url_layout2 = url;
         } else {
           toast.error("Falha ao salvar imagem pendente.");
           return false;
         }
         setCropImage(null);
-      } else {
-        await onSaveProfile({ name, handle, bio, avatar_url: avatarUrl, cover_url: coverUrl, tags, stats, brands });
       }
+
+      await onSaveProfile(baseProfile);
 
       await onSaveLinks(links);
       await onSaveSocialLinks(social);
@@ -214,7 +217,7 @@ const CreatorEditPanel = forwardRef<CreatorEditPanelHandle, Props>(function Crea
       <input ref={coverRef} type="file" accept="image/*" className="hidden" onChange={(e) => e.target.files?.[0] && handleFileSelected(e.target.files[0], "cover")} />
 
       <div className="mb-6">
-        <div className={sectionTitle}>🖼 Foto de Capa</div>
+        <div className={sectionTitle}>🖼 Foto de Capa — Layout 1</div>
         <div className="relative w-full h-[160px] rounded-2xl overflow-hidden border border-primary/10 group cursor-pointer" onClick={() => coverRef.current?.click()}>
           {coverUrl ? (
             <img src={coverUrl} alt="cover" className="w-full h-full object-cover transition-transform duration-300 group-hover:scale-105" />
@@ -230,9 +233,9 @@ const CreatorEditPanel = forwardRef<CreatorEditPanelHandle, Props>(function Crea
         <p className={sizeHint}>📐 Tamanho ideal: <strong>1600×500px</strong> (proporção 16:5)</p>
       </div>
 
-      <div className="mb-8">
-        <div className={sectionTitle}>👤 Perfil</div>
-        <div className="flex items-center gap-4 mb-4">
+      <div className="mb-6">
+        <div className={sectionTitle}>👤 Foto de Perfil — Layout 1</div>
+        <div className="flex items-center gap-4">
           <div className="w-20 h-20 rounded-full overflow-hidden border-[2.5px] border-primary flex-shrink-0 shadow-[0_4px_18px] shadow-primary/20 relative group cursor-pointer" onClick={() => avatarRef.current?.click()}>
             {avatarUrl ? (
               <img src={avatarUrl} alt="" className="w-full h-full object-cover" />
@@ -248,6 +251,61 @@ const CreatorEditPanel = forwardRef<CreatorEditPanelHandle, Props>(function Crea
             <br /><span className="text-[0.62rem] text-k-4">📐 Ideal: <strong>500×500px</strong> (1:1) · JPG/PNG · máx 2MB</span>
           </div>
         </div>
+      </div>
+
+      {/* Layout 2 images */}
+      <div className="mb-6 bg-card/40 border border-primary/10 rounded-2xl p-4">
+        <div className={sectionTitle}>🎨 Imagens — Layout 2 (Linkme)</div>
+        <p className="text-[0.68rem] text-k-4 mb-3">Imagens independentes que aparecem apenas no Layout 2. Use uma foto em retrato/vertical para melhor resultado.</p>
+
+        <div className="mb-4">
+          <label className={labelClass}>Foto Hero / Capa (Layout 2)</label>
+          <div className="relative w-full h-[200px] rounded-2xl overflow-hidden border border-primary/10 group cursor-pointer" onClick={() => {
+            const input = document.createElement("input");
+            input.type = "file"; input.accept = "image/*";
+            input.onchange = (e) => { const f = (e.target as HTMLInputElement).files?.[0]; if (f) handleFileSelected(f, "cover_layout2"); };
+            input.click();
+          }}>
+            {coverUrlL2 ? (
+              <img src={coverUrlL2} alt="cover layout 2" className="w-full h-full object-cover transition-transform duration-300 group-hover:scale-105" />
+            ) : (
+              <div className="w-full h-full bg-k-800 flex items-center justify-center text-k-4 text-sm">Clique para adicionar foto hero</div>
+            )}
+            <div className="absolute inset-0 bg-background/60 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center">
+              <span className="text-sm text-primary-foreground font-semibold bg-primary/80 backdrop-blur-sm px-4 py-2 rounded-xl">📷 Alterar hero</span>
+            </div>
+          </div>
+          <p className={sizeHint}>📐 Tamanho ideal: <strong>1080×1350px</strong> (proporção 4:5, retrato)</p>
+        </div>
+
+        <div>
+          <label className={labelClass}>Foto de Perfil (Layout 2)</label>
+          <div className="flex items-center gap-4">
+            <div className="w-20 h-20 rounded-full overflow-hidden border-[2.5px] border-primary flex-shrink-0 shadow-[0_4px_18px] shadow-primary/20 relative group cursor-pointer" onClick={() => {
+              const input = document.createElement("input");
+              input.type = "file"; input.accept = "image/*";
+              input.onchange = (e) => { const f = (e.target as HTMLInputElement).files?.[0]; if (f) handleFileSelected(f, "avatar_layout2"); };
+              input.click();
+            }}>
+              {avatarUrlL2 ? (
+                <img src={avatarUrlL2} alt="" className="w-full h-full object-cover" />
+              ) : (
+                <div className="w-full h-full bg-k-800 flex items-center justify-center text-2xl text-k-3">{name?.[0] || "?"}</div>
+              )}
+              <div className="absolute inset-0 bg-background/60 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center rounded-full">
+                <span className="text-lg">📷</span>
+              </div>
+            </div>
+            <div>
+              <span className="text-sm text-k-300 font-medium">Foto do header sticky</span>
+              <br /><span className="text-[0.62rem] text-k-4">📐 Ideal: <strong>500×500px</strong> (1:1) · aparece no topo ao rolar</span>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div className="mb-8">
+        <div className={sectionTitle}>👤 Dados do Perfil</div>
         <div className="space-y-3">
           <div><label className={labelClass}>Nome</label><input value={name} onChange={(e) => setName(e.target.value)} className={inputClass} placeholder="Seu nome ou nome artístico" /></div>
           <div>
@@ -612,8 +670,12 @@ const CreatorEditPanel = forwardRef<CreatorEditPanelHandle, Props>(function Crea
       {cropImage && (
         <ImageCropper
           imageSrc={cropImage.src}
-          aspect={cropImage.type === "avatar" ? 1 : 16 / 5}
-          cropShape={cropImage.type === "avatar" ? "round" : "rect"}
+          aspect={
+            cropImage.type === "avatar" || cropImage.type === "avatar_layout2" ? 1
+            : cropImage.type === "cover_layout2" ? 4 / 5
+            : 16 / 5
+          }
+          cropShape={cropImage.type === "avatar" || cropImage.type === "avatar_layout2" ? "round" : "rect"}
           onCropDone={(blob) => handleCropDone(blob, cropImage.type)}
           onCancel={() => setCropImage(null)}
         />
