@@ -107,7 +107,9 @@ export default function SettingsScreen({ onNavigate }: SettingsScreenProps) {
                     input.click();
                   }}
                 >
-                  {logoUrl ? (
+                  {uploadingLogo ? (
+                    <span className="text-xs text-muted-foreground animate-pulse">⏳</span>
+                  ) : logoUrl ? (
                     <img src={logoUrl} alt="logo" className="w-full h-full object-contain" />
                   ) : (
                     <span className="text-2xl group-hover:scale-110 transition-transform">📷</span>
