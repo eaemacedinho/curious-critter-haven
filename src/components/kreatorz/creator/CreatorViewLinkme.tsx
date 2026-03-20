@@ -211,7 +211,7 @@ export default function CreatorViewLinkme({ profile, links: rawLinks, socialLink
                   {links.length > 0 && (
                     <div className="flex flex-col gap-3 mt-6 px-4">
                       {links.map((link) => (
-                        <LinkmeCard key={link.id} link={link} shape={profile.image_shape} />
+                        <LinkmeCard key={link.id} link={link} shape={profile.image_shape_links} />
                       ))}
                     </div>
                   )}
@@ -223,7 +223,7 @@ export default function CreatorViewLinkme({ profile, links: rawLinks, socialLink
                       <div className="grid grid-cols-2 gap-3">
                         {products.map((prod) => (
                           <div key={prod.id} onClick={() => prod.url && window.open(prod.url, "_blank")}
-                            className={`bg-card/70 backdrop-blur-xl border border-border ${shapeClass(profile.image_shape)} overflow-hidden cursor-pointer transition-all duration-300 group hover:border-primary/30 hover:-translate-y-1 active:scale-[0.97]`}>
+                            className={`bg-card/70 backdrop-blur-xl border border-border ${shapeClass(profile.image_shape_products)} overflow-hidden cursor-pointer transition-all duration-300 group hover:border-primary/30 hover:-translate-y-1 active:scale-[0.97]`}>
                             {prod.image_url ? (
                               <div className="w-full aspect-square overflow-hidden">
                                 <img src={prod.image_url} alt="" className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105" />
@@ -250,7 +250,7 @@ export default function CreatorViewLinkme({ profile, links: rawLinks, socialLink
                       <div className="flex flex-col gap-3">
                         {pastCamps.map((camp) => (
                           <div key={camp.id} onClick={() => camp.url && window.open(camp.url, "_blank")}
-                            className={`relative ${shapeClass(profile.image_shape)} overflow-hidden cursor-pointer group transition-all duration-300 hover:-translate-y-1 active:scale-[0.98] opacity-75 hover:opacity-100`}>
+                            className={`relative ${shapeClass(profile.image_shape_campaigns)} overflow-hidden cursor-pointer group transition-all duration-300 hover:-translate-y-1 active:scale-[0.98] opacity-75 hover:opacity-100`}>
                             {camp.image_url ? (
                               <>
                                 <div className="w-full aspect-[16/9] overflow-hidden">

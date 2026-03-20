@@ -115,7 +115,9 @@ const CreatorEditPanel = forwardRef<CreatorEditPanelHandle, Props>(function Crea
   const [avatarUrlL2, setAvatarUrlL2] = useState(profile.avatar_url_layout2 || "");
   const [coverUrlL2, setCoverUrlL2] = useState(profile.cover_url_layout2 || "");
   const [verified, setVerified] = useState(profile.verified ?? false);
-  const [imageShape, setImageShape] = useState<"rounded" | "circular" | "pill" | "shadow" | "polaroid">(profile.image_shape || "rounded");
+  const [shapeProducts, setShapeProducts] = useState<"rounded" | "circular" | "pill" | "shadow" | "polaroid">(profile.image_shape_products || "rounded");
+  const [shapeCampaigns, setShapeCampaigns] = useState<"rounded" | "circular" | "pill" | "shadow" | "polaroid">(profile.image_shape_campaigns || "rounded");
+  const [shapeLinks, setShapeLinks] = useState<"rounded" | "circular" | "pill" | "shadow" | "polaroid">(profile.image_shape_links || "rounded");
   const [links, setLinks] = useState(initialLinks);
   const [social, setSocial] = useState(() =>
     initialSocial.map((s) => {
@@ -218,7 +220,7 @@ const CreatorEditPanel = forwardRef<CreatorEditPanelHandle, Props>(function Crea
     try {
       setSaving(true);
 
-      const baseProfile = { name, handle, bio, avatar_url: avatarUrl, cover_url: coverUrl, avatar_url_layout2: avatarUrlL2, cover_url_layout2: coverUrlL2, verified, tags, stats, brands, image_shape: imageShape };
+      const baseProfile = { name, handle, bio, avatar_url: avatarUrl, cover_url: coverUrl, avatar_url_layout2: avatarUrlL2, cover_url_layout2: coverUrlL2, verified, tags, stats, brands, image_shape_products: shapeProducts, image_shape_campaigns: shapeCampaigns, image_shape_links: shapeLinks };
 
       if (cropImage) {
         const { file, type } = cropImage;
@@ -397,67 +399,44 @@ const CreatorEditPanel = forwardRef<CreatorEditPanelHandle, Props>(function Crea
             </button>
           </div>
 
-          {/* Image shape selector */}
-          <div className="mt-4 p-3 bg-k-800/50 border border-primary/10 rounded-xl">
-            <span className="text-sm font-semibold text-primary-foreground flex items-center gap-1.5 mb-1">
+          {/* Per-section image shape selectors */}
+          <div className="mt-4 p-3 bg-k-800/50 border border-primary/10 rounded-xl space-y-4">
+            <span className="text-sm font-semibold text-primary-foreground flex items-center gap-1.5">
               🖼 Formato das imagens
             </span>
-            <p className="text-[0.65rem] text-k-4 mb-3">Escolha como as imagens de produtos, campanhas e links aparecem na página pública.</p>
-            <div className="grid grid-cols-5 gap-2">
-              {([
-                { value: "rounded" as const, label: "Arredondado", previewCls: "rounded-2xl border border-primary/30" },
-                { value: "circular" as const, label: "Circular", previewCls: "rounded-full border border-primary/30" },
-                { value: "pill" as const, label: "Cápsula", previewCls: "rounded-[2rem] border border-primary/30" },
-                { value: "shadow" as const, label: "Sombra", previewCls: "rounded-2xl shadow-[0_4px_16px_-2px_hsl(268_69%_50%_/_0.4)]" },
-                { value: "polaroid" as const, label: "Polaroid", previewCls: "rounded-sm bg-card p-0.5 pb-2 shadow-[0_3px_12px_-2px_rgba(0,0,0,0.3)] border border-border/40" },
-              ]).map((opt) => (
-                <button
-                  key={opt.value}
-                  onClick={() => setImageShape(opt.value)}
-                  className={`flex flex-col items-center gap-2 p-2.5 rounded-xl border transition-all duration-200 active:scale-[0.97] ${
-                    imageShape === opt.value
-                      ? "border-primary bg-primary/10 text-primary"
-                      : "border-primary/10 bg-k-800 text-k-3 hover:border-primary/30"
-                  }`}
-                >
-                  <div className={`w-9 h-9 bg-primary/20 ${opt.previewCls}`} />
-                  <span className="text-[0.62rem] font-semibold leading-tight text-center">{opt.label}</span>
-                </button>
-              ))}
-            </div>
+            <p className="text-[0.65rem] text-k-4 -mt-2">Escolha o formato das imagens para cada seção da página pública.</p>
 
-            {/* Live preview */}
-            <div className="mt-3 pt-3 border-t border-primary/10">
-              <span className="text-[0.65rem] text-k-4 mb-2 block">Pré-visualização:</span>
-              <div className="flex items-center gap-3">
-                {(() => {
-                  const previewSrc = avatarUrl || "/placeholder.svg";
-                  const base = "w-16 h-16 object-cover bg-primary/10 transition-all duration-300";
-                  switch (imageShape) {
-                    case "circular":
-                      return <img src={previewSrc} alt="preview" className={`${base} rounded-full border border-primary/30`} />;
-                    case "pill":
-                      return <img src={previewSrc} alt="preview" className={`${base} rounded-[2rem] border border-primary/30`} />;
-                    case "shadow":
-                      return <img src={previewSrc} alt="preview" className={`${base} rounded-2xl shadow-[0_6px_24px_-4px_hsl(var(--primary)/0.25)]`} />;
-                    case "polaroid":
-                      return (
-                        <div className="bg-card p-1.5 pb-4 rounded-sm shadow-[0_3px_12px_-2px_rgba(0,0,0,0.3)] border border-border/40 transition-all duration-300">
-                          <img src={previewSrc} alt="preview" className="w-14 h-14 object-cover rounded-[1px]" />
-                        </div>
-                      );
-                    default:
-                      return <img src={previewSrc} alt="preview" className={`${base} rounded-2xl border border-primary/30`} />;
-                  }
-                })()}
-                <div className="text-[0.68rem] text-k-3">
-                  <span className="font-semibold text-primary-foreground block mb-0.5">
-                    {imageShape === "rounded" ? "Arredondado" : imageShape === "circular" ? "Circular" : imageShape === "pill" ? "Cápsula" : imageShape === "shadow" ? "Sombra" : "Polaroid"}
-                  </span>
-                  Assim ficarão as imagens de produtos, campanhas e links.
+            {([
+              { label: "🔗 Links", value: shapeLinks, setter: setShapeLinks },
+              { label: "📦 Produtos", value: shapeProducts, setter: setShapeProducts },
+              { label: "📢 Campanhas", value: shapeCampaigns, setter: setShapeCampaigns },
+            ] as const).map((section) => (
+              <div key={section.label}>
+                <span className="text-[0.7rem] font-semibold text-k-3 mb-1.5 block">{section.label}</span>
+                <div className="grid grid-cols-5 gap-1.5">
+                  {([
+                    { value: "rounded" as const, label: "Arredondado", cls: "rounded-2xl border border-primary/30" },
+                    { value: "circular" as const, label: "Circular", cls: "rounded-full border border-primary/30" },
+                    { value: "pill" as const, label: "Cápsula", cls: "rounded-[2rem] border border-primary/30" },
+                    { value: "shadow" as const, label: "Sombra", cls: "rounded-2xl shadow-[0_4px_16px_-2px_hsl(268_69%_50%_/_0.4)]" },
+                    { value: "polaroid" as const, label: "Polaroid", cls: "rounded-sm bg-card p-0.5 pb-1.5 shadow-[0_3px_12px_-2px_rgba(0,0,0,0.3)] border border-border/40" },
+                  ]).map((opt) => (
+                    <button
+                      key={opt.value}
+                      onClick={() => section.setter(opt.value)}
+                      className={`flex flex-col items-center gap-1.5 p-2 rounded-xl border transition-all duration-200 active:scale-[0.97] ${
+                        section.value === opt.value
+                          ? "border-primary bg-primary/10 text-primary"
+                          : "border-primary/10 bg-k-800 text-k-3 hover:border-primary/30"
+                      }`}
+                    >
+                      <div className={`w-7 h-7 bg-primary/20 ${opt.cls}`} />
+                      <span className="text-[0.58rem] font-semibold leading-tight text-center">{opt.label}</span>
+                    </button>
+                  ))}
                 </div>
               </div>
-            </div>
+            ))}
           </div>
         </div>
       </div>
