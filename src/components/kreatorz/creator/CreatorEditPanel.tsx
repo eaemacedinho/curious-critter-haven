@@ -351,10 +351,14 @@ const CreatorEditPanel = forwardRef<CreatorEditPanelHandle, Props>(function Crea
         <div className={sectionTitle}>📊 Estatísticas</div>
         <p className="text-[0.68rem] text-k-4 mb-2">Números que impressionam. Primeiro o valor, depois o rótulo.</p>
         {stats.map((stat, i) => (
-          <div key={i} className="flex gap-2 mb-2">
-            <input value={stat.value} onChange={(e) => { const s = [...stats]; s[i] = { ...s[i], value: e.target.value }; setStats(s); }} placeholder="Ex: 2.4M" className={`${inputClass} w-1/3`} />
-            <input value={stat.label} onChange={(e) => { const s = [...stats]; s[i] = { ...s[i], label: e.target.value }; setStats(s); }} placeholder="Ex: Seguidores" className={`${inputClass} flex-1`} />
-            <button onClick={() => setStats(stats.filter((_, j) => j !== i))} className="text-k-4 hover:text-k-err px-2">×</button>
+          <div key={i} className="flex gap-2 mb-2 items-center">
+            <div className="w-[120px] flex-shrink-0">
+              <input value={stat.value} onChange={(e) => { const s = [...stats]; s[i] = { ...s[i], value: e.target.value }; setStats(s); }} placeholder="Valor (ex: 2.4M)" className={inputClass} />
+            </div>
+            <div className="flex-1">
+              <input value={stat.label} onChange={(e) => { const s = [...stats]; s[i] = { ...s[i], label: e.target.value }; setStats(s); }} placeholder="Rótulo (ex: Seguidores)" className={inputClass} />
+            </div>
+            <button onClick={() => setStats(stats.filter((_, j) => j !== i))} className="text-k-4 hover:text-k-err px-2 flex-shrink-0">×</button>
           </div>
         ))}
         <button onClick={() => setStats([...stats, { value: "", label: "" }])} className="text-sm text-k-300 font-medium hover:text-k-200 transition-colors">+ Adicionar estatística</button>
