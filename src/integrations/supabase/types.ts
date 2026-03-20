@@ -87,6 +87,8 @@ export type Database = {
       }
       creator_campaigns: {
         Row: {
+          bg_color: string | null
+          border_color: string | null
           creator_id: string
           description: string | null
           expires_at: string | null
@@ -94,10 +96,13 @@ export type Database = {
           image_url: string | null
           live: boolean | null
           sort_order: number | null
+          text_color: string | null
           title: string
           url: string | null
         }
         Insert: {
+          bg_color?: string | null
+          border_color?: string | null
           creator_id: string
           description?: string | null
           expires_at?: string | null
@@ -105,10 +110,13 @@ export type Database = {
           image_url?: string | null
           live?: boolean | null
           sort_order?: number | null
+          text_color?: string | null
           title?: string
           url?: string | null
         }
         Update: {
+          bg_color?: string | null
+          border_color?: string | null
           creator_id?: string
           description?: string | null
           expires_at?: string | null
@@ -116,6 +124,7 @@ export type Database = {
           image_url?: string | null
           live?: boolean | null
           sort_order?: number | null
+          text_color?: string | null
           title?: string
           url?: string | null
         }
@@ -132,6 +141,8 @@ export type Database = {
       creator_links: {
         Row: {
           active: boolean | null
+          bg_color: string | null
+          border_color: string | null
           created_at: string
           creator_id: string
           featured: boolean | null
@@ -139,11 +150,14 @@ export type Database = {
           id: string
           sort_order: number | null
           subtitle: string | null
+          text_color: string | null
           title: string
           url: string
         }
         Insert: {
           active?: boolean | null
+          bg_color?: string | null
+          border_color?: string | null
           created_at?: string
           creator_id: string
           featured?: boolean | null
@@ -151,11 +165,14 @@ export type Database = {
           id?: string
           sort_order?: number | null
           subtitle?: string | null
+          text_color?: string | null
           title?: string
           url?: string
         }
         Update: {
           active?: boolean | null
+          bg_color?: string | null
+          border_color?: string | null
           created_at?: string
           creator_id?: string
           featured?: boolean | null
@@ -163,6 +180,7 @@ export type Database = {
           id?: string
           sort_order?: number | null
           subtitle?: string | null
+          text_color?: string | null
           title?: string
           url?: string
         }
@@ -178,32 +196,41 @@ export type Database = {
       }
       creator_products: {
         Row: {
+          bg_color: string | null
+          border_color: string | null
           creator_id: string
           icon: string | null
           id: string
           image_url: string | null
           price: string | null
           sort_order: number | null
+          text_color: string | null
           title: string
           url: string | null
         }
         Insert: {
+          bg_color?: string | null
+          border_color?: string | null
           creator_id: string
           icon?: string | null
           id?: string
           image_url?: string | null
           price?: string | null
           sort_order?: number | null
+          text_color?: string | null
           title?: string
           url?: string | null
         }
         Update: {
+          bg_color?: string | null
+          border_color?: string | null
           creator_id?: string
           icon?: string | null
           id?: string
           image_url?: string | null
           price?: string | null
           sort_order?: number | null
+          text_color?: string | null
           title?: string
           url?: string | null
         }
