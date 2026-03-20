@@ -3,6 +3,7 @@ import { toast } from "sonner";
 import type { CreatorProfile, CreatorLink, SocialLink, CreatorProduct, CreatorCampaign } from "@/hooks/useCreatorData";
 import ImageCropper from "./ImageCropper";
 import VerifiedBadge from "./VerifiedBadge";
+import { ConfirmDialog } from "@/components/ui/confirm-dialog";
 
 const iconOptions = ["⭐", "▶", "🎵", "📄", "🛍", "📸", "🎮", "💼", "🎨", "📚", "🔗", "💰", "🎧", "📦", "🎬", "💎"];
 
