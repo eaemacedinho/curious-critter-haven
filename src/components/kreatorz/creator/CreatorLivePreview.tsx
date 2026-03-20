@@ -4,13 +4,7 @@ import { useTenant } from "@/hooks/useTenant";
 import CreatorView from "./CreatorView";
 import CreatorViewLinkme from "./CreatorViewLinkme";
 
-type DeviceKey = "mobile" | "tablet" | "desktop";
-
-const DEVICES: Record<DeviceKey, { label: string; icon: string; w: number; h: number }> = {
-  mobile:  { label: "Mobile",  icon: "📱", w: 390, h: 844 },
-  tablet:  { label: "Tablet",  icon: "📟", w: 768, h: 1024 },
-  desktop: { label: "Desktop", icon: "🖥", w: 1280, h: 800 },
-};
+const DEVICE = { w: 390, h: 844 };
 
 interface Props {
   profile: CreatorProfile;
