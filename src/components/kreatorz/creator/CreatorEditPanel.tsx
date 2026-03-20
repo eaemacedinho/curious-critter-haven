@@ -680,7 +680,7 @@ const CreatorEditPanel = forwardRef<CreatorEditPanelHandle, Props>(function Crea
                 <input type="checkbox" checked={camp.live} onChange={(e) => { const arr = [...camps]; arr[i] = { ...arr[i], live: e.target.checked }; setCamps(arr); }} className="accent-primary" />
                 {camp.live ? "🔥 Spotlight" : "Ao vivo"}
               </label>
-              <button onClick={() => setCamps(camps.filter((_, j) => j !== i))} className="text-k-4 hover:text-k-err text-xs">✕</button>
+              <button onClick={() => setDeleteCampTarget(i)} className="text-k-4 hover:text-k-err text-xs">✕</button>
             </div>
             {camp.live && (
               <div className="space-y-2">
