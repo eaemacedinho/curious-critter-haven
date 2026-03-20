@@ -60,6 +60,7 @@ export interface CreatorCampaign {
   url: string;
   live: boolean;
   sort_order: number;
+  expires_at: string | null;
 }
 
 const normalizeProfile = (creator: any): CreatorProfile => ({
