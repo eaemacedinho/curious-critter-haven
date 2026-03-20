@@ -4,6 +4,8 @@ import SocialIcon, { LinkIcon } from "./SocialIcon";
 import VerifiedBadge from "./VerifiedBadge";
 import SpotlightCampaign from "./SpotlightCampaign";
 import type { CreatorProfile, CreatorLink, SocialLink, CreatorProduct, CreatorCampaign } from "@/hooks/useCreatorData";
+import PageEffects, { GlowBorderProvider } from "./PageEffects";
+import type { PageEffect } from "./PageEffects";
 
 const shapeClass = (shape?: string) => {
   switch (shape) {
