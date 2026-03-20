@@ -15,6 +15,7 @@ export interface CreatorProfile {
   cover_url_layout2: string;
   verified: boolean;
   public_layout: string;
+  image_shape: "rounded" | "circular" | "pill";
   tags: { label: string; color?: string }[];
   stats: { value: string; label: string }[];
   brands: { name: string; logo_url?: string }[];
