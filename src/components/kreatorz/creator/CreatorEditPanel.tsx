@@ -140,6 +140,27 @@ const CreatorEditPanel = forwardRef<CreatorEditPanelHandle, Props>(function Crea
   const [contentCrop, setContentCrop] = useState<ContentCropState>(null);
   const [deleteCampTarget, setDeleteCampTarget] = useState<number | null>(null);
   const [validationErrors, setValidationErrors] = useState<Record<string, string>>({});
+  const [showPreview, setShowPreview] = useState(false);
+
+  // Build a live preview profile from current editor state
+  const liveProfile = useMemo<CreatorProfile>(() => ({
+    ...profile,
+    name,
+    handle,
+    bio,
+    avatar_url: avatarUrl,
+    cover_url: coverUrl,
+    avatar_url_layout2: avatarUrlL2,
+    cover_url_layout2: coverUrlL2,
+    verified,
+    tags,
+    stats,
+    brands,
+    image_shape: shapeProducts,
+    image_shape_products: shapeProducts,
+    image_shape_campaigns: shapeCampaigns,
+    image_shape_links: shapeLinks,
+  }), [profile, name, handle, bio, avatarUrl, coverUrl, avatarUrlL2, coverUrlL2, verified, tags, stats, brands, shapeProducts, shapeCampaigns, shapeLinks]);
 
   const isValidUrl = (url: string) => {
     if (!url) return true;
