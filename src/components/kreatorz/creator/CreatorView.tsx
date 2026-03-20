@@ -121,7 +121,8 @@ export default function CreatorView({ profile, links: rawLinks, socialLinks: raw
           </div>
 
           {profile.name && (
-            <h1 className="font-display text-[1.85rem] font-normal mt-4 text-foreground tracking-tight">
+            <h1 className="font-display text-[1.85rem] font-normal mt-4 tracking-tight"
+              style={profile.color_name ? { color: profile.color_name } : { color: "hsl(var(--foreground))" }}>
               {profile.name}
             </h1>
           )}
