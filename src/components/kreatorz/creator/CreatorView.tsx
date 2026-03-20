@@ -162,7 +162,8 @@ export default function CreatorView({ profile, links: rawLinks, socialLinks: raw
           )}
 
           {profile.bio && (
-            <p className="text-sm text-muted-foreground leading-relaxed mt-5 max-w-[380px] mx-auto">{profile.bio}</p>
+            <p className="text-sm leading-relaxed mt-5 max-w-[380px] mx-auto"
+              style={profile.color_bio ? { color: profile.color_bio } : { color: "hsl(var(--muted-foreground))" }}>{profile.bio}</p>
           )}
 
           {socialLinks.length > 0 && (
