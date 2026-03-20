@@ -1,0 +1,175 @@
+import { useState } from "react";
+import { Outlet, useNavigate, useLocation, Link } from "react-router-dom";
+import { useAuth } from "@/hooks/useAuth";
+import { useTenant } from "@/hooks/useTenant";
+import { toast } from "sonner";
+
+const navItems = [
+  { icon: "▦", label: "Dashboard", path: "/app" },
+  { icon: "👥", label: "Creators", path: "/app/creators" },
+  { icon: "📢", label: "Campanhas", path: "/app/campaigns" },
+  { icon: "📊", label: "Analytics", path: "/app/analytics" },
+];
+
+const settingsItems = [
+  { icon: "⚙", label: "Configurações", path: "/app/settings" },
+];
+
+export default function AppLayout() {
+  const { user, signOut } = useAuth();
+  const { agency } = useTenant();
+  const navigate = useNavigate();
+  const location = useLocation();
+  const [sidebarOpen, setSidebarOpen] = useState(false);
+
+  const isActive = (path: string) => {
+    if (path === "/app") return location.pathname === "/app";
+    return location.pathname.startsWith(path);
+  };
+
+  const handleSignOut = async () => {
+    await signOut();
+    toast.success("Sessão encerrada");
+    navigate("/login");
+  };
+
+  const sidebarContent = (
+    <>
+      {/* Agency branding */}
+      <div className="flex items-center gap-2.5 px-4 pb-6 border-b border-border mb-6">
+        {agency?.logo_url ? (
+          <img src={agency.logo_url} alt="" className="w-8 h-8 rounded-lg object-contain" />
+        ) : (
+          <div
+            className="w-8 h-8 rounded-lg flex items-center justify-center text-sm font-extrabold text-primary-foreground"
+            style={{
+              background: `linear-gradient(135deg, ${agency?.primary_color || "hsl(268,69%,50%)"}, ${agency?.accent_color || "hsl(268,85%,61%)"})`,
+            }}
+          >
+            {agency?.name?.[0] || "A"}
+          </div>
+        )}
+        <div className="min-w-0 flex-1">
+          <div className="text-sm font-bold text-primary-foreground truncate">
+            {agency?.name || "Minha Agência"}
+          </div>
+          <div className="text-[0.65rem] text-muted-foreground truncate">
+            {agency?.slug ? `${agency.slug}.kreatorz.ai` : ""}
+          </div>
+        </div>
+      </div>
+
+      {/* Main nav */}
+      <div className="mb-6">
+        <div className="text-[0.6rem] font-bold text-muted-foreground tracking-[0.14em] uppercase px-3 mb-2">
+          Principal
+        </div>
+        {navItems.map((item) => (
+          <Link
+            key={item.path}
+            to={item.path}
+            onClick={() => setSidebarOpen(false)}
+            className={`w-full flex items-center gap-2.5 px-3 py-2.5 rounded-xl text-sm mb-0.5 transition-all duration-200 ${
+              isActive(item.path)
+                ? "bg-accent/20 text-primary font-semibold"
+                : "text-muted-foreground hover:bg-accent/10 hover:text-foreground"
+            }`}
+          >
+            <span className="text-xs w-4 text-center">{item.icon}</span>
+            {item.label}
+          </Link>
+        ))}
+      </div>
+
+      {/* Settings */}
+      <div className="mb-6">
+        <div className="text-[0.6rem] font-bold text-muted-foreground tracking-[0.14em] uppercase px-3 mb-2">
+          Sistema
+        </div>
+        {settingsItems.map((item) => (
+          <Link
+            key={item.path}
+            to={item.path}
+            onClick={() => setSidebarOpen(false)}
+            className={`w-full flex items-center gap-2.5 px-3 py-2.5 rounded-xl text-sm mb-0.5 transition-all duration-200 ${
+              isActive(item.path)
+                ? "bg-accent/20 text-primary font-semibold"
+                : "text-muted-foreground hover:bg-accent/10 hover:text-foreground"
+            }`}
+          >
+            <span className="text-xs w-4 text-center">{item.icon}</span>
+            {item.label}
+          </Link>
+        ))}
+      </div>
+
+      {/* User footer */}
+      <div className="mt-auto flex items-center gap-2.5 p-3 border-t border-border">
+        <div className="w-8 h-8 rounded-full bg-primary/20 flex items-center justify-center text-xs font-bold text-primary">
+          {user?.email?.[0]?.toUpperCase() || "U"}
+        </div>
+        <div className="min-w-0 flex-1">
+          <div className="text-xs font-semibold text-foreground truncate">
+            {user?.user_metadata?.full_name || user?.email || "Usuário"}
+          </div>
+          <div className="text-[0.65rem] text-muted-foreground truncate">{user?.email}</div>
+        </div>
+        <button
+          onClick={handleSignOut}
+          className="text-muted-foreground hover:text-destructive transition-colors text-xs"
+          title="Sair"
+        >
+          🚪
+        </button>
+      </div>
+    </>
+  );
+
+  return (
+    <div className="min-h-screen flex bg-background">
+      {/* Desktop sidebar */}
+      <aside className="w-[260px] bg-card border-r border-border p-5 pt-5 flex flex-col flex-shrink-0 max-lg:hidden">
+        {sidebarContent}
+      </aside>
+
+      {/* Mobile sidebar overlay */}
+      {sidebarOpen && (
+        <>
+          <div className="fixed inset-0 z-40 bg-background/80 backdrop-blur-sm lg:hidden" onClick={() => setSidebarOpen(false)} />
+          <aside className="fixed inset-y-0 left-0 z-50 w-[280px] bg-card border-r border-border p-5 pt-5 flex flex-col lg:hidden animate-k-fade-up">
+            {sidebarContent}
+          </aside>
+        </>
+      )}
+
+      {/* Main content area */}
+      <div className="flex-1 flex flex-col min-w-0">
+        {/* Top header */}
+        <header className="h-14 flex items-center gap-3 px-4 sm:px-6 border-b border-border bg-card/50 backdrop-blur-sm flex-shrink-0">
+          <button
+            onClick={() => setSidebarOpen(!sidebarOpen)}
+            className="lg:hidden w-9 h-9 flex items-center justify-center rounded-lg border border-border text-muted-foreground hover:text-foreground transition-colors"
+          >
+            ☰
+          </button>
+          <div className="flex-1" />
+          <span className="text-[0.65rem] font-semibold text-muted-foreground">
+            {agency?.name || ""}
+          </span>
+        </header>
+
+        {/* Page content */}
+        <main className="flex-1 overflow-y-auto p-4 sm:p-6 lg:p-8">
+          <Outlet />
+        </main>
+
+        {/* Footer */}
+        <footer className="px-6 py-3 border-t border-border text-center">
+          <span className="text-[0.65rem] text-muted-foreground">
+            Gerido por <span className="font-semibold">{agency?.name || "Sua Agência"}</span>
+          </span>
+        </footer>
+      </div>
+    </div>
+  );
+}
