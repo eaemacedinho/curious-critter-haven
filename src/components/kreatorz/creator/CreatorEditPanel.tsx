@@ -354,20 +354,19 @@ const CreatorEditPanel = forwardRef<CreatorEditPanelHandle, Props>(function Crea
 
       {/* Live preview panel */}
       {showPreview && (
-        <div className="mb-6 rounded-2xl border border-primary/20 bg-background overflow-hidden shadow-xl">
-          <div className="px-3 py-2 bg-card border-b border-border flex items-center gap-2">
+        <div className="mb-6 rounded-2xl border border-primary/20 bg-background overflow-hidden shadow-2xl shadow-primary/10">
+          <div className="px-3 py-1.5 bg-card border-b border-border flex items-center gap-2">
             <div className="flex gap-1.5">
-              <div className="w-2.5 h-2.5 rounded-full bg-destructive/60" />
-              <div className="w-2.5 h-2.5 rounded-full bg-yellow-500/60" />
-              <div className="w-2.5 h-2.5 rounded-full bg-green-500/60" />
+              <div className="w-2 h-2 rounded-full bg-destructive/60" />
+              <div className="w-2 h-2 rounded-full bg-yellow-500/60" />
+              <div className="w-2 h-2 rounded-full bg-green-500/60" />
             </div>
-            <span className="text-[0.65rem] text-muted-foreground font-medium ml-1">
-              Pré-visualização — {activeLayout === "layout2" ? "Layout 2" : "Layout 1"}
+            <span className="text-[0.62rem] text-muted-foreground font-medium ml-1">
+              {activeLayout === "layout2" ? "Layout 2" : "Layout 1"} — Preview ao vivo
             </span>
-            <span className="text-[0.55rem] text-muted-foreground/60 ml-auto">As alterações aparecem aqui em tempo real</span>
           </div>
-          <div className="relative overflow-y-auto max-h-[500px]" style={{ transform: "scale(0.55)", transformOrigin: "top center", height: "500px" }}>
-            <div style={{ width: "182%", marginLeft: "-41%" }}>
+          <div className="overflow-y-auto overflow-x-hidden" style={{ maxHeight: "70vh" }}>
+            <div style={{ transform: "scale(0.75)", transformOrigin: "top center", width: "133.33%", marginLeft: "-16.665%" }}>
               <PreviewComponent
                 profile={liveProfile}
                 links={links}
