@@ -4,8 +4,7 @@ import type { CreatorProfile, CreatorLink, SocialLink, CreatorProduct, CreatorCa
 import ImageCropper from "./ImageCropper";
 import VerifiedBadge from "./VerifiedBadge";
 import { ConfirmDialog } from "@/components/ui/confirm-dialog";
-import CreatorView from "./CreatorView";
-import CreatorViewLinkme from "./CreatorViewLinkme";
+import CreatorLivePreview from "./CreatorLivePreview";
 
 const iconOptions = ["⭐", "▶", "🎵", "📄", "🛍", "📸", "🎮", "💼", "🎨", "📚", "🔗", "💰", "🎧", "📦", "🎬", "💎"];
 
@@ -333,8 +332,6 @@ const CreatorEditPanel = forwardRef<CreatorEditPanelHandle, Props>(function Crea
   const labelClass = "block text-[0.72rem] font-semibold text-k-2 mb-1.5";
   const sectionTitle = "text-[0.66rem] font-bold text-k-4 tracking-[0.12em] uppercase mb-3.5 flex items-center gap-2";
   const sizeHint = "text-[0.62rem] text-k-4 mt-1";
-
-  const PreviewComponent = activeLayout === "layout2" ? CreatorViewLinkme : CreatorView;
 
   return (
     <div className="relative">
@@ -1076,48 +1073,15 @@ const CreatorEditPanel = forwardRef<CreatorEditPanelHandle, Props>(function Crea
 
         {/* Preview column — phone mockup sticky on the right */}
         {showPreview && (
-          <div className="w-[360px] flex-shrink-0 hidden lg:block">
-            <div className="sticky top-4">
-              <div className="mx-auto flex w-[340px] justify-center rounded-[2.8rem] border border-border/60 bg-card p-[10px] shadow-[0_24px_80px_hsl(var(--foreground)/0.18)]">
-                <div
-                  className="relative w-[320px] overflow-hidden rounded-[2.25rem] bg-background ring-1 ring-foreground/10"
-                  style={{ height: "693px" }}
-                >
-                  <div className="pointer-events-none absolute inset-x-0 top-0 z-50 flex justify-center pt-2">
-                    <div className="h-[24px] w-[96px] rounded-full bg-foreground/90 shadow-sm" />
-                  </div>
-
-                  <div className={`${activeLayout === "layout2" ? "h-full overflow-hidden" : "h-full overflow-y-auto overflow-x-hidden"}`}>
-                    <div className="flex justify-center overflow-x-hidden" style={{ minHeight: "693px" }}>
-                      <div
-                        style={{
-                          width: "390px",
-                          minHeight: "844px",
-                          transform: "scale(0.8205128205)",
-                          transformOrigin: "top center",
-                        }}
-                      >
-                        <PreviewComponent
-                          profile={liveProfile}
-                          links={links}
-                          socialLinks={social}
-                          products={prods}
-                          campaigns={camps}
-                          embedded
-                        />
-                      </div>
-                    </div>
-                  </div>
-
-                  <div className="pointer-events-none absolute inset-x-0 bottom-2 z-50 flex justify-center">
-                    <div className="h-[5px] w-[108px] rounded-full bg-foreground/20" />
-                  </div>
-                </div>
-              </div>
-              <p className="text-center text-[0.6rem] text-muted-foreground mt-3 opacity-60">
-                {activeLayout === "layout2" ? "Layout 2 — Linkme" : "Layout 1 — Padrão"}
-              </p>
-            </div>
+          <div className="hidden min-w-0 flex-[0_0_420px] lg:block">
+            <CreatorLivePreview
+              profile={liveProfile}
+              links={links}
+              socialLinks={social}
+              products={prods}
+              campaigns={camps}
+              activeLayout={activeLayout}
+            />
           </div>
         )}
       </div>
