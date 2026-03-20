@@ -66,7 +66,12 @@ export default function Creators() {
       .single();
 
     if (error) {
-      toast.error("Erro ao criar creator: " + error.message);
+      if (error.code === "23505") {
+        toast.error("Já existe um creator com esses dados. Tente um nome diferente.");
+      } else {
+        toast.error("Não foi possível criar o creator. Tente novamente.");
+      }
+      console.error("Creator creation error:", error);
       setCreating(false);
       return;
     }
