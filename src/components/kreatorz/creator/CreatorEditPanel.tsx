@@ -167,25 +167,24 @@ const CreatorEditPanel = forwardRef<CreatorEditPanelHandle, Props>(function Crea
     try {
       setSaving(true);
 
+      const baseProfile = { name, handle, bio, avatar_url: avatarUrl, cover_url: coverUrl, avatar_url_layout2: avatarUrlL2, cover_url_layout2: coverUrlL2, tags, stats, brands };
+
       if (cropImage) {
         const { file, type } = cropImage;
         const url = await onUploadImage(file, type);
         if (url) {
-          if (type === "avatar") setAvatarUrl(url);
-          else setCoverUrl(url);
-          if (type === "avatar") {
-            await onSaveProfile({ name, handle, bio, avatar_url: url, cover_url: coverUrl, tags, stats, brands });
-          } else {
-            await onSaveProfile({ name, handle, bio, avatar_url: avatarUrl, cover_url: url, tags, stats, brands });
-          }
+          if (type === "avatar") baseProfile.avatar_url = url;
+          else if (type === "cover") baseProfile.cover_url = url;
+          else if (type === "avatar_layout2") baseProfile.avatar_url_layout2 = url;
+          else if (type === "cover_layout2") baseProfile.cover_url_layout2 = url;
         } else {
           toast.error("Falha ao salvar imagem pendente.");
           return false;
         }
         setCropImage(null);
-      } else {
-        await onSaveProfile({ name, handle, bio, avatar_url: avatarUrl, cover_url: coverUrl, tags, stats, brands });
       }
+
+      await onSaveProfile(baseProfile);
 
       await onSaveLinks(links);
       await onSaveSocialLinks(social);
