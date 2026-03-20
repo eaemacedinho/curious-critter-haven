@@ -196,7 +196,7 @@ export default function CreatorView({ profile, links: rawLinks, socialLinks: raw
             <div className="grid grid-cols-2 gap-3 mb-8">
               {products.map((prod) => (
                 <div key={prod.id} onClick={() => prod.url && window.open(prod.url, "_blank")}
-                  className={`bg-card/65 backdrop-blur-xl border border-border ${shapeClass(profile.image_shape)} overflow-hidden transition-all duration-300 cursor-pointer group hover:border-primary/20 hover:-translate-y-1 hover:shadow-k-purple active:scale-[0.97]`}>
+                  className={`bg-card/65 backdrop-blur-xl border border-border ${shapeClass(profile.image_shape_products)} overflow-hidden transition-all duration-300 cursor-pointer group hover:border-primary/20 hover:-translate-y-1 hover:shadow-k-purple active:scale-[0.97]`}>
                   {prod.image_url ? (
                     <img src={prod.image_url} alt={prod.title} className="w-full h-28 object-cover" />
                   ) : (
