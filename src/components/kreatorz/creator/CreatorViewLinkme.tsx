@@ -146,8 +146,8 @@ export default function CreatorViewLinkme({ profile, links: rawLinks, socialLink
 
             {/* Name + handle + socials overlaid at bottom of hero */}
               <div className="absolute inset-x-0 bottom-0 z-10 flex flex-col items-center pb-5 px-5">
-              <h2 className="font-display text-[1.85rem] font-bold text-white tracking-[-0.01em] leading-[1.1] inline-flex items-center justify-center gap-2 drop-shadow-[0_2px_12px_rgba(0,0,0,0.5)]"
-                style={{ textShadow: "0 2px 16px rgba(0,0,0,0.6)" }}>
+              <h2 className="font-display text-[1.85rem] font-bold tracking-[-0.01em] leading-[1.1] inline-flex items-center justify-center gap-2 drop-shadow-[0_2px_12px_rgba(0,0,0,0.5)]"
+                style={{ textShadow: "0 2px 16px rgba(0,0,0,0.6)", color: profile.color_name || "white" }}>
                 {profile.name}
                 {profile.verified && <VerifiedBadge size={24} />}
               </h2>
