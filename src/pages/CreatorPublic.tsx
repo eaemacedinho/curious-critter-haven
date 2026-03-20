@@ -38,6 +38,8 @@ export default function CreatorPublic() {
   const [products, setProducts] = useState<CreatorProduct[]>([]);
   const [campaigns, setCampaigns] = useState<CreatorCampaign[]>([]);
   const [agencyName, setAgencyName] = useState<string>("");
+  const [agencyLogoUrl, setAgencyLogoUrl] = useState<string>("");
+  const [agencyFooterText, setAgencyFooterText] = useState<string>("Powered by");
   const [loading, setLoading] = useState(true);
   const [notFound, setNotFound] = useState(false);
 
