@@ -1,6 +1,6 @@
 import { toast } from "sonner";
 import type { CreatorProfile, CreatorLink, SocialLink, CreatorProduct, CreatorCampaign } from "@/hooks/useCreatorData";
-import { useState } from "react";
+import { useState, useEffect, useRef, useCallback } from "react";
 import SocialIcon from "./SocialIcon";
 import VerifiedBadge from "./VerifiedBadge";
 import SpotlightCampaign from "./SpotlightCampaign";
@@ -17,6 +17,18 @@ interface Props {
 export default function CreatorView({ profile, links: rawLinks, socialLinks: rawSocial, products: rawProducts, campaigns: rawCampaigns, agencyName }: Props) {
   const [contactOpen, setContactOpen] = useState(false);
   const [clickedLink, setClickedLink] = useState<number | null>(null);
+  const [parallaxY, setParallaxY] = useState(0);
+  const coverRef = useRef<HTMLDivElement>(null);
+
+  const handleScroll = useCallback(() => {
+    const y = window.scrollY;
+    setParallaxY(y * 0.3);
+  }, []);
+
+  useEffect(() => {
+    window.addEventListener("scroll", handleScroll, { passive: true });
+    return () => window.removeEventListener("scroll", handleScroll);
+  }, [handleScroll]);
 
   const links = rawLinks.filter(l => l.title?.trim() && l.url?.trim());
   const socialLinks = rawSocial.filter(s => s.url?.trim() && (s.label?.trim() || s.platform?.trim()));
@@ -43,8 +55,15 @@ export default function CreatorView({ profile, links: rawLinks, socialLinks: raw
       <div className="w-full sm:max-w-[480px] md:max-w-[520px] relative z-[1]">
         {/* Cover */}
         {profile.cover_url && (
-          <div className="w-full h-[200px] rounded-3xl overflow-hidden relative mb-[-56px]">
-            <img src={profile.cover_url} alt="cover" className="w-full h-full object-cover" />
+          <div ref={coverRef} className="w-full h-[200px] rounded-3xl overflow-hidden relative mb-[-56px]">
+            <img
+              src={profile.cover_url}
+              alt="cover"
+              className="w-full h-full object-cover will-change-transform"
+              style={{
+                transform: `scale(1.12) translateY(${parallaxY * -0.4}px)`,
+              }}
+            />
             <div className="absolute inset-0 bg-gradient-to-b from-transparent via-transparent to-background/95" />
           </div>
         )}
