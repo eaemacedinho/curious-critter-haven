@@ -310,18 +310,35 @@ export { detectPlatform, icons as socialIconEntries };
 /** Available social platform keys for icon picker */
 export const socialPlatformKeys = Object.keys(icons);
 
-/** Render a link icon: if it matches a known platform, show the real SVG; otherwise show emoji */
+/** Render a link icon: if it matches a known platform, show the real SVG with bg circle; otherwise show emoji */
 export function LinkIcon({ icon, url, size = 18, className = "" }: { icon?: string; url?: string; size?: number; className?: string }) {
-  // Try detecting from the icon string itself (e.g. "instagram", "youtube")
+  // Direct match first (e.g. "instagram-dark", "youtube-dark")
+  const directEntry = icon ? icons[icon] : null;
+  if (directEntry) {
+    const containerSize = Math.round(size * 1.8);
+    return (
+      <span
+        className={`inline-flex items-center justify-center rounded-full ${directEntry.bg} ${className}`}
+        style={{ width: containerSize, height: containerSize }}
+      >
+        {directEntry.render(size)}
+      </span>
+    );
+  }
+
+  // Try detecting from the icon string or URL
   const keyFromIcon = icon ? detectPlatform(icon, "") : "";
-  // Also try detecting from URL
   const keyFromUrl = url ? detectPlatform("", url) : "";
   const key = keyFromIcon || keyFromUrl;
   const entry = icons[key];
 
   if (entry) {
+    const containerSize = Math.round(size * 1.8);
     return (
-      <span className={`inline-flex items-center justify-center ${className}`}>
+      <span
+        className={`inline-flex items-center justify-center rounded-full ${entry.bg} ${className}`}
+        style={{ width: containerSize, height: containerSize }}
+      >
         {entry.render(size)}
       </span>
     );
