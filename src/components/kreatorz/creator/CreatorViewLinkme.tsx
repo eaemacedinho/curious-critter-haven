@@ -61,17 +61,17 @@ export default function CreatorViewLinkme({ profile, links: rawLinks, socialLink
               className="absolute inset-0 w-full h-full object-cover will-change-transform"
               style={{
                 transform: `scale(1.15) translateY(${parallaxY * -0.5}px)`,
-                filter: `blur(${Math.min(overlayOpacity * 8, 8)}px)`,
+                filter: `blur(${Math.min(overlayOpacity * 3, 3)}px)`,
               }}
             />
             {/* Cinematic vignette overlay */}
             <div className="absolute inset-0 pointer-events-none" style={{
-              background: `radial-gradient(ellipse 80% 60% at 50% 40%, transparent 0%, hsl(var(--background) / 0.15) 50%, hsl(var(--background) / 0.5) 100%)`
+              background: `radial-gradient(ellipse 90% 70% at 50% 40%, transparent 0%, hsl(var(--background) / 0.08) 55%, hsl(var(--background) / 0.3) 100%)`
             }} />
             {/* Scroll-driven fade */}
             <div className="absolute inset-0 transition-opacity duration-500 ease-out" style={{
               background: `linear-gradient(to top, hsl(var(--background)) 0%, hsl(var(--background) / 0.7) 30%, transparent 60%)`,
-              opacity: Math.max(0.3, overlayOpacity),
+              opacity: Math.max(0.15, overlayOpacity * 0.7),
             }} />
           </div>
         )}
