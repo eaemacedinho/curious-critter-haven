@@ -459,7 +459,18 @@ const CreatorEditPanel = forwardRef<CreatorEditPanelHandle, Props>(function Crea
               { label: "📢 Campanhas", value: shapeCampaigns, setter: setShapeCampaigns },
             ] as const).map((section) => (
               <div key={section.label}>
-                <span className="text-[0.7rem] font-semibold text-k-3 mb-1.5 block">{section.label}</span>
+                <div className="flex items-center justify-between mb-1.5">
+                  <span className="text-[0.7rem] font-semibold text-k-3">{section.label}</span>
+                  {section.value !== "rounded" && (
+                    <button
+                      onClick={() => section.setter("rounded" as any)}
+                      className="px-2 py-0.5 rounded-lg bg-destructive/10 text-destructive text-[0.58rem] font-semibold hover:bg-destructive/20 transition-colors"
+                      title="Resetar para formato padrão (Arredondado)"
+                    >
+                      ↺ Padrão
+                    </button>
+                  )}
+                </div>
                 <div className="grid grid-cols-5 gap-1.5">
                   {([
                     { value: "rounded" as const, label: "Arredondado", cls: "rounded-2xl border border-primary/30" },
