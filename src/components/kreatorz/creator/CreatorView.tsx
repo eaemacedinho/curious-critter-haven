@@ -26,10 +26,12 @@ interface Props {
   agencyName?: string;
   agencyLogoUrl?: string;
   agencyFooterText?: string;
+  agencyFooterVisible?: boolean;
+  agencyFooterLink?: string;
   embedded?: boolean;
 }
 
-export default function CreatorView({ profile, links: rawLinks, socialLinks: rawSocial, products: rawProducts, campaigns: rawCampaigns, agencyName, agencyLogoUrl, agencyFooterText, embedded }: Props) {
+export default function CreatorView({ profile, links: rawLinks, socialLinks: rawSocial, products: rawProducts, campaigns: rawCampaigns, agencyName, agencyLogoUrl, agencyFooterText, agencyFooterVisible = true, agencyFooterLink, embedded }: Props) {
   const [contactOpen, setContactOpen] = useState(false);
   const [clickedLink, setClickedLink] = useState<number | null>(null);
   const [parallaxY, setParallaxY] = useState(0);
