@@ -54,7 +54,9 @@ function useParticleCanvas(
   type: CanvasType,
   active: boolean,
   color?: string | null,
-  container?: HTMLElement | null
+  container?: HTMLElement | null,
+  customEmojis?: string[],
+  intensity?: number // 0-100, default 50
 ) {
   useEffect(() => {
     const canvas = canvasRef.current;
