@@ -210,7 +210,8 @@ export default function CreatorViewLinkme({ profile, links: rawLinks, socialLink
             )}
 
             {profile.bio && (
-              <p className="font-body text-[0.88rem] text-foreground/90 text-center leading-relaxed mt-5 px-6 max-w-[360px] mx-auto" style={{ whiteSpace: "pre-wrap" }}>
+              <p className="font-body text-[0.88rem] text-center leading-relaxed mt-5 px-6 max-w-[360px] mx-auto"
+                style={{ whiteSpace: "pre-wrap", color: profile.color_bio || "hsl(var(--foreground) / 0.9)" }}>
                 {profile.bio}
               </p>
             )}
