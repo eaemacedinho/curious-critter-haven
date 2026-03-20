@@ -38,6 +38,8 @@ export default function CreatorPublic() {
   const [products, setProducts] = useState<CreatorProduct[]>([]);
   const [campaigns, setCampaigns] = useState<CreatorCampaign[]>([]);
   const [agencyName, setAgencyName] = useState<string>("");
+  const [agencyLogoUrl, setAgencyLogoUrl] = useState<string>("");
+  const [agencyFooterText, setAgencyFooterText] = useState<string>("Powered by");
   const [loading, setLoading] = useState(true);
   const [notFound, setNotFound] = useState(false);
 
@@ -79,12 +81,13 @@ export default function CreatorPublic() {
       if (creator.agency_id) {
         const { data: agencyData } = await supabase
           .from("agencies")
-          .select("name, primary_color, accent_color")
+          .select("name, primary_color, accent_color, logo_url, footer_text")
           .eq("id", creator.agency_id)
           .maybeSingle();
         if (agencyData) {
           setAgencyName(agencyData.name || "");
-          // Apply agency colors to public page
+          setAgencyLogoUrl(agencyData.logo_url || "");
+          setAgencyFooterText(agencyData.footer_text || "Powered by");
           const root = document.documentElement;
           if (agencyData.primary_color) {
             const hsl = hexToHsl(agencyData.primary_color);
@@ -144,9 +147,9 @@ export default function CreatorPublic() {
   const useLayout2 = profile.public_layout === "layout2";
 
   return useLayout2 ? (
-    <CreatorViewLinkme profile={profile} links={links} socialLinks={socialLinks} products={products} campaigns={campaigns} agencyName={agencyName} />
+    <CreatorViewLinkme profile={profile} links={links} socialLinks={socialLinks} products={products} campaigns={campaigns} agencyName={agencyName} agencyLogoUrl={agencyLogoUrl} agencyFooterText={agencyFooterText} />
   ) : (
-    <CreatorView profile={profile} links={links} socialLinks={socialLinks} products={products} campaigns={campaigns} agencyName={agencyName} />
+    <CreatorView profile={profile} links={links} socialLinks={socialLinks} products={products} campaigns={campaigns} agencyName={agencyName} agencyLogoUrl={agencyLogoUrl} agencyFooterText={agencyFooterText} />
   );
 }
 

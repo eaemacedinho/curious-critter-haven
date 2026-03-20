@@ -155,6 +155,8 @@ export default function CreatorLivePreview({
                   products={products}
                   campaigns={campaigns}
                   agencyName={agency?.name}
+                  agencyLogoUrl={agency?.logo_url}
+                  agencyFooterText={agency?.footer_text}
                   embedded
                 />
               ) : (
@@ -166,6 +168,8 @@ export default function CreatorLivePreview({
                     products={products}
                     campaigns={campaigns}
                     agencyName={agency?.name}
+                    agencyLogoUrl={agency?.logo_url}
+                    agencyFooterText={agency?.footer_text}
                     embedded
                   />
                 </div>

@@ -1,0 +1,1 @@
+ALTER TABLE public.agencies ADD COLUMN footer_text text DEFAULT 'Powered by' NOT NULL;

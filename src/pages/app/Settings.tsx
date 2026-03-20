@@ -15,6 +15,7 @@ export default function Settings() {
   const [accentColor, setAccentColor] = useState(agency?.accent_color || "#A855F7");
   const [logoUrl, setLogoUrl] = useState(agency?.logo_url || "");
   const [customDomain, setCustomDomain] = useState(agency?.domain || "");
+  const [footerText, setFooterText] = useState(agency?.footer_text || "Powered by");
   const [uploadingLogo, setUploadingLogo] = useState(false);
   const [saving, setSaving] = useState(false);
 
@@ -33,6 +34,7 @@ export default function Settings() {
         primary_color: primaryColor,
         accent_color: accentColor,
         logo_url: logoUrl,
+        footer_text: footerText,
       });
       toast.success("Branding salvo com sucesso!");
     } catch (err: any) {
@@ -166,6 +168,18 @@ export default function Settings() {
                     </div>
                   </div>
                 </div>
+              </div>
+
+              {/* Footer text */}
+              <div>
+                <label className="block text-xs font-semibold text-muted-foreground uppercase tracking-wider mb-1.5">Texto do footer</label>
+                <input
+                  value={footerText}
+                  onChange={(e) => setFooterText(e.target.value)}
+                  placeholder="Powered by"
+                  className="w-full px-4 py-3 bg-background border border-border rounded-xl text-sm text-foreground outline-none focus:border-primary transition-all"
+                />
+                <p className="text-[0.66rem] text-muted-foreground mt-1.5">Texto exibido antes do nome da agência no rodapé das páginas.</p>
               </div>
 
               {/* Preview */}
