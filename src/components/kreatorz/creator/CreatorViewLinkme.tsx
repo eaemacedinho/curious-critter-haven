@@ -106,8 +106,9 @@ export default function CreatorViewLinkme({ profile, links: rawLinks, socialLink
           <div className="relative bg-background rounded-t-[2rem] -mt-8 pb-12">
             {/* Name + handle */}
             <div className="text-center pt-6 px-6">
-              <h2 className="font-display text-[2rem] font-bold text-primary-foreground tracking-tight leading-tight">
+              <h2 className="font-display text-[2rem] font-bold text-primary-foreground tracking-tight leading-tight inline-flex items-center justify-center gap-2">
                 {profile.name}
+                {profile.verified && <VerifiedBadge size={24} />}
               </h2>
               {profile.handle && (
                 <p className="text-sm text-k-3 mt-1">
