@@ -99,11 +99,9 @@ export default function CreatorPublic() {
     );
   }
 
-  // Use Layout 2 if layout2-specific images exist, otherwise Layout 1
-  const hasLayout2Images = profile.cover_url_layout2 || profile.avatar_url_layout2;
+  const useLayout2 = profile.public_layout === "layout2";
 
-  // Default to Layout 2 (Linkme style) for public pages
-  return hasLayout2Images ? (
+  return useLayout2 ? (
     <CreatorViewLinkme
       profile={profile}
       links={links}
