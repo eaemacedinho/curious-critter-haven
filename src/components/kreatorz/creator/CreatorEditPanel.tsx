@@ -10,14 +10,27 @@ import SocialIcon from "./SocialIcon";
 
 const emojiIcons = ["⭐", "▶", "🎵", "📄", "🛍", "📸", "🎮", "💼", "🎨", "📚", "🔗", "💰", "🎧", "📦", "🎬", "💎"];
 
-const socialPlatformLabels: Record<string, string> = {
-  instagram: "Instagram", youtube: "YouTube", tiktok: "TikTok",
-  twitter: "Twitter/X", x: "X", facebook: "Facebook", linkedin: "LinkedIn",
-  twitch: "Twitch", discord: "Discord", pinterest: "Pinterest",
-  snapchat: "Snapchat", spotify: "Spotify", apple: "Apple Music",
-  telegram: "Telegram", whatsapp: "WhatsApp", threads: "Threads",
-  github: "GitHub", email: "E-mail",
-};
+/** Grouped icon options for the link picker — each group is a platform with style variants */
+const linkIconGroups = [
+  { label: "Instagram", keys: ["instagram", "instagram-dark", "instagram-pink"] },
+  { label: "YouTube", keys: ["youtube", "youtube-dark", "youtube-white"] },
+  { label: "TikTok", keys: ["tiktok", "tiktok-color"] },
+  { label: "Twitter / X", keys: ["twitter", "twitter-white"] },
+  { label: "Facebook", keys: ["facebook", "facebook-dark"] },
+  { label: "LinkedIn", keys: ["linkedin", "linkedin-dark"] },
+  { label: "Spotify", keys: ["spotify", "spotify-dark"] },
+  { label: "Website", keys: ["website", "website-dark", "website-blue"] },
+  { label: "WhatsApp", keys: ["whatsapp"] },
+  { label: "Telegram", keys: ["telegram"] },
+  { label: "Threads", keys: ["threads"] },
+  { label: "Discord", keys: ["discord"] },
+  { label: "Twitch", keys: ["twitch"] },
+  { label: "Snapchat", keys: ["snapchat"] },
+  { label: "Pinterest", keys: ["pinterest"] },
+  { label: "GitHub", keys: ["github"] },
+  { label: "Apple Music", keys: ["apple"] },
+  { label: "E-mail", keys: ["email"] },
+];
 
 const detectIconFromUrl = (url: string): string | null => {
   if (!url) return null;
