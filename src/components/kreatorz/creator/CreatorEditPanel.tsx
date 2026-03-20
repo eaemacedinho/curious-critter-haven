@@ -1076,22 +1076,21 @@ const CreatorEditPanel = forwardRef<CreatorEditPanelHandle, Props>(function Crea
 
         {/* Preview column — phone mockup sticky on the right */}
         {showPreview && (
-          <div className="w-[340px] flex-shrink-0 hidden lg:block">
+          <div className="w-[320px] flex-shrink-0 hidden lg:block">
             <div className="sticky top-4">
-              {/* Phone frame */}
-              <div className="mx-auto w-[300px] rounded-[2.5rem] border-[6px] border-foreground/20 bg-background overflow-hidden shadow-2xl shadow-black/30"
-                style={{ height: "calc(100vh - 100px)", maxHeight: "640px" }}>
-                {/* Notch */}
-                <div className="relative z-50 flex justify-center pt-2 pb-1 bg-background">
-                  <div className="w-24 h-5 rounded-full bg-foreground/15" />
+              {/* Phone frame — realistic 9:19.5 ratio */}
+              <div className="mx-auto w-[280px] rounded-[2.2rem] border-[5px] border-foreground/20 bg-black overflow-hidden shadow-2xl shadow-black/40 relative"
+                style={{ height: "607px" }}>
+                {/* Dynamic Island */}
+                <div className="absolute top-0 left-0 right-0 z-50 flex justify-center pt-[6px]">
+                  <div className="w-[90px] h-[22px] rounded-full bg-black" />
                 </div>
-                {/* Screen content */}
-                <div className="w-full overflow-y-auto overflow-x-hidden" style={{ height: "calc(100% - 32px)" }}>
+                {/* Screen content — uses iframe-like scaling to fill width perfectly */}
+                <div className="w-full h-full overflow-y-auto overflow-x-hidden bg-background">
                   <div style={{ 
-                    transform: "scale(0.58)", 
-                    transformOrigin: "top center", 
-                    width: `${100 / 0.58}%`,
-                    marginLeft: `${-(100 / 0.58 - 100) / 2}%`,
+                    transform: "scale(0.7)", 
+                    transformOrigin: "top left", 
+                    width: `${100 / 0.7}%`,
                   }}>
                     <PreviewComponent
                       profile={liveProfile}
@@ -1103,6 +1102,8 @@ const CreatorEditPanel = forwardRef<CreatorEditPanelHandle, Props>(function Crea
                     />
                   </div>
                 </div>
+                {/* Home indicator */}
+                <div className="absolute bottom-1.5 left-1/2 -translate-x-1/2 w-[100px] h-[4px] rounded-full bg-foreground/20 z-50" />
               </div>
               <p className="text-center text-[0.6rem] text-muted-foreground mt-3 opacity-60">
                 {activeLayout === "layout2" ? "Layout 2 — Linkme" : "Layout 1 — Padrão"}
