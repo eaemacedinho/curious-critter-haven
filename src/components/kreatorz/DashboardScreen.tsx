@@ -23,6 +23,7 @@ const statusColors: Record<string, string> = {
 };
 
 export default function DashboardScreen({ onNavigate }: DashboardScreenProps) {
+  const { user } = useAuth();
   const [search, setSearch] = useState("");
   const [activeSection, setActiveSection] = useState("dashboard");
   const [menuOpen, setMenuOpen] = useState<number | null>(null);
