@@ -91,7 +91,7 @@ export default function CreatorViewDark({ profile, links: rawLinks, socialLinks:
           {profile.name && (
             <h1 className="text-2xl font-bold mt-4 tracking-tight" style={{ color: neonPrimary, textShadow: `0 0 30px ${neonPrimary}50` }}>
               {profile.name}
-              {profile.verified && <VerifiedBadge size={20} className="inline-block ml-2 align-middle" />}
+              {profile.verified && <span className="inline-block ml-2 align-middle"><VerifiedBadge size={20} /></span>}
             </h1>
           )}
           {profile.handle && <p className="text-xs mt-1" style={{ color: "rgba(255,255,255,0.4)" }}>@{profile.handle.replace(/^@+/, "")}</p>}
