@@ -88,26 +88,19 @@ export default function CreatorEdit() {
         <div className="flex items-center gap-2.5 flex-wrap">
           {/* Layout toggle */}
           <div className="flex bg-card border border-border rounded-xl overflow-hidden">
-            <button
-              onClick={() => void handleSetPublicLayout("layout1")}
-              className={`px-3 py-2 text-xs font-semibold transition-all ${
-                profile.public_layout === "layout1"
-                  ? "bg-primary text-primary-foreground"
-                  : "text-muted-foreground hover:text-foreground"
-              }`}
-            >
-              Layout 1
-            </button>
-            <button
-              onClick={() => void handleSetPublicLayout("layout2")}
-              className={`px-3 py-2 text-xs font-semibold transition-all ${
-                profile.public_layout === "layout2"
-                  ? "bg-primary text-primary-foreground"
-                  : "text-muted-foreground hover:text-foreground"
-              }`}
-            >
-              Layout 2
-            </button>
+            {layoutOptions.map((opt) => (
+              <button
+                key={opt.id}
+                onClick={() => void handleSetPublicLayout(opt.id)}
+                className={`px-3 py-2 text-xs font-semibold transition-all ${
+                  profile.public_layout === opt.id
+                    ? "bg-primary text-primary-foreground"
+                    : "text-muted-foreground hover:text-foreground"
+                }`}
+              >
+                {opt.label}
+              </button>
+            ))}
           </div>
           {/* Preview */}
           <button
