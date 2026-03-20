@@ -5,6 +5,8 @@ import VerifiedBadge from "./VerifiedBadge";
 import SpotlightCampaign from "./SpotlightCampaign";
 import type { CreatorProfile, CreatorLink, SocialLink, CreatorProduct, CreatorCampaign } from "@/hooks/useCreatorData";
 
+const shapeClass = (shape?: string) => shape === "circular" ? "rounded-full" : shape === "pill" ? "rounded-[2rem]" : "rounded-2xl";
+
 interface Props {
   profile: CreatorProfile;
   links: CreatorLink[];
