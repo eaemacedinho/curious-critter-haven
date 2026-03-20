@@ -22,9 +22,10 @@ interface Props {
   products: CreatorProduct[];
   campaigns: CreatorCampaign[];
   agencyName?: string;
+  embedded?: boolean;
 }
 
-export default function CreatorViewLinkme({ profile, links: rawLinks, socialLinks: rawSocial, products: rawProducts, campaigns: rawCampaigns, agencyName }: Props) {
+export default function CreatorViewLinkme({ profile, links: rawLinks, socialLinks: rawSocial, products: rawProducts, campaigns: rawCampaigns, agencyName, embedded }: Props) {
   const [contactOpen, setContactOpen] = useState(false);
   const [overlayOpacity, setOverlayOpacity] = useState(0);
   const [headerVisible, setHeaderVisible] = useState(false);
@@ -60,7 +61,7 @@ export default function CreatorViewLinkme({ profile, links: rawLinks, socialLink
   }, [handleScroll]);
 
   return (
-    <div className="fixed inset-0 flex justify-center bg-background">
+    <div className={embedded ? "relative w-full h-[100vh] flex justify-center bg-background" : "fixed inset-0 flex justify-center bg-background"}>
       <div className="w-full sm:max-w-[480px] md:max-w-[520px] relative overflow-hidden">
         {/* Hero background */}
         {heroImage && (
