@@ -157,12 +157,21 @@ const icons: Record<string, IconEntry> = {
       </svg>
     ),
   },
+  email: {
+    bg: "bg-[#EA4335]",
+    render: (s) => (
+      <span style={{ fontSize: Math.round(s * 0.9), lineHeight: 1 }}>📧</span>
+    ),
+  },
 };
 
 /** Try to detect platform from URL or platform string */
 function detectPlatform(platform: string, url?: string): string {
   const p = platform?.toLowerCase().trim() || "";
   const u = url?.toLowerCase() || "";
+
+  // check email first (before generic loop)
+  if (p.includes("mail") || p.includes("email") || p.includes("e-mail") || u.includes("mailto")) return "email";
 
   for (const key of Object.keys(icons)) {
     if (p.includes(key) || u.includes(key)) return key;
