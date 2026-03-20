@@ -23,7 +23,7 @@ export default function CreatorViewLinkme({ profile, links: rawLinks, socialLink
   const products = rawProducts.filter(p => p.title?.trim());
   const campaigns = rawCampaigns.filter(c => c.title?.trim());
   const stats = profile.stats.filter(s => s.value?.trim() && s.label?.trim());
-  const tags = profile.tags.filter(t => t.label?.trim());
+  const brands = profile.brands.filter(b => b?.name?.trim());
 
   const heroImage = profile.cover_url_layout2 || profile.cover_url || profile.avatar_url;
   const headerAvatar = profile.avatar_url_layout2 || profile.avatar_url;
