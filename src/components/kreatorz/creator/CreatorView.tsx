@@ -60,7 +60,17 @@ export default function CreatorView({ profile, links: rawLinks, socialLinks: raw
             </div>
           </div>
 
-          {profile.name && <h1 className="font-display text-[1.85rem] font-normal mt-4 text-primary-foreground tracking-tight">{profile.name}</h1>}
+          {profile.name && (
+            <h1 className="font-display text-[1.85rem] font-normal mt-4 text-primary-foreground tracking-tight inline-flex items-center justify-center gap-2">
+              {profile.name}
+              {profile.verified && (
+                <svg width="22" height="22" viewBox="0 0 24 24" fill="none" className="flex-shrink-0">
+                  <circle cx="12" cy="12" r="10" fill="hsl(220, 80%, 55%)" />
+                  <path d="M8.5 12.5l2 2 5-5" stroke="white" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
+                </svg>
+              )}
+            </h1>
+          )}
           {profile.handle && <p className="text-sm text-k-3 mt-1">@{profile.handle.replace(/^@+/, "")}</p>}
 
           {tags.length > 0 && (

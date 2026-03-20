@@ -76,7 +76,10 @@ export default function CreatorViewLinkme({ profile, links: rawLinks, socialLink
             {headerAvatar && (
               <img src={headerAvatar} alt="" className="w-8 h-8 rounded-full object-cover" />
             )}
-            <h1 className="text-sm font-bold text-primary-foreground truncate">{profile.name}</h1>
+            <h1 className="text-sm font-bold text-primary-foreground truncate flex items-center gap-1.5">
+              {profile.name}
+              {profile.verified && <VerifiedBadge size={16} />}
+            </h1>
           </div>
         </div>
 
@@ -103,8 +106,9 @@ export default function CreatorViewLinkme({ profile, links: rawLinks, socialLink
           <div className="relative bg-background rounded-t-[2rem] -mt-8 pb-12">
             {/* Name + handle */}
             <div className="text-center pt-6 px-6">
-              <h2 className="font-display text-[2rem] font-bold text-primary-foreground tracking-tight leading-tight">
+              <h2 className="font-display text-[2rem] font-bold text-primary-foreground tracking-tight leading-tight inline-flex items-center justify-center gap-2">
                 {profile.name}
+                {profile.verified && <VerifiedBadge size={24} />}
               </h2>
               {profile.handle && (
                 <p className="text-sm text-k-3 mt-1">
@@ -317,5 +321,14 @@ function LiveBadge() {
       <span className="w-2 h-2 rounded-full bg-k-ok animate-pulse" />
       <span className="text-[0.62rem] text-k-ok font-bold uppercase tracking-wider">Ao vivo</span>
     </div>
+  );
+}
+
+function VerifiedBadge({ size = 20 }: { size?: number }) {
+  return (
+    <svg width={size} height={size} viewBox="0 0 24 24" fill="none" className="inline-block flex-shrink-0">
+      <circle cx="12" cy="12" r="10" fill="hsl(220, 80%, 55%)" />
+      <path d="M8.5 12.5l2 2 5-5" stroke="white" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
+    </svg>
   );
 }

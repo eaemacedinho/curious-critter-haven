@@ -194,6 +194,7 @@ export type Database = {
           tags: Json | null
           updated_at: string
           user_id: string
+          verified: boolean | null
         }
         Insert: {
           avatar_url?: string | null
@@ -210,6 +211,7 @@ export type Database = {
           tags?: Json | null
           updated_at?: string
           user_id: string
+          verified?: boolean | null
         }
         Update: {
           avatar_url?: string | null
@@ -226,6 +228,7 @@ export type Database = {
           tags?: Json | null
           updated_at?: string
           user_id?: string
+          verified?: boolean | null
         }
         Relationships: []
       }
