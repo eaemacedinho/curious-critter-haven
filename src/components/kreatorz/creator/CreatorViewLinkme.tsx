@@ -24,6 +24,8 @@ interface Props {
   products: CreatorProduct[];
   campaigns: CreatorCampaign[];
   agencyName?: string;
+  agencyLogoUrl?: string;
+  agencyFooterText?: string;
   embedded?: boolean;
 }
 
