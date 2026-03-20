@@ -25,8 +25,9 @@ export default function CreatorView({ profile, links: rawLinks, socialLinks: raw
   const tags = profile.tags.filter(t => t.label?.trim());
   const brands = profile.brands.filter(b => b?.name?.trim());
 
-  const liveCampaigns = campaigns.filter(c => c.live);
-  const pastCampaigns = campaigns.filter(c => !c.live);
+  const now = new Date();
+  const liveCampaigns = campaigns.filter(c => c.live && (!(c as any).expires_at || new Date((c as any).expires_at) > now));
+  const pastCampaigns = campaigns.filter(c => !c.live || ((c as any).expires_at && new Date((c as any).expires_at) <= now));
 
   const handleLinkClick = (i: number, url: string) => {
     setClickedLink(i);
