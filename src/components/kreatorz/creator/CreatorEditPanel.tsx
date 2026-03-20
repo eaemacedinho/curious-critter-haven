@@ -2,6 +2,7 @@ import { forwardRef, useImperativeHandle, useRef, useState, useCallback } from "
 import { toast } from "sonner";
 import type { CreatorProfile, CreatorLink, SocialLink, CreatorProduct, CreatorCampaign } from "@/hooks/useCreatorData";
 import ImageCropper from "./ImageCropper";
+import VerifiedBadge from "./VerifiedBadge";
 
 const iconOptions = ["⭐", "▶", "🎵", "📄", "🛍", "📸", "🎮", "💼", "🎨", "📚", "🔗", "💰", "🎧", "📦", "🎬", "💎"];
 
@@ -332,10 +333,7 @@ const CreatorEditPanel = forwardRef<CreatorEditPanelHandle, Props>(function Crea
           <div className="flex items-center justify-between mt-4 p-3 bg-k-800/50 border border-primary/10 rounded-xl">
             <div>
               <span className="text-sm font-semibold text-primary-foreground flex items-center gap-1.5">
-                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" className="flex-shrink-0">
-                  <circle cx="12" cy="12" r="10" fill="hsl(220, 80%, 55%)" />
-                  <path d="M8.5 12.5l2 2 5-5" stroke="white" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
-                </svg>
+                <VerifiedBadge size={18} />
                 Badge de Verificado
               </span>
               <p className="text-[0.65rem] text-k-4 mt-0.5">Exibir selo de verificação ao lado do nome</p>
