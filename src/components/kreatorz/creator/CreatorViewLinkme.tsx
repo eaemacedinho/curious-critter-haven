@@ -71,9 +71,9 @@ export default function CreatorViewLinkme({ profile, links: rawLinks, socialLink
         {/* Scrollable content */}
         <div ref={scrollRef} className="w-full h-full relative z-[1] overflow-y-auto overflow-x-hidden" style={{ scrollbarWidth: "none" }}>
           {/* Sticky header */}
-          <div className="sticky top-0 z-50 transition-all duration-300"
-            style={{ opacity: headerVisible ? 1 : 0, pointerEvents: headerVisible ? "auto" : "none", transform: headerVisible ? "translateY(0)" : "translateY(-100%)" }}>
-            <div className="w-full flex items-center gap-3 px-4 py-3 bg-background/90 backdrop-blur-xl border-b border-border">
+          <div className="sticky top-0 z-50 transition-all duration-500 ease-out"
+            style={{ opacity: headerVisible ? 1 : 0, pointerEvents: headerVisible ? "auto" : "none", transform: headerVisible ? "translateY(0)" : "translateY(-8px)" }}>
+            <div className="w-full flex items-center gap-3 px-4 py-3 bg-background/85 backdrop-blur-2xl border-b border-border/50">
               {headerAvatar ? (
                 <img src={headerAvatar} alt="" className="w-8 h-8 rounded-full object-cover ring-2 ring-primary/20" />
               ) : (
