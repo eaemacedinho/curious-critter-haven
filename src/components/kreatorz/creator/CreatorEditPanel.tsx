@@ -8,6 +8,51 @@ import CreatorLivePreview from "./CreatorLivePreview";
 
 const iconOptions = ["⭐", "▶", "🎵", "📄", "🛍", "📸", "🎮", "💼", "🎨", "📚", "🔗", "💰", "🎧", "📦", "🎬", "💎"];
 
+const socialIconOptions = [
+  { emoji: "📸", label: "Instagram" },
+  { emoji: "▶️", label: "YouTube" },
+  { emoji: "🎵", label: "TikTok" },
+  { emoji: "🐦", label: "Twitter/X" },
+  { emoji: "👤", label: "Facebook" },
+  { emoji: "💼", label: "LinkedIn" },
+  { emoji: "🎮", label: "Twitch" },
+  { emoji: "💬", label: "Discord" },
+  { emoji: "📌", label: "Pinterest" },
+  { emoji: "👻", label: "Snapchat" },
+  { emoji: "🎧", label: "Spotify" },
+  { emoji: "🍎", label: "Apple Music" },
+  { emoji: "📧", label: "E-mail" },
+  { emoji: "🌐", label: "Website" },
+  { emoji: "🛒", label: "Loja" },
+  { emoji: "📱", label: "WhatsApp" },
+  { emoji: "✈️", label: "Telegram" },
+  { emoji: "🧵", label: "Threads" },
+];
+
+const domainToIcon: Record<string, string> = {
+  "instagram.com": "📸", "youtube.com": "▶️", "youtu.be": "▶️",
+  "tiktok.com": "🎵", "twitter.com": "🐦", "x.com": "🐦",
+  "facebook.com": "👤", "fb.com": "👤", "linkedin.com": "💼",
+  "twitch.tv": "🎮", "discord.gg": "💬", "discord.com": "💬",
+  "pinterest.com": "📌", "snapchat.com": "👻",
+  "open.spotify.com": "🎧", "spotify.com": "🎧",
+  "music.apple.com": "🍎", "wa.me": "📱", "whatsapp.com": "📱",
+  "t.me": "✈️", "telegram.me": "✈️", "threads.net": "🧵",
+  "github.com": "💻", "behance.net": "🎨", "dribbble.com": "🎨",
+  "amazon.com": "🛒", "shopee.com.br": "🛒", "mercadolivre.com.br": "🛒",
+};
+
+const detectIconFromUrl = (url: string): string | null => {
+  if (!url) return null;
+  try {
+    const hostname = new URL(url.startsWith("http") ? url : `https://${url}`).hostname.replace(/^www\./, "");
+    for (const [domain, icon] of Object.entries(domainToIcon)) {
+      if (hostname === domain || hostname.endsWith(`.${domain}`)) return icon;
+    }
+  } catch { /* ignore */ }
+  return null;
+};
+
 const socialEmojiOptions = [
   { emoji: "📸", label: "Instagram", baseUrl: "https://instagram.com/", placeholder: "@seu_perfil" },
   { emoji: "▶️", label: "YouTube", baseUrl: "https://youtube.com/@", placeholder: "@seu_canal" },
@@ -140,6 +185,7 @@ const CreatorEditPanel = forwardRef<CreatorEditPanelHandle, Props>(function Crea
   const [deleteCampTarget, setDeleteCampTarget] = useState<number | null>(null);
   const [validationErrors, setValidationErrors] = useState<Record<string, string>>({});
   const [showPreview, setShowPreview] = useState(false);
+  const [dragLinkIdx, setDragLinkIdx] = useState<number | null>(null);
 
   // Build a live preview profile from current editor state
   const liveProfile = useMemo<CreatorProfile>(() => ({
@@ -736,15 +782,47 @@ const CreatorEditPanel = forwardRef<CreatorEditPanelHandle, Props>(function Crea
       <div className="mb-8">
         <div className={sectionTitle}>🔗 Links <span className="text-k-3 normal-case tracking-normal font-normal">({links.length})</span></div>
         {links.map((link, i) => (
-          <div key={i} className="bg-k-800 border border-primary/10 rounded-xl p-3.5 mb-2 space-y-2">
+          <div
+            key={link.id}
+            draggable
+            onDragStart={() => setDragLinkIdx(i)}
+            onDragEnd={() => setDragLinkIdx(null)}
+            onDragOver={(e) => { e.preventDefault(); e.dataTransfer.dropEffect = "move"; }}
+            onDrop={(e) => {
+              e.preventDefault();
+              if (dragLinkIdx === null || dragLinkIdx === i) return;
+              const arr = [...links];
+              const [moved] = arr.splice(dragLinkIdx, 1);
+              arr.splice(i, 0, moved);
+              setLinks(arr);
+              setDragLinkIdx(null);
+            }}
+            className={`bg-k-800 border rounded-xl p-3.5 mb-2 space-y-2 transition-all ${dragLinkIdx === i ? "border-primary/50 opacity-50 scale-[0.97]" : "border-primary/10"}`}
+          >
             <div className="flex items-center gap-2">
+              {/* Drag handle */}
+              <div className="cursor-grab active:cursor-grabbing text-k-4 hover:text-k-3 transition-colors flex-shrink-0 select-none" title="Arrastar para reordenar">
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor"><circle cx="9" cy="5" r="1.5"/><circle cx="15" cy="5" r="1.5"/><circle cx="9" cy="12" r="1.5"/><circle cx="15" cy="12" r="1.5"/><circle cx="9" cy="19" r="1.5"/><circle cx="15" cy="19" r="1.5"/></svg>
+              </div>
               <div className="relative">
                 <button onClick={() => setShowIconPicker(showIconPicker === link.id ? null : link.id)} className="text-lg hover:scale-125 transition-transform">{link.icon}</button>
                 {showIconPicker === link.id && (
-                  <div className="absolute top-8 left-0 z-50 bg-k-850 border border-primary/10 rounded-xl p-2 shadow-k grid grid-cols-4 gap-1 w-[160px]">
-                    {iconOptions.map((ic) => (
-                      <button key={ic} onClick={() => { const arr = [...links]; arr[i] = { ...arr[i], icon: ic }; setLinks(arr); setShowIconPicker(null); }} className="w-8 h-8 rounded-lg hover:bg-k-glow flex items-center justify-center text-sm transition-colors">{ic}</button>
-                    ))}
+                  <div className="absolute top-8 left-0 z-50 bg-k-850 border border-primary/10 rounded-xl p-2.5 shadow-k w-[240px] max-h-[300px] overflow-y-auto">
+                    <p className="text-[0.58rem] text-k-4 font-bold uppercase tracking-wider mb-1.5 px-1">Gerais</p>
+                    <div className="grid grid-cols-6 gap-1 mb-2">
+                      {iconOptions.map((ic) => (
+                        <button key={ic} onClick={() => { const arr = [...links]; arr[i] = { ...arr[i], icon: ic }; setLinks(arr); setShowIconPicker(null); }} className="w-8 h-8 rounded-lg hover:bg-k-glow flex items-center justify-center text-sm transition-colors">{ic}</button>
+                      ))}
+                    </div>
+                    <p className="text-[0.58rem] text-k-4 font-bold uppercase tracking-wider mb-1.5 px-1">Redes Sociais</p>
+                    <div className="grid grid-cols-4 gap-1">
+                      {socialIconOptions.map((opt) => (
+                        <button key={opt.emoji + opt.label} onClick={() => { const arr = [...links]; arr[i] = { ...arr[i], icon: opt.emoji }; setLinks(arr); setShowIconPicker(null); }} className="flex flex-col items-center gap-0.5 p-1.5 rounded-lg hover:bg-k-glow transition-colors" title={opt.label}>
+                          <span className="text-lg">{opt.emoji}</span>
+                          <span className="text-[0.5rem] text-k-4 leading-tight truncate w-full text-center">{opt.label}</span>
+                        </button>
+                      ))}
+                    </div>
                   </div>
                 )}
               </div>
@@ -758,7 +836,18 @@ const CreatorEditPanel = forwardRef<CreatorEditPanelHandle, Props>(function Crea
               <button onClick={() => setLinks(links.filter((_, j) => j !== i))} className="text-k-4 hover:text-k-err text-xs">✕</button>
             </div>
             {validationErrors[`link-title-${i}`] && <p className="text-[0.68rem] text-destructive -mt-1">{validationErrors[`link-title-${i}`]}</p>}
-            <input value={link.url} onChange={(e) => { const arr = [...links]; arr[i] = { ...arr[i], url: e.target.value }; setLinks(arr); setValidationErrors((v) => { const n = { ...v }; delete n[`link-url-${i}`]; return n; }); }} placeholder="https://..." className={`${inputClass} ${validationErrors[`link-url-${i}`] ? "border-destructive/50 focus:border-destructive" : ""}`} />
+            <input
+              value={link.url}
+              onChange={(e) => { const arr = [...links]; arr[i] = { ...arr[i], url: e.target.value }; setLinks(arr); setValidationErrors((v) => { const n = { ...v }; delete n[`link-url-${i}`]; return n; }); }}
+              onBlur={() => {
+                const detected = detectIconFromUrl(link.url);
+                if (detected && (link.icon === "🔗" || !link.icon)) {
+                  const arr = [...links]; arr[i] = { ...arr[i], icon: detected }; setLinks(arr);
+                }
+              }}
+              placeholder="https://..."
+              className={`${inputClass} ${validationErrors[`link-url-${i}`] ? "border-destructive/50 focus:border-destructive" : ""}`}
+            />
             {validationErrors[`link-url-${i}`] && <p className="text-[0.68rem] text-destructive -mt-1">{validationErrors[`link-url-${i}`]}</p>}
             <input value={link.subtitle || ""} onChange={(e) => { const arr = [...links]; arr[i] = { ...arr[i], subtitle: e.target.value }; setLinks(arr); }} placeholder="Descrição (opcional)" className={inputClass} />
 
