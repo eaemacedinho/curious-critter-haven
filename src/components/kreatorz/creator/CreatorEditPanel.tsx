@@ -205,7 +205,10 @@ const CreatorEditPanel = forwardRef<CreatorEditPanelHandle, Props>(function Crea
     page_effects: { effects: pageEffects, color: effectColor, emojis: effectEmojis, intensity: effectIntensity },
     font_family: fontFamily,
     font_size: fontSize,
-  }), [profile, name, handle, bio, avatarUrl, coverUrl, avatarUrlL2, coverUrlL2, verified, tags, stats, brands, shapeProducts, shapeCampaigns, shapeLinks, pageEffects, effectColor, effectEmojis, effectIntensity, fontFamily, fontSize]);
+    color_name: colorName || null,
+    color_bio: colorBio || null,
+    color_section_titles: colorSectionTitles || null,
+  }), [profile, name, handle, bio, avatarUrl, coverUrl, avatarUrlL2, coverUrlL2, verified, tags, stats, brands, shapeProducts, shapeCampaigns, shapeLinks, pageEffects, effectColor, effectEmojis, effectIntensity, fontFamily, fontSize, colorName, colorBio, colorSectionTitles]);
 
   const isValidUrl = (url: string) => {
     if (!url) return true;
