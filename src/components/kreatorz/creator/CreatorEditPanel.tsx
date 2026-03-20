@@ -678,6 +678,42 @@ const CreatorEditPanel = forwardRef<CreatorEditPanelHandle, Props>(function Crea
               ))}
             </div>
           </div>
+
+          <div>
+            <label className={labelClass}>Cores do texto</label>
+            <div className="space-y-2.5">
+              {[
+                { label: "Nome", value: colorName, setter: setColorName },
+                { label: "Bio", value: colorBio, setter: setColorBio },
+                { label: "Títulos de seção", value: colorSectionTitles, setter: setColorSectionTitles },
+              ].map((item) => (
+                <div key={item.label} className="flex items-center gap-3 bg-k-800 border border-primary/10 rounded-xl px-3 py-2.5">
+                  <input
+                    type="color"
+                    value={item.value || "#ffffff"}
+                    onChange={(e) => item.setter(e.target.value)}
+                    className="w-7 h-7 rounded-lg border-0 cursor-pointer bg-transparent flex-shrink-0"
+                  />
+                  <div className="flex-1 min-w-0">
+                    <span className="text-[0.72rem] font-semibold text-k-2">{item.label}</span>
+                  </div>
+                  <input
+                    value={item.value || ""}
+                    onChange={(e) => item.setter(e.target.value)}
+                    placeholder="Automático"
+                    className="w-[90px] text-right bg-transparent text-k-2 text-[0.72rem] font-mono outline-none placeholder:text-k-4"
+                  />
+                  {item.value && (
+                    <button
+                      onClick={() => item.setter("")}
+                      className="text-[0.62rem] text-k-4 hover:text-k-2 transition-colors"
+                      title="Resetar"
+                    >✕</button>
+                  )}
+                </div>
+              ))}
+            </div>
+          </div>
         </div>
       </div>
 
