@@ -1,5 +1,7 @@
 import { useState } from "react";
 import { toast } from "sonner";
+import { supabase } from "@/integrations/supabase/client";
+import { useAuth } from "@/hooks/useAuth";
 
 interface SettingsScreenProps {
   onNavigate: (tab: string) => void;
@@ -19,14 +21,16 @@ const invoices = [
 ];
 
 export default function SettingsScreen({ onNavigate }: SettingsScreenProps) {
+  const { user } = useAuth();
   const [activeSection, setActiveSection] = useState("branding");
-  const [agencyName, setAgencyName] = useState("Kreatorz Agency");
-  const [agencySlug, setAgencySlug] = useState("kreatorz");
-  const [primaryColor, setPrimaryColor] = useState("#6B2BD4");
-  const [accentColor, setAccentColor] = useState("#A855F7");
+  const [agencyName, setAgencyName] = useState(() => localStorage.getItem("kreatorz-agency-name") || "Kreatorz Agency");
+  const [agencySlug, setAgencySlug] = useState(() => localStorage.getItem("kreatorz-agency-slug") || "kreatorz");
+  const [primaryColor, setPrimaryColor] = useState(() => localStorage.getItem("kreatorz-primary-color") || "#6B2BD4");
+  const [accentColor, setAccentColor] = useState(() => localStorage.getItem("kreatorz-accent-color") || "#A855F7");
   const [domain, setDomain] = useState("kreatorz.ai");
   const [customDomain, setCustomDomain] = useState("");
-  const [logoUrl, setLogoUrl] = useState("");
+  const [logoUrl, setLogoUrl] = useState(() => localStorage.getItem("kreatorz-logo-url") || "");
+  const [uploadingLogo, setUploadingLogo] = useState(false);
 
   const sections = [
     { id: "branding", icon: "🎨", label: "Branding" },
