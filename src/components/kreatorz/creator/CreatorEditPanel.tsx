@@ -133,6 +133,43 @@ const CreatorEditPanel = forwardRef<CreatorEditPanelHandle, Props>(function Crea
   const [newBrand, setNewBrand] = useState("");
   const [cropImage, setCropImage] = useState<{ src: string; type: "avatar" | "cover" | "avatar_layout2" | "cover_layout2"; file: File } | null>(null);
   const [contentCrop, setContentCrop] = useState<ContentCropState>(null);
+  const [deleteCampTarget, setDeleteCampTarget] = useState<number | null>(null);
+  const [validationErrors, setValidationErrors] = useState<Record<string, string>>({});
+
+  const isValidUrl = (url: string) => {
+    if (!url) return true;
+    try { new URL(url); return true; } catch { return false; }
+  };
+
+  const validate = (): boolean => {
+    const errors: Record<string, string> = {};
+    if (!name.trim()) errors.name = "Nome é obrigatório";
+    if (!handle.trim()) errors.handle = "Handle é obrigatório";
+    else if (/\s/.test(handle)) errors.handle = "Handle não pode conter espaços";
+    else if (!/^[a-zA-Z0-9._-]+$/.test(handle.replace(/^@/, ""))) errors.handle = "Handle contém caracteres inválidos";
+
+    links.forEach((link, i) => {
+      if (link.active && !link.title.trim()) errors[`link-title-${i}`] = "Título obrigatório";
+      if (link.active && link.url && !isValidUrl(link.url)) errors[`link-url-${i}`] = "URL inválida";
+    });
+
+    prods.forEach((prod, i) => {
+      if (!prod.title.trim()) errors[`prod-title-${i}`] = "Nome obrigatório";
+      if (prod.url && !isValidUrl(prod.url)) errors[`prod-url-${i}`] = "URL inválida";
+    });
+
+    camps.forEach((camp, i) => {
+      if (!camp.title.trim()) errors[`camp-title-${i}`] = "Título obrigatório";
+      if (camp.url && !isValidUrl(camp.url)) errors[`camp-url-${i}`] = "URL inválida";
+    });
+
+    setValidationErrors(errors);
+    if (Object.keys(errors).length > 0) {
+      toast.error("Corrija os campos destacados antes de salvar.");
+      return false;
+    }
+    return true;
+  };
 
   const avatarRef = useRef<HTMLInputElement>(null);
   const coverRef = useRef<HTMLInputElement>(null);
