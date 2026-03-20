@@ -231,14 +231,19 @@ export default function CreatorView({ profile, links: rawLinks, socialLinks: raw
             <div className="flex flex-col gap-3 mb-8">
               {pastCampaigns.map((camp) => (
                 <div key={camp.id} onClick={() => camp.url && window.open(camp.url, "_blank")}
-                  className={`bg-card/65 backdrop-blur-xl border border-border ${shapeClass(profile.image_shape_campaigns)} p-4 sm:p-5 transition-all duration-300 hover:border-primary/20 group cursor-pointer active:scale-[0.98] opacity-75 hover:opacity-100`}>
+                  className={`backdrop-blur-xl ${shapeClass(profile.image_shape_campaigns)} p-4 sm:p-5 transition-all duration-300 group cursor-pointer active:scale-[0.98] opacity-75 hover:opacity-100 ${!camp.bg_color ? "bg-card/65 border border-border hover:border-primary/20" : ""}`}
+                  style={{
+                    ...(camp.bg_color ? { backgroundColor: camp.bg_color } : {}),
+                    ...(camp.text_color ? { color: camp.text_color } : {}),
+                    ...(camp.border_color ? { borderColor: camp.border_color, borderWidth: "1px", borderStyle: "solid" } : {}),
+                  }}>
                   {camp.image_url && (
                     <div className={`w-full h-[100px] ${shapeClass(profile.image_shape_campaigns)} overflow-hidden mb-3`}>
                       <img src={camp.image_url} alt="" className="w-full h-full object-cover" />
                     </div>
                   )}
-                  <h5 className="text-[0.82rem] font-semibold text-foreground mb-1">{camp.title}</h5>
-                  {camp.description && <span className="text-[0.68rem] text-muted-foreground">{camp.description}</span>}
+                  <h5 className="text-[0.82rem] font-semibold mb-1">{camp.title}</h5>
+                  {camp.description && <span className="text-[0.68rem] opacity-70">{camp.description}</span>}
                 </div>
               ))}
             </div>
