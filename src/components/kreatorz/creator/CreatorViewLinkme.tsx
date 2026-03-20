@@ -1,6 +1,6 @@
 import { useState, useEffect, useRef, useCallback } from "react";
 import { toast } from "sonner";
-import SocialIcon from "./SocialIcon";
+import SocialIcon, { LinkIcon } from "./SocialIcon";
 import VerifiedBadge from "./VerifiedBadge";
 import SpotlightCampaign from "./SpotlightCampaign";
 import type { CreatorProfile, CreatorLink, SocialLink, CreatorProduct, CreatorCampaign } from "@/hooks/useCreatorData";
@@ -362,8 +362,8 @@ function LinkmeCard({ link, shape }: { link: CreatorLink; shape?: string }) {
         <div className={`relative w-full ${isHalf ? "aspect-square" : "aspect-[16/9]"} overflow-hidden`}>
           <img src={link.image_url} alt={link.title} className="absolute inset-0 w-full h-full object-cover transition-transform duration-500 group-hover:scale-105" />
           {link.icon && (
-            <div className="absolute top-2.5 left-2.5 w-9 h-9 rounded-xl bg-black/50 backdrop-blur-md flex items-center justify-center text-base z-10">
-              {link.icon}
+            <div className="absolute top-2.5 left-2.5 w-9 h-9 rounded-xl bg-black/50 backdrop-blur-md flex items-center justify-center z-10">
+              <LinkIcon icon={link.icon} url={link.url} size={16} />
             </div>
           )}
           <div className="absolute inset-x-0 bottom-0 p-3 z-10">
@@ -387,8 +387,8 @@ function LinkmeCard({ link, shape }: { link: CreatorLink; shape?: string }) {
           : "bg-card/70 backdrop-blur-xl border border-border") : ""
       } ${sc} transition-all duration-300 group-hover:border-primary/30`}
         style={customStyle}>
-        <div className="w-11 h-11 rounded-xl bg-primary/10 flex items-center justify-center flex-shrink-0 text-lg transition-transform group-hover:scale-110">
-          {link.icon}
+        <div className="w-11 h-11 rounded-xl bg-primary/10 flex items-center justify-center flex-shrink-0 transition-transform group-hover:scale-110">
+          <LinkIcon icon={link.icon} url={link.url} size={18} />
         </div>
         <div className="flex-1 min-w-0">
           <h4 className="text-sm font-semibold leading-snug">{link.title}</h4>

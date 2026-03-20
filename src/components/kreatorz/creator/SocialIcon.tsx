@@ -211,4 +211,28 @@ export default function SocialIcon({ platform, url, size = 18, className = "" }:
   );
 }
 
-export { detectPlatform };
+export { detectPlatform, icons as socialIconEntries };
+
+/** Available social platform keys for icon picker */
+export const socialPlatformKeys = Object.keys(icons);
+
+/** Render a link icon: if it matches a known platform, show the real SVG; otherwise show emoji */
+export function LinkIcon({ icon, url, size = 18, className = "" }: { icon?: string; url?: string; size?: number; className?: string }) {
+  // Try detecting from the icon string itself (e.g. "instagram", "youtube")
+  const keyFromIcon = icon ? detectPlatform(icon, "") : "";
+  // Also try detecting from URL
+  const keyFromUrl = url ? detectPlatform("", url) : "";
+  const key = keyFromIcon || keyFromUrl;
+  const entry = icons[key];
+
+  if (entry) {
+    return (
+      <span className={`inline-flex items-center justify-center ${className}`}>
+        {entry.render(size)}
+      </span>
+    );
+  }
+
+  // Fallback: render as emoji text
+  return <span className={className} style={{ fontSize: size }}>{icon || "🔗"}</span>;
+}

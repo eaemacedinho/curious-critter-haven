@@ -1,7 +1,7 @@
 import { toast } from "sonner";
 import type { CreatorProfile, CreatorLink, SocialLink, CreatorProduct, CreatorCampaign } from "@/hooks/useCreatorData";
 import { useState, useEffect, useRef, useCallback } from "react";
-import SocialIcon from "./SocialIcon";
+import SocialIcon, { LinkIcon } from "./SocialIcon";
 import VerifiedBadge from "./VerifiedBadge";
 import SpotlightCampaign from "./SpotlightCampaign";
 
@@ -207,8 +207,8 @@ export default function CreatorView({ profile, links: rawLinks, socialLinks: raw
                             <img src={link.image_url!} alt={link.title} className="absolute inset-0 w-full h-full object-cover" />
                             <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/20 to-transparent" />
                             {/* Icon top-left */}
-                            <div className="absolute top-2.5 left-2.5 w-8 h-8 rounded-lg bg-white/20 backdrop-blur-md flex items-center justify-center text-sm shadow-sm border border-white/10">
-                              {link.icon}
+                            <div className="absolute top-2.5 left-2.5 w-8 h-8 rounded-lg bg-white/20 backdrop-blur-md flex items-center justify-center shadow-sm border border-white/10">
+                              <LinkIcon icon={link.icon} url={link.url} size={14} />
                             </div>
                             {/* Text overlay bottom */}
                             <div className="absolute bottom-0 left-0 right-0 p-3.5">
@@ -236,8 +236,8 @@ export default function CreatorView({ profile, links: rawLinks, socialLinks: raw
                           ...(link.text_color ? { color: link.text_color } : {}),
                           ...(link.border_color ? { borderColor: link.border_color, borderWidth: "1px", borderStyle: "solid" } : {}),
                         }}>
-                        <div className={`w-[44px] h-[44px] rounded-xl flex items-center justify-center flex-shrink-0 text-lg transition-transform duration-300 group-hover:scale-110 ${link.featured ? "bg-primary-foreground/15" : "bg-primary/5"}`}>
-                          {link.icon}
+                        <div className={`w-[44px] h-[44px] rounded-xl flex items-center justify-center flex-shrink-0 transition-transform duration-300 group-hover:scale-110 ${link.featured ? "bg-primary-foreground/15" : "bg-primary/5"}`}>
+                          <LinkIcon icon={link.icon} url={link.url} size={18} />
                         </div>
                         <div className="flex-1 min-w-0">
                           <h4 className="text-sm font-semibold leading-snug">{link.title}</h4>
