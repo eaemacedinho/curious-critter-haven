@@ -364,17 +364,19 @@ const CreatorEditPanel = forwardRef<CreatorEditPanelHandle, Props>(function Crea
             <span className="text-[0.62rem] text-muted-foreground font-medium ml-1">
               {activeLayout === "layout2" ? "Layout 2" : "Layout 1"} — Preview ao vivo
             </span>
+            <button
+              onClick={() => setShowPreview(false)}
+              className="ml-auto text-[0.62rem] text-muted-foreground hover:text-foreground transition-colors"
+            >✕</button>
           </div>
-          <div className="overflow-y-auto overflow-x-hidden" style={{ maxHeight: "70vh" }}>
-            <div style={{ transform: "scale(0.75)", transformOrigin: "top center", width: "133.33%", marginLeft: "-16.665%" }}>
-              <PreviewComponent
-                profile={liveProfile}
-                links={links}
-                socialLinks={social}
-                products={prods}
-                campaigns={camps}
-              />
-            </div>
+          <div className="overflow-y-auto overflow-x-hidden" style={{ maxHeight: "75vh" }}>
+            <PreviewComponent
+              profile={liveProfile}
+              links={links}
+              socialLinks={social}
+              products={prods}
+              campaigns={camps}
+            />
           </div>
         </div>
       )}
