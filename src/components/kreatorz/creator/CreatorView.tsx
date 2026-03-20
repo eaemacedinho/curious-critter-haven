@@ -22,7 +22,7 @@ export default function CreatorView({ profile, links: rawLinks, socialLinks: raw
   const campaigns = rawCampaigns.filter(c => c.title?.trim());
   const stats = profile.stats.filter(s => s.value?.trim() && s.label?.trim());
   const tags = profile.tags.filter(t => t.label?.trim());
-  const brands = profile.brands.filter(b => b?.trim());
+  const brands = profile.brands.filter(b => b?.name?.trim());
 
   const handleLinkClick = (i: number, url: string) => {
     setClickedLink(i);
