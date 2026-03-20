@@ -684,16 +684,22 @@ const CreatorEditPanel = forwardRef<CreatorEditPanelHandle, Props>(function Crea
               <span className="text-[0.62rem] text-k-4 font-semibold">Cores:</span>
               <label className="flex items-center gap-1 text-[0.6rem] text-k-4" title="Fundo">
                 🎨 <input type="color" value={link.bg_color || "#1a1a2e"} onChange={(e) => { const arr = [...links]; arr[i] = { ...arr[i], bg_color: e.target.value }; setLinks(arr); }} className="w-5 h-5 rounded cursor-pointer border-0 bg-transparent" />
-                {link.bg_color && <button onClick={() => { const arr = [...links]; arr[i] = { ...arr[i], bg_color: null }; setLinks(arr); }} className="text-k-4 hover:text-k-err text-[0.6rem]">✕</button>}
               </label>
               <label className="flex items-center gap-1 text-[0.6rem] text-k-4" title="Texto">
                 Aa <input type="color" value={link.text_color || "#ffffff"} onChange={(e) => { const arr = [...links]; arr[i] = { ...arr[i], text_color: e.target.value }; setLinks(arr); }} className="w-5 h-5 rounded cursor-pointer border-0 bg-transparent" />
-                {link.text_color && <button onClick={() => { const arr = [...links]; arr[i] = { ...arr[i], text_color: null }; setLinks(arr); }} className="text-k-4 hover:text-k-err text-[0.6rem]">✕</button>}
               </label>
               <label className="flex items-center gap-1 text-[0.6rem] text-k-4" title="Borda">
                 ▢ <input type="color" value={link.border_color || "#333355"} onChange={(e) => { const arr = [...links]; arr[i] = { ...arr[i], border_color: e.target.value }; setLinks(arr); }} className="w-5 h-5 rounded cursor-pointer border-0 bg-transparent" />
-                {link.border_color && <button onClick={() => { const arr = [...links]; arr[i] = { ...arr[i], border_color: null }; setLinks(arr); }} className="text-k-4 hover:text-k-err text-[0.6rem]">✕</button>}
               </label>
+              {(link.bg_color || link.text_color || link.border_color) && (
+                <button
+                  onClick={() => { const arr = [...links]; arr[i] = { ...arr[i], bg_color: null, text_color: null, border_color: null }; setLinks(arr); }}
+                  className="ml-1 px-2 py-0.5 rounded-lg bg-destructive/10 text-destructive text-[0.58rem] font-semibold hover:bg-destructive/20 transition-colors"
+                  title="Resetar todas as cores para o padrão"
+                >
+                  ↺ Resetar
+                </button>
+              )}
             </div>
           </div>
         ))}
