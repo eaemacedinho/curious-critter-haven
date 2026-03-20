@@ -992,7 +992,23 @@ const CreatorEditPanel = forwardRef<CreatorEditPanelHandle, Props>(function Crea
       <div className="mb-8">
         <div className={sectionTitle}>🛍 Produtos</div>
         {prods.map((prod, i) => (
-          <div key={i} className="bg-k-800 border border-primary/10 rounded-xl p-3.5 mb-2 space-y-2">
+          <div
+            key={i}
+            draggable
+            onDragStart={() => setDragProdIdx(i)}
+            onDragEnd={() => setDragProdIdx(null)}
+            onDragOver={(e) => { e.preventDefault(); e.dataTransfer.dropEffect = "move"; }}
+            onDrop={(e) => {
+              e.preventDefault();
+              if (dragProdIdx === null || dragProdIdx === i) return;
+              const arr = [...prods];
+              const [moved] = arr.splice(dragProdIdx, 1);
+              arr.splice(i, 0, moved);
+              setProds(arr);
+              setDragProdIdx(null);
+            }}
+            className={`bg-k-800 border rounded-xl p-3.5 mb-2 space-y-2 transition-all ${dragProdIdx === i ? "border-primary/50 opacity-50 scale-[0.97]" : "border-primary/10"}`}
+          >
             <div className="flex gap-2 items-center">
               <div className="relative">
                 <button onClick={() => setShowIconPicker(showIconPicker === `prod-${i}` ? null : `prod-${i}`)} className="text-lg hover:scale-125 transition-transform">{prod.icon}</button>
