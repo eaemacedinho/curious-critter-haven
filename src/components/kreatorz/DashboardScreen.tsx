@@ -1,6 +1,8 @@
 import { useState } from "react";
 import { toast } from "sonner";
 import AnalyticsCharts from "./AnalyticsCharts";
+import CampaignAnalytics from "./CampaignAnalytics";
+import { useAuth } from "@/hooks/useAuth";
 
 interface DashboardScreenProps {
   onNavigate: (tab: string) => void;
