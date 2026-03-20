@@ -105,6 +105,7 @@ export default function CreatorScreen() {
           onSaveProducts={saveProducts}
           onSaveCampaigns={saveCampaigns}
           onUploadImage={uploadImage}
+          onUploadContentImage={uploadContentImage}
           onDone={() => {
             setEditing(false);
             void refetch();

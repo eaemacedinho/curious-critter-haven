@@ -119,6 +119,7 @@ export default function EditorScreen({ onNavigate }: EditorScreenProps) {
         onSaveProducts={saveProducts}
         onSaveCampaigns={saveCampaigns}
         onUploadImage={uploadImage}
+        onUploadContentImage={uploadContentImage}
         onDone={() => {
           void refetch();
         }}
