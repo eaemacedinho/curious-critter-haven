@@ -31,7 +31,7 @@ export default function CreatorScreen2() {
   }
 
   return (
-    <div className="min-h-screen pt-14">
+    <div className="min-h-screen">
       <CreatorViewLinkme
         profile={profile}
         links={links.filter((l) => l.active)}
