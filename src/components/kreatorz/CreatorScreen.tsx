@@ -19,6 +19,7 @@ export default function CreatorScreen() {
     saveProducts,
     saveCampaigns,
     uploadImage,
+    uploadContentImage,
     refetch,
   } = useCreatorData(user?.id);
   const [editing, setEditing] = useState(false);
@@ -105,6 +106,7 @@ export default function CreatorScreen() {
           onSaveProducts={saveProducts}
           onSaveCampaigns={saveCampaigns}
           onUploadImage={uploadImage}
+          onUploadContentImage={uploadContentImage}
           onDone={() => {
             setEditing(false);
             void refetch();

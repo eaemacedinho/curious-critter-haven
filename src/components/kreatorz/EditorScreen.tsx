@@ -23,6 +23,7 @@ export default function EditorScreen({ onNavigate }: EditorScreenProps) {
     saveProducts,
     saveCampaigns,
     uploadImage,
+    uploadContentImage,
     refetch,
   } = useCreatorData(user?.id);
   const editorRef = useRef<CreatorEditPanelHandle>(null);
@@ -119,6 +120,7 @@ export default function EditorScreen({ onNavigate }: EditorScreenProps) {
         onSaveProducts={saveProducts}
         onSaveCampaigns={saveCampaigns}
         onUploadImage={uploadImage}
+        onUploadContentImage={uploadContentImage}
         onDone={() => {
           void refetch();
         }}
