@@ -62,8 +62,12 @@ export default function CreatorViewLinkme({ profile, links: rawLinks, socialLink
     return () => el.removeEventListener("scroll", handleScroll);
   }, [handleScroll]);
 
-  return (
+  const effects = (profile.page_effects || []) as PageEffect[];
+  const hasGlowBorders = effects.includes("glow-borders");
+
+  const content = (
     <div className={embedded ? "absolute inset-0 flex justify-center bg-background" : "fixed inset-0 flex justify-center bg-background"}>
+      <PageEffects effects={effects} />
       <div className={`${embedded ? "w-full max-w-[390px]" : "w-full sm:max-w-[480px] md:max-w-[520px]"} relative overflow-hidden h-full`}>
         {/* Hero background */}
         {heroImage && (
