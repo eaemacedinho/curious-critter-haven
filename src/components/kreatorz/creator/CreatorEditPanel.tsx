@@ -670,8 +670,12 @@ const CreatorEditPanel = forwardRef<CreatorEditPanelHandle, Props>(function Crea
       {cropImage && (
         <ImageCropper
           imageSrc={cropImage.src}
-          aspect={cropImage.type === "avatar" ? 1 : 16 / 5}
-          cropShape={cropImage.type === "avatar" ? "round" : "rect"}
+          aspect={
+            cropImage.type === "avatar" || cropImage.type === "avatar_layout2" ? 1
+            : cropImage.type === "cover_layout2" ? 4 / 5
+            : 16 / 5
+          }
+          cropShape={cropImage.type === "avatar" || cropImage.type === "avatar_layout2" ? "round" : "rect"}
           onCropDone={(blob) => handleCropDone(blob, cropImage.type)}
           onCancel={() => setCropImage(null)}
         />

@@ -69,8 +69,8 @@ export default function CreatorViewLinkme({ profile, links: rawLinks, socialLink
         style={{ opacity: headerVisible ? 1 : 0, pointerEvents: headerVisible ? "auto" : "none" }}
       >
         <div className="w-full max-w-[430px] flex items-center gap-3 px-4 py-2.5 bg-background/90 backdrop-blur-xl border-b border-primary/10">
-          {profile.avatar_url && (
-            <img src={profile.avatar_url} alt="" className="w-8 h-8 rounded-full object-cover" />
+          {headerAvatar && (
+            <img src={headerAvatar} alt="" className="w-8 h-8 rounded-full object-cover" />
           )}
           <h1 className="text-sm font-bold text-primary-foreground truncate">{profile.name}</h1>
         </div>
