@@ -3,6 +3,9 @@ import type { CreatorCampaign, CreatorLink, CreatorProduct, CreatorProfile, Soci
 import { useTenant } from "@/hooks/useTenant";
 import CreatorView from "./CreatorView";
 import CreatorViewLinkme from "./CreatorViewLinkme";
+import CreatorViewMinimal from "./CreatorViewMinimal";
+import CreatorViewGrid from "./CreatorViewGrid";
+import CreatorViewDark from "./CreatorViewDark";
 
 const DEVICE = { w: 390, h: 844 };
 
