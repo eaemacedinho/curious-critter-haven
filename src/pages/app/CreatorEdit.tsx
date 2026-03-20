@@ -131,7 +131,7 @@ export default function CreatorEdit() {
         socialLinks={socialLinks}
         products={products}
         campaigns={campaigns}
-        activeLayout={profile.public_layout as "layout1" | "layout2"}
+        activeLayout={profile.public_layout}
         onSaveProfile={saveProfile}
         onSaveLinks={saveLinks}
         onSaveSocialLinks={saveSocialLinks}
