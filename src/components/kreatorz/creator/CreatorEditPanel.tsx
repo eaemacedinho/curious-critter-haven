@@ -65,7 +65,7 @@ interface Props {
   onSaveSocialLinks: (links: SocialLink[]) => Promise<void>;
   onSaveProducts: (products: CreatorProduct[]) => Promise<void>;
   onSaveCampaigns: (campaigns: CreatorCampaign[]) => Promise<void>;
-  onUploadImage: (file: File, type: "avatar" | "cover") => Promise<string | null>;
+  onUploadImage: (file: File, type: "avatar" | "cover" | "avatar_layout2" | "cover_layout2") => Promise<string | null>;
   onUploadContentImage: (file: File, folder: string) => Promise<string | null>;
   onDone: () => void;
 }
