@@ -1072,6 +1072,39 @@ const CreatorEditPanel = forwardRef<CreatorEditPanelHandle, Props>(function Crea
         }}
       />
     </div>
+        </div>
+
+        {/* Preview column — sticky on the right */}
+        {showPreview && (
+          <div className="w-[420px] flex-shrink-0 hidden lg:block">
+            <div className="sticky top-4">
+              <div className="rounded-2xl border border-primary/20 bg-background overflow-hidden shadow-2xl shadow-primary/10">
+                <div className="px-3 py-1.5 bg-card border-b border-border flex items-center gap-2">
+                  <div className="flex gap-1.5">
+                    <div className="w-2 h-2 rounded-full bg-destructive/60" />
+                    <div className="w-2 h-2 rounded-full bg-yellow-500/60" />
+                    <div className="w-2 h-2 rounded-full bg-green-500/60" />
+                  </div>
+                  <span className="text-[0.62rem] text-muted-foreground font-medium ml-1">
+                    {activeLayout === "layout2" ? "Layout 2" : "Layout 1"}
+                  </span>
+                </div>
+                <div className="overflow-y-auto overflow-x-hidden" style={{ maxHeight: "calc(100vh - 120px)" }}>
+                  <div style={{ transform: "scale(0.52)", transformOrigin: "top center", width: "192.3%", marginLeft: "-46.15%" }}>
+                    <PreviewComponent
+                      profile={liveProfile}
+                      links={links}
+                      socialLinks={social}
+                      products={prods}
+                      campaigns={camps}
+                    />
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        )}
+      </div>
     </div>
   );
 });
