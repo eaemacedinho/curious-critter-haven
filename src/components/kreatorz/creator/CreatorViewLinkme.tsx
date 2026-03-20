@@ -337,12 +337,15 @@ export default function CreatorViewLinkme({ profile, links: rawLinks, socialLink
             </div>
 
             {/* Footer */}
-            <div className="flex items-center justify-center gap-2 text-[0.7rem] text-muted-foreground opacity-50 hover:opacity-90 transition-opacity py-4 mt-6">
-              {agencyName ? (
-                <span>Gerido por <span className="font-semibold">{agencyName}</span></span>
-              ) : (
-                <span>Powered by Kreatorz</span>
-              )}
+            <div className="flex items-center justify-center gap-2 py-6 mt-8 mb-2">
+              <div className="px-4 py-2 rounded-full bg-card/60 backdrop-blur-sm border border-border/40 flex items-center gap-1.5 text-[0.68rem] text-muted-foreground/70 hover:text-muted-foreground transition-colors">
+                <span className="opacity-60">⚡</span>
+                {agencyName ? (
+                  <span>Powered by <span className="font-semibold text-foreground/60">{agencyName}</span></span>
+                ) : (
+                  <span>Powered by <span className="font-semibold text-foreground/60">Kreatorz</span></span>
+                )}
+              </div>
             </div>
           </div>
         </div>
