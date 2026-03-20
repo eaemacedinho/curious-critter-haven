@@ -23,10 +23,10 @@ const normalizeProfile = (creator: any): CreatorProfile => ({
     : [],
   page_effects: (() => {
     const pe = creator.page_effects;
-    if (!pe) return { effects: [], color: undefined };
-    if (Array.isArray(pe)) return { effects: pe, color: undefined };
-    if (typeof pe === "object" && Array.isArray((pe as any).effects)) return { effects: (pe as any).effects, color: (pe as any).color };
-    return { effects: [], color: undefined };
+    if (!pe) return { effects: [], color: undefined, emojis: undefined, intensity: undefined };
+    if (Array.isArray(pe)) return { effects: pe, color: undefined, emojis: undefined, intensity: undefined };
+    if (typeof pe === "object" && Array.isArray((pe as any).effects)) return { effects: (pe as any).effects, color: (pe as any).color, emojis: (pe as any).emojis, intensity: (pe as any).intensity };
+    return { effects: [], color: undefined, emojis: undefined, intensity: undefined };
   })(),
 });
 
