@@ -1,5 +1,7 @@
 import { useState } from "react";
 import { toast } from "sonner";
+import { supabase } from "@/integrations/supabase/client";
+import { useAuth } from "@/hooks/useAuth";
 
 interface SettingsScreenProps {
   onNavigate: (tab: string) => void;
@@ -19,14 +21,16 @@ const invoices = [
 ];
 
 export default function SettingsScreen({ onNavigate }: SettingsScreenProps) {
+  const { user } = useAuth();
   const [activeSection, setActiveSection] = useState("branding");
-  const [agencyName, setAgencyName] = useState("Kreatorz Agency");
-  const [agencySlug, setAgencySlug] = useState("kreatorz");
-  const [primaryColor, setPrimaryColor] = useState("#6B2BD4");
-  const [accentColor, setAccentColor] = useState("#A855F7");
+  const [agencyName, setAgencyName] = useState(() => localStorage.getItem("kreatorz-agency-name") || "Kreatorz Agency");
+  const [agencySlug, setAgencySlug] = useState(() => localStorage.getItem("kreatorz-agency-slug") || "kreatorz");
+  const [primaryColor, setPrimaryColor] = useState(() => localStorage.getItem("kreatorz-primary-color") || "#6B2BD4");
+  const [accentColor, setAccentColor] = useState(() => localStorage.getItem("kreatorz-accent-color") || "#A855F7");
   const [domain, setDomain] = useState("kreatorz.ai");
   const [customDomain, setCustomDomain] = useState("");
-  const [logoUrl, setLogoUrl] = useState("");
+  const [logoUrl, setLogoUrl] = useState(() => localStorage.getItem("kreatorz-logo-url") || "");
+  const [uploadingLogo, setUploadingLogo] = useState(false);
 
   const sections = [
     { id: "branding", icon: "🎨", label: "Branding" },
@@ -74,20 +78,38 @@ export default function SettingsScreen({ onNavigate }: SettingsScreenProps) {
               <div className="flex items-center gap-4">
                 <div className="w-20 h-20 rounded-2xl bg-k-800 border-2 border-dashed border-primary/20 flex items-center justify-center overflow-hidden cursor-pointer hover:border-k-400 transition-all group"
                   onClick={() => {
+                    if (uploadingLogo) return;
                     const input = document.createElement('input');
                     input.type = 'file';
                     input.accept = 'image/*';
-                    input.onchange = (e: any) => {
+                    input.onchange = async (e: any) => {
                       const file = e.target.files?.[0];
-                      if (file) {
-                        setLogoUrl(URL.createObjectURL(file));
+                      if (!file || !user) return;
+                      setUploadingLogo(true);
+                      try {
+                        const ext = file.name.split('.').pop() || 'png';
+                        const path = `${user.id}/agency-logo-${Date.now()}.${ext}`;
+                        const { error: uploadError } = await supabase.storage
+                          .from('content')
+                          .upload(path, file, { cacheControl: '3600', upsert: true });
+                        if (uploadError) throw uploadError;
+                        const { data: publicData } = supabase.storage.from('content').getPublicUrl(path);
+                        const url = publicData.publicUrl;
+                        setLogoUrl(url);
+                        localStorage.setItem("kreatorz-logo-url", url);
                         toast.success("Logo atualizado!");
+                      } catch (err: any) {
+                        toast.error("Erro ao enviar logo: " + (err.message || "tente novamente"));
+                      } finally {
+                        setUploadingLogo(false);
                       }
                     };
                     input.click();
                   }}
                 >
-                  {logoUrl ? (
+                  {uploadingLogo ? (
+                    <span className="text-xs text-muted-foreground animate-pulse">⏳</span>
+                  ) : logoUrl ? (
                     <img src={logoUrl} alt="logo" className="w-full h-full object-contain" />
                   ) : (
                     <span className="text-2xl group-hover:scale-110 transition-transform">📷</span>
@@ -150,7 +172,13 @@ export default function SettingsScreen({ onNavigate }: SettingsScreenProps) {
               </div>
             </div>
 
-            <button onClick={() => toast.success("Branding salvo com sucesso!")} className="px-6 py-3 bg-primary text-primary-foreground font-semibold text-sm rounded-xl transition-all hover:bg-k-400 hover:shadow-k-purple active:scale-[0.97]">
+            <button onClick={() => {
+              localStorage.setItem("kreatorz-agency-name", agencyName);
+              localStorage.setItem("kreatorz-agency-slug", agencySlug);
+              localStorage.setItem("kreatorz-primary-color", primaryColor);
+              localStorage.setItem("kreatorz-accent-color", accentColor);
+              toast.success("Branding salvo com sucesso!");
+            }} className="px-6 py-3 bg-primary text-primary-foreground font-semibold text-sm rounded-xl transition-all hover:bg-k-400 hover:shadow-k-purple active:scale-[0.97]">
               Salvar alterações
             </button>
           </div>
