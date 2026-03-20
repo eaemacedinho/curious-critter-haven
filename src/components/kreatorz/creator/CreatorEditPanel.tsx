@@ -794,20 +794,29 @@ const CreatorEditPanel = forwardRef<CreatorEditPanelHandle, Props>(function Crea
                   <LinkIcon icon={link.icon} url={link.url} size={16} />
                 </button>
                 {showIconPicker === link.id && (
-                  <div className="absolute top-8 left-0 z-50 bg-k-850 border border-primary/10 rounded-xl p-2.5 shadow-k w-[260px] max-h-[340px] overflow-y-auto">
-                    <p className="text-[0.58rem] text-k-4 font-bold uppercase tracking-wider mb-1.5 px-1">Redes Sociais</p>
-                    <div className="grid grid-cols-4 gap-1 mb-2">
-                      {socialPlatformKeys.filter(k => k !== "email").map((key) => (
-                        <button key={key} onClick={() => { const arr = [...links]; arr[i] = { ...arr[i], icon: key }; setLinks(arr); setShowIconPicker(null); }} className="flex flex-col items-center gap-0.5 p-1.5 rounded-lg hover:bg-k-glow transition-colors" title={socialPlatformLabels[key] || key}>
-                          <SocialIcon platform={key} size={14} />
-                          <span className="text-[0.5rem] text-k-4 leading-tight truncate w-full text-center">{socialPlatformLabels[key] || key}</span>
-                        </button>
-                      ))}
-                    </div>
-                    <p className="text-[0.58rem] text-k-4 font-bold uppercase tracking-wider mb-1.5 px-1">Gerais</p>
-                    <div className="grid grid-cols-6 gap-1">
+                  <div className="absolute top-8 left-0 z-50 bg-k-850 border border-primary/10 rounded-xl p-2.5 shadow-k w-[280px] max-h-[400px] overflow-y-auto" style={{ scrollbarWidth: "thin" }}>
+                    <p className="text-[0.58rem] text-k-4 font-bold uppercase tracking-wider mb-2 px-1">Redes Sociais & Sites</p>
+                    {linkIconGroups.map((group) => (
+                      <div key={group.label} className="mb-2">
+                        <p className="text-[0.52rem] text-k-4 font-semibold mb-1 px-1">{group.label}</p>
+                        <div className="flex gap-1.5 flex-wrap">
+                          {group.keys.map((key) => (
+                            <button
+                              key={key}
+                              onClick={() => { const arr = [...links]; arr[i] = { ...arr[i], icon: key }; setLinks(arr); setShowIconPicker(null); }}
+                              className={`p-1.5 rounded-lg transition-all hover:bg-k-glow active:scale-95 ${link.icon === key ? "ring-2 ring-primary bg-k-glow" : ""}`}
+                              title={key}
+                            >
+                              <LinkIcon icon={key} size={12} />
+                            </button>
+                          ))}
+                        </div>
+                      </div>
+                    ))}
+                    <p className="text-[0.58rem] text-k-4 font-bold uppercase tracking-wider mb-1.5 mt-3 px-1">Emojis</p>
+                    <div className="grid grid-cols-8 gap-1">
                       {emojiIcons.map((ic) => (
-                        <button key={ic} onClick={() => { const arr = [...links]; arr[i] = { ...arr[i], icon: ic }; setLinks(arr); setShowIconPicker(null); }} className="w-8 h-8 rounded-lg hover:bg-k-glow flex items-center justify-center text-sm transition-colors">{ic}</button>
+                        <button key={ic} onClick={() => { const arr = [...links]; arr[i] = { ...arr[i], icon: ic }; setLinks(arr); setShowIconPicker(null); }} className={`w-7 h-7 rounded-lg hover:bg-k-glow flex items-center justify-center text-sm transition-colors ${link.icon === ic ? "ring-2 ring-primary bg-k-glow" : ""}`}>{ic}</button>
                       ))}
                     </div>
                   </div>
