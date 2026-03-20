@@ -60,17 +60,14 @@ export default function CreatorLivePreview({
   const { agency } = useTenant();
   const containerRef = useRef<HTMLDivElement>(null);
   const [scale, setScale] = useState(1);
-  const [device, setDevice] = useState<DeviceKey>("mobile");
-
-  const currentDevice = DEVICES[device];
 
   const updateScale = useCallback(() => {
     const element = containerRef.current;
     if (!element) return;
     const { width, height } = element.getBoundingClientRect();
     if (!width || !height) return;
-    setScale(Math.min(width / currentDevice.w, height / currentDevice.h, 1));
-  }, [currentDevice.w, currentDevice.h]);
+    setScale(Math.min(width / DEVICE.w, height / DEVICE.h, 1));
+  }, []);
 
   useEffect(() => {
     const element = containerRef.current;
@@ -98,8 +95,8 @@ export default function CreatorLivePreview({
   }, [agency?.accent_color, agency?.primary_color]);
 
   const PreviewComponent = activeLayout === "layout2" ? CreatorViewLinkme : CreatorView;
-  const renderedWidth = currentDevice.w * scale;
-  const renderedHeight = currentDevice.h * scale;
+  const renderedWidth = DEVICE.w * scale;
+  const renderedHeight = DEVICE.h * scale;
 
   const publicUrl = profile.handle
     ? `/c/${profile.handle.replace(/^@+/, "")}`
@@ -108,37 +105,14 @@ export default function CreatorLivePreview({
   return (
     <div className="sticky top-4 space-y-3">
       {/* Header bar */}
-      <div className="flex flex-col gap-2.5 rounded-2xl border border-border bg-card/80 px-4 py-3 backdrop-blur-sm">
-        <div className="flex items-center justify-between">
-          <p className="text-[0.72rem] font-semibold text-foreground">
-            Pré-visualização · {currentDevice.w}×{currentDevice.h}
-          </p>
+      <div className="flex items-center justify-between rounded-2xl border border-border bg-card/80 px-4 py-3 backdrop-blur-sm">
+        <p className="text-[0.72rem] font-semibold text-foreground">
+          📱 Pré-visualização · {DEVICE.w}×{DEVICE.h}
+        </p>
+        <div className="flex items-center gap-2">
           <span className="rounded-full border border-border bg-background px-2.5 py-1 text-[0.62rem] font-semibold text-muted-foreground">
             {activeLayout === "layout2" ? "Layout 2" : "Layout 1"}
           </span>
-        </div>
-
-        <div className="flex items-center gap-2">
-          {/* Device toggles */}
-          <div className="flex overflow-hidden rounded-xl border border-border bg-background">
-            {(Object.keys(DEVICES) as DeviceKey[]).map((key) => (
-              <button
-                key={key}
-                onClick={() => setDevice(key)}
-                className={`px-3 py-1.5 text-[0.68rem] font-semibold transition-all active:scale-[0.96] ${
-                  device === key
-                    ? "bg-primary text-primary-foreground"
-                    : "text-muted-foreground hover:text-foreground hover:bg-muted/40"
-                }`}
-              >
-                {DEVICES[key].icon}
-              </button>
-            ))}
-          </div>
-
-          <div className="flex-1" />
-
-          {/* Open real page */}
           {publicUrl && (
             <button
               onClick={() => window.open(publicUrl, "_blank")}
@@ -156,18 +130,18 @@ export default function CreatorLivePreview({
         className="relative flex h-[calc(100vh-8rem)] min-h-[620px] items-start justify-center overflow-hidden rounded-[2rem] border border-border bg-muted/20 p-4"
       >
         <div
-          className="relative overflow-hidden border border-border bg-background shadow-[0_24px_80px_hsl(var(--foreground)/0.12)] transition-all duration-300"
+          className="relative overflow-hidden border border-border bg-background shadow-[0_24px_80px_hsl(var(--foreground)/0.12)]"
           style={{
             width: renderedWidth,
             height: renderedHeight,
-            borderRadius: device === "mobile" ? "1.75rem" : device === "tablet" ? "1.25rem" : "0.75rem",
+            borderRadius: "1.75rem",
           }}
         >
           <div
             className="absolute left-0 top-0"
             style={{
-              width: currentDevice.w,
-              height: currentDevice.h,
+              width: DEVICE.w,
+              height: DEVICE.h,
               transform: `scale(${scale})`,
               transformOrigin: "top left",
             }}
