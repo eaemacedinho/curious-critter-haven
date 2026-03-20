@@ -22,9 +22,10 @@ interface Props {
   products: CreatorProduct[];
   campaigns: CreatorCampaign[];
   agencyName?: string;
+  embedded?: boolean;
 }
 
-export default function CreatorViewLinkme({ profile, links: rawLinks, socialLinks: rawSocial, products: rawProducts, campaigns: rawCampaigns, agencyName }: Props) {
+export default function CreatorViewLinkme({ profile, links: rawLinks, socialLinks: rawSocial, products: rawProducts, campaigns: rawCampaigns, agencyName, embedded }: Props) {
   const [contactOpen, setContactOpen] = useState(false);
   const [overlayOpacity, setOverlayOpacity] = useState(0);
   const [headerVisible, setHeaderVisible] = useState(false);
