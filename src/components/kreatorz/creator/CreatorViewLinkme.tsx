@@ -276,51 +276,23 @@ function LinkmeCard({ link }: { link: CreatorLink }) {
       target="_blank"
       rel="noopener noreferrer"
       className="group relative block w-full rounded-2xl overflow-hidden transition-all duration-300 hover:-translate-y-1 active:scale-[0.98]"
-      style={{ backgroundColor: "hsl(0 0% 0%)" }}
     >
-      {link.image_url ? (
-        <>
-          {/* Full image background */}
-          <div className="w-full aspect-[16/9] overflow-hidden">
-            <img
-              src={link.image_url}
-              alt=""
-              className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105"
-            />
-          </div>
-          {/* Gradient overlay */}
-          <div className="absolute inset-0 bg-gradient-to-t from-background/80 via-transparent to-transparent" />
-          {/* Icon badge */}
-          {link.icon && (
-            <div className="absolute top-3 left-3 w-9 h-9 rounded-full bg-card/80 backdrop-blur-md flex items-center justify-center text-sm border border-primary/10">
-              {link.icon}
-            </div>
-          )}
-          {/* Text at bottom */}
-          <div className="absolute inset-x-0 bottom-0 p-4">
-            <h4 className="text-sm font-semibold text-primary-foreground leading-snug">{link.title}</h4>
-            {link.subtitle && <span className="text-[0.72rem] text-k-2 line-clamp-1">{link.subtitle}</span>}
-          </div>
-        </>
-      ) : (
-        /* Fallback: icon + text card */
-        <div className={`flex items-center gap-3.5 p-4 ${
-          link.featured
-            ? "bg-gradient-to-r from-primary/25 to-primary/10 border border-primary/25"
-            : "bg-card/70 backdrop-blur-xl border border-primary/10"
-        } rounded-2xl transition-all duration-300 group-hover:border-primary/30`}>
-          <div className="w-11 h-11 rounded-xl bg-primary/10 flex items-center justify-center flex-shrink-0 text-lg transition-transform group-hover:scale-110">
-            {link.icon}
-          </div>
-          <div className="flex-1 min-w-0">
-            <h4 className="text-sm font-semibold text-primary-foreground leading-snug">{link.title}</h4>
-            {link.subtitle && <span className="text-[0.72rem] text-k-3 line-clamp-1">{link.subtitle}</span>}
-          </div>
-          <div className="opacity-30 group-hover:opacity-60 transition-opacity">
-            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M5 12h14M12 5l7 7-7 7" /></svg>
-          </div>
+      <div className={`flex items-center gap-3.5 p-4 ${
+        link.featured
+          ? "bg-gradient-to-r from-primary/25 to-primary/10 border border-primary/25"
+          : "bg-card/70 backdrop-blur-xl border border-primary/10"
+      } rounded-2xl transition-all duration-300 group-hover:border-primary/30`}>
+        <div className="w-11 h-11 rounded-xl bg-primary/10 flex items-center justify-center flex-shrink-0 text-lg transition-transform group-hover:scale-110">
+          {link.icon}
         </div>
-      )}
+        <div className="flex-1 min-w-0">
+          <h4 className="text-sm font-semibold text-primary-foreground leading-snug">{link.title}</h4>
+          {link.subtitle && <span className="text-[0.72rem] text-k-3 line-clamp-1">{link.subtitle}</span>}
+        </div>
+        <div className="opacity-30 group-hover:opacity-60 transition-opacity">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M5 12h14M12 5l7 7-7 7" /></svg>
+        </div>
+      </div>
     </a>
   );
 }
