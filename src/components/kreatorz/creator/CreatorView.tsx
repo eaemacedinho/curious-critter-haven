@@ -62,9 +62,8 @@ export default function CreatorView({ profile, links: rawLinks, socialLinks: raw
           </div>
 
           {profile.name && (
-            <h1 className="font-display text-[1.85rem] font-normal mt-4 text-primary-foreground tracking-tight inline-flex items-center justify-center gap-2">
+            <h1 className="font-display text-[1.85rem] font-normal mt-4 text-primary-foreground tracking-tight">
               {profile.name}
-              {profile.verified && <VerifiedBadge size={22} />}
             </h1>
           )}
           {profile.handle && <p className="text-sm text-k-3 mt-1">@{profile.handle.replace(/^@+/, "")}</p>}
