@@ -168,10 +168,15 @@ export default function CreatorView({ profile, links: rawLinks, socialLinks: raw
               <div key={link.id} onClick={() => handleLinkClick(i, link.url)}
                 className={`flex items-center gap-4 p-4 sm:p-5 ${shapeClass(profile.image_shape_links)} cursor-pointer transition-all duration-300 relative overflow-hidden group min-h-[56px]
                   ${clickedLink === i ? "scale-[0.97]" : ""}
-                  ${link.featured
+                  ${link.featured && !link.bg_color
                     ? "gradient-primary border-transparent shadow-k-purple-lg hover:-translate-y-1"
-                    : "bg-card/65 backdrop-blur-2xl border border-border hover:border-primary/20 hover:-translate-y-1 hover:shadow-k-purple"
-                  } active:scale-[0.97]`}>
+                    : !link.bg_color ? "bg-card/65 backdrop-blur-2xl border border-border hover:border-primary/20 hover:-translate-y-1 hover:shadow-k-purple" : "hover:-translate-y-1"
+                  } active:scale-[0.97]`}
+                style={{
+                  ...(link.bg_color ? { backgroundColor: link.bg_color } : {}),
+                  ...(link.text_color ? { color: link.text_color } : {}),
+                  ...(link.border_color ? { borderColor: link.border_color, borderWidth: "1px", borderStyle: "solid" } : {}),
+                }}>
                 <div className={`w-[44px] h-[44px] rounded-xl flex items-center justify-center flex-shrink-0 text-lg transition-transform duration-300 group-hover:scale-110 ${link.featured ? "bg-primary-foreground/15" : "bg-primary/5"}`}>
                   {link.icon}
                 </div>
