@@ -145,9 +145,11 @@ export type Database = {
           border_color: string | null
           created_at: string
           creator_id: string
+          display_mode: string | null
           featured: boolean | null
           icon: string | null
           id: string
+          image_url: string | null
           sort_order: number | null
           subtitle: string | null
           text_color: string | null
@@ -160,9 +162,11 @@ export type Database = {
           border_color?: string | null
           created_at?: string
           creator_id: string
+          display_mode?: string | null
           featured?: boolean | null
           icon?: string | null
           id?: string
+          image_url?: string | null
           sort_order?: number | null
           subtitle?: string | null
           text_color?: string | null
@@ -175,9 +179,11 @@ export type Database = {
           border_color?: string | null
           created_at?: string
           creator_id?: string
+          display_mode?: string | null
           featured?: boolean | null
           icon?: string | null
           id?: string
+          image_url?: string | null
           sort_order?: number | null
           subtitle?: string | null
           text_color?: string | null

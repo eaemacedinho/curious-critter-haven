@@ -761,6 +761,67 @@ const CreatorEditPanel = forwardRef<CreatorEditPanelHandle, Props>(function Crea
             <input value={link.url} onChange={(e) => { const arr = [...links]; arr[i] = { ...arr[i], url: e.target.value }; setLinks(arr); setValidationErrors((v) => { const n = { ...v }; delete n[`link-url-${i}`]; return n; }); }} placeholder="https://..." className={`${inputClass} ${validationErrors[`link-url-${i}`] ? "border-destructive/50 focus:border-destructive" : ""}`} />
             {validationErrors[`link-url-${i}`] && <p className="text-[0.68rem] text-destructive -mt-1">{validationErrors[`link-url-${i}`]}</p>}
             <input value={link.subtitle || ""} onChange={(e) => { const arr = [...links]; arr[i] = { ...arr[i], subtitle: e.target.value }; setLinks(arr); }} placeholder="Descrição (opcional)" className={inputClass} />
+
+            {/* Image upload for link */}
+            <div className="flex gap-2 items-center">
+              {link.image_url ? (
+                <div className="relative w-full h-24 rounded-xl overflow-hidden border border-primary/10 group">
+                  <img src={link.image_url} alt="" className="w-full h-full object-cover" />
+                  <div className="absolute inset-0 bg-background/70 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center gap-2">
+                    <label className="cursor-pointer text-xs text-k-300 hover:text-k-1 bg-card/80 px-2 py-1 rounded-lg">
+                      <input type="file" accept="image/*" className="hidden" onChange={(e) => {
+                        const file = e.target.files?.[0];
+                        if (!file) return;
+                        openContentCrop(file, 16 / 9, async (blob) => {
+                          setUploadingContent(`link-${i}`);
+                          const croppedFile = new File([blob], "link.jpg", { type: "image/jpeg" });
+                          const url = await onUploadContentImage(croppedFile, "link");
+                          setUploadingContent(null);
+                          setContentCrop(null);
+                          if (url) { const arr = [...links]; arr[i] = { ...arr[i], image_url: url }; setLinks(arr); }
+                        });
+                      }} />
+                      📷 Trocar
+                    </label>
+                    <button onClick={() => { const arr = [...links]; arr[i] = { ...arr[i], image_url: null }; setLinks(arr); }} className="text-k-err text-xs font-bold bg-card/80 px-2 py-1 rounded-lg">✕ Remover</button>
+                  </div>
+                </div>
+              ) : (
+                <label className="w-full h-16 rounded-xl border border-dashed border-primary/20 flex items-center justify-center gap-2 cursor-pointer hover:border-k-400 hover:bg-k-glow transition-all">
+                  <input type="file" accept="image/*" className="hidden" onChange={(e) => {
+                    const file = e.target.files?.[0];
+                    if (!file) return;
+                    openContentCrop(file, 16 / 9, async (blob) => {
+                      setUploadingContent(`link-${i}`);
+                      const croppedFile = new File([blob], "link.jpg", { type: "image/jpeg" });
+                      const url = await onUploadContentImage(croppedFile, "link");
+                      setUploadingContent(null);
+                      setContentCrop(null);
+                      if (url) { const arr = [...links]; arr[i] = { ...arr[i], image_url: url }; setLinks(arr); toast.success("Imagem do link enviada!"); }
+                    });
+                  }} />
+                  {uploadingContent === `link-${i}` ? <span className="text-xs text-k-4 animate-pulse">⏳ Enviando...</span> : <><span className="text-k-4 text-sm">🖼</span><span className="text-k-4 text-[0.72rem]">Adicionar imagem (opcional)</span></>}
+                </label>
+              )}
+            </div>
+
+            {/* Display mode toggle */}
+            <div className="flex items-center gap-2 pt-1">
+              <span className="text-[0.62rem] text-k-4 font-semibold">Exibição:</span>
+              <button
+                onClick={() => { const arr = [...links]; arr[i] = { ...arr[i], display_mode: "full" }; setLinks(arr); }}
+                className={`px-2.5 py-1 rounded-lg text-[0.62rem] font-semibold transition-all ${link.display_mode === "full" || !link.display_mode ? "bg-primary/20 text-k-300 border border-primary/30" : "text-k-4 border border-primary/10 hover:border-primary/20"}`}
+              >
+                ▬ Inteiro
+              </button>
+              <button
+                onClick={() => { const arr = [...links]; arr[i] = { ...arr[i], display_mode: "half" }; setLinks(arr); }}
+                className={`px-2.5 py-1 rounded-lg text-[0.62rem] font-semibold transition-all ${link.display_mode === "half" ? "bg-primary/20 text-k-300 border border-primary/30" : "text-k-4 border border-primary/10 hover:border-primary/20"}`}
+              >
+                ◫ Metade
+              </button>
+            </div>
+
             <div className="flex items-center gap-2 pt-1">
               <span className="text-[0.62rem] text-k-4 font-semibold">Cores:</span>
               <label className="flex items-center gap-1 text-[0.6rem] text-k-4" title="Fundo">
@@ -784,7 +845,8 @@ const CreatorEditPanel = forwardRef<CreatorEditPanelHandle, Props>(function Crea
             </div>
           </div>
         ))}
-        <button onClick={() => setLinks([...links, { id: crypto.randomUUID(), creator_id: profile.id, title: "", url: "", subtitle: "", icon: "🔗", featured: false, active: true, sort_order: links.length, bg_color: null, text_color: null, border_color: null }])}
+        <p className={sizeHint}>🖼 Imagem ideal: <strong>1280×720px</strong> (16:9, paisagem)</p>
+        <button onClick={() => setLinks([...links, { id: crypto.randomUUID(), creator_id: profile.id, title: "", url: "", subtitle: "", icon: "🔗", featured: false, active: true, sort_order: links.length, bg_color: null, text_color: null, border_color: null, image_url: null, display_mode: "full" as const }])}
           className="flex items-center justify-center gap-2 w-full p-3 border border-dashed border-k-glow rounded-xl text-k-4 text-sm font-medium mt-2 transition-all hover:border-k-400 hover:text-k-300 hover:bg-k-glow active:scale-[0.98]">
           + Adicionar link
         </button>
