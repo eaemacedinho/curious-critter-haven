@@ -35,9 +35,9 @@ export default function CreatorViewLinkme({ profile, links: rawLinks, socialLink
     const el = scrollRef.current;
     if (!el) return;
     const scrollY = el.scrollTop;
-    const opacity = Math.min(scrollY / 350, 1);
+    const opacity = Math.min(scrollY / 500, 1);
     setOverlayOpacity(opacity);
-    setHeaderVisible(scrollY > 300);
+    setHeaderVisible(scrollY > 250);
   }, []);
 
   useEffect(() => {
