@@ -4,7 +4,7 @@ import { useState, useEffect, useRef, useCallback } from "react";
 import SocialIcon, { LinkIcon } from "./SocialIcon";
 import VerifiedBadge from "./VerifiedBadge";
 import SpotlightCampaign from "./SpotlightCampaign";
-import PageEffects, { GlowBorderProvider } from "./PageEffects";
+import PageEffects from "./PageEffects";
 import type { PageEffect } from "./PageEffects";
 
 const shapeClass = (shape?: string) => {
