@@ -236,7 +236,7 @@ export function useCreatorData(userId: string | undefined, creatorId?: string) {
     if (deleteError) throw deleteError;
     if (normalized.length > 0) {
       const { error } = await supabase.from("creator_products").insert(
-        normalized.map((p) => ({ id: p.id, creator_id: p.creator_id, title: p.title, price: p.price || "", icon: p.icon || "📦", url: p.url || "", image_url: p.image_url || "", sort_order: p.sort_order }))
+        normalized.map((p) => ({ id: p.id, creator_id: p.creator_id, title: p.title, price: p.price || "", icon: p.icon || "📦", url: p.url || "", image_url: p.image_url || "", sort_order: p.sort_order, bg_color: p.bg_color || null, text_color: p.text_color || null, border_color: p.border_color || null }))
       );
       if (error) throw error;
     }
