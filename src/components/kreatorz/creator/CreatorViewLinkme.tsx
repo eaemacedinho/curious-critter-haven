@@ -137,7 +137,7 @@ export default function CreatorViewLinkme({ profile, links: rawLinks, socialLink
                     className="w-11 h-11 rounded-full bg-card/80 backdrop-blur-xl border border-primary/15 flex items-center justify-center text-primary-foreground transition-all duration-300 hover:scale-110 hover:border-primary/40 active:scale-95"
                     title={soc.platform}
                   >
-                    <SocialIcon platform={soc.platform || soc.url} size={20} />
+                    <SocialIcon platform={soc.platform || soc.url} url={soc.url} size={20} />
                   </a>
                 ))}
               </div>
