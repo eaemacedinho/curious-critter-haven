@@ -24,7 +24,8 @@ export default function CreatorViewLinkme({ profile, links: rawLinks, socialLink
   const stats = profile.stats.filter(s => s.value?.trim() && s.label?.trim());
   const tags = profile.tags.filter(t => t.label?.trim());
 
-  const heroImage = profile.cover_url || profile.avatar_url;
+  const heroImage = profile.cover_url_layout2 || profile.cover_url || profile.avatar_url;
+  const headerAvatar = profile.avatar_url_layout2 || profile.avatar_url;
 
   const handleScroll = useCallback(() => {
     const el = scrollRef.current;
