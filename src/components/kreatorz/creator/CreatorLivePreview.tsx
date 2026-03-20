@@ -93,11 +93,12 @@ export default function CreatorLivePreview({
 
   const previewTheme = useMemo(() => {
     const style: CSSProperties = {};
+    const cssVariables = style as CSSProperties & Record<`--${string}`, string>;
     const primary = agency?.primary_color ? hexToHsl(agency.primary_color) : null;
     const accent = agency?.accent_color ? hexToHsl(agency.accent_color) : null;
 
-    if (primary) style["--primary" as keyof CSSProperties] = primary;
-    if (accent) style["--k-400" as keyof CSSProperties] = accent;
+    if (primary) cssVariables["--primary"] = primary;
+    if (accent) cssVariables["--k-400"] = accent;
 
     return style;
   }, [agency?.accent_color, agency?.primary_color]);
