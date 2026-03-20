@@ -19,7 +19,9 @@ export type Database = {
           accent_color: string | null
           created_at: string
           domain: string | null
+          footer_link: string
           footer_text: string
+          footer_visible: boolean
           id: string
           logo_url: string | null
           name: string
@@ -32,7 +34,9 @@ export type Database = {
           accent_color?: string | null
           created_at?: string
           domain?: string | null
+          footer_link?: string
           footer_text?: string
+          footer_visible?: boolean
           id?: string
           logo_url?: string | null
           name?: string
@@ -45,7 +49,9 @@ export type Database = {
           accent_color?: string | null
           created_at?: string
           domain?: string | null
+          footer_link?: string
           footer_text?: string
+          footer_visible?: boolean
           id?: string
           logo_url?: string | null
           name?: string
