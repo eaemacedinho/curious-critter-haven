@@ -186,7 +186,6 @@ const CreatorEditPanel = forwardRef<CreatorEditPanelHandle, Props>(function Crea
   const [validationErrors, setValidationErrors] = useState<Record<string, string>>({});
   const [showPreview, setShowPreview] = useState(false);
   const [dragLinkIdx, setDragLinkIdx] = useState<number | null>(null);
-  const [showPreview, setShowPreview] = useState(false);
 
   // Build a live preview profile from current editor state
   const liveProfile = useMemo<CreatorProfile>(() => ({
