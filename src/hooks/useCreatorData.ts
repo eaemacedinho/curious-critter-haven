@@ -377,6 +377,7 @@ export function useCreatorData(userId: string | undefined) {
     saveProducts,
     saveCampaigns,
     uploadImage,
+    uploadContentImage,
     refetch: fetchData,
   };
 }
