@@ -156,6 +156,9 @@ const CreatorEditPanel = forwardRef<CreatorEditPanelHandle, Props>(function Crea
   const [effectIntensity, setEffectIntensity] = useState<Record<string, number>>(profile.page_effects?.intensity || {});
   const [fontFamily, setFontFamily] = useState(profile.font_family || "default");
   const [fontSize, setFontSize] = useState(profile.font_size || "medium");
+  const [colorName, setColorName] = useState(profile.color_name || "");
+  const [colorBio, setColorBio] = useState(profile.color_bio || "");
+  const [colorSectionTitles, setColorSectionTitles] = useState(profile.color_section_titles || "");
   const [links, setLinks] = useState(initialLinks);
   const [social, setSocial] = useState(() =>
     initialSocial.map((s) => {
