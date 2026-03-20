@@ -504,35 +504,37 @@ interface PageEffectsProps {
   effects: PageEffect[];
   color?: string;
   containerRef?: React.RefObject<HTMLElement | null>;
+  emojis?: string[];
+  intensity?: Record<string, number>; // effect id -> 0-100
 }
 
-export default function PageEffects({ effects, color, containerRef }: PageEffectsProps) {
+export default function PageEffects({ effects, color, containerRef, emojis, intensity }: PageEffectsProps) {
   const particleRef = useRef<HTMLCanvasElement>(null);
+  const snowRef = useRef<HTMLCanvasElement>(null);
+  const emojiRef = useRef<HTMLCanvasElement>(null);
+  const starRef = useRef<HTMLCanvasElement>(null);
+  const bubbleRef = useRef<HTMLCanvasElement>(null);
   const container = containerRef?.current || null;
 
   const hasSnow = effects.includes("snow");
   const hasEmojis = effects.includes("floating-emojis");
   const hasStarRain = effects.includes("star-rain");
   const hasBubbles = effects.includes("bubbles");
-  const hasMatrix = effects.includes("matrix");
   const hasSparkleCursor = effects.includes("sparkle-cursor");
   const hasAurora = effects.includes("aurora");
 
-  // Pick the first canvas-based particle effect (only one canvas at a time)
-  const canvasEffect: CanvasType | null = hasSnow ? "snow"
-    : hasEmojis ? "floating-emojis"
-    : hasStarRain ? "star-rain"
-    : hasBubbles ? "bubbles"
-    : null;
-
-  useParticleCanvas(particleRef, canvasEffect || "snow", !!canvasEffect, color, container);
+  // Each canvas-based effect gets its own canvas now
+  useParticleCanvas(snowRef, "snow", hasSnow, color, container, undefined, intensity?.snow);
+  useParticleCanvas(emojiRef, "floating-emojis", hasEmojis, color, container, emojis, intensity?.["floating-emojis"]);
+  useParticleCanvas(starRef, "star-rain", hasStarRain, color, container, undefined, intensity?.["star-rain"]);
+  useParticleCanvas(bubbleRef, "bubbles", hasBubbles, color, container, undefined, intensity?.bubbles);
 
   return (
     <>
-      {canvasEffect && (
-        <canvas ref={particleRef} className="absolute inset-0 pointer-events-none z-[50]" />
-      )}
-      <MatrixEffect active={hasMatrix} color={color} />
+      {hasSnow && <canvas ref={snowRef} className="absolute inset-0 pointer-events-none z-[50]" />}
+      {hasEmojis && <canvas ref={emojiRef} className="absolute inset-0 pointer-events-none z-[50]" />}
+      {hasStarRain && <canvas ref={starRef} className="absolute inset-0 pointer-events-none z-[50]" />}
+      {hasBubbles && <canvas ref={bubbleRef} className="absolute inset-0 pointer-events-none z-[50]" />}
       <SparkleCursor active={hasSparkleCursor} color={color} />
       <AuroraEffect active={hasAurora} color={color} />
     </>
