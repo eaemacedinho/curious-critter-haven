@@ -15,7 +15,7 @@ interface Props {
   socialLinks: SocialLink[];
   products: CreatorProduct[];
   campaigns: CreatorCampaign[];
-  activeLayout?: "layout1" | "layout2";
+  activeLayout?: string;
 }
 
 function hexToHsl(hex: string): string | null {
