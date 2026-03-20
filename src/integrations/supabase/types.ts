@@ -190,6 +190,7 @@ export type Database = {
           handle: string
           id: string
           name: string
+          public_layout: string
           stats: Json | null
           tags: Json | null
           updated_at: string
@@ -207,6 +208,7 @@ export type Database = {
           handle?: string
           id?: string
           name?: string
+          public_layout?: string
           stats?: Json | null
           tags?: Json | null
           updated_at?: string
@@ -224,6 +226,7 @@ export type Database = {
           handle?: string
           id?: string
           name?: string
+          public_layout?: string
           stats?: Json | null
           tags?: Json | null
           updated_at?: string
