@@ -315,10 +315,10 @@ export function useCreatorData(userId: string | undefined) {
     setCampaigns(normalizedCampaigns);
   };
 
-  const uploadImage = async (file: File, type: "avatar" | "cover"): Promise<string | null> => {
+  const uploadImage = async (file: File, type: "avatar" | "cover" | "avatar_layout2" | "cover_layout2"): Promise<string | null> => {
     if (!userId || !profile) return null;
 
-    const bucket = type === "avatar" ? "avatars" : "covers";
+    const bucket = type.startsWith("avatar") ? "avatars" : "covers";
     const fileExtension = file.name.split(".").pop()?.toLowerCase() || "jpg";
     const path = `${userId}/${type}-${Date.now()}.${fileExtension}`;
 
@@ -336,7 +336,13 @@ export function useCreatorData(userId: string | undefined) {
 
     const { data } = supabase.storage.from(bucket).getPublicUrl(path);
     const publicUrl = data.publicUrl;
-    const field = type === "avatar" ? "avatar_url" : "cover_url";
+    const fieldMap: Record<string, keyof CreatorProfile> = {
+      avatar: "avatar_url",
+      cover: "cover_url",
+      avatar_layout2: "avatar_url_layout2",
+      cover_layout2: "cover_url_layout2",
+    };
+    const field = fieldMap[type];
 
     const updatedProfile = await persistProfile({ [field]: publicUrl } as Partial<CreatorProfile>);
 
@@ -345,7 +351,7 @@ export function useCreatorData(userId: string | undefined) {
       return null;
     }
 
-    return updatedProfile[field] || publicUrl;
+    return (updatedProfile[field] as string) || publicUrl;
   };
 
   const uploadContentImage = async (file: File, folder: string): Promise<string | null> => {
