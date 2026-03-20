@@ -39,6 +39,8 @@ export interface CreatorLink {
   bg_color: string | null;
   text_color: string | null;
   border_color: string | null;
+  image_url: string | null;
+  display_mode: "full" | "half";
 }
 
 export interface SocialLink {
