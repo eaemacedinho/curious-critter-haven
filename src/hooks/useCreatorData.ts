@@ -78,6 +78,9 @@ const normalizeProfile = (creator: any): CreatorProfile => ({
   verified: creator.verified ?? false,
   public_layout: creator.public_layout || "layout1",
   image_shape: creator.image_shape || "rounded",
+  image_shape_products: creator.image_shape_products || creator.image_shape || "rounded",
+  image_shape_campaigns: creator.image_shape_campaigns || creator.image_shape || "rounded",
+  image_shape_links: creator.image_shape_links || creator.image_shape || "rounded",
   tags: Array.isArray(creator.tags) ? (creator.tags as CreatorProfile["tags"]) : [],
   stats: Array.isArray(creator.stats) ? (creator.stats as CreatorProfile["stats"]) : [],
   brands: Array.isArray(creator.brands)
