@@ -35,9 +35,9 @@ export default function CreatorViewLinkme({ profile, links: rawLinks, socialLink
     const el = scrollRef.current;
     if (!el) return;
     const scrollY = el.scrollTop;
-    const opacity = Math.min(scrollY / 350, 1);
+    const opacity = Math.min(scrollY / 500, 1);
     setOverlayOpacity(opacity);
-    setHeaderVisible(scrollY > 300);
+    setHeaderVisible(scrollY > 250);
   }, []);
 
   useEffect(() => {
@@ -54,8 +54,16 @@ export default function CreatorViewLinkme({ profile, links: rawLinks, socialLink
         {heroImage && (
           <div className="absolute inset-0 z-0">
             <div className="sticky top-0 w-full h-screen">
-              <img src={heroImage} alt={profile.name} className="w-full h-full object-cover" />
-              <div className="absolute inset-0 bg-background transition-opacity duration-100" style={{ opacity: overlayOpacity }} />
+              <img src={heroImage} alt={profile.name} className="w-full h-full object-cover transition-transform duration-[1.2s] ease-out" />
+              {/* Cinematic vignette overlay */}
+              <div className="absolute inset-0 pointer-events-none" style={{
+                background: `radial-gradient(ellipse 80% 60% at 50% 40%, transparent 0%, hsl(var(--background) / 0.15) 50%, hsl(var(--background) / 0.5) 100%)`
+              }} />
+              {/* Scroll-driven fade */}
+              <div className="absolute inset-0 transition-opacity duration-500 ease-out" style={{
+                background: `linear-gradient(to top, hsl(var(--background)) 0%, hsl(var(--background) / 0.7) 30%, transparent 60%)`,
+                opacity: Math.max(0.3, overlayOpacity),
+              }} />
             </div>
           </div>
         )}
@@ -63,9 +71,9 @@ export default function CreatorViewLinkme({ profile, links: rawLinks, socialLink
         {/* Scrollable content */}
         <div ref={scrollRef} className="w-full h-full relative z-[1] overflow-y-auto overflow-x-hidden" style={{ scrollbarWidth: "none" }}>
           {/* Sticky header */}
-          <div className="sticky top-0 z-50 transition-all duration-300"
-            style={{ opacity: headerVisible ? 1 : 0, pointerEvents: headerVisible ? "auto" : "none", transform: headerVisible ? "translateY(0)" : "translateY(-100%)" }}>
-            <div className="w-full flex items-center gap-3 px-4 py-3 bg-background/90 backdrop-blur-xl border-b border-border">
+          <div className="sticky top-0 z-50 transition-all duration-500 ease-out"
+            style={{ opacity: headerVisible ? 1 : 0, pointerEvents: headerVisible ? "auto" : "none", transform: headerVisible ? "translateY(0)" : "translateY(-8px)" }}>
+            <div className="w-full flex items-center gap-3 px-4 py-3 bg-background/85 backdrop-blur-2xl border-b border-border/50">
               {headerAvatar ? (
                 <img src={headerAvatar} alt="" className="w-8 h-8 rounded-full object-cover ring-2 ring-primary/20" />
               ) : (
@@ -82,7 +90,10 @@ export default function CreatorViewLinkme({ profile, links: rawLinks, socialLink
 
           {/* Hero spacer */}
           <div className="relative w-full" style={{ height: "52vh", minHeight: "300px", maxHeight: "460px" }}>
-            <div className="absolute inset-x-0 bottom-0 h-[55%] bg-gradient-to-t from-background via-background/70 to-transparent pointer-events-none" />
+            {/* Multi-layer cinematic gradient */}
+            <div className="absolute inset-x-0 bottom-0 h-[70%] pointer-events-none" style={{
+              background: `linear-gradient(to top, hsl(var(--background)) 0%, hsl(var(--background) / 0.85) 25%, hsl(var(--background) / 0.4) 55%, transparent 100%)`
+            }} />
             {!heroImage && (
               <div className="w-full h-full bg-gradient-to-b from-primary/30 to-background flex items-center justify-center">
                 <span className="text-7xl text-muted-foreground">{profile.name?.[0] || "?"}</span>
@@ -91,7 +102,7 @@ export default function CreatorViewLinkme({ profile, links: rawLinks, socialLink
           </div>
 
           {/* Content */}
-          <div className="relative bg-background rounded-t-[2rem] -mt-8 pb-12">
+          <div className="relative pb-12" style={{ background: "hsl(var(--background))" }}>
             <div className="text-center pt-6 px-5">
               <h2 className="font-display text-[2rem] font-bold text-foreground tracking-tight leading-tight inline-flex items-center justify-center gap-2">
                 {profile.name}
