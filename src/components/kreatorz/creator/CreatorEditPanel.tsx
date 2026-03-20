@@ -1076,34 +1076,43 @@ const CreatorEditPanel = forwardRef<CreatorEditPanelHandle, Props>(function Crea
 
         {/* Preview column — phone mockup sticky on the right */}
         {showPreview && (
-          <div className="w-[320px] flex-shrink-0 hidden lg:block">
+          <div className="w-[360px] flex-shrink-0 hidden lg:block">
             <div className="sticky top-4">
-              {/* Phone frame — realistic 9:19.5 ratio */}
-              <div className="mx-auto w-[280px] rounded-[2.2rem] border-[5px] border-foreground/20 bg-black overflow-hidden shadow-2xl shadow-black/40 relative"
-                style={{ height: "607px" }}>
-                {/* Dynamic Island */}
-                <div className="absolute top-0 left-0 right-0 z-50 flex justify-center pt-[6px]">
-                  <div className="w-[90px] h-[22px] rounded-full bg-black" />
-                </div>
-                {/* Screen content — uses iframe-like scaling to fill width perfectly */}
-                <div className="w-full h-full overflow-y-auto overflow-x-hidden bg-background">
-                  <div style={{ 
-                    transform: "scale(0.7)", 
-                    transformOrigin: "top left", 
-                    width: `${100 / 0.7}%`,
-                  }}>
-                    <PreviewComponent
-                      profile={liveProfile}
-                      links={links}
-                      socialLinks={social}
-                      products={prods}
-                      campaigns={camps}
-                      embedded
-                    />
+              <div className="mx-auto flex w-[340px] justify-center rounded-[2.8rem] border border-border/60 bg-card p-[10px] shadow-[0_24px_80px_hsl(var(--foreground)/0.18)]">
+                <div
+                  className="relative w-[320px] overflow-hidden rounded-[2.25rem] bg-background ring-1 ring-foreground/10"
+                  style={{ height: "693px" }}
+                >
+                  <div className="pointer-events-none absolute inset-x-0 top-0 z-50 flex justify-center pt-2">
+                    <div className="h-[24px] w-[96px] rounded-full bg-foreground/90 shadow-sm" />
+                  </div>
+
+                  <div className={`${activeLayout === "layout2" ? "h-full overflow-hidden" : "h-full overflow-y-auto overflow-x-hidden"}`}>
+                    <div className="flex justify-center overflow-x-hidden" style={{ minHeight: "693px" }}>
+                      <div
+                        style={{
+                          width: "390px",
+                          minHeight: "844px",
+                          transform: "scale(0.8205128205)",
+                          transformOrigin: "top center",
+                        }}
+                      >
+                        <PreviewComponent
+                          profile={liveProfile}
+                          links={links}
+                          socialLinks={social}
+                          products={prods}
+                          campaigns={camps}
+                          embedded
+                        />
+                      </div>
+                    </div>
+                  </div>
+
+                  <div className="pointer-events-none absolute inset-x-0 bottom-2 z-50 flex justify-center">
+                    <div className="h-[5px] w-[108px] rounded-full bg-foreground/20" />
                   </div>
                 </div>
-                {/* Home indicator */}
-                <div className="absolute bottom-1.5 left-1/2 -translate-x-1/2 w-[100px] h-[4px] rounded-full bg-foreground/20 z-50" />
               </div>
               <p className="text-center text-[0.6rem] text-muted-foreground mt-3 opacity-60">
                 {activeLayout === "layout2" ? "Layout 2 — Linkme" : "Layout 1 — Padrão"}
