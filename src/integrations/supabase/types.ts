@@ -14,10 +14,43 @@ export type Database = {
   }
   public: {
     Tables: {
+      campaign_clicks: {
+        Row: {
+          campaign_id: string
+          clicked_at: string
+          id: string
+          referrer: string | null
+          user_agent: string | null
+        }
+        Insert: {
+          campaign_id: string
+          clicked_at?: string
+          id?: string
+          referrer?: string | null
+          user_agent?: string | null
+        }
+        Update: {
+          campaign_id?: string
+          clicked_at?: string
+          id?: string
+          referrer?: string | null
+          user_agent?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "campaign_clicks_campaign_id_fkey"
+            columns: ["campaign_id"]
+            isOneToOne: false
+            referencedRelation: "creator_campaigns"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       creator_campaigns: {
         Row: {
           creator_id: string
           description: string | null
+          expires_at: string | null
           id: string
           image_url: string | null
           live: boolean | null
@@ -28,6 +61,7 @@ export type Database = {
         Insert: {
           creator_id: string
           description?: string | null
+          expires_at?: string | null
           id?: string
           image_url?: string | null
           live?: boolean | null
@@ -38,6 +72,7 @@ export type Database = {
         Update: {
           creator_id?: string
           description?: string | null
+          expires_at?: string | null
           id?: string
           image_url?: string | null
           live?: boolean | null
