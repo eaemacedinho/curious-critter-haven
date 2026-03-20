@@ -2,6 +2,8 @@ import { useState, useEffect, useCallback } from "react";
 import { supabase } from "@/integrations/supabase/client";
 import { toast } from "sonner";
 
+export type ImageShapeValue = "rounded" | "circular" | "pill" | "shadow" | "polaroid";
+
 export interface CreatorProfile {
   id: string;
   user_id: string;
@@ -15,7 +17,10 @@ export interface CreatorProfile {
   cover_url_layout2: string;
   verified: boolean;
   public_layout: string;
-  image_shape: "rounded" | "circular" | "pill" | "shadow" | "polaroid";
+  image_shape: ImageShapeValue;
+  image_shape_products: ImageShapeValue;
+  image_shape_campaigns: ImageShapeValue;
+  image_shape_links: ImageShapeValue;
   tags: { label: string; color?: string }[];
   stats: { value: string; label: string }[];
   brands: { name: string; logo_url?: string }[];
