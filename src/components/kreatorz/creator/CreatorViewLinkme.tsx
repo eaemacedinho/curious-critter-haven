@@ -58,8 +58,8 @@ export default function CreatorViewLinkme({ profile, links: rawLinks, socialLink
             <img
               src={heroImage}
               alt={profile.name}
-              className="w-full h-[120%] object-cover will-change-transform"
-              style={{ transform: `translateY(-${parallaxY}px)` }}
+              className="absolute inset-0 w-full h-full object-cover will-change-transform"
+              style={{ transform: `scale(1.15) translateY(${parallaxY * -0.5}px)` }}
             />
             {/* Cinematic vignette overlay */}
             <div className="absolute inset-0 pointer-events-none" style={{
