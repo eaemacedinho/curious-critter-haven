@@ -207,8 +207,8 @@ export default function CreatorView({ profile, links: rawLinks, socialLinks: raw
                             <img src={link.image_url!} alt={link.title} className="absolute inset-0 w-full h-full object-cover" />
                             <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/20 to-transparent" />
                             {/* Icon top-left */}
-                            <div className="absolute top-2.5 left-2.5 w-8 h-8 rounded-lg bg-white/20 backdrop-blur-md flex items-center justify-center text-sm shadow-sm border border-white/10">
-                              {link.icon}
+                            <div className="absolute top-2.5 left-2.5 w-8 h-8 rounded-lg bg-white/20 backdrop-blur-md flex items-center justify-center shadow-sm border border-white/10">
+                              <LinkIcon icon={link.icon} url={link.url} size={14} />
                             </div>
                             {/* Text overlay bottom */}
                             <div className="absolute bottom-0 left-0 right-0 p-3.5">
