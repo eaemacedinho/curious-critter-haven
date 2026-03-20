@@ -451,56 +451,54 @@ const CreatorEditPanel = forwardRef<CreatorEditPanelHandle, Props>(function Crea
         <div className={sectionTitle}>📱 Redes Sociais</div>
         <p className="text-[0.68rem] text-k-4 mb-2">Escolha um ícone, nome da rede e link do seu perfil.</p>
         {social.map((s, i) => (
-          <div key={i} className="flex gap-2 mb-2 items-center">
-            <div className="relative">
-              <button
-                onClick={() => setShowIconPicker(showIconPicker === `social-${i}` ? null : `social-${i}`)}
-                className="w-10 h-10 bg-k-800 border border-primary/10 rounded-xl flex items-center justify-center text-lg hover:border-k-400 hover:scale-110 transition-all"
-                title="Escolher ícone"
-              >
-                {s.label || "➕"}
-              </button>
-              {showIconPicker === `social-${i}` && (
-                <div className="absolute top-11 left-0 z-50 bg-k-850 border border-primary/10 rounded-xl p-2.5 shadow-k w-[220px] max-h-[240px] overflow-y-auto">
-                  <div className="grid grid-cols-4 gap-1">
-                    {socialEmojiOptions.map((opt) => (
-                      <button
-                        key={opt.emoji}
-                        onClick={() => {
-                          const arr = [...social];
-                          arr[i] = {
-                            ...arr[i],
-                            label: opt.emoji,
-                            platform: opt.label,
-                            url: arr[i].url?.trim() ? arr[i].url : opt.baseUrl || "",
-                          };
-                          setSocial(arr);
-                          setShowIconPicker(null);
-                        }}
-                        className="flex flex-col items-center gap-0.5 p-1.5 rounded-lg hover:bg-k-glow transition-colors"
-                        title={opt.label}
-                      >
-                        <span className="text-lg">{opt.emoji}</span>
-                        <span className="text-[0.58rem] text-k-4 leading-tight">{opt.label}</span>
-                      </button>
-                    ))}
+          <div key={i} className="bg-k-800 border border-primary/10 rounded-xl p-3 mb-2.5 space-y-2">
+            <div className="flex gap-2 items-center">
+              <div className="relative">
+                <button
+                  onClick={() => setShowIconPicker(showIconPicker === `social-${i}` ? null : `social-${i}`)}
+                  className="w-10 h-10 bg-k-850 border border-primary/10 rounded-xl flex items-center justify-center text-lg hover:border-k-400 hover:scale-110 transition-all"
+                  title="Escolher ícone"
+                >
+                  {s.label || "➕"}
+                </button>
+                {showIconPicker === `social-${i}` && (
+                  <div className="absolute top-11 left-0 z-50 bg-k-850 border border-primary/10 rounded-xl p-2.5 shadow-k w-[220px] max-h-[240px] overflow-y-auto">
+                    <div className="grid grid-cols-4 gap-1">
+                      {socialEmojiOptions.map((opt) => (
+                        <button
+                          key={opt.emoji}
+                          onClick={() => {
+                            const arr = [...social];
+                            arr[i] = {
+                              ...arr[i],
+                              label: opt.emoji,
+                              platform: opt.label,
+                              url: arr[i].url?.trim() ? arr[i].url : opt.baseUrl || "",
+                            };
+                            setSocial(arr);
+                            setShowIconPicker(null);
+                          }}
+                          className="flex flex-col items-center gap-0.5 p-1.5 rounded-lg hover:bg-k-glow transition-colors"
+                          title={opt.label}
+                        >
+                          <span className="text-lg">{opt.emoji}</span>
+                          <span className="text-[0.58rem] text-k-4 leading-tight">{opt.label}</span>
+                        </button>
+                      ))}
+                    </div>
                   </div>
-                </div>
-              )}
+                )}
+              </div>
+              <input value={s.platform} onChange={(e) => { const arr = [...social]; arr[i] = { ...arr[i], platform: e.target.value }; setSocial(arr); }} placeholder="Ex: Instagram" className={`${inputClass} flex-1`} />
+              <button onClick={() => setSocial(social.filter((_, j) => j !== i))} className="text-k-4 hover:text-k-err px-2 text-lg">×</button>
             </div>
-            <input value={s.platform} onChange={(e) => { const arr = [...social]; arr[i] = { ...arr[i], platform: e.target.value }; setSocial(arr); }} placeholder="Ex: Instagram" className={`${inputClass} w-28`} />
-            <div className="flex-1 relative">
-              {getSocialOption(s.platform)?.baseUrl && s.url && !s.url.startsWith("http") && !s.url.startsWith("mailto:") ? (
-                <span className="absolute left-3 top-1/2 -translate-y-1/2 text-k-4 text-[0.72rem] pointer-events-none select-none">
-                  {getSocialOption(s.platform)!.baseUrl}
-                </span>
-              ) : null}
+            <div>
+              <label className="block text-[0.65rem] text-k-4 mb-1">Link do perfil</label>
               <input
-                value={extractHandle(s.platform, s.url)}
+                value={s.url}
                 onChange={(e) => {
                   const arr = [...social];
-                  const raw = e.target.value;
-                  arr[i] = { ...arr[i], url: raw };
+                  arr[i] = { ...arr[i], url: e.target.value };
                   setSocial(arr);
                 }}
                 onBlur={() => {
@@ -511,11 +509,10 @@ const CreatorEditPanel = forwardRef<CreatorEditPanelHandle, Props>(function Crea
                     setSocial(arr);
                   }
                 }}
-                placeholder={getSocialOption(s.platform)?.placeholder || "https://..."}
-                className={inputClass}
+                placeholder={getSocialOption(s.platform)?.placeholder || "Cole o link completo do perfil aqui"}
+                className={`${inputClass} w-full`}
               />
             </div>
-            <button onClick={() => setSocial(social.filter((_, j) => j !== i))} className="text-k-4 hover:text-k-err px-2">×</button>
           </div>
         ))}
         <button onClick={() => setSocial([...social, { id: crypto.randomUUID(), creator_id: profile.id, platform: "", label: "", url: "", sort_order: social.length }])} className="text-sm text-k-300 font-medium hover:text-k-200 transition-colors">+ Adicionar rede social</button>
