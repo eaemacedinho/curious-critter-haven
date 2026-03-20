@@ -11,9 +11,10 @@ interface Props {
   socialLinks: SocialLink[];
   products: CreatorProduct[];
   campaigns: CreatorCampaign[];
+  agencyName?: string;
 }
 
-export default function CreatorView({ profile, links: rawLinks, socialLinks: rawSocial, products: rawProducts, campaigns: rawCampaigns }: Props) {
+export default function CreatorView({ profile, links: rawLinks, socialLinks: rawSocial, products: rawProducts, campaigns: rawCampaigns, agencyName }: Props) {
   const [contactOpen, setContactOpen] = useState(false);
   const [clickedLink, setClickedLink] = useState<number | null>(null);
 
@@ -55,7 +56,7 @@ export default function CreatorView({ profile, links: rawLinks, socialLinks: raw
               {profile.avatar_url ? (
                 <img src={profile.avatar_url} alt="" className="w-full h-full object-cover" />
               ) : (
-                <div className="w-full h-full bg-k-800 flex items-center justify-center text-3xl text-k-3">
+                <div className="w-full h-full bg-card flex items-center justify-center text-3xl text-muted-foreground">
                   {profile.name?.[0] || "?"}
                 </div>
               )}
@@ -66,16 +67,16 @@ export default function CreatorView({ profile, links: rawLinks, socialLinks: raw
           </div>
 
           {profile.name && (
-            <h1 className="font-display text-[1.85rem] font-normal mt-4 text-primary-foreground tracking-tight">
+            <h1 className="font-display text-[1.85rem] font-normal mt-4 text-foreground tracking-tight">
               {profile.name}
             </h1>
           )}
-          {profile.handle && <p className="text-sm text-k-3 mt-1">@{profile.handle.replace(/^@+/, "")}</p>}
+          {profile.handle && <p className="text-sm text-muted-foreground mt-1">@{profile.handle.replace(/^@+/, "")}</p>}
 
           {tags.length > 0 && (
             <div className="flex justify-center gap-2 mt-3 flex-wrap">
               {tags.map((tag, i) => (
-                <span key={i} className="px-3 py-1 rounded-full text-[0.68rem] font-semibold bg-primary/10 text-k-300 border border-primary/20">
+                <span key={i} className="px-3 py-1.5 rounded-full text-[0.72rem] font-semibold bg-primary/10 text-primary border border-primary/20">
                   {tag.label}
                 </span>
               ))}
@@ -83,11 +84,11 @@ export default function CreatorView({ profile, links: rawLinks, socialLinks: raw
           )}
 
           {stats.length > 0 && (
-            <div className="flex justify-center gap-7 mt-5 py-4 border-t border-b border-primary-foreground/5">
+            <div className="flex justify-center gap-7 mt-5 py-4 border-t border-b border-border">
               {stats.map((stat, i) => (
                 <div key={i} className="text-center">
-                  <strong className="block text-lg font-extrabold text-primary-foreground tracking-tight">{stat.value}</strong>
-                  <span className="text-[0.64rem] text-k-3 uppercase tracking-widest font-semibold">{stat.label}</span>
+                  <strong className="block text-lg font-extrabold text-foreground tracking-tight">{stat.value}</strong>
+                  <span className="text-[0.64rem] text-muted-foreground uppercase tracking-widest font-semibold">{stat.label}</span>
                 </div>
               ))}
             </div>
@@ -95,9 +96,9 @@ export default function CreatorView({ profile, links: rawLinks, socialLinks: raw
 
           {brands.length > 0 && (
             <div className="flex justify-center items-center gap-3 mt-4 flex-wrap">
-              <span className="text-[0.62rem] text-k-4 uppercase tracking-widest font-bold">Trabalhou com:</span>
+              <span className="text-[0.62rem] text-muted-foreground uppercase tracking-widest font-bold">Trabalhou com:</span>
               {brands.map((brand, i) => (
-                <span key={i} className="text-[0.65rem] text-k-3 font-semibold px-2 py-0.5 bg-card/80 rounded-md border border-primary/5 flex items-center gap-1.5">
+                <span key={i} className="text-[0.65rem] text-muted-foreground font-semibold px-2.5 py-1 bg-card/80 rounded-md border border-border flex items-center gap-1.5">
                   {brand.logo_url && <img src={brand.logo_url} alt="" className="w-4 h-4 rounded-sm object-contain" />}
                   {brand.name}
                 </span>
@@ -106,14 +107,14 @@ export default function CreatorView({ profile, links: rawLinks, socialLinks: raw
           )}
 
           {profile.bio && (
-            <p className="text-sm text-k-2 leading-relaxed mt-5 max-w-[380px] mx-auto">{profile.bio}</p>
+            <p className="text-sm text-muted-foreground leading-relaxed mt-5 max-w-[380px] mx-auto">{profile.bio}</p>
           )}
 
           {socialLinks.length > 0 && (
-            <div className="flex justify-center gap-2.5 mt-5 mb-7">
+            <div className="flex justify-center gap-3 mt-5 mb-7">
               {socialLinks.map((soc) => (
                 <a key={soc.id} href={soc.url} target="_blank" rel="noopener noreferrer"
-                  className="transition-all duration-250 hover:-translate-y-0.5 hover:scale-110 active:scale-95"
+                  className="w-10 h-10 flex items-center justify-center rounded-xl bg-card border border-border transition-all duration-250 hover:-translate-y-0.5 hover:scale-110 active:scale-95"
                   title={soc.platform}>
                   <SocialIcon platform={soc.platform || soc.url} url={soc.url} size={16} />
                 </a>
@@ -133,16 +134,16 @@ export default function CreatorView({ profile, links: rawLinks, socialLinks: raw
 
         {/* Links */}
         {links.length > 0 && (
-          <div className="flex flex-col gap-2.5 mb-8 animate-k-fade-up" style={{ animationDelay: ".15s" }}>
+          <div className="flex flex-col gap-3 mb-8 animate-k-fade-up" style={{ animationDelay: ".15s" }}>
             {links.map((link, i) => (
               <div key={link.id} onClick={() => handleLinkClick(i, link.url)}
-                className={`flex items-center gap-3.5 p-4 rounded-2xl cursor-pointer transition-all duration-300 relative overflow-hidden group
+                className={`flex items-center gap-4 p-4 sm:p-5 rounded-2xl cursor-pointer transition-all duration-300 relative overflow-hidden group min-h-[56px]
                   ${clickedLink === i ? "scale-[0.97]" : ""}
                   ${link.featured
                     ? "gradient-primary border-transparent shadow-k-purple-lg hover:-translate-y-1"
-                    : "bg-card/65 backdrop-blur-2xl border border-primary/10 hover:border-k-glow hover:-translate-y-1 hover:shadow-k-purple"
+                    : "bg-card/65 backdrop-blur-2xl border border-border hover:border-primary/20 hover:-translate-y-1 hover:shadow-k-purple"
                   } active:scale-[0.97]`}>
-                <div className={`w-[42px] h-[42px] rounded-xl flex items-center justify-center flex-shrink-0 text-lg transition-transform duration-300 group-hover:scale-110 ${link.featured ? "bg-primary-foreground/15" : "bg-primary-foreground/5"}`}>
+                <div className={`w-[44px] h-[44px] rounded-xl flex items-center justify-center flex-shrink-0 text-lg transition-transform duration-300 group-hover:scale-110 ${link.featured ? "bg-primary-foreground/15" : "bg-primary/5"}`}>
                   {link.icon}
                 </div>
                 <div className="flex-1 min-w-0">
@@ -160,21 +161,21 @@ export default function CreatorView({ profile, links: rawLinks, socialLinks: raw
         {/* Products */}
         {products.length > 0 && (
           <div className="animate-k-fade-up" style={{ animationDelay: ".25s" }}>
-            <div className="text-[0.66rem] font-bold text-k-4 tracking-[0.14em] uppercase mb-3.5 flex items-center gap-2.5">
-              Meus Produtos <span className="flex-1 h-px bg-primary/10" />
+            <div className="text-[0.66rem] font-bold text-muted-foreground tracking-[0.14em] uppercase mb-3.5 flex items-center gap-2.5">
+              Meus Produtos <span className="flex-1 h-px bg-border" />
             </div>
-            <div className="grid grid-cols-2 gap-2.5 mb-8">
+            <div className="grid grid-cols-2 gap-3 mb-8">
               {products.map((prod) => (
                 <div key={prod.id} onClick={() => prod.url && window.open(prod.url, "_blank")}
-                  className="bg-card/65 backdrop-blur-xl border border-primary/10 rounded-2xl overflow-hidden transition-all duration-300 cursor-pointer group hover:border-k-glow hover:-translate-y-1 hover:shadow-k-purple active:scale-[0.97]">
+                  className="bg-card/65 backdrop-blur-xl border border-border rounded-2xl overflow-hidden transition-all duration-300 cursor-pointer group hover:border-primary/20 hover:-translate-y-1 hover:shadow-k-purple active:scale-[0.97]">
                   {prod.image_url ? (
                     <img src={prod.image_url} alt={prod.title} className="w-full h-28 object-cover" />
                   ) : (
                     <div className="w-full h-28 flex items-center justify-center bg-primary/5 text-3xl">{prod.icon}</div>
                   )}
-                  <div className="p-3">
-                    <h5 className="text-[0.82rem] font-semibold text-primary-foreground mb-1">{prod.title}</h5>
-                    {prod.price && <span className="text-[0.72rem] text-k-300 font-bold">{prod.price}</span>}
+                  <div className="p-3.5">
+                    <h5 className="text-[0.82rem] font-semibold text-foreground mb-1">{prod.title}</h5>
+                    {prod.price && <span className="text-[0.72rem] text-primary font-bold">{prod.price}</span>}
                   </div>
                 </div>
               ))}
@@ -185,20 +186,20 @@ export default function CreatorView({ profile, links: rawLinks, socialLinks: raw
         {/* Past / Inactive Campaigns */}
         {pastCampaigns.length > 0 && (
           <div className="animate-k-fade-up" style={{ animationDelay: ".3s" }}>
-            <div className="text-[0.66rem] font-bold text-k-4 tracking-[0.14em] uppercase mb-3.5 flex items-center gap-2.5">
-              Campanhas Anteriores <span className="flex-1 h-px bg-primary/10" />
+            <div className="text-[0.66rem] font-bold text-muted-foreground tracking-[0.14em] uppercase mb-3.5 flex items-center gap-2.5">
+              Campanhas Anteriores <span className="flex-1 h-px bg-border" />
             </div>
-            <div className="flex flex-col gap-2.5 mb-8">
+            <div className="flex flex-col gap-3 mb-8">
               {pastCampaigns.map((camp) => (
                 <div key={camp.id} onClick={() => camp.url && window.open(camp.url, "_blank")}
-                  className="bg-card/65 backdrop-blur-xl border border-primary/10 rounded-2xl p-4 transition-all duration-300 hover:border-k-glow group cursor-pointer active:scale-[0.98] opacity-75 hover:opacity-100">
+                  className="bg-card/65 backdrop-blur-xl border border-border rounded-2xl p-4 sm:p-5 transition-all duration-300 hover:border-primary/20 group cursor-pointer active:scale-[0.98] opacity-75 hover:opacity-100">
                   {camp.image_url && (
                     <div className="w-full h-[100px] rounded-xl overflow-hidden mb-3">
                       <img src={camp.image_url} alt="" className="w-full h-full object-cover" />
                     </div>
                   )}
-                  <h5 className="text-[0.82rem] font-semibold text-primary-foreground mb-1">{camp.title}</h5>
-                  {camp.description && <span className="text-[0.68rem] text-k-3">{camp.description}</span>}
+                  <h5 className="text-[0.82rem] font-semibold text-foreground mb-1">{camp.title}</h5>
+                  {camp.description && <span className="text-[0.68rem] text-muted-foreground">{camp.description}</span>}
                 </div>
               ))}
             </div>
@@ -207,27 +208,30 @@ export default function CreatorView({ profile, links: rawLinks, socialLinks: raw
 
         {/* Contact CTA */}
         <button onClick={() => setContactOpen(!contactOpen)}
-          className="w-full p-4 bg-card/65 backdrop-blur-xl border border-primary/10 rounded-2xl text-primary-foreground font-semibold text-sm flex items-center justify-center gap-2.5 transition-all duration-300 hover:border-k-400 hover:bg-k-glow hover:shadow-k-purple mb-2 active:scale-[0.98]">
+          className="w-full p-4 sm:p-5 bg-card/65 backdrop-blur-xl border border-border rounded-2xl text-foreground font-semibold text-sm flex items-center justify-center gap-2.5 transition-all duration-300 hover:border-primary/20 hover:shadow-k-purple mb-2 active:scale-[0.98] min-h-[52px]">
           ✉️ Contato comercial
         </button>
 
         {contactOpen && (
-          <div className="bg-card/80 backdrop-blur-xl border border-primary/10 rounded-2xl p-5 mb-8 animate-k-fade-up space-y-3">
-            <h4 className="text-sm font-bold text-primary-foreground">Entre em contato</h4>
-            <input placeholder="Seu nome" className="w-full px-3.5 py-2.5 bg-k-800 border border-primary/10 rounded-xl text-k-1 text-sm outline-none focus:border-k-400 transition-all placeholder:text-k-4" />
-            <input placeholder="seu@email.com" className="w-full px-3.5 py-2.5 bg-k-800 border border-primary/10 rounded-xl text-k-1 text-sm outline-none focus:border-k-400 transition-all placeholder:text-k-4" />
-            <textarea placeholder="Mensagem..." className="w-full px-3.5 py-2.5 bg-k-800 border border-primary/10 rounded-xl text-k-1 text-sm outline-none focus:border-k-400 transition-all resize-none min-h-[80px] placeholder:text-k-4" />
+          <div className="bg-card/80 backdrop-blur-xl border border-border rounded-2xl p-5 mb-8 animate-k-fade-up space-y-3">
+            <h4 className="text-sm font-bold text-foreground">Entre em contato</h4>
+            <input placeholder="Seu nome" className="w-full px-4 py-3 bg-secondary border border-border rounded-xl text-foreground text-sm outline-none focus:border-primary/40 transition-all placeholder:text-muted-foreground" />
+            <input placeholder="seu@email.com" className="w-full px-4 py-3 bg-secondary border border-border rounded-xl text-foreground text-sm outline-none focus:border-primary/40 transition-all placeholder:text-muted-foreground" />
+            <textarea placeholder="Mensagem..." className="w-full px-4 py-3 bg-secondary border border-border rounded-xl text-foreground text-sm outline-none focus:border-primary/40 transition-all resize-none min-h-[80px] placeholder:text-muted-foreground" />
             <button onClick={() => { toast.success("Mensagem enviada! ✉️"); setContactOpen(false); }}
-              className="w-full py-3 bg-primary text-primary-foreground font-semibold text-sm rounded-xl transition-all hover:bg-k-400 hover:shadow-k-purple active:scale-[0.97]">
+              className="w-full py-3.5 bg-primary text-primary-foreground font-semibold text-sm rounded-xl transition-all hover:opacity-90 active:scale-[0.97] min-h-[48px]">
               Enviar mensagem
             </button>
           </div>
         )}
 
         {/* Footer */}
-        <div className="flex items-center justify-center gap-2 text-[0.7rem] text-k-4 opacity-50 hover:opacity-90 transition-opacity py-2 mt-4">
-          <span className="font-extrabold text-k-300">K</span>
-          managed by Kreatorz
+        <div className="flex items-center justify-center gap-2 text-[0.7rem] text-muted-foreground opacity-50 hover:opacity-90 transition-opacity py-4 mt-4">
+          {agencyName ? (
+            <span>Gerido por <span className="font-semibold">{agencyName}</span></span>
+          ) : (
+            <span>Powered by Kreatorz</span>
+          )}
         </div>
       </div>
     </div>
