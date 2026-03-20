@@ -24,6 +24,7 @@ export interface CreatorProfile {
   tags: { label: string; color?: string }[];
   stats: { value: string; label: string }[];
   brands: { name: string; logo_url?: string }[];
+  page_effects: string[];
 }
 
 export interface CreatorLink {
