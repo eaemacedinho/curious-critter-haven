@@ -403,23 +403,25 @@ const CreatorEditPanel = forwardRef<CreatorEditPanelHandle, Props>(function Crea
               🖼 Formato das imagens
             </span>
             <p className="text-[0.65rem] text-k-4 mb-3">Escolha como as imagens de produtos, campanhas e links aparecem na página pública.</p>
-            <div className="flex gap-2">
+            <div className="grid grid-cols-5 gap-2">
               {([
-                { value: "rounded" as const, label: "Arredondado", preview: "rounded-2xl" },
-                { value: "circular" as const, label: "Circular", preview: "rounded-full" },
-                { value: "pill" as const, label: "Cápsula", preview: "rounded-[2rem]" },
+                { value: "rounded" as const, label: "Arredondado", previewCls: "rounded-2xl border border-primary/30" },
+                { value: "circular" as const, label: "Circular", previewCls: "rounded-full border border-primary/30" },
+                { value: "pill" as const, label: "Cápsula", previewCls: "rounded-[2rem] border border-primary/30" },
+                { value: "shadow" as const, label: "Sombra", previewCls: "rounded-2xl shadow-[0_4px_16px_-2px_hsl(268_69%_50%_/_0.4)]" },
+                { value: "polaroid" as const, label: "Polaroid", previewCls: "rounded-sm bg-card p-0.5 pb-2 shadow-[0_3px_12px_-2px_rgba(0,0,0,0.3)] border border-border/40" },
               ]).map((opt) => (
                 <button
                   key={opt.value}
                   onClick={() => setImageShape(opt.value)}
-                  className={`flex-1 flex flex-col items-center gap-2 p-3 rounded-xl border transition-all duration-200 active:scale-[0.97] ${
+                  className={`flex flex-col items-center gap-2 p-2.5 rounded-xl border transition-all duration-200 active:scale-[0.97] ${
                     imageShape === opt.value
                       ? "border-primary bg-primary/10 text-primary"
                       : "border-primary/10 bg-k-800 text-k-3 hover:border-primary/30"
                   }`}
                 >
-                  <div className={`w-10 h-10 bg-primary/20 ${opt.preview} border border-primary/30`} />
-                  <span className="text-[0.68rem] font-semibold">{opt.label}</span>
+                  <div className={`w-9 h-9 bg-primary/20 ${opt.previewCls}`} />
+                  <span className="text-[0.62rem] font-semibold leading-tight text-center">{opt.label}</span>
                 </button>
               ))}
             </div>
