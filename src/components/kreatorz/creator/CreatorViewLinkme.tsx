@@ -362,8 +362,8 @@ function LinkmeCard({ link, shape }: { link: CreatorLink; shape?: string }) {
         <div className={`relative w-full ${isHalf ? "aspect-square" : "aspect-[16/9]"} overflow-hidden`}>
           <img src={link.image_url} alt={link.title} className="absolute inset-0 w-full h-full object-cover transition-transform duration-500 group-hover:scale-105" />
           {link.icon && (
-            <div className="absolute top-2.5 left-2.5 w-9 h-9 rounded-xl bg-black/50 backdrop-blur-md flex items-center justify-center text-base z-10">
-              {link.icon}
+            <div className="absolute top-2.5 left-2.5 w-9 h-9 rounded-xl bg-black/50 backdrop-blur-md flex items-center justify-center z-10">
+              <LinkIcon icon={link.icon} url={link.url} size={16} />
             </div>
           )}
           <div className="absolute inset-x-0 bottom-0 p-3 z-10">
