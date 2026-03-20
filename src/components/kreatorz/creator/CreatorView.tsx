@@ -165,35 +165,95 @@ export default function CreatorView({ profile, links: rawLinks, socialLinks: raw
         )}
 
         {/* Links */}
-        {links.length > 0 && (
-          <div className="flex flex-col gap-3 mb-8 animate-k-fade-up" style={{ animationDelay: ".15s" }}>
-            {links.map((link, i) => (
-              <div key={link.id} onClick={() => handleLinkClick(i, link.url)}
-                className={`flex items-center gap-4 p-4 sm:p-5 ${shapeClass(profile.image_shape_links)} cursor-pointer transition-all duration-300 relative overflow-hidden group min-h-[56px]
-                  ${clickedLink === i ? "scale-[0.97]" : ""}
-                  ${link.featured && !link.bg_color
-                    ? "gradient-primary border-transparent shadow-k-purple-lg hover:-translate-y-1"
-                    : !link.bg_color ? "bg-card/65 backdrop-blur-2xl border border-border hover:border-primary/20 hover:-translate-y-1 hover:shadow-k-purple" : "hover:-translate-y-1"
-                  } active:scale-[0.97]`}
-                style={{
-                  ...(link.bg_color ? { backgroundColor: link.bg_color } : {}),
-                  ...(link.text_color ? { color: link.text_color } : {}),
-                  ...(link.border_color ? { borderColor: link.border_color, borderWidth: "1px", borderStyle: "solid" } : {}),
-                }}>
-                <div className={`w-[44px] h-[44px] rounded-xl flex items-center justify-center flex-shrink-0 text-lg transition-transform duration-300 group-hover:scale-110 ${link.featured ? "bg-primary-foreground/15" : "bg-primary/5"}`}>
-                  {link.icon}
+        {links.length > 0 && (() => {
+          // Group links into rows: "full" links take full row, consecutive "half" links are paired
+          const rows: CreatorLink[][] = [];
+          let i = 0;
+          while (i < links.length) {
+            if (links[i].display_mode === "half") {
+              const pair: CreatorLink[] = [links[i]];
+              if (i + 1 < links.length && links[i + 1].display_mode === "half") {
+                pair.push(links[i + 1]);
+                i += 2;
+              } else {
+                i += 1;
+              }
+              rows.push(pair);
+            } else {
+              rows.push([links[i]]);
+              i += 1;
+            }
+          }
+
+          return (
+            <div className="flex flex-col gap-3 mb-8 animate-k-fade-up" style={{ animationDelay: ".15s" }}>
+              {rows.map((row, rowIdx) => (
+                <div key={rowIdx} className={row.length > 1 ? "grid grid-cols-2 gap-3" : ""}>
+                  {row.map((link) => {
+                    const linkIdx = links.indexOf(link);
+                    const hasImage = !!link.image_url;
+
+                    if (hasImage) {
+                      return (
+                        <div
+                          key={link.id}
+                          onClick={() => handleLinkClick(linkIdx, link.url)}
+                          className={`${shapeClass(profile.image_shape_links)} cursor-pointer transition-all duration-300 relative overflow-hidden group hover:-translate-y-1 hover:shadow-k-purple active:scale-[0.97] ${clickedLink === linkIdx ? "scale-[0.97]" : ""}`}
+                          style={{
+                            ...(link.border_color ? { borderColor: link.border_color, borderWidth: "1px", borderStyle: "solid" } : {}),
+                          }}
+                        >
+                          <div className={`relative ${row.length > 1 ? "aspect-square" : "aspect-[16/9]"} w-full`}>
+                            <img src={link.image_url!} alt={link.title} className="absolute inset-0 w-full h-full object-cover" />
+                            <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/20 to-transparent" />
+                            {/* Icon top-left */}
+                            <div className="absolute top-2.5 left-2.5 w-8 h-8 rounded-lg bg-white/20 backdrop-blur-md flex items-center justify-center text-sm shadow-sm border border-white/10">
+                              {link.icon}
+                            </div>
+                            {/* Text overlay bottom */}
+                            <div className="absolute bottom-0 left-0 right-0 p-3.5">
+                              <h4 className="text-sm font-semibold text-white leading-snug drop-shadow-lg"
+                                style={link.text_color ? { color: link.text_color } : undefined}
+                              >{link.title}</h4>
+                              {link.subtitle && <span className="text-[0.72rem] text-white/70 drop-shadow">{link.subtitle}</span>}
+                            </div>
+                          </div>
+                        </div>
+                      );
+                    }
+
+                    // Standard link (no image)
+                    return (
+                      <div key={link.id} onClick={() => handleLinkClick(linkIdx, link.url)}
+                        className={`flex items-center gap-4 p-4 sm:p-5 ${shapeClass(profile.image_shape_links)} cursor-pointer transition-all duration-300 relative overflow-hidden group min-h-[56px]
+                          ${clickedLink === linkIdx ? "scale-[0.97]" : ""}
+                          ${link.featured && !link.bg_color
+                            ? "gradient-primary border-transparent shadow-k-purple-lg hover:-translate-y-1"
+                            : !link.bg_color ? "bg-card/65 backdrop-blur-2xl border border-border hover:border-primary/20 hover:-translate-y-1 hover:shadow-k-purple" : "hover:-translate-y-1"
+                          } active:scale-[0.97]`}
+                        style={{
+                          ...(link.bg_color ? { backgroundColor: link.bg_color } : {}),
+                          ...(link.text_color ? { color: link.text_color } : {}),
+                          ...(link.border_color ? { borderColor: link.border_color, borderWidth: "1px", borderStyle: "solid" } : {}),
+                        }}>
+                        <div className={`w-[44px] h-[44px] rounded-xl flex items-center justify-center flex-shrink-0 text-lg transition-transform duration-300 group-hover:scale-110 ${link.featured ? "bg-primary-foreground/15" : "bg-primary/5"}`}>
+                          {link.icon}
+                        </div>
+                        <div className="flex-1 min-w-0">
+                          <h4 className="text-sm font-semibold leading-snug">{link.title}</h4>
+                          {link.subtitle && <span className="text-[0.72rem] opacity-55">{link.subtitle}</span>}
+                        </div>
+                        <div className="opacity-30 transition-all duration-200 group-hover:opacity-60 group-hover:translate-x-0.5">
+                          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M5 12h14M12 5l7 7-7 7" /></svg>
+                        </div>
+                      </div>
+                    );
+                  })}
                 </div>
-                <div className="flex-1 min-w-0">
-                  <h4 className="text-sm font-semibold leading-snug">{link.title}</h4>
-                  {link.subtitle && <span className="text-[0.72rem] opacity-55">{link.subtitle}</span>}
-                </div>
-                <div className="opacity-30 transition-all duration-200 group-hover:opacity-60 group-hover:translate-x-0.5">
-                  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M5 12h14M12 5l7 7-7 7" /></svg>
-                </div>
-              </div>
-            ))}
-          </div>
-        )}
+              ))}
+            </div>
+          );
+        })()}
 
         {/* Products */}
         {products.length > 0 && (
