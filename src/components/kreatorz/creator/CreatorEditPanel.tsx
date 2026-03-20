@@ -1097,6 +1097,7 @@ const CreatorEditPanel = forwardRef<CreatorEditPanelHandle, Props>(function Crea
         }}
       />
     </div>
+    </div>
   );
 });
 
