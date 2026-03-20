@@ -43,6 +43,7 @@ export interface CreatorProduct {
   price: string;
   icon: string;
   url: string;
+  image_url: string;
   sort_order: number;
 }
 
