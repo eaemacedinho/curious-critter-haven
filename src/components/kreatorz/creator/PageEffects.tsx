@@ -140,7 +140,7 @@ function useParticleCanvas(
         base.x = Math.random() * w() * 1.5;
         base.y = -20;
         base.angle = Math.PI / 4 + (Math.random() - 0.5) * 0.3;
-        base.speed = 3 + Math.random() * 4;
+        base.speed = (3 + Math.random() * 4) * intMul;
         base.vx = Math.cos(base.angle) * base.speed!;
         base.vy = Math.sin(base.angle) * base.speed!;
         base.length = 20 + Math.random() * 40;
