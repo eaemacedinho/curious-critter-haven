@@ -47,7 +47,7 @@ export default function CreatorViewLinkme({ profile, links: rawLinks, socialLink
   }, [handleScroll]);
 
   return (
-    <div className="fixed inset-0 flex justify-center bg-background">
+    <div className="fixed inset-0 top-14 flex justify-center bg-background">
       {/* Single 430px column — all content and hero stay inside */}
       <div className="w-full max-w-[430px] relative overflow-hidden">
         {/* Hero background — absolute within the column */}
