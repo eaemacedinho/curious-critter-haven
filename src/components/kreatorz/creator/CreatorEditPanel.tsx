@@ -115,7 +115,13 @@ const CreatorEditPanel = forwardRef<CreatorEditPanelHandle, Props>(function Crea
   const [coverUrlL2, setCoverUrlL2] = useState(profile.cover_url_layout2 || "");
   const [verified, setVerified] = useState(profile.verified ?? false);
   const [links, setLinks] = useState(initialLinks);
-  const [social, setSocial] = useState(initialSocial);
+  const [social, setSocial] = useState(() =>
+    initialSocial.map((s) => {
+      if (s.label && s.label.trim()) return s;
+      const opt = getSocialOption(s.platform);
+      return opt ? { ...s, label: opt.emoji } : s;
+    })
+  );
   const [prods, setProds] = useState(initialProducts);
   const [camps, setCamps] = useState(initialCampaigns);
   const [saving, setSaving] = useState(false);
