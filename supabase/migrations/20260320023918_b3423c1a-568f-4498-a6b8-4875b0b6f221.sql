@@ -1,0 +1,1 @@
+ALTER TABLE public.creators ADD COLUMN IF NOT EXISTS verified boolean DEFAULT false;
