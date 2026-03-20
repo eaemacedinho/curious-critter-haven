@@ -15,6 +15,7 @@ export default function Settings() {
   const [accentColor, setAccentColor] = useState(agency?.accent_color || "#A855F7");
   const [logoUrl, setLogoUrl] = useState(agency?.logo_url || "");
   const [customDomain, setCustomDomain] = useState(agency?.domain || "");
+  const [footerText, setFooterText] = useState(agency?.footer_text || "Powered by");
   const [uploadingLogo, setUploadingLogo] = useState(false);
   const [saving, setSaving] = useState(false);
 
