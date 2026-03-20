@@ -147,6 +147,14 @@ export default function DashboardScreen({ onNavigate }: DashboardScreenProps) {
         {/* Analytics Charts */}
         {(activeSection === "dashboard" || activeSection === "analytics") && <AnalyticsCharts />}
 
+        {/* Campaign Analytics — show on campanhas tab and analytics tab */}
+        {(activeSection === "campanhas" || activeSection === "analytics" || activeSection === "dashboard") && (
+          <div className="mb-8">
+            <h2 className="font-display text-lg font-normal text-primary-foreground mb-4">📢 Spotlight Campaigns</h2>
+            <CampaignAnalytics userId={user?.id} />
+          </div>
+        )}
+
         {/* Creators Table */}
         <div className="flex items-center justify-between mb-3.5">
           <h2 className="font-display text-lg font-normal text-primary-foreground">Creators</h2>
