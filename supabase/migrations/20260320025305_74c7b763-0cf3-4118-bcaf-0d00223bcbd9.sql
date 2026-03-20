@@ -1,0 +1,1 @@
+ALTER TABLE public.creators ADD COLUMN public_layout text NOT NULL DEFAULT 'layout1';
