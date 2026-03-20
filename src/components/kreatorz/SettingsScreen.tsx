@@ -78,14 +78,30 @@ export default function SettingsScreen({ onNavigate }: SettingsScreenProps) {
               <div className="flex items-center gap-4">
                 <div className="w-20 h-20 rounded-2xl bg-k-800 border-2 border-dashed border-primary/20 flex items-center justify-center overflow-hidden cursor-pointer hover:border-k-400 transition-all group"
                   onClick={() => {
+                    if (uploadingLogo) return;
                     const input = document.createElement('input');
                     input.type = 'file';
                     input.accept = 'image/*';
-                    input.onchange = (e: any) => {
+                    input.onchange = async (e: any) => {
                       const file = e.target.files?.[0];
-                      if (file) {
-                        setLogoUrl(URL.createObjectURL(file));
+                      if (!file || !user) return;
+                      setUploadingLogo(true);
+                      try {
+                        const ext = file.name.split('.').pop() || 'png';
+                        const path = `${user.id}/agency-logo-${Date.now()}.${ext}`;
+                        const { error: uploadError } = await supabase.storage
+                          .from('content')
+                          .upload(path, file, { cacheControl: '3600', upsert: true });
+                        if (uploadError) throw uploadError;
+                        const { data: publicData } = supabase.storage.from('content').getPublicUrl(path);
+                        const url = publicData.publicUrl;
+                        setLogoUrl(url);
+                        localStorage.setItem("kreatorz-logo-url", url);
                         toast.success("Logo atualizado!");
+                      } catch (err: any) {
+                        toast.error("Erro ao enviar logo: " + (err.message || "tente novamente"));
+                      } finally {
+                        setUploadingLogo(false);
                       }
                     };
                     input.click();
