@@ -1109,8 +1109,28 @@ const CreatorEditPanel = forwardRef<CreatorEditPanelHandle, Props>(function Crea
         <div className={sectionTitle}>📢 Campanhas / Spotlight</div>
         <p className="text-[0.68rem] text-k-4 mb-3">Campanhas marcadas como <strong>"Ao vivo"</strong> aparecem automaticamente no <strong>topo da página</strong> com destaque visual (Spotlight).</p>
         {camps.map((camp, i) => (
-          <div key={i} className={`border rounded-xl p-3.5 mb-2 space-y-2 transition-all ${camp.live ? "bg-primary/5 border-primary/25 shadow-k-purple" : "bg-k-800 border-primary/10"}`}>
+          <div
+            key={i}
+            draggable
+            onDragStart={() => setDragCampIdx(i)}
+            onDragEnd={() => setDragCampIdx(null)}
+            onDragOver={(e) => { e.preventDefault(); e.dataTransfer.dropEffect = "move"; }}
+            onDrop={(e) => {
+              e.preventDefault();
+              if (dragCampIdx === null || dragCampIdx === i) return;
+              const arr = [...camps];
+              const [moved] = arr.splice(dragCampIdx, 1);
+              arr.splice(i, 0, moved);
+              setCamps(arr);
+              setDragCampIdx(null);
+            }}
+            className={`border rounded-xl p-3.5 mb-2 space-y-2 transition-all ${dragCampIdx === i ? "border-primary/50 opacity-50 scale-[0.97]" : camp.live ? "bg-primary/5 border-primary/25 shadow-k-purple" : "bg-k-800 border-primary/10"}`}
+          >
             <div className="flex gap-2 items-center">
+              {/* Drag handle */}
+              <div className="cursor-grab active:cursor-grabbing text-k-4 hover:text-k-3 transition-colors flex-shrink-0 select-none" title="Arrastar para reordenar">
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor"><circle cx="9" cy="5" r="1.5"/><circle cx="15" cy="5" r="1.5"/><circle cx="9" cy="12" r="1.5"/><circle cx="15" cy="12" r="1.5"/><circle cx="9" cy="19" r="1.5"/><circle cx="15" cy="19" r="1.5"/></svg>
+              </div>
               <input value={camp.title} onChange={(e) => { const arr = [...camps]; arr[i] = { ...arr[i], title: e.target.value }; setCamps(arr); setValidationErrors((v) => { const n = { ...v }; delete n[`camp-title-${i}`]; return n; }); }} placeholder="Título da campanha" className={`${inputClass} flex-1 ${validationErrors[`camp-title-${i}`] ? "border-destructive/50 focus:border-destructive" : ""}`} />
               <label className={`flex items-center gap-1.5 text-[0.72rem] cursor-pointer px-2 py-1 rounded-lg transition-all ${camp.live ? "text-k-err font-bold bg-k-err/10" : "text-k-3"}`}>
                 <input type="checkbox" checked={camp.live} onChange={(e) => { const arr = [...camps]; arr[i] = { ...arr[i], live: e.target.checked }; setCamps(arr); }} className="accent-primary" />
