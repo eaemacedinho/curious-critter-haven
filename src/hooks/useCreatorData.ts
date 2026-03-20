@@ -25,6 +25,8 @@ export interface CreatorProfile {
   stats: { value: string; label: string }[];
   brands: { name: string; logo_url?: string }[];
   page_effects: { effects: string[]; color?: string; emojis?: string[]; intensity?: Record<string, number> };
+  font_family: string;
+  font_size: string;
 }
 
 export interface CreatorLink {
@@ -93,6 +95,8 @@ const normalizeProfile = (creator: any): CreatorProfile => ({
   image_shape_products: creator.image_shape_products || creator.image_shape || "rounded",
   image_shape_campaigns: creator.image_shape_campaigns || creator.image_shape || "rounded",
   image_shape_links: creator.image_shape_links || creator.image_shape || "rounded",
+  font_family: creator.font_family || "default",
+  font_size: creator.font_size || "medium",
   tags: Array.isArray(creator.tags) ? (creator.tags as CreatorProfile["tags"]) : [],
   stats: Array.isArray(creator.stats) ? (creator.stats as CreatorProfile["stats"]) : [],
   brands: Array.isArray(creator.brands)

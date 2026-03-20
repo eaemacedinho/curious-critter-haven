@@ -6,6 +6,7 @@ import VerifiedBadge from "./VerifiedBadge";
 import SpotlightCampaign from "./SpotlightCampaign";
 import PageEffects from "./PageEffects";
 import type { PageEffect } from "./PageEffects";
+import { getFontFamily, getFontSizeScale, loadGoogleFont } from "@/lib/fontUtils";
 
 const shapeClass = (shape?: string) => {
   switch (shape) {
@@ -71,10 +72,18 @@ export default function CreatorView({ profile, links: rawLinks, socialLinks: raw
   const effectEmojis = pe.emojis;
   const effectIntensity = pe.intensity;
 
+  const fontFam = getFontFamily(profile.font_family || "default");
+  const fontScale = getFontSizeScale(profile.font_size || "medium");
+
+  useEffect(() => {
+    loadGoogleFont(profile.font_family || "default");
+  }, [profile.font_family]);
+
   const content = (
     <div className={embedded
       ? "min-h-full h-full flex items-start justify-center px-4 sm:px-6 py-16 pt-20 sm:pt-24 relative"
-      : "min-h-screen flex items-start justify-center px-4 sm:px-6 py-16 pt-20 sm:pt-24 relative"}>
+      : "min-h-screen flex items-start justify-center px-4 sm:px-6 py-16 pt-20 sm:pt-24 relative"}
+      style={{ fontFamily: fontFam, fontSize: `${fontScale}rem` }}>
       <PageEffects effects={effects} color={effectColor} emojis={effectEmojis} intensity={effectIntensity} />
       <div className="absolute top-0 left-1/2 -translate-x-1/2 w-[600px] h-[420px] bg-[radial-gradient(ellipse,hsl(268_69%_50%_/_0.4),transparent_70%)] pointer-events-none" />
 

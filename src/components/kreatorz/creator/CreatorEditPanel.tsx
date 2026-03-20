@@ -154,6 +154,8 @@ const CreatorEditPanel = forwardRef<CreatorEditPanelHandle, Props>(function Crea
   const [effectColor, setEffectColor] = useState<string>(profile.page_effects?.color || "#8B5CF6");
   const [effectEmojis, setEffectEmojis] = useState<string[]>(profile.page_effects?.emojis || [...DEFAULT_EMOJIS]);
   const [effectIntensity, setEffectIntensity] = useState<Record<string, number>>(profile.page_effects?.intensity || {});
+  const [fontFamily, setFontFamily] = useState(profile.font_family || "default");
+  const [fontSize, setFontSize] = useState(profile.font_size || "medium");
   const [links, setLinks] = useState(initialLinks);
   const [social, setSocial] = useState(() =>
     initialSocial.map((s) => {
@@ -198,7 +200,9 @@ const CreatorEditPanel = forwardRef<CreatorEditPanelHandle, Props>(function Crea
     image_shape_campaigns: shapeCampaigns,
     image_shape_links: shapeLinks,
     page_effects: { effects: pageEffects, color: effectColor, emojis: effectEmojis, intensity: effectIntensity },
-  }), [profile, name, handle, bio, avatarUrl, coverUrl, avatarUrlL2, coverUrlL2, verified, tags, stats, brands, shapeProducts, shapeCampaigns, shapeLinks, pageEffects, effectColor, effectEmojis, effectIntensity]);
+    font_family: fontFamily,
+    font_size: fontSize,
+  }), [profile, name, handle, bio, avatarUrl, coverUrl, avatarUrlL2, coverUrlL2, verified, tags, stats, brands, shapeProducts, shapeCampaigns, shapeLinks, pageEffects, effectColor, effectEmojis, effectIntensity, fontFamily, fontSize]);
 
   const isValidUrl = (url: string) => {
     if (!url) return true;
@@ -328,7 +332,7 @@ const CreatorEditPanel = forwardRef<CreatorEditPanelHandle, Props>(function Crea
           }))
           .filter((camp) => !isEmptyCampaignEntry(camp));
 
-      const baseProfile = { name, handle, bio, avatar_url: avatarUrl, cover_url: coverUrl, avatar_url_layout2: avatarUrlL2, cover_url_layout2: coverUrlL2, verified, tags, stats, brands, image_shape: shapeProducts, image_shape_products: shapeProducts, image_shape_campaigns: shapeCampaigns, image_shape_links: shapeLinks, page_effects: { effects: pageEffects, color: effectColor, emojis: effectEmojis, intensity: effectIntensity } };
+      const baseProfile = { name, handle, bio, avatar_url: avatarUrl, cover_url: coverUrl, avatar_url_layout2: avatarUrlL2, cover_url_layout2: coverUrlL2, verified, tags, stats, brands, image_shape: shapeProducts, image_shape_products: shapeProducts, image_shape_campaigns: shapeCampaigns, image_shape_links: shapeLinks, page_effects: { effects: pageEffects, color: effectColor, emojis: effectEmojis, intensity: effectIntensity }, font_family: fontFamily, font_size: fontSize };
 
       if (cropImage) {
         const { file, type } = cropImage;
@@ -608,7 +612,69 @@ const CreatorEditPanel = forwardRef<CreatorEditPanelHandle, Props>(function Crea
         </div>
       </div>
 
-      {/* ✨ Efeitos Visuais */}
+      {/* 🔤 Tipografia */}
+      <div className="mb-8">
+        <div className={sectionTitle}>🔤 Tipografia</div>
+        <p className="text-[0.68rem] text-k-4 mb-3">Personalize a fonte e o tamanho do texto da sua página.</p>
+        
+        <div className="space-y-4">
+          <div>
+            <label className={labelClass}>Fonte</label>
+            <div className="grid grid-cols-2 sm:grid-cols-3 gap-2">
+              {[
+                { id: "default", label: "Padrão", sample: "Instrument Serif" },
+                { id: "inter", label: "Inter", sample: "Inter" },
+                { id: "playfair", label: "Playfair", sample: "Playfair Display" },
+                { id: "space-grotesk", label: "Space Grotesk", sample: "Space Grotesk" },
+                { id: "dm-serif", label: "DM Serif", sample: "DM Serif Display" },
+                { id: "outfit", label: "Outfit", sample: "Outfit" },
+                { id: "crimson", label: "Crimson Pro", sample: "Crimson Pro" },
+                { id: "sora", label: "Sora", sample: "Sora" },
+                { id: "bebas", label: "Bebas Neue", sample: "Bebas Neue" },
+              ].map((font) => (
+                <button
+                  key={font.id}
+                  onClick={() => setFontFamily(font.id)}
+                  className={`px-3 py-3 rounded-xl text-left transition-all border ${
+                    fontFamily === font.id
+                      ? "bg-primary/15 border-primary/40 text-k-1 shadow-sm"
+                      : "bg-k-800 border-primary/10 text-k-2 hover:border-primary/20"
+                  }`}
+                >
+                  <span className="block text-[0.68rem] font-semibold mb-0.5">{font.label}</span>
+                  <span className="block text-[0.82rem] opacity-70" style={{ fontFamily: font.sample + ", serif" }}>Aa Bb Cc</span>
+                </button>
+              ))}
+            </div>
+          </div>
+
+          <div>
+            <label className={labelClass}>Tamanho do texto</label>
+            <div className="grid grid-cols-4 gap-2">
+              {[
+                { id: "small", label: "Pequeno", icon: "A", sizeClass: "text-xs" },
+                { id: "medium", label: "Médio", icon: "A", sizeClass: "text-sm" },
+                { id: "large", label: "Grande", icon: "A", sizeClass: "text-base" },
+                { id: "xlarge", label: "Extra", icon: "A", sizeClass: "text-lg" },
+              ].map((size) => (
+                <button
+                  key={size.id}
+                  onClick={() => setFontSize(size.id)}
+                  className={`px-3 py-3 rounded-xl text-center transition-all border ${
+                    fontSize === size.id
+                      ? "bg-primary/15 border-primary/40 text-k-1 shadow-sm"
+                      : "bg-k-800 border-primary/10 text-k-2 hover:border-primary/20"
+                  }`}
+                >
+                  <span className={`block font-bold mb-0.5 ${size.sizeClass}`}>{size.icon}</span>
+                  <span className="block text-[0.62rem]">{size.label}</span>
+                </button>
+              ))}
+            </div>
+          </div>
+        </div>
+      </div>
+
       <div className="mb-8">
         <div className={sectionTitle}>✨ Efeitos Visuais</div>
         <p className="text-[0.68rem] text-k-4 mb-3">Adicione efeitos animados à sua página pública. Selecione quantos quiser.</p>

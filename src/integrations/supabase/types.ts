@@ -304,6 +304,8 @@ export type Database = {
           cover_url: string | null
           cover_url_layout2: string | null
           created_at: string
+          font_family: string
+          font_size: string
           handle: string
           id: string
           image_shape: string
@@ -328,6 +330,8 @@ export type Database = {
           cover_url?: string | null
           cover_url_layout2?: string | null
           created_at?: string
+          font_family?: string
+          font_size?: string
           handle?: string
           id?: string
           image_shape?: string
@@ -352,6 +356,8 @@ export type Database = {
           cover_url?: string | null
           cover_url_layout2?: string | null
           created_at?: string
+          font_family?: string
+          font_size?: string
           handle?: string
           id?: string
           image_shape?: string

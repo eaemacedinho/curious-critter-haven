@@ -6,6 +6,7 @@ import SpotlightCampaign from "./SpotlightCampaign";
 import type { CreatorProfile, CreatorLink, SocialLink, CreatorProduct, CreatorCampaign } from "@/hooks/useCreatorData";
 import PageEffects from "./PageEffects";
 import type { PageEffect } from "./PageEffects";
+import { getFontFamily, getFontSizeScale, loadGoogleFont } from "@/lib/fontUtils";
 
 const shapeClass = (shape?: string) => {
   switch (shape) {
@@ -72,8 +73,16 @@ export default function CreatorViewLinkme({ profile, links: rawLinks, socialLink
   const effectEmojis = pe.emojis;
   const effectIntensity = pe.intensity;
 
+  const fontFam = getFontFamily(profile.font_family || "default");
+  const fontScale = getFontSizeScale(profile.font_size || "medium");
+
+  useEffect(() => {
+    loadGoogleFont(profile.font_family || "default");
+  }, [profile.font_family]);
+
   const content = (
-    <div className={embedded ? "absolute inset-0 flex justify-center bg-background" : "fixed inset-0 flex justify-center bg-background"}>
+    <div className={embedded ? "absolute inset-0 flex justify-center bg-background" : "fixed inset-0 flex justify-center bg-background"}
+      style={{ fontFamily: fontFam, fontSize: `${fontScale}rem` }}>
       <PageEffects effects={effects} color={effectColor} emojis={effectEmojis} intensity={effectIntensity} />
       <div className={`${embedded ? "w-full max-w-[390px]" : "w-full sm:max-w-[480px] md:max-w-[520px]"} relative overflow-hidden h-full`}>
         {/* Hero background */}
