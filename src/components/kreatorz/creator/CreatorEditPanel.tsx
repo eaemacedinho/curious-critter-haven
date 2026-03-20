@@ -322,7 +322,7 @@ const CreatorEditPanel = forwardRef<CreatorEditPanelHandle, Props>(function Crea
           }))
           .filter((camp) => !isEmptyCampaignEntry(camp));
 
-      const baseProfile = { name, handle, bio, avatar_url: avatarUrl, cover_url: coverUrl, avatar_url_layout2: avatarUrlL2, cover_url_layout2: coverUrlL2, verified, tags, stats, brands, image_shape: shapeProducts, image_shape_products: shapeProducts, image_shape_campaigns: shapeCampaigns, image_shape_links: shapeLinks };
+      const baseProfile = { name, handle, bio, avatar_url: avatarUrl, cover_url: coverUrl, avatar_url_layout2: avatarUrlL2, cover_url_layout2: coverUrlL2, verified, tags, stats, brands, image_shape: shapeProducts, image_shape_products: shapeProducts, image_shape_campaigns: shapeCampaigns, image_shape_links: shapeLinks, page_effects: pageEffects };
 
       if (cropImage) {
         const { file, type } = cropImage;
