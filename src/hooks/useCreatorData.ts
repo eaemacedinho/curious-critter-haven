@@ -98,6 +98,7 @@ const normalizeProfile = (creator: any): CreatorProfile => ({
   brands: Array.isArray(creator.brands)
     ? (creator.brands as any[]).map((b: any) => typeof b === "string" ? { name: b } : b)
     : [],
+  page_effects: Array.isArray(creator.page_effects) ? creator.page_effects : [],
 });
 
 /**
