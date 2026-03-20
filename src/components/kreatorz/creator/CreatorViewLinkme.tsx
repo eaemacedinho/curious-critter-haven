@@ -24,6 +24,7 @@ export default function CreatorViewLinkme({ profile, links: rawLinks, socialLink
   const campaigns = rawCampaigns.filter(c => c.title?.trim());
   const stats = profile.stats.filter(s => s.value?.trim() && s.label?.trim());
   const tags = profile.tags.filter(t => t.label?.trim());
+  const brands = profile.brands.filter(b => b?.name?.trim());
 
   const heroImage = profile.cover_url_layout2 || profile.cover_url || profile.avatar_url;
   const headerAvatar = profile.avatar_url_layout2 || profile.avatar_url;
@@ -166,7 +167,19 @@ export default function CreatorViewLinkme({ profile, links: rawLinks, socialLink
               </div>
             )}
 
-            {/* Bio */}
+            {/* Brands */}
+            {brands.length > 0 && (
+              <div className="flex justify-center items-center gap-3 mt-4 flex-wrap px-6">
+                <span className="text-[0.62rem] text-k-400 uppercase tracking-widest font-bold">Trabalhou com:</span>
+                {brands.map((brand, i) => (
+                  <span key={i} className="text-[0.65rem] text-primary-foreground font-semibold px-2 py-0.5 bg-primary/10 rounded-md border border-primary/10 flex items-center gap-1.5">
+                    {brand.logo_url && <img src={brand.logo_url} alt="" className="w-4 h-4 rounded-sm object-contain" />}
+                    {brand.name}
+                  </span>
+                ))}
+              </div>
+            )}
+
             {profile.bio && (
               <p className="text-sm text-primary-foreground text-center leading-relaxed mt-3 px-8 max-w-[380px] mx-auto" style={{ whiteSpace: "pre-wrap" }}>
                 {profile.bio}
