@@ -863,20 +863,26 @@ const CreatorEditPanel = forwardRef<CreatorEditPanelHandle, Props>(function Crea
             <input value={camp.description || ""} onChange={(e) => { const arr = [...camps]; arr[i] = { ...arr[i], description: e.target.value }; setCamps(arr); }} placeholder="Descrição" className={inputClass} />
             <input value={camp.url || ""} onChange={(e) => { const arr = [...camps]; arr[i] = { ...arr[i], url: e.target.value }; setCamps(arr); setValidationErrors((v) => { const n = { ...v }; delete n[`camp-url-${i}`]; return n; }); }} placeholder="URL da campanha" className={`${inputClass} ${validationErrors[`camp-url-${i}`] ? "border-destructive/50 focus:border-destructive" : ""}`} />
             {validationErrors[`camp-url-${i}`] && <p className="text-[0.68rem] text-destructive -mt-1">{validationErrors[`camp-url-${i}`]}</p>}
-            <div className="flex items-center gap-2 pt-1">
+            <div className="flex items-center gap-2 pt-1 flex-wrap">
               <span className="text-[0.62rem] text-k-4 font-semibold">Cores:</span>
               <label className="flex items-center gap-1 text-[0.6rem] text-k-4" title="Fundo">
                 🎨 <input type="color" value={camp.bg_color || "#1a1a2e"} onChange={(e) => { const arr = [...camps]; arr[i] = { ...arr[i], bg_color: e.target.value }; setCamps(arr); }} className="w-5 h-5 rounded cursor-pointer border-0 bg-transparent" />
-                {camp.bg_color && <button onClick={() => { const arr = [...camps]; arr[i] = { ...arr[i], bg_color: null }; setCamps(arr); }} className="text-k-4 hover:text-k-err text-[0.6rem]">✕</button>}
               </label>
               <label className="flex items-center gap-1 text-[0.6rem] text-k-4" title="Texto">
                 Aa <input type="color" value={camp.text_color || "#ffffff"} onChange={(e) => { const arr = [...camps]; arr[i] = { ...arr[i], text_color: e.target.value }; setCamps(arr); }} className="w-5 h-5 rounded cursor-pointer border-0 bg-transparent" />
-                {camp.text_color && <button onClick={() => { const arr = [...camps]; arr[i] = { ...arr[i], text_color: null }; setCamps(arr); }} className="text-k-4 hover:text-k-err text-[0.6rem]">✕</button>}
               </label>
               <label className="flex items-center gap-1 text-[0.6rem] text-k-4" title="Borda">
                 ▢ <input type="color" value={camp.border_color || "#333355"} onChange={(e) => { const arr = [...camps]; arr[i] = { ...arr[i], border_color: e.target.value }; setCamps(arr); }} className="w-5 h-5 rounded cursor-pointer border-0 bg-transparent" />
-                {camp.border_color && <button onClick={() => { const arr = [...camps]; arr[i] = { ...arr[i], border_color: null }; setCamps(arr); }} className="text-k-4 hover:text-k-err text-[0.6rem]">✕</button>}
               </label>
+              {(camp.bg_color || camp.text_color || camp.border_color) && (
+                <button
+                  onClick={() => { const arr = [...camps]; arr[i] = { ...arr[i], bg_color: null, text_color: null, border_color: null }; setCamps(arr); }}
+                  className="ml-1 px-2 py-0.5 rounded-lg bg-destructive/10 text-destructive text-[0.58rem] font-semibold hover:bg-destructive/20 transition-colors"
+                  title="Resetar todas as cores para o padrão"
+                >
+                  ↺ Resetar
+                </button>
+              )}
             </div>
             {/* Campaign image upload with crop */}
             {camp.image_url ? (
