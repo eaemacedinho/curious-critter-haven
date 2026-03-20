@@ -626,17 +626,24 @@ const CreatorEditPanel = forwardRef<CreatorEditPanelHandle, Props>(function Crea
       </div>
 
       <div className="mb-8">
-        <div className={sectionTitle}>📢 Campanhas</div>
+        <div className={sectionTitle}>📢 Campanhas / Spotlight</div>
+        <p className="text-[0.68rem] text-k-4 mb-3">Campanhas marcadas como <strong>"Ao vivo"</strong> aparecem automaticamente no <strong>topo da página</strong> com destaque visual (Spotlight).</p>
         {camps.map((camp, i) => (
-          <div key={i} className="bg-k-800 border border-primary/10 rounded-xl p-3.5 mb-2 space-y-2">
+          <div key={i} className={`border rounded-xl p-3.5 mb-2 space-y-2 transition-all ${camp.live ? "bg-primary/5 border-primary/25 shadow-k-purple" : "bg-k-800 border-primary/10"}`}>
             <div className="flex gap-2 items-center">
               <input value={camp.title} onChange={(e) => { const arr = [...camps]; arr[i] = { ...arr[i], title: e.target.value }; setCamps(arr); }} placeholder="Título da campanha" className={`${inputClass} flex-1`} />
-              <label className="flex items-center gap-1.5 text-[0.72rem] text-k-3 cursor-pointer">
+              <label className={`flex items-center gap-1.5 text-[0.72rem] cursor-pointer px-2 py-1 rounded-lg transition-all ${camp.live ? "text-k-err font-bold bg-k-err/10" : "text-k-3"}`}>
                 <input type="checkbox" checked={camp.live} onChange={(e) => { const arr = [...camps]; arr[i] = { ...arr[i], live: e.target.checked }; setCamps(arr); }} className="accent-primary" />
-                Ao vivo
+                {camp.live ? "🔥 Spotlight" : "Ao vivo"}
               </label>
               <button onClick={() => setCamps(camps.filter((_, j) => j !== i))} className="text-k-4 hover:text-k-err text-xs">✕</button>
             </div>
+            {camp.live && (
+              <div className="flex items-center gap-2 px-2 py-1.5 bg-primary/10 rounded-lg">
+                <span className="w-2 h-2 rounded-full bg-k-err animate-k-live-dot" />
+                <span className="text-[0.65rem] text-k-300 font-semibold">Esta campanha aparecerá em destaque no topo da página</span>
+              </div>
+            )}
             <input value={camp.description || ""} onChange={(e) => { const arr = [...camps]; arr[i] = { ...arr[i], description: e.target.value }; setCamps(arr); }} placeholder="Descrição" className={inputClass} />
             <input value={camp.url || ""} onChange={(e) => { const arr = [...camps]; arr[i] = { ...arr[i], url: e.target.value }; setCamps(arr); }} placeholder="URL da campanha" className={inputClass} />
             {/* Campaign image upload with crop */}
