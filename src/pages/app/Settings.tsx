@@ -16,6 +16,8 @@ export default function Settings() {
   const [logoUrl, setLogoUrl] = useState(agency?.logo_url || "");
   const [customDomain, setCustomDomain] = useState(agency?.domain || "");
   const [footerText, setFooterText] = useState(agency?.footer_text || "Powered by");
+  const [footerVisible, setFooterVisible] = useState(agency?.footer_visible ?? true);
+  const [footerLink, setFooterLink] = useState(agency?.footer_link || "");
   const [uploadingLogo, setUploadingLogo] = useState(false);
   const [saving, setSaving] = useState(false);
 
