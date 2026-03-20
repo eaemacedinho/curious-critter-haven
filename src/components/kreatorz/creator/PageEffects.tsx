@@ -250,7 +250,7 @@ function useParticleCanvas(
       cancelAnimationFrame(animId);
       ro.disconnect();
     };
-  }, [canvasRef, type, active, color, container]);
+  }, [canvasRef, type, active, color, container, customEmojis, intensity]);
 }
 
 // ====== Matrix effect ======
