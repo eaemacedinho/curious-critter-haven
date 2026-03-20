@@ -1,5 +1,6 @@
 import { useState } from "react";
 import { toast } from "sonner";
+import SocialIcon, { detectPlatform } from "./SocialIcon";
 import type { CreatorProfile, CreatorLink, SocialLink, CreatorProduct, CreatorCampaign } from "@/hooks/useCreatorData";
 
 interface Props {
@@ -71,10 +72,10 @@ export default function CreatorViewLinkme({ profile, links: rawLinks, socialLink
                 href={soc.url}
                 target="_blank"
                 rel="noopener noreferrer"
-                className="w-12 h-12 rounded-full bg-card/80 backdrop-blur-xl border border-primary/15 flex items-center justify-center transition-all duration-300 hover:scale-110 hover:border-primary/40 hover:shadow-[0_4px_20px_hsl(268_69%_50%_/_0.3)] active:scale-95"
+                className="w-12 h-12 rounded-full bg-card/80 backdrop-blur-xl border border-primary/15 flex items-center justify-center text-primary-foreground transition-all duration-300 hover:scale-110 hover:border-primary/40 hover:shadow-[0_4px_20px_hsl(268_69%_50%_/_0.3)] active:scale-95"
                 title={soc.platform}
               >
-                <span className="text-lg">{soc.label || soc.platform?.[0] || "🔗"}</span>
+                <SocialIcon platform={soc.platform || soc.url} size={20} />
               </a>
             ))}
           </div>

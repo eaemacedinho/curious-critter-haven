@@ -1,6 +1,7 @@
 import { toast } from "sonner";
 import type { CreatorProfile, CreatorLink, SocialLink, CreatorProduct, CreatorCampaign } from "@/hooks/useCreatorData";
 import { useState } from "react";
+import SocialIcon from "./SocialIcon";
 
 interface Props {
   profile: CreatorProfile;
@@ -101,9 +102,9 @@ export default function CreatorView({ profile, links: rawLinks, socialLinks: raw
             <div className="flex justify-center gap-2.5 mt-5 mb-7">
               {socialLinks.map((soc) => (
                 <a key={soc.id} href={soc.url} target="_blank" rel="noopener noreferrer"
-                  className="w-11 h-11 rounded-xl bg-k-800 border border-primary/10 flex items-center justify-center transition-all duration-250 hover:border-k-400 hover:bg-k-glow hover:-translate-y-0.5 hover:scale-105 text-sm active:scale-95"
+                  className="w-11 h-11 rounded-xl bg-k-800 border border-primary/10 flex items-center justify-center text-primary-foreground transition-all duration-250 hover:border-k-400 hover:bg-k-glow hover:-translate-y-0.5 hover:scale-105 active:scale-95"
                   title={soc.platform}>
-                  {soc.label || soc.platform?.[0] || "🔗"}
+                  <SocialIcon platform={soc.platform || soc.url} size={18} />
                 </a>
               ))}
             </div>
