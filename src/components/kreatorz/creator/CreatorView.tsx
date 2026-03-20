@@ -166,7 +166,7 @@ export default function CreatorView({ profile, links: rawLinks, socialLinks: raw
           <div className="flex flex-col gap-3 mb-8 animate-k-fade-up" style={{ animationDelay: ".15s" }}>
             {links.map((link, i) => (
               <div key={link.id} onClick={() => handleLinkClick(i, link.url)}
-                className={`flex items-center gap-4 p-4 sm:p-5 ${shapeClass(profile.image_shape)} cursor-pointer transition-all duration-300 relative overflow-hidden group min-h-[56px]
+                className={`flex items-center gap-4 p-4 sm:p-5 ${shapeClass(profile.image_shape_links)} cursor-pointer transition-all duration-300 relative overflow-hidden group min-h-[56px]
                   ${clickedLink === i ? "scale-[0.97]" : ""}
                   ${link.featured
                     ? "gradient-primary border-transparent shadow-k-purple-lg hover:-translate-y-1"
