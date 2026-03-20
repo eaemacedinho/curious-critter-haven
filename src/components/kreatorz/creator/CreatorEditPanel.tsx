@@ -364,11 +364,15 @@ const CreatorEditPanel = forwardRef<CreatorEditPanelHandle, Props>(function Crea
       <div className="mb-8">
         <div className={sectionTitle}>👤 Dados do Perfil</div>
         <div className="space-y-3">
-          <div><label className={labelClass}>Nome</label><input value={name} onChange={(e) => setName(e.target.value)} className={inputClass} placeholder="Seu nome ou nome artístico" /></div>
           <div>
-            <label className={labelClass}>Handle</label>
-            <input value={handle} onChange={(e) => setHandle(e.target.value)} className={inputClass} placeholder="seunome" />
-            <p className="text-[0.68rem] text-k-4 mt-1">Identificador único, sem espaços. Ex: joaosilva, ana.creator</p>
+            <label className={labelClass}>Nome <span className="text-destructive">*</span></label>
+            <input value={name} onChange={(e) => { setName(e.target.value); setValidationErrors((v) => { const n = { ...v }; delete n.name; return n; }); }} className={`${inputClass} ${validationErrors.name ? "border-destructive/50 focus:border-destructive" : ""}`} placeholder="Seu nome ou nome artístico" />
+            {validationErrors.name && <p className="text-[0.68rem] text-destructive mt-1">{validationErrors.name}</p>}
+          </div>
+          <div>
+            <label className={labelClass}>Handle <span className="text-destructive">*</span></label>
+            <input value={handle} onChange={(e) => { setHandle(e.target.value); setValidationErrors((v) => { const n = { ...v }; delete n.handle; return n; }); }} className={`${inputClass} ${validationErrors.handle ? "border-destructive/50 focus:border-destructive" : ""}`} placeholder="seunome" />
+            {validationErrors.handle ? <p className="text-[0.68rem] text-destructive mt-1">{validationErrors.handle}</p> : <p className="text-[0.68rem] text-k-4 mt-1">Identificador único, sem espaços. Ex: joaosilva, ana.creator</p>}
           </div>
           <div>
             <label className={labelClass}>Bio</label>
