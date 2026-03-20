@@ -1010,6 +1010,10 @@ const CreatorEditPanel = forwardRef<CreatorEditPanelHandle, Props>(function Crea
             className={`bg-k-800 border rounded-xl p-3.5 mb-2 space-y-2 transition-all ${dragProdIdx === i ? "border-primary/50 opacity-50 scale-[0.97]" : "border-primary/10"}`}
           >
             <div className="flex gap-2 items-center">
+              {/* Drag handle */}
+              <div className="cursor-grab active:cursor-grabbing text-k-4 hover:text-k-3 transition-colors flex-shrink-0 select-none" title="Arrastar para reordenar">
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor"><circle cx="9" cy="5" r="1.5"/><circle cx="15" cy="5" r="1.5"/><circle cx="9" cy="12" r="1.5"/><circle cx="15" cy="12" r="1.5"/><circle cx="9" cy="19" r="1.5"/><circle cx="15" cy="19" r="1.5"/></svg>
+              </div>
               <div className="relative">
                 <button onClick={() => setShowIconPicker(showIconPicker === `prod-${i}` ? null : `prod-${i}`)} className="text-lg hover:scale-125 transition-transform">{prod.icon}</button>
                 {showIconPicker === `prod-${i}` && (
