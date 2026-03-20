@@ -1,4 +1,4 @@
-import { forwardRef, useImperativeHandle, useRef, useState } from "react";
+import { forwardRef, useImperativeHandle, useRef, useState, useCallback } from "react";
 import { toast } from "sonner";
 import type { CreatorProfile, CreatorLink, SocialLink, CreatorProduct, CreatorCampaign } from "@/hooks/useCreatorData";
 import ImageCropper from "./ImageCropper";
@@ -32,11 +32,9 @@ const getSocialOption = (platform: string) =>
 
 const buildSocialUrl = (platform: string, input: string): string => {
   if (!input) return "";
-  // If it's already a full URL, keep it
   if (input.startsWith("http://") || input.startsWith("https://") || input.startsWith("mailto:")) return input;
   const opt = getSocialOption(platform);
   if (!opt || !opt.baseUrl) return input;
-  // Strip leading @ if the baseUrl already handles it
   const handle = input.replace(/^@/, "");
   return `${opt.baseUrl}${handle}`;
 };
@@ -48,7 +46,6 @@ const extractHandle = (platform: string, url: string): string => {
   if (url.startsWith(opt.baseUrl)) {
     return "@" + url.slice(opt.baseUrl.length).replace(/^@/, "");
   }
-  // Try common variations
   if (url.includes(opt.label.toLowerCase().replace("/x", "").replace("twitter", "x"))) {
     const parts = url.split("/").filter(Boolean);
     const last = parts[parts.length - 1];
@@ -76,6 +73,14 @@ interface Props {
 export interface CreatorEditPanelHandle {
   saveAll: () => Promise<boolean>;
 }
+
+// Generic crop state for content images (products, campaigns, brands)
+type ContentCropState = {
+  src: string;
+  aspect: number;
+  cropShape: "rect" | "round";
+  onDone: (blob: Blob) => void;
+} | null;
 
 const CreatorEditPanel = forwardRef<CreatorEditPanelHandle, Props>(function CreatorEditPanel(
   {
@@ -114,6 +119,7 @@ const CreatorEditPanel = forwardRef<CreatorEditPanelHandle, Props>(function Crea
   const [newTag, setNewTag] = useState("");
   const [newBrand, setNewBrand] = useState("");
   const [cropImage, setCropImage] = useState<{ src: string; type: "avatar" | "cover"; file: File } | null>(null);
+  const [contentCrop, setContentCrop] = useState<ContentCropState>(null);
 
   const avatarRef = useRef<HTMLInputElement>(null);
   const coverRef = useRef<HTMLInputElement>(null);
@@ -139,6 +145,13 @@ const CreatorEditPanel = forwardRef<CreatorEditPanelHandle, Props>(function Crea
     }
   };
 
+  // Open cropper for content images (products, campaigns, brands)
+  const openContentCrop = useCallback((file: File, aspect: number, onDone: (blob: Blob) => void) => {
+    const reader = new FileReader();
+    reader.onload = () => setContentCrop({ src: reader.result as string, aspect, cropShape: "rect", onDone });
+    reader.readAsDataURL(file);
+  }, []);
+
   const handleSaveAll = async ({ closeAfterSave = true }: { closeAfterSave?: boolean } = {}): Promise<boolean> => {
     if (saving) return false;
 
@@ -150,14 +163,12 @@ const CreatorEditPanel = forwardRef<CreatorEditPanelHandle, Props>(function Crea
     try {
       setSaving(true);
 
-      // Auto-apply pending crop image (use original file as-is)
       if (cropImage) {
         const { file, type } = cropImage;
         const url = await onUploadImage(file, type);
         if (url) {
           if (type === "avatar") setAvatarUrl(url);
           else setCoverUrl(url);
-          // Use updated url directly in the profile save below
           if (type === "avatar") {
             await onSaveProfile({ name, handle, bio, avatar_url: url, cover_url: coverUrl, tags, stats, brands });
           } else {
@@ -195,6 +206,7 @@ const CreatorEditPanel = forwardRef<CreatorEditPanelHandle, Props>(function Crea
   const inputClass = "w-full px-3.5 py-2.5 bg-k-800 border border-primary/10 rounded-xl text-k-1 text-sm outline-none focus:border-k-400 focus:shadow-[0_0_0_3px_hsl(268_69%_50%_/_0.12)] transition-all";
   const labelClass = "block text-[0.72rem] font-semibold text-k-2 mb-1.5";
   const sectionTitle = "text-[0.66rem] font-bold text-k-4 tracking-[0.12em] uppercase mb-3.5 flex items-center gap-2";
+  const sizeHint = "text-[0.62rem] text-k-4 mt-1";
 
   return (
     <div className="max-w-[560px] mx-auto px-6 py-8 pt-20 animate-k-fade-up">
@@ -215,6 +227,7 @@ const CreatorEditPanel = forwardRef<CreatorEditPanelHandle, Props>(function Crea
             </span>
           </div>
         </div>
+        <p className={sizeHint}>📐 Tamanho ideal: <strong>1600×500px</strong> (proporção 16:5)</p>
       </div>
 
       <div className="mb-8">
@@ -232,7 +245,7 @@ const CreatorEditPanel = forwardRef<CreatorEditPanelHandle, Props>(function Crea
           </div>
           <div>
             <button onClick={() => avatarRef.current?.click()} className="text-sm text-k-300 font-medium hover:text-k-200 transition-colors">Alterar foto</button>
-            <br /><span className="text-[0.7rem] text-k-4">JPG ou PNG · máx 2MB</span>
+            <br /><span className="text-[0.62rem] text-k-4">📐 Ideal: <strong>500×500px</strong> (1:1) · JPG/PNG · máx 2MB</span>
           </div>
         </div>
         <div className="space-y-3">
@@ -282,35 +295,42 @@ const CreatorEditPanel = forwardRef<CreatorEditPanelHandle, Props>(function Crea
 
       <div className="mb-8">
         <div className={sectionTitle}>🤝 Marcas parceiras</div>
-        <p className="text-[0.68rem] text-k-4 mb-2">Marcas com quem você já trabalhou ou tem parceria. Adicione o logo!</p>
+        <p className="text-[0.68rem] text-k-4 mb-2">Marcas com quem você já trabalhou. Adicione o logo!</p>
         <div className="flex flex-col gap-2 mb-3">
           {brands.map((brand, i) => (
             <div key={i} className="bg-k-800 border border-primary/10 rounded-xl p-3 flex items-center gap-3">
-              {/* Brand logo upload */}
               {brand.logo_url ? (
                 <div className="relative w-12 h-12 rounded-xl overflow-hidden border border-primary/10 group flex-shrink-0">
                   <img src={brand.logo_url} alt="" className="w-full h-full object-contain bg-white/5" />
                   <label className="absolute inset-0 bg-background/60 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center cursor-pointer">
-                    <input type="file" accept="image/*" className="hidden" onChange={async (e) => {
+                    <input type="file" accept="image/*" className="hidden" onChange={(e) => {
                       const file = e.target.files?.[0];
                       if (!file) return;
-                      setUploadingContent(`brand-${i}`);
-                      const url = await onUploadContentImage(file, "brand");
-                      setUploadingContent(null);
-                      if (url) { const arr = [...brands]; arr[i] = { ...arr[i], logo_url: url }; setBrands(arr); toast.success("Logo atualizado!"); }
+                      openContentCrop(file, 1, async (blob) => {
+                        setUploadingContent(`brand-${i}`);
+                        const croppedFile = new File([blob], "brand.jpg", { type: "image/jpeg" });
+                        const url = await onUploadContentImage(croppedFile, "brand");
+                        setUploadingContent(null);
+                        setContentCrop(null);
+                        if (url) { const arr = [...brands]; arr[i] = { ...arr[i], logo_url: url }; setBrands(arr); toast.success("Logo atualizado!"); }
+                      });
                     }} />
                     <span className="text-xs">📷</span>
                   </label>
                 </div>
               ) : (
                 <label className="w-12 h-12 rounded-xl border border-dashed border-primary/20 flex items-center justify-center cursor-pointer hover:border-k-400 hover:bg-k-glow transition-all flex-shrink-0">
-                  <input type="file" accept="image/*" className="hidden" onChange={async (e) => {
+                  <input type="file" accept="image/*" className="hidden" onChange={(e) => {
                     const file = e.target.files?.[0];
                     if (!file) return;
-                    setUploadingContent(`brand-${i}`);
-                    const url = await onUploadContentImage(file, "brand");
-                    setUploadingContent(null);
-                    if (url) { const arr = [...brands]; arr[i] = { ...arr[i], logo_url: url }; setBrands(arr); toast.success("Logo da marca enviado!"); }
+                    openContentCrop(file, 1, async (blob) => {
+                      setUploadingContent(`brand-${i}`);
+                      const croppedFile = new File([blob], "brand.jpg", { type: "image/jpeg" });
+                      const url = await onUploadContentImage(croppedFile, "brand");
+                      setUploadingContent(null);
+                      setContentCrop(null);
+                      if (url) { const arr = [...brands]; arr[i] = { ...arr[i], logo_url: url }; setBrands(arr); toast.success("Logo da marca enviado!"); }
+                    });
                   }} />
                   {uploadingContent === `brand-${i}` ? <span className="text-xs text-k-4 animate-pulse">⏳</span> : <span className="text-k-4 text-sm">📷</span>}
                 </label>
@@ -325,7 +345,8 @@ const CreatorEditPanel = forwardRef<CreatorEditPanelHandle, Props>(function Crea
             </div>
           ))}
         </div>
-        <div className="flex gap-2">
+        <p className={sizeHint}>📐 Logo ideal: <strong>200×200px</strong> (1:1, fundo transparente)</p>
+        <div className="flex gap-2 mt-2">
           <input value={newBrand} onChange={(e) => setNewBrand(e.target.value)} placeholder="Ex: Nike, Samsung..." className={inputClass} onKeyDown={(e) => { if (e.key === "Enter" && newBrand.trim()) { setBrands([...brands, { name: newBrand.trim() }]); setNewBrand(""); }}} />
           <button onClick={() => { if (newBrand.trim()) { setBrands([...brands, { name: newBrand.trim() }]); setNewBrand(""); }}} className="px-4 py-2 bg-primary/20 text-k-300 rounded-xl text-sm font-medium hover:bg-primary/30 transition-colors flex-shrink-0">+</button>
         </div>
@@ -457,25 +478,43 @@ const CreatorEditPanel = forwardRef<CreatorEditPanelHandle, Props>(function Crea
               <input value={prod.title} onChange={(e) => { const arr = [...prods]; arr[i] = { ...arr[i], title: e.target.value }; setProds(arr); }} placeholder="Nome do produto" className={`${inputClass} flex-1`} />
               <button onClick={() => setProds(prods.filter((_, j) => j !== i))} className="text-k-4 hover:text-k-err text-xs">✕</button>
             </div>
-            {/* Product image upload */}
+            {/* Product image upload with crop */}
             <div className="flex gap-2 items-center">
               {prod.image_url ? (
                 <div className="relative w-16 h-16 rounded-xl overflow-hidden border border-primary/10 group flex-shrink-0">
                   <img src={prod.image_url} alt="" className="w-full h-full object-cover" />
-                  <button
-                    onClick={() => { const arr = [...prods]; arr[i] = { ...arr[i], image_url: "" }; setProds(arr); }}
-                    className="absolute inset-0 bg-background/70 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center text-k-err text-xs font-bold"
-                  >✕</button>
+                  <div className="absolute inset-0 bg-background/70 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center gap-1">
+                    <label className="cursor-pointer text-xs text-k-300 hover:text-k-1">
+                      <input type="file" accept="image/*" className="hidden" onChange={(e) => {
+                        const file = e.target.files?.[0];
+                        if (!file) return;
+                        openContentCrop(file, 1, async (blob) => {
+                          setUploadingContent(`prod-${i}`);
+                          const croppedFile = new File([blob], "product.jpg", { type: "image/jpeg" });
+                          const url = await onUploadContentImage(croppedFile, "product");
+                          setUploadingContent(null);
+                          setContentCrop(null);
+                          if (url) { const arr = [...prods]; arr[i] = { ...arr[i], image_url: url }; setProds(arr); }
+                        });
+                      }} />
+                      📷
+                    </label>
+                    <button onClick={() => { const arr = [...prods]; arr[i] = { ...arr[i], image_url: "" }; setProds(arr); }} className="text-k-err text-xs font-bold">✕</button>
+                  </div>
                 </div>
               ) : (
                 <label className="w-16 h-16 rounded-xl border border-dashed border-primary/20 flex items-center justify-center cursor-pointer hover:border-k-400 hover:bg-k-glow transition-all flex-shrink-0">
-                  <input type="file" accept="image/*" className="hidden" onChange={async (e) => {
+                  <input type="file" accept="image/*" className="hidden" onChange={(e) => {
                     const file = e.target.files?.[0];
                     if (!file) return;
-                    setUploadingContent(`prod-${i}`);
-                    const url = await onUploadContentImage(file, "product");
-                    setUploadingContent(null);
-                    if (url) { const arr = [...prods]; arr[i] = { ...arr[i], image_url: url }; setProds(arr); toast.success("Imagem do produto enviada!"); }
+                    openContentCrop(file, 1, async (blob) => {
+                      setUploadingContent(`prod-${i}`);
+                      const croppedFile = new File([blob], "product.jpg", { type: "image/jpeg" });
+                      const url = await onUploadContentImage(croppedFile, "product");
+                      setUploadingContent(null);
+                      setContentCrop(null);
+                      if (url) { const arr = [...prods]; arr[i] = { ...arr[i], image_url: url }; setProds(arr); toast.success("Imagem do produto enviada!"); }
+                    });
                   }} />
                   {uploadingContent === `prod-${i}` ? <span className="text-xs text-k-4 animate-pulse">⏳</span> : <span className="text-k-4 text-lg">📷</span>}
                 </label>
@@ -487,6 +526,7 @@ const CreatorEditPanel = forwardRef<CreatorEditPanelHandle, Props>(function Crea
             </div>
           </div>
         ))}
+        <p className={sizeHint}>📐 Imagem ideal: <strong>400×400px</strong> (1:1, quadrada)</p>
         <button onClick={() => setProds([...prods, { id: crypto.randomUUID(), creator_id: profile.id, title: "", price: "", icon: "📦", url: "", image_url: "", sort_order: prods.length }])}
           className="flex items-center justify-center gap-2 w-full p-3 border border-dashed border-k-glow rounded-xl text-k-4 text-sm font-medium mt-2 transition-all hover:border-k-400 hover:text-k-300 hover:bg-k-glow active:scale-[0.98]">
           + Adicionar produto
@@ -507,7 +547,7 @@ const CreatorEditPanel = forwardRef<CreatorEditPanelHandle, Props>(function Crea
             </div>
             <input value={camp.description || ""} onChange={(e) => { const arr = [...camps]; arr[i] = { ...arr[i], description: e.target.value }; setCamps(arr); }} placeholder="Descrição" className={inputClass} />
             <input value={camp.url || ""} onChange={(e) => { const arr = [...camps]; arr[i] = { ...arr[i], url: e.target.value }; setCamps(arr); }} placeholder="URL da campanha" className={inputClass} />
-            {/* Campaign image upload */}
+            {/* Campaign image upload with crop */}
             {camp.image_url ? (
               <div className="relative w-full h-32 rounded-xl overflow-hidden border border-primary/10 group">
                 <img src={camp.image_url} alt="" className="w-full h-full object-cover" />
@@ -516,26 +556,34 @@ const CreatorEditPanel = forwardRef<CreatorEditPanelHandle, Props>(function Crea
                   className="absolute top-2 right-2 w-7 h-7 rounded-lg bg-background/80 backdrop-blur-sm flex items-center justify-center text-k-err text-xs font-bold opacity-0 group-hover:opacity-100 transition-opacity border border-primary/10"
                 >✕</button>
                 <label className="absolute inset-0 bg-background/50 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center cursor-pointer">
-                  <input type="file" accept="image/*" className="hidden" onChange={async (e) => {
+                  <input type="file" accept="image/*" className="hidden" onChange={(e) => {
                     const file = e.target.files?.[0];
                     if (!file) return;
-                    setUploadingContent(`camp-${i}`);
-                    const url = await onUploadContentImage(file, "campaign");
-                    setUploadingContent(null);
-                    if (url) { const arr = [...camps]; arr[i] = { ...arr[i], image_url: url }; setCamps(arr); toast.success("Imagem da campanha atualizada!"); }
+                    openContentCrop(file, 16 / 9, async (blob) => {
+                      setUploadingContent(`camp-${i}`);
+                      const croppedFile = new File([blob], "campaign.jpg", { type: "image/jpeg" });
+                      const url = await onUploadContentImage(croppedFile, "campaign");
+                      setUploadingContent(null);
+                      setContentCrop(null);
+                      if (url) { const arr = [...camps]; arr[i] = { ...arr[i], image_url: url }; setCamps(arr); toast.success("Imagem da campanha atualizada!"); }
+                    });
                   }} />
                   <span className="text-sm text-primary-foreground font-semibold bg-primary/80 backdrop-blur-sm px-4 py-2 rounded-xl">📷 Trocar imagem</span>
                 </label>
               </div>
             ) : (
               <label className="flex items-center justify-center gap-2 w-full h-24 border border-dashed border-primary/20 rounded-xl cursor-pointer hover:border-k-400 hover:bg-k-glow transition-all">
-                <input type="file" accept="image/*" className="hidden" onChange={async (e) => {
+                <input type="file" accept="image/*" className="hidden" onChange={(e) => {
                   const file = e.target.files?.[0];
                   if (!file) return;
-                  setUploadingContent(`camp-${i}`);
-                  const url = await onUploadContentImage(file, "campaign");
-                  setUploadingContent(null);
-                  if (url) { const arr = [...camps]; arr[i] = { ...arr[i], image_url: url }; setCamps(arr); toast.success("Imagem da campanha enviada!"); }
+                  openContentCrop(file, 16 / 9, async (blob) => {
+                    setUploadingContent(`camp-${i}`);
+                    const croppedFile = new File([blob], "campaign.jpg", { type: "image/jpeg" });
+                    const url = await onUploadContentImage(croppedFile, "campaign");
+                    setUploadingContent(null);
+                    setContentCrop(null);
+                    if (url) { const arr = [...camps]; arr[i] = { ...arr[i], image_url: url }; setCamps(arr); toast.success("Imagem da campanha enviada!"); }
+                  });
                 }} />
                 {uploadingContent === `camp-${i}` ? (
                   <span className="text-sm text-k-4 animate-pulse">Enviando imagem...</span>
@@ -546,6 +594,7 @@ const CreatorEditPanel = forwardRef<CreatorEditPanelHandle, Props>(function Crea
             )}
           </div>
         ))}
+        <p className={sizeHint}>📐 Imagem ideal: <strong>1280×720px</strong> (16:9, paisagem)</p>
         <button onClick={() => setCamps([...camps, { id: crypto.randomUUID(), creator_id: profile.id, title: "", description: "", image_url: "", url: "", live: false, sort_order: camps.length }])}
           className="flex items-center justify-center gap-2 w-full p-3 border border-dashed border-k-glow rounded-xl text-k-4 text-sm font-medium mt-2 transition-all hover:border-k-400 hover:text-k-300 hover:bg-k-glow active:scale-[0.98]">
           + Adicionar campanha
@@ -558,6 +607,8 @@ const CreatorEditPanel = forwardRef<CreatorEditPanelHandle, Props>(function Crea
           {uploadingImage || uploadingContent ? "Enviando imagem..." : saving ? "Salvando..." : "💾 Salvar tudo"}
         </button>
       </div>
+
+      {/* Avatar/Cover cropper */}
       {cropImage && (
         <ImageCropper
           imageSrc={cropImage.src}
@@ -565,6 +616,17 @@ const CreatorEditPanel = forwardRef<CreatorEditPanelHandle, Props>(function Crea
           cropShape={cropImage.type === "avatar" ? "round" : "rect"}
           onCropDone={(blob) => handleCropDone(blob, cropImage.type)}
           onCancel={() => setCropImage(null)}
+        />
+      )}
+
+      {/* Content image cropper (products, campaigns, brands) */}
+      {contentCrop && (
+        <ImageCropper
+          imageSrc={contentCrop.src}
+          aspect={contentCrop.aspect}
+          cropShape={contentCrop.cropShape}
+          onCropDone={(blob) => contentCrop.onDone(blob)}
+          onCancel={() => setContentCrop(null)}
         />
       )}
     </div>
