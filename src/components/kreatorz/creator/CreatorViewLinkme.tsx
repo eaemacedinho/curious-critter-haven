@@ -250,7 +250,7 @@ export default function CreatorViewLinkme({ profile, links: rawLinks, socialLink
                       <div className="flex flex-col gap-3">
                         {pastCamps.map((camp) => (
                           <div key={camp.id} onClick={() => camp.url && window.open(camp.url, "_blank")}
-                            className={`relative ${shapeClass(profile.image_shape)} overflow-hidden cursor-pointer group transition-all duration-300 hover:-translate-y-1 active:scale-[0.98] opacity-75 hover:opacity-100`}>
+                            className={`relative ${shapeClass(profile.image_shape_campaigns)} overflow-hidden cursor-pointer group transition-all duration-300 hover:-translate-y-1 active:scale-[0.98] opacity-75 hover:opacity-100`}>
                             {camp.image_url ? (
                               <>
                                 <div className="w-full aspect-[16/9] overflow-hidden">
