@@ -60,6 +60,7 @@ export interface CreatorCampaign {
   url: string;
   live: boolean;
   sort_order: number;
+  expires_at: string | null;
 }
 
 const normalizeProfile = (creator: any): CreatorProfile => ({
@@ -307,6 +308,7 @@ export function useCreatorData(userId: string | undefined) {
           url: campaign.url || "",
           live: campaign.live || false,
           sort_order: campaign.sort_order,
+          expires_at: campaign.expires_at || null,
         }))
       );
 

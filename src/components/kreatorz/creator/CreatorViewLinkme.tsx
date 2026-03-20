@@ -188,86 +188,95 @@ export default function CreatorViewLinkme({ profile, links: rawLinks, socialLink
             )}
 
             {/* 🔥 Spotlight — Live campaigns always first */}
-            {campaigns.filter(c => c.live).length > 0 && (
-              <div className="mt-6 px-4 flex flex-col gap-3">
-                {campaigns.filter(c => c.live).map((camp) => (
-                  <SpotlightCampaign key={camp.id} campaign={camp} variant="layout2" />
-                ))}
-              </div>
-            )}
+            {(() => {
+              const now = new Date();
+              const liveCamps = campaigns.filter(c => c.live && (!c.expires_at || new Date(c.expires_at) > now));
+              const pastCamps = campaigns.filter(c => !c.live || (c.expires_at && new Date(c.expires_at) <= now));
+              return (
+                <>
+                  {liveCamps.length > 0 && (
+                    <div className="mt-6 px-4 flex flex-col gap-3">
+                      {liveCamps.map((camp) => (
+                        <SpotlightCampaign key={camp.id} campaign={camp} variant="layout2" />
+                      ))}
+                    </div>
+                  )}
 
-            {/* Links as large image cards (Linkme style) */}
-            {links.length > 0 && (
-              <div className="flex flex-col gap-3 mt-6 px-4">
-                {links.map((link) => (
-                  <LinkmeCard key={link.id} link={link} />
-                ))}
-              </div>
-            )}
+                  {/* Links */}
+                  {links.length > 0 && (
+                    <div className="flex flex-col gap-3 mt-6 px-4">
+                      {links.map((link) => (
+                        <LinkmeCard key={link.id} link={link} />
+                      ))}
+                    </div>
+                  )}
 
-            {/* Products */}
-            {products.length > 0 && (
-              <div className="mt-8 px-4">
-                <SectionLabel label="Produtos" />
-                <div className="grid grid-cols-2 gap-2.5">
-                  {products.map((prod) => (
-                    <div
-                      key={prod.id}
-                      onClick={() => prod.url && window.open(prod.url, "_blank")}
-                      className="bg-card/70 backdrop-blur-xl border border-primary/10 rounded-2xl overflow-hidden cursor-pointer transition-all duration-300 group hover:border-primary/30 hover:-translate-y-1 active:scale-[0.97]"
-                    >
-                      {prod.image_url ? (
-                        <div className="w-full aspect-square overflow-hidden">
-                          <img src={prod.image_url} alt="" className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105" />
-                        </div>
-                      ) : (
-                        <div className="p-4">
-                          <div className="text-2xl mb-2 transition-transform group-hover:scale-110">{prod.icon}</div>
-                        </div>
-                      )}
-                      <div className="p-3">
-                        <h5 className="text-[0.82rem] font-semibold text-primary-foreground mb-1">{prod.title}</h5>
-                        {prod.price && <span className="text-[0.72rem] text-k-300 font-bold">{prod.price}</span>}
+                  {/* Products */}
+                  {products.length > 0 && (
+                    <div className="mt-8 px-4">
+                      <SectionLabel label="Produtos" />
+                      <div className="grid grid-cols-2 gap-2.5">
+                        {products.map((prod) => (
+                          <div
+                            key={prod.id}
+                            onClick={() => prod.url && window.open(prod.url, "_blank")}
+                            className="bg-card/70 backdrop-blur-xl border border-primary/10 rounded-2xl overflow-hidden cursor-pointer transition-all duration-300 group hover:border-primary/30 hover:-translate-y-1 active:scale-[0.97]"
+                          >
+                            {prod.image_url ? (
+                              <div className="w-full aspect-square overflow-hidden">
+                                <img src={prod.image_url} alt="" className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105" />
+                              </div>
+                            ) : (
+                              <div className="p-4">
+                                <div className="text-2xl mb-2 transition-transform group-hover:scale-110">{prod.icon}</div>
+                              </div>
+                            )}
+                            <div className="p-3">
+                              <h5 className="text-[0.82rem] font-semibold text-primary-foreground mb-1">{prod.title}</h5>
+                              {prod.price && <span className="text-[0.72rem] text-k-300 font-bold">{prod.price}</span>}
+                            </div>
+                          </div>
+                        ))}
                       </div>
                     </div>
-                  ))}
-                </div>
-              </div>
-            )}
+                  )}
 
-            {/* Past / Inactive Campaigns */}
-            {campaigns.filter(c => !c.live).length > 0 && (
-              <div className="mt-8 px-4">
-                <SectionLabel label="Campanhas Anteriores" />
-                <div className="flex flex-col gap-3">
-                  {campaigns.filter(c => !c.live).map((camp) => (
-                    <div
-                      key={camp.id}
-                      onClick={() => camp.url && window.open(camp.url, "_blank")}
-                      className="relative rounded-2xl overflow-hidden cursor-pointer group transition-all duration-300 hover:-translate-y-1 active:scale-[0.98] opacity-75 hover:opacity-100"
-                    >
-                      {camp.image_url ? (
-                        <>
-                          <div className="w-full aspect-[16/9] overflow-hidden">
-                            <img src={camp.image_url} alt="" className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105" />
+                  {/* Past / Inactive Campaigns */}
+                  {pastCamps.length > 0 && (
+                    <div className="mt-8 px-4">
+                      <SectionLabel label="Campanhas Anteriores" />
+                      <div className="flex flex-col gap-3">
+                        {pastCamps.map((camp) => (
+                          <div
+                            key={camp.id}
+                            onClick={() => camp.url && window.open(camp.url, "_blank")}
+                            className="relative rounded-2xl overflow-hidden cursor-pointer group transition-all duration-300 hover:-translate-y-1 active:scale-[0.98] opacity-75 hover:opacity-100"
+                          >
+                            {camp.image_url ? (
+                              <>
+                                <div className="w-full aspect-[16/9] overflow-hidden">
+                                  <img src={camp.image_url} alt="" className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105" />
+                                </div>
+                                <div className="absolute inset-0 bg-gradient-to-t from-background/90 via-background/30 to-transparent" />
+                                <div className="absolute inset-x-0 bottom-0 p-4">
+                                  <h5 className="text-sm font-bold text-primary-foreground">{camp.title}</h5>
+                                  {camp.description && <p className="text-[0.7rem] text-k-2 mt-1 line-clamp-2">{camp.description}</p>}
+                                </div>
+                              </>
+                            ) : (
+                              <div className="bg-card/70 border border-primary/10 rounded-2xl p-5">
+                                <h5 className="text-sm font-bold text-primary-foreground">{camp.title}</h5>
+                                {camp.description && <p className="text-[0.7rem] text-k-3 mt-1">{camp.description}</p>}
+                              </div>
+                            )}
                           </div>
-                          <div className="absolute inset-0 bg-gradient-to-t from-background/90 via-background/30 to-transparent" />
-                          <div className="absolute inset-x-0 bottom-0 p-4">
-                            <h5 className="text-sm font-bold text-primary-foreground">{camp.title}</h5>
-                            {camp.description && <p className="text-[0.7rem] text-k-2 mt-1 line-clamp-2">{camp.description}</p>}
-                          </div>
-                        </>
-                      ) : (
-                        <div className="bg-card/70 border border-primary/10 rounded-2xl p-5">
-                          <h5 className="text-sm font-bold text-primary-foreground">{camp.title}</h5>
-                          {camp.description && <p className="text-[0.7rem] text-k-3 mt-1">{camp.description}</p>}
-                        </div>
-                      )}
+                        ))}
+                      </div>
                     </div>
-                  ))}
-                </div>
-              </div>
-            )}
+                  )}
+                </>
+              );
+            })()}
 
             {/* Contact CTA */}
             <div className="px-4 mt-8">
