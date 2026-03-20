@@ -777,22 +777,24 @@ const CreatorEditPanel = forwardRef<CreatorEditPanelHandle, Props>(function Crea
                 <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor"><circle cx="9" cy="5" r="1.5"/><circle cx="15" cy="5" r="1.5"/><circle cx="9" cy="12" r="1.5"/><circle cx="15" cy="12" r="1.5"/><circle cx="9" cy="19" r="1.5"/><circle cx="15" cy="19" r="1.5"/></svg>
               </div>
               <div className="relative">
-                <button onClick={() => setShowIconPicker(showIconPicker === link.id ? null : link.id)} className="text-lg hover:scale-125 transition-transform">{link.icon}</button>
+                <button onClick={() => setShowIconPicker(showIconPicker === link.id ? null : link.id)} className="w-8 h-8 flex items-center justify-center hover:scale-125 transition-transform">
+                  <LinkIcon icon={link.icon} url={link.url} size={16} />
+                </button>
                 {showIconPicker === link.id && (
-                  <div className="absolute top-8 left-0 z-50 bg-k-850 border border-primary/10 rounded-xl p-2.5 shadow-k w-[240px] max-h-[300px] overflow-y-auto">
-                    <p className="text-[0.58rem] text-k-4 font-bold uppercase tracking-wider mb-1.5 px-1">Gerais</p>
-                    <div className="grid grid-cols-6 gap-1 mb-2">
-                      {iconOptions.map((ic) => (
-                        <button key={ic} onClick={() => { const arr = [...links]; arr[i] = { ...arr[i], icon: ic }; setLinks(arr); setShowIconPicker(null); }} className="w-8 h-8 rounded-lg hover:bg-k-glow flex items-center justify-center text-sm transition-colors">{ic}</button>
+                  <div className="absolute top-8 left-0 z-50 bg-k-850 border border-primary/10 rounded-xl p-2.5 shadow-k w-[260px] max-h-[340px] overflow-y-auto">
+                    <p className="text-[0.58rem] text-k-4 font-bold uppercase tracking-wider mb-1.5 px-1">Redes Sociais</p>
+                    <div className="grid grid-cols-4 gap-1 mb-2">
+                      {socialPlatformKeys.filter(k => k !== "email").map((key) => (
+                        <button key={key} onClick={() => { const arr = [...links]; arr[i] = { ...arr[i], icon: key }; setLinks(arr); setShowIconPicker(null); }} className="flex flex-col items-center gap-0.5 p-1.5 rounded-lg hover:bg-k-glow transition-colors" title={socialPlatformLabels[key] || key}>
+                          <SocialIcon platform={key} size={14} />
+                          <span className="text-[0.5rem] text-k-4 leading-tight truncate w-full text-center">{socialPlatformLabels[key] || key}</span>
+                        </button>
                       ))}
                     </div>
-                    <p className="text-[0.58rem] text-k-4 font-bold uppercase tracking-wider mb-1.5 px-1">Redes Sociais</p>
-                    <div className="grid grid-cols-4 gap-1">
-                      {socialIconOptions.map((opt) => (
-                        <button key={opt.emoji + opt.label} onClick={() => { const arr = [...links]; arr[i] = { ...arr[i], icon: opt.emoji }; setLinks(arr); setShowIconPicker(null); }} className="flex flex-col items-center gap-0.5 p-1.5 rounded-lg hover:bg-k-glow transition-colors" title={opt.label}>
-                          <span className="text-lg">{opt.emoji}</span>
-                          <span className="text-[0.5rem] text-k-4 leading-tight truncate w-full text-center">{opt.label}</span>
-                        </button>
+                    <p className="text-[0.58rem] text-k-4 font-bold uppercase tracking-wider mb-1.5 px-1">Gerais</p>
+                    <div className="grid grid-cols-6 gap-1">
+                      {emojiIcons.map((ic) => (
+                        <button key={ic} onClick={() => { const arr = [...links]; arr[i] = { ...arr[i], icon: ic }; setLinks(arr); setShowIconPicker(null); }} className="w-8 h-8 rounded-lg hover:bg-k-glow flex items-center justify-center text-sm transition-colors">{ic}</button>
                       ))}
                     </div>
                   </div>
