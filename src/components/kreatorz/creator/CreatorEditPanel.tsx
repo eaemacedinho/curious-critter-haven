@@ -811,6 +811,23 @@ const CreatorEditPanel = forwardRef<CreatorEditPanelHandle, Props>(function Crea
           onCancel={() => setContentCrop(null)}
         />
       )}
+
+      {/* Campaign delete confirmation */}
+      <ConfirmDialog
+        open={deleteCampTarget !== null}
+        onOpenChange={(open) => !open && setDeleteCampTarget(null)}
+        title="Excluir Campanha"
+        description={`Tem certeza que deseja excluir a campanha "${deleteCampTarget !== null ? camps[deleteCampTarget]?.title || "Sem título" : ""}"? Esta ação não pode ser desfeita.`}
+        confirmLabel="Excluir campanha"
+        variant="destructive"
+        onConfirm={() => {
+          if (deleteCampTarget !== null) {
+            setCamps(camps.filter((_, j) => j !== deleteCampTarget));
+            setDeleteCampTarget(null);
+            toast.success("Campanha removida. Salve para confirmar.");
+          }
+        }}
+      />
     </div>
   );
 });
