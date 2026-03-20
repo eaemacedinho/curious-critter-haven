@@ -73,6 +73,13 @@ export default function CreatorViewLinkme({ profile, links: rawLinks, socialLink
   const effectEmojis = pe.emojis;
   const effectIntensity = pe.intensity;
 
+  const fontFam = getFontFamily(profile.font_family || "default");
+  const fontScale = getFontSizeScale(profile.font_size || "medium");
+
+  useEffect(() => {
+    loadGoogleFont(profile.font_family || "default");
+  }, [profile.font_family]);
+
   const content = (
     <div className={embedded ? "absolute inset-0 flex justify-center bg-background" : "fixed inset-0 flex justify-center bg-background"}>
       <PageEffects effects={effects} color={effectColor} emojis={effectEmojis} intensity={effectIntensity} />
