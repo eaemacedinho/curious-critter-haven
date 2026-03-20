@@ -5,52 +5,24 @@ import ImageCropper from "./ImageCropper";
 import VerifiedBadge from "./VerifiedBadge";
 import { ConfirmDialog } from "@/components/ui/confirm-dialog";
 import CreatorLivePreview from "./CreatorLivePreview";
+import { LinkIcon, socialPlatformKeys, detectPlatform } from "./SocialIcon";
+import SocialIcon from "./SocialIcon";
 
-const iconOptions = ["⭐", "▶", "🎵", "📄", "🛍", "📸", "🎮", "💼", "🎨", "📚", "🔗", "💰", "🎧", "📦", "🎬", "💎"];
+const emojiIcons = ["⭐", "▶", "🎵", "📄", "🛍", "📸", "🎮", "💼", "🎨", "📚", "🔗", "💰", "🎧", "📦", "🎬", "💎"];
 
-const socialIconOptions = [
-  { emoji: "📸", label: "Instagram" },
-  { emoji: "▶️", label: "YouTube" },
-  { emoji: "🎵", label: "TikTok" },
-  { emoji: "🐦", label: "Twitter/X" },
-  { emoji: "👤", label: "Facebook" },
-  { emoji: "💼", label: "LinkedIn" },
-  { emoji: "🎮", label: "Twitch" },
-  { emoji: "💬", label: "Discord" },
-  { emoji: "📌", label: "Pinterest" },
-  { emoji: "👻", label: "Snapchat" },
-  { emoji: "🎧", label: "Spotify" },
-  { emoji: "🍎", label: "Apple Music" },
-  { emoji: "📧", label: "E-mail" },
-  { emoji: "🌐", label: "Website" },
-  { emoji: "🛒", label: "Loja" },
-  { emoji: "📱", label: "WhatsApp" },
-  { emoji: "✈️", label: "Telegram" },
-  { emoji: "🧵", label: "Threads" },
-];
-
-const domainToIcon: Record<string, string> = {
-  "instagram.com": "📸", "youtube.com": "▶️", "youtu.be": "▶️",
-  "tiktok.com": "🎵", "twitter.com": "🐦", "x.com": "🐦",
-  "facebook.com": "👤", "fb.com": "👤", "linkedin.com": "💼",
-  "twitch.tv": "🎮", "discord.gg": "💬", "discord.com": "💬",
-  "pinterest.com": "📌", "snapchat.com": "👻",
-  "open.spotify.com": "🎧", "spotify.com": "🎧",
-  "music.apple.com": "🍎", "wa.me": "📱", "whatsapp.com": "📱",
-  "t.me": "✈️", "telegram.me": "✈️", "threads.net": "🧵",
-  "github.com": "💻", "behance.net": "🎨", "dribbble.com": "🎨",
-  "amazon.com": "🛒", "shopee.com.br": "🛒", "mercadolivre.com.br": "🛒",
+const socialPlatformLabels: Record<string, string> = {
+  instagram: "Instagram", youtube: "YouTube", tiktok: "TikTok",
+  twitter: "Twitter/X", x: "X", facebook: "Facebook", linkedin: "LinkedIn",
+  twitch: "Twitch", discord: "Discord", pinterest: "Pinterest",
+  snapchat: "Snapchat", spotify: "Spotify", apple: "Apple Music",
+  telegram: "Telegram", whatsapp: "WhatsApp", threads: "Threads",
+  github: "GitHub", email: "E-mail",
 };
 
 const detectIconFromUrl = (url: string): string | null => {
   if (!url) return null;
-  try {
-    const hostname = new URL(url.startsWith("http") ? url : `https://${url}`).hostname.replace(/^www\./, "");
-    for (const [domain, icon] of Object.entries(domainToIcon)) {
-      if (hostname === domain || hostname.endsWith(`.${domain}`)) return icon;
-    }
-  } catch { /* ignore */ }
-  return null;
+  const key = detectPlatform("", url);
+  return key || null;
 };
 
 const socialEmojiOptions = [
