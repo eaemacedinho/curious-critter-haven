@@ -74,6 +74,9 @@ export interface CreatorCampaign {
   live: boolean;
   sort_order: number;
   expires_at: string | null;
+  bg_color: string | null;
+  text_color: string | null;
+  border_color: string | null;
 }
 
 const normalizeProfile = (creator: any): CreatorProfile => ({
