@@ -114,14 +114,14 @@ function useParticleCanvas(
 
       if (type === "snow") {
         base.y = -10;
-        base.vy = 0.3 + Math.random() * 0.7;
+        base.vy = (0.3 + Math.random() * 0.7) * intMul;
         base.vx = (Math.random() - 0.5) * 0.4;
         base.size = 2 + Math.random() * 4;
         base.opacity = 0.3 + Math.random() * 0.5;
         base.color = `hsl(${baseH} ${Math.max(baseS - 40, 0)}% ${Math.min(baseL + 40, 100)}%)`;
       } else if (type === "floating-emojis") {
         base.y = h() + 20;
-        base.vy = -(0.4 + Math.random() * 0.6);
+        base.vy = -(0.4 + Math.random() * 0.6) * intMul;
         base.vx = (Math.random() - 0.5) * 0.3;
         base.size = 14 + Math.random() * 10;
         base.emoji = emojis[Math.floor(Math.random() * emojis.length)];
