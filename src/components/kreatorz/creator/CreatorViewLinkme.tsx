@@ -223,7 +223,12 @@ export default function CreatorViewLinkme({ profile, links: rawLinks, socialLink
                       <div className="grid grid-cols-2 gap-3">
                         {products.map((prod) => (
                           <div key={prod.id} onClick={() => prod.url && window.open(prod.url, "_blank")}
-                            className={`bg-card/70 backdrop-blur-xl border border-border ${shapeClass(profile.image_shape_products)} overflow-hidden cursor-pointer transition-all duration-300 group hover:border-primary/30 hover:-translate-y-1 active:scale-[0.97]`}>
+                            className={`backdrop-blur-xl ${shapeClass(profile.image_shape_products)} overflow-hidden cursor-pointer transition-all duration-300 group hover:-translate-y-1 active:scale-[0.97] ${!prod.bg_color ? "bg-card/70 border border-border hover:border-primary/30" : ""}`}
+                            style={{
+                              ...(prod.bg_color ? { backgroundColor: prod.bg_color } : {}),
+                              ...(prod.text_color ? { color: prod.text_color } : {}),
+                              ...(prod.border_color ? { borderColor: prod.border_color, borderWidth: "1px", borderStyle: "solid" } : {}),
+                            }}>
                             {prod.image_url ? (
                               <div className="w-full aspect-square overflow-hidden">
                                 <img src={prod.image_url} alt="" className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105" />
@@ -234,8 +239,8 @@ export default function CreatorViewLinkme({ profile, links: rawLinks, socialLink
                               </div>
                             )}
                             <div className="p-3.5">
-                              <h5 className="text-[0.82rem] font-semibold text-foreground mb-1">{prod.title}</h5>
-                              {prod.price && <span className="text-[0.72rem] text-primary font-bold">{prod.price}</span>}
+                              <h5 className="text-[0.82rem] font-semibold mb-1">{prod.title}</h5>
+                              {prod.price && <span className="text-[0.72rem] font-bold" style={{ color: prod.text_color || "hsl(var(--primary))" }}>{prod.price}</span>}
                             </div>
                           </div>
                         ))}
