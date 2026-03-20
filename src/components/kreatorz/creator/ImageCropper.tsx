@@ -1,4 +1,5 @@
 import { forwardRef, useState, useCallback } from "react";
+import { createPortal } from "react-dom";
 import Cropper, { type Area } from "react-easy-crop";
 
 interface ImageCropperProps {
@@ -27,9 +28,13 @@ const ImageCropper = forwardRef<HTMLDivElement, ImageCropperProps>(function Imag
     if (blob) onCropDone(blob);
   };
 
-  return (
-    <div ref={ref} className="fixed inset-0 z-[100] bg-background/90 backdrop-blur-md flex flex-col">
-      <div className="relative flex-1">
+  return createPortal(
+    <div
+      ref={ref}
+      className="fixed inset-0 z-[9999] flex flex-col"
+      style={{ background: "hsl(var(--background))" }}
+    >
+      <div className="relative flex-1 min-h-0">
         <Cropper
           image={imageSrc}
           crop={crop}
@@ -40,15 +45,22 @@ const ImageCropper = forwardRef<HTMLDivElement, ImageCropperProps>(function Imag
           onZoomChange={setZoom}
           onCropComplete={onCropComplete}
           style={{
-            containerStyle: { background: "hsl(var(--background))" },
+            containerStyle: {
+              position: "absolute",
+              top: 0,
+              left: 0,
+              right: 0,
+              bottom: 0,
+              background: "hsl(var(--background))",
+            },
           }}
         />
       </div>
 
-      <div className="px-6 py-4 bg-card/80 backdrop-blur-xl border-t border-primary/10">
+      <div className="shrink-0 px-6 py-4 bg-card/80 backdrop-blur-xl border-t border-primary/10">
         <div className="max-w-[400px] mx-auto space-y-4">
           <div className="flex items-center gap-3">
-            <span className="text-[0.7rem] text-k-4 font-medium w-10">Zoom</span>
+            <span className="text-[0.7rem] text-muted-foreground font-medium w-10">Zoom</span>
             <input
               type="range"
               min={1}
@@ -62,20 +74,21 @@ const ImageCropper = forwardRef<HTMLDivElement, ImageCropperProps>(function Imag
           <div className="flex gap-3">
             <button
               onClick={onCancel}
-              className="flex-1 py-3 bg-k-800 border border-primary/10 text-k-2 font-semibold text-sm rounded-xl transition-all hover:border-k-400 active:scale-[0.98]"
+              className="flex-1 py-3 bg-secondary border border-primary/10 text-muted-foreground font-semibold text-sm rounded-xl transition-all hover:border-primary/30 active:scale-[0.98]"
             >
               Cancelar
             </button>
             <button
               onClick={handleConfirm}
-              className="flex-1 py-3 bg-primary text-primary-foreground font-semibold text-sm rounded-xl transition-all hover:bg-k-400 hover:shadow-k-purple active:scale-[0.98]"
+              className="flex-1 py-3 bg-primary text-primary-foreground font-semibold text-sm rounded-xl transition-all hover:opacity-90 active:scale-[0.98]"
             >
               ✂️ Recortar
             </button>
           </div>
         </div>
       </div>
-    </div>
+    </div>,
+    document.body
   );
 });
 
