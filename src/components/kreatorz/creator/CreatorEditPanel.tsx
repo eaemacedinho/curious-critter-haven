@@ -69,6 +69,7 @@ interface Props {
   onSaveProducts: (products: CreatorProduct[]) => Promise<void>;
   onSaveCampaigns: (campaigns: CreatorCampaign[]) => Promise<void>;
   onUploadImage: (file: File, type: "avatar" | "cover") => Promise<string | null>;
+  onUploadContentImage: (file: File, folder: string) => Promise<string | null>;
   onDone: () => void;
 }
 
