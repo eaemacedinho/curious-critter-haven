@@ -83,13 +83,15 @@ export default function CreatorPublic() {
       if (creator.agency_id) {
         const { data: agencyData } = await supabase
           .from("agencies")
-          .select("name, primary_color, accent_color, logo_url, footer_text")
+          .select("name, primary_color, accent_color, logo_url, footer_text, footer_visible, footer_link")
           .eq("id", creator.agency_id)
           .maybeSingle();
         if (agencyData) {
           setAgencyName(agencyData.name || "");
           setAgencyLogoUrl(agencyData.logo_url || "");
           setAgencyFooterText(agencyData.footer_text || "Powered by");
+          setAgencyFooterVisible(agencyData.footer_visible ?? true);
+          setAgencyFooterLink(agencyData.footer_link || "");
           const root = document.documentElement;
           if (agencyData.primary_color) {
             const hsl = hexToHsl(agencyData.primary_color);
