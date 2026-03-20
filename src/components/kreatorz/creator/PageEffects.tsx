@@ -20,13 +20,8 @@ export interface EffectOption {
 }
 
 export const EFFECT_OPTIONS: EffectOption[] = [
-  { id: "particles", label: "Partículas", emoji: "✨", description: "Partículas brilhantes flutuando pela tela", preview: "effect-preview-particles" },
-  { id: "fireflies", label: "Vagalumes", emoji: "🟡", description: "Pontos luminosos suaves se movendo lentamente", preview: "effect-preview-fireflies" },
   { id: "snow", label: "Neve", emoji: "❄️", description: "Flocos de neve caindo suavemente", preview: "effect-preview-snow" },
-  { id: "confetti", label: "Confete", emoji: "🎉", description: "Explosão de confete ao carregar a página", preview: "effect-preview-confetti" },
   { id: "floating-emojis", label: "Emojis Flutuantes", emoji: "🎈", description: "Emojis subindo pela tela continuamente", preview: "effect-preview-emojis" },
-  { id: "glow-borders", label: "Bordas Luminosas", emoji: "💜", description: "Bordas dos cards com brilho animado", preview: "effect-preview-glow" },
-  { id: "gradient-bg", label: "Gradiente Animado", emoji: "🌈", description: "Fundo com gradiente em movimento suave", preview: "effect-preview-gradient" },
   { id: "sparkle-cursor", label: "Rastro de Brilho", emoji: "⭐", description: "Rastro de partículas ao mover o dedo/mouse", preview: "effect-preview-sparkle" },
   { id: "aurora", label: "Aurora Boreal", emoji: "🌌", description: "Ondas coloridas de aurora no fundo", preview: "effect-preview-aurora" },
 ];
