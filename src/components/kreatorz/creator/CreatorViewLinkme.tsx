@@ -436,9 +436,10 @@ function LinkmeCard({ link, shape }: { link: CreatorLink; shape?: string }) {
   );
 }
 
-function SectionLabel({ label }: { label: string }) {
+function SectionLabel({ label, color }: { label: string; color?: string | null }) {
   return (
-    <div className="font-body text-[0.64rem] font-bold text-muted-foreground tracking-[0.16em] uppercase mb-3 flex items-center gap-2.5 px-1">
+    <div className="font-body text-[0.64rem] font-bold tracking-[0.16em] uppercase mb-3 flex items-center gap-2.5 px-1"
+      style={color ? { color } : { color: "hsl(var(--muted-foreground))" }}>
       {label} <span className="flex-1 h-px bg-border" />
     </div>
   );
