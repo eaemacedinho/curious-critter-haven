@@ -97,7 +97,15 @@ export default function CreatorLivePreview({
     return style;
   }, [agency?.accent_color, agency?.primary_color]);
 
-  const PreviewComponent = activeLayout === "layout2" ? CreatorViewLinkme : CreatorView;
+  const PreviewComponent = (() => {
+    switch (activeLayout) {
+      case "layout2": return CreatorViewLinkme;
+      case "minimal": return CreatorViewMinimal;
+      case "grid": return CreatorViewGrid;
+      case "dark": return CreatorViewDark;
+      default: return CreatorView;
+    }
+  })();
   const renderedWidth = DEVICE.w * scale;
   const renderedHeight = DEVICE.h * scale;
 

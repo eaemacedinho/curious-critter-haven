@@ -156,13 +156,19 @@ export default function CreatorPublic() {
     );
   }
 
-  const useLayout2 = profile.public_layout === "layout2";
+  const layoutProps = { profile, links, socialLinks, products, campaigns, agencyName, agencyLogoUrl, agencyFooterText, agencyFooterVisible, agencyFooterLink };
 
-  return useLayout2 ? (
-    <CreatorViewLinkme profile={profile} links={links} socialLinks={socialLinks} products={products} campaigns={campaigns} agencyName={agencyName} agencyLogoUrl={agencyLogoUrl} agencyFooterText={agencyFooterText} agencyFooterVisible={agencyFooterVisible} agencyFooterLink={agencyFooterLink} />
-  ) : (
-    <CreatorView profile={profile} links={links} socialLinks={socialLinks} products={products} campaigns={campaigns} agencyName={agencyName} agencyLogoUrl={agencyLogoUrl} agencyFooterText={agencyFooterText} agencyFooterVisible={agencyFooterVisible} agencyFooterLink={agencyFooterLink} />
-  );
+  const LayoutComponent = (() => {
+    switch (profile.public_layout) {
+      case "layout2": return CreatorViewLinkme;
+      case "minimal": return CreatorViewMinimal;
+      case "grid": return CreatorViewGrid;
+      case "dark": return CreatorViewDark;
+      default: return CreatorView;
+    }
+  })();
+
+  return <LayoutComponent {...layoutProps} />;
 }
 
 function hexToHsl(hex: string): string | null {
