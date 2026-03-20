@@ -107,6 +107,7 @@ export type Database = {
           creator_id: string
           icon: string | null
           id: string
+          image_url: string | null
           price: string | null
           sort_order: number | null
           title: string
@@ -116,6 +117,7 @@ export type Database = {
           creator_id: string
           icon?: string | null
           id?: string
+          image_url?: string | null
           price?: string | null
           sort_order?: number | null
           title?: string
@@ -125,6 +127,7 @@ export type Database = {
           creator_id?: string
           icon?: string | null
           id?: string
+          image_url?: string | null
           price?: string | null
           sort_order?: number | null
           title?: string
