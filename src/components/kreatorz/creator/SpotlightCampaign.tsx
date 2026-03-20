@@ -1,3 +1,4 @@
+import { supabase } from "@/integrations/supabase/client";
 import type { CreatorCampaign } from "@/hooks/useCreatorData";
 
 interface Props {
@@ -7,8 +8,24 @@ interface Props {
 
 export default function SpotlightCampaign({ campaign, variant = "layout1" }: Props) {
   const handleClick = () => {
+    // Track click asynchronously
+    supabase
+      .from("campaign_clicks")
+      .insert({
+        campaign_id: campaign.id,
+        referrer: document.referrer || "",
+        user_agent: navigator.userAgent || "",
+      } as any)
+      .then(({ error }) => {
+        if (error) console.error("Click track error:", error);
+      });
+
     if (campaign.url) window.open(campaign.url, "_blank");
   };
+
+  // Calculate remaining time
+  const expiresAt = (campaign as any).expires_at;
+  const timeLeft = expiresAt ? getRemainingLabel(expiresAt) : null;
 
   return (
     <div
@@ -39,7 +56,7 @@ export default function SpotlightCampaign({ campaign, variant = "layout1" }: Pro
       {/* Content */}
       <div className={`relative p-5 ${campaign.image_url ? "-mt-12" : "pt-6"}`}>
         {/* Badges row */}
-        <div className="flex items-center gap-2 mb-3">
+        <div className="flex items-center gap-2 mb-3 flex-wrap">
           {campaign.live && (
             <span className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-[0.65rem] font-bold uppercase tracking-wider bg-k-err/20 text-k-err border border-k-err/20">
               <span className="w-2 h-2 rounded-full bg-k-err animate-k-live-dot" />
@@ -49,6 +66,11 @@ export default function SpotlightCampaign({ campaign, variant = "layout1" }: Pro
           <span className="inline-flex items-center gap-1 px-2.5 py-1 rounded-full text-[0.62rem] font-bold uppercase tracking-wider bg-primary/15 text-k-300 border border-primary/20">
             ✨ Destaque
           </span>
+          {timeLeft && (
+            <span className="inline-flex items-center gap-1 px-2.5 py-1 rounded-full text-[0.62rem] font-semibold bg-k-warn/10 text-k-warn border border-k-warn/20">
+              ⏱ {timeLeft}
+            </span>
+          )}
         </div>
 
         {/* Title */}
@@ -77,4 +99,19 @@ export default function SpotlightCampaign({ campaign, variant = "layout1" }: Pro
       </div>
     </div>
   );
+}
+
+function getRemainingLabel(expiresAt: string): string | null {
+  const now = new Date();
+  const exp = new Date(expiresAt);
+  const diffMs = exp.getTime() - now.getTime();
+  if (diffMs <= 0) return null;
+
+  const diffDays = Math.floor(diffMs / (1000 * 60 * 60 * 24));
+  const diffHours = Math.floor((diffMs % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+
+  if (diffDays > 0) return `${diffDays}d ${diffHours}h restantes`;
+  if (diffHours > 0) return `${diffHours}h restantes`;
+  const diffMin = Math.floor(diffMs / (1000 * 60));
+  return `${diffMin}min restantes`;
 }
