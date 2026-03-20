@@ -631,6 +631,21 @@ const CreatorEditPanel = forwardRef<CreatorEditPanelHandle, Props>(function Crea
             </div>
             <input value={link.url} onChange={(e) => { const arr = [...links]; arr[i] = { ...arr[i], url: e.target.value }; setLinks(arr); }} placeholder="https://..." className={inputClass} />
             <input value={link.subtitle || ""} onChange={(e) => { const arr = [...links]; arr[i] = { ...arr[i], subtitle: e.target.value }; setLinks(arr); }} placeholder="Descrição (opcional)" className={inputClass} />
+            <div className="flex items-center gap-2 pt-1">
+              <span className="text-[0.62rem] text-k-4 font-semibold">Cores:</span>
+              <label className="flex items-center gap-1 text-[0.6rem] text-k-4" title="Fundo">
+                🎨 <input type="color" value={link.bg_color || "#1a1a2e"} onChange={(e) => { const arr = [...links]; arr[i] = { ...arr[i], bg_color: e.target.value }; setLinks(arr); }} className="w-5 h-5 rounded cursor-pointer border-0 bg-transparent" />
+                {link.bg_color && <button onClick={() => { const arr = [...links]; arr[i] = { ...arr[i], bg_color: null }; setLinks(arr); }} className="text-k-4 hover:text-k-err text-[0.6rem]">✕</button>}
+              </label>
+              <label className="flex items-center gap-1 text-[0.6rem] text-k-4" title="Texto">
+                Aa <input type="color" value={link.text_color || "#ffffff"} onChange={(e) => { const arr = [...links]; arr[i] = { ...arr[i], text_color: e.target.value }; setLinks(arr); }} className="w-5 h-5 rounded cursor-pointer border-0 bg-transparent" />
+                {link.text_color && <button onClick={() => { const arr = [...links]; arr[i] = { ...arr[i], text_color: null }; setLinks(arr); }} className="text-k-4 hover:text-k-err text-[0.6rem]">✕</button>}
+              </label>
+              <label className="flex items-center gap-1 text-[0.6rem] text-k-4" title="Borda">
+                ▢ <input type="color" value={link.border_color || "#333355"} onChange={(e) => { const arr = [...links]; arr[i] = { ...arr[i], border_color: e.target.value }; setLinks(arr); }} className="w-5 h-5 rounded cursor-pointer border-0 bg-transparent" />
+                {link.border_color && <button onClick={() => { const arr = [...links]; arr[i] = { ...arr[i], border_color: null }; setLinks(arr); }} className="text-k-4 hover:text-k-err text-[0.6rem]">✕</button>}
+              </label>
+            </div>
           </div>
         ))}
         <button onClick={() => setLinks([...links, { id: crypto.randomUUID(), creator_id: profile.id, title: "", url: "", subtitle: "", icon: "🔗", featured: false, active: true, sort_order: links.length, bg_color: null, text_color: null, border_color: null }])}
