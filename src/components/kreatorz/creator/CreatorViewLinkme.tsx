@@ -307,15 +307,16 @@ export default function CreatorViewLinkme({ profile, links: rawLinks, socialLink
 
 /* ── Sub-components ── */
 
-function LinkmeCard({ link }: { link: CreatorLink }) {
+function LinkmeCard({ link, shape }: { link: CreatorLink; shape?: string }) {
+  const sc = shapeClass(shape);
   return (
     <a href={link.url} target="_blank" rel="noopener noreferrer"
-      className="group relative block w-full rounded-2xl overflow-hidden transition-all duration-300 hover:-translate-y-1 active:scale-[0.98]">
+      className={`group relative block w-full ${sc} overflow-hidden transition-all duration-300 hover:-translate-y-1 active:scale-[0.98]`}>
       <div className={`flex items-center gap-4 p-4 sm:p-5 min-h-[56px] ${
         link.featured
           ? "bg-gradient-to-r from-primary/25 to-primary/10 border border-primary/25"
           : "bg-card/70 backdrop-blur-xl border border-border"
-      } rounded-2xl transition-all duration-300 group-hover:border-primary/30`}>
+      } ${sc} transition-all duration-300 group-hover:border-primary/30`}>
         <div className="w-11 h-11 rounded-xl bg-primary/10 flex items-center justify-center flex-shrink-0 text-lg transition-transform group-hover:scale-110">
           {link.icon}
         </div>
