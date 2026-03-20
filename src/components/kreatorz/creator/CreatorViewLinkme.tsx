@@ -107,7 +107,7 @@ export default function CreatorViewLinkme({ profile, links: rawLinks, socialLink
           </div>
 
           {/* Hero spacer with name + handle overlaid */}
-          <div className="relative w-full" style={{ height: "52vh", minHeight: "320px", maxHeight: "460px" }}>
+          <div className="relative w-full" style={{ height: "58vh", minHeight: "360px", maxHeight: "520px" }}>
             {/* Multi-layer cinematic gradient — extends full height, solid at bottom */}
             <div className="absolute inset-0 pointer-events-none" style={{
               background: `linear-gradient(to top, hsl(var(--background)) 0%, hsl(var(--background)) 16%, hsl(var(--background) / 0.9) 28%, hsl(var(--background) / 0.5) 46%, hsl(var(--background) / 0.1) 65%, transparent 85%)`
