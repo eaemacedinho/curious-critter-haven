@@ -13,6 +13,7 @@ export interface CreatorProfile {
   avatar_url_layout2: string;
   cover_url_layout2: string;
   verified: boolean;
+  public_layout: string;
   tags: { label: string; color?: string }[];
   stats: { value: string; label: string }[];
   brands: { name: string; logo_url?: string }[];
