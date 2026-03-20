@@ -50,10 +50,19 @@ export default function CreatorEdit() {
     );
   }
 
+  const layoutOptions = [
+    { id: "layout1", label: "Padrão" },
+    { id: "layout2", label: "Imersivo" },
+    { id: "minimal", label: "Minimalista" },
+    { id: "grid", label: "Grid" },
+    { id: "dark", label: "Dark" },
+  ];
+
   const handleSetPublicLayout = async (layout: string) => {
     try {
       await saveProfile({ public_layout: layout } as any);
-      toast.success(`${layout === "layout2" ? "Layout 2" : "Layout 1"} definido como página pública`);
+      const name = layoutOptions.find(l => l.id === layout)?.label || layout;
+      toast.success(`Layout "${name}" definido como página pública`);
     } catch {
       toast.error("Erro ao salvar layout");
     }
