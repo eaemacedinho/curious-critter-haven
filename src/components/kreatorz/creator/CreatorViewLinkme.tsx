@@ -98,9 +98,9 @@ export default function CreatorViewLinkme({ profile, links: rawLinks, socialLink
 
           {/* Hero spacer with name + handle overlaid */}
           <div className="relative w-full" style={{ height: "58vh", minHeight: "340px", maxHeight: "520px" }}>
-            {/* Multi-layer cinematic gradient */}
-            <div className="absolute inset-x-0 bottom-0 h-[75%] pointer-events-none" style={{
-              background: `linear-gradient(to top, hsl(var(--background)) 0%, hsl(var(--background) / 0.9) 20%, hsl(var(--background) / 0.5) 50%, transparent 100%)`
+            {/* Multi-layer cinematic gradient — extends full height, solid at bottom */}
+            <div className="absolute inset-0 pointer-events-none" style={{
+              background: `linear-gradient(to top, hsl(var(--background)) 0%, hsl(var(--background)) 8%, hsl(var(--background) / 0.95) 15%, hsl(var(--background) / 0.7) 35%, hsl(var(--background) / 0.3) 55%, transparent 80%)`
             }} />
             {!heroImage && (
               <div className="w-full h-full bg-gradient-to-b from-primary/30 to-background flex items-center justify-center">
@@ -119,7 +119,7 @@ export default function CreatorViewLinkme({ profile, links: rawLinks, socialLink
                 <p className="text-sm text-white/70 mt-0.5 drop-shadow-[0_1px_6px_rgba(0,0,0,0.4)]">@{profile.handle.replace(/^@+/, "")}</p>
               )}
 
-              {/* Social Icons - right in the gradient zone */}
+              {/* Social Icons */}
               {socialLinks.length > 0 && (
                 <div className="flex justify-center gap-3 mt-3">
                   {socialLinks.map((soc) => (
@@ -134,8 +134,8 @@ export default function CreatorViewLinkme({ profile, links: rawLinks, socialLink
             </div>
           </div>
 
-          {/* Content */}
-          <div className="relative pb-12" style={{ background: "hsl(var(--background))" }}>
+          {/* Content — no gap, seamless transition */}
+          <div className="relative pb-12 -mt-px" style={{ background: "hsl(var(--background))" }}>
 
             {/* Stats */}
             {stats.length > 0 && (
