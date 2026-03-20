@@ -718,6 +718,21 @@ const CreatorEditPanel = forwardRef<CreatorEditPanelHandle, Props>(function Crea
                 <input value={prod.url || ""} onChange={(e) => { const arr = [...prods]; arr[i] = { ...arr[i], url: e.target.value }; setProds(arr); }} placeholder="Link de compra" className={`${inputClass} flex-1`} />
               </div>
             </div>
+            <div className="flex items-center gap-2 pt-1">
+              <span className="text-[0.62rem] text-k-4 font-semibold">Cores:</span>
+              <label className="flex items-center gap-1 text-[0.6rem] text-k-4" title="Fundo">
+                🎨 <input type="color" value={prod.bg_color || "#1a1a2e"} onChange={(e) => { const arr = [...prods]; arr[i] = { ...arr[i], bg_color: e.target.value }; setProds(arr); }} className="w-5 h-5 rounded cursor-pointer border-0 bg-transparent" />
+                {prod.bg_color && <button onClick={() => { const arr = [...prods]; arr[i] = { ...arr[i], bg_color: null }; setProds(arr); }} className="text-k-4 hover:text-k-err text-[0.6rem]">✕</button>}
+              </label>
+              <label className="flex items-center gap-1 text-[0.6rem] text-k-4" title="Texto">
+                Aa <input type="color" value={prod.text_color || "#ffffff"} onChange={(e) => { const arr = [...prods]; arr[i] = { ...arr[i], text_color: e.target.value }; setProds(arr); }} className="w-5 h-5 rounded cursor-pointer border-0 bg-transparent" />
+                {prod.text_color && <button onClick={() => { const arr = [...prods]; arr[i] = { ...arr[i], text_color: null }; setProds(arr); }} className="text-k-4 hover:text-k-err text-[0.6rem]">✕</button>}
+              </label>
+              <label className="flex items-center gap-1 text-[0.6rem] text-k-4" title="Borda">
+                ▢ <input type="color" value={prod.border_color || "#333355"} onChange={(e) => { const arr = [...prods]; arr[i] = { ...arr[i], border_color: e.target.value }; setProds(arr); }} className="w-5 h-5 rounded cursor-pointer border-0 bg-transparent" />
+                {prod.border_color && <button onClick={() => { const arr = [...prods]; arr[i] = { ...arr[i], border_color: null }; setProds(arr); }} className="text-k-4 hover:text-k-err text-[0.6rem]">✕</button>}
+              </label>
+            </div>
           </div>
         ))}
         <p className={sizeHint}>📐 Imagem ideal: <strong>400×400px</strong> (1:1, quadrada)</p>
