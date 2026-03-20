@@ -308,6 +308,7 @@ export function useCreatorData(userId: string | undefined) {
           url: campaign.url || "",
           live: campaign.live || false,
           sort_order: campaign.sort_order,
+          expires_at: campaign.expires_at || null,
         }))
       );
 
