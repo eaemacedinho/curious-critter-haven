@@ -149,6 +149,7 @@ const CreatorEditPanel = forwardRef<CreatorEditPanelHandle, Props>(function Crea
   const [shapeProducts, setShapeProducts] = useState<"rounded" | "circular" | "pill" | "shadow" | "polaroid">(profile.image_shape_products || "rounded");
   const [shapeCampaigns, setShapeCampaigns] = useState<"rounded" | "circular" | "pill" | "shadow" | "polaroid">(profile.image_shape_campaigns || "rounded");
   const [shapeLinks, setShapeLinks] = useState<"rounded" | "circular" | "pill" | "shadow" | "polaroid">(profile.image_shape_links || "rounded");
+  const [pageEffects, setPageEffects] = useState<PageEffect[]>((profile.page_effects || []) as PageEffect[]);
   const [links, setLinks] = useState(initialLinks);
   const [social, setSocial] = useState(() =>
     initialSocial.map((s) => {
