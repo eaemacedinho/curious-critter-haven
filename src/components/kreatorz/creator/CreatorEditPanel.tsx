@@ -6,6 +6,7 @@ import VerifiedBadge from "./VerifiedBadge";
 import { ConfirmDialog } from "@/components/ui/confirm-dialog";
 import CreatorLivePreview from "./CreatorLivePreview";
 import { LinkIcon, detectPlatform } from "./SocialIcon";
+import { EFFECT_OPTIONS, type PageEffect } from "./PageEffects";
 
 const emojiIcons = ["⭐", "▶", "🎵", "📄", "🛍", "📸", "🎮", "💼", "🎨", "📚", "🔗", "💰", "🎧", "📦", "🎬", "💎"];
 
