@@ -327,20 +327,27 @@ export default function CreatorViewLinkme({ profile, links: rawLinks, socialLink
 
 function LinkmeCard({ link, shape }: { link: CreatorLink; shape?: string }) {
   const sc = shapeClass(shape);
+  const customStyle: React.CSSProperties = {
+    ...(link.bg_color ? { backgroundColor: link.bg_color } : {}),
+    ...(link.text_color ? { color: link.text_color } : {}),
+    ...(link.border_color ? { borderColor: link.border_color, borderWidth: "1px", borderStyle: "solid" } : {}),
+  };
+  const hasCustomBg = Boolean(link.bg_color);
   return (
     <a href={link.url} target="_blank" rel="noopener noreferrer"
       className={`group relative block w-full ${sc} overflow-hidden transition-all duration-300 hover:-translate-y-1 active:scale-[0.98]`}>
       <div className={`flex items-center gap-4 p-4 sm:p-5 min-h-[56px] ${
-        link.featured
+        !hasCustomBg ? (link.featured
           ? "bg-gradient-to-r from-primary/25 to-primary/10 border border-primary/25"
-          : "bg-card/70 backdrop-blur-xl border border-border"
-      } ${sc} transition-all duration-300 group-hover:border-primary/30`}>
+          : "bg-card/70 backdrop-blur-xl border border-border") : ""
+      } ${sc} transition-all duration-300 group-hover:border-primary/30`}
+        style={customStyle}>
         <div className="w-11 h-11 rounded-xl bg-primary/10 flex items-center justify-center flex-shrink-0 text-lg transition-transform group-hover:scale-110">
           {link.icon}
         </div>
         <div className="flex-1 min-w-0">
-          <h4 className="text-sm font-semibold text-foreground leading-snug">{link.title}</h4>
-          {link.subtitle && <span className="font-body text-[0.72rem] text-muted-foreground line-clamp-1">{link.subtitle}</span>}
+          <h4 className="text-sm font-semibold leading-snug">{link.title}</h4>
+          {link.subtitle && <span className="font-body text-[0.72rem] opacity-55 line-clamp-1">{link.subtitle}</span>}
         </div>
         <div className="opacity-30 group-hover:opacity-60 transition-opacity">
           <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M5 12h14M12 5l7 7-7 7" /></svg>
