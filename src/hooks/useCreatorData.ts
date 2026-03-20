@@ -12,7 +12,7 @@ export interface CreatorProfile {
   cover_url: string;
   tags: { label: string; color?: string }[];
   stats: { value: string; label: string }[];
-  brands: string[];
+  brands: { name: string; logo_url?: string }[];
 }
 
 export interface CreatorLink {
