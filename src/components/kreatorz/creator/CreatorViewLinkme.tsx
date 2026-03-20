@@ -387,8 +387,8 @@ function LinkmeCard({ link, shape }: { link: CreatorLink; shape?: string }) {
           : "bg-card/70 backdrop-blur-xl border border-border") : ""
       } ${sc} transition-all duration-300 group-hover:border-primary/30`}
         style={customStyle}>
-        <div className="w-11 h-11 rounded-xl bg-primary/10 flex items-center justify-center flex-shrink-0 text-lg transition-transform group-hover:scale-110">
-          {link.icon}
+        <div className="w-11 h-11 rounded-xl bg-primary/10 flex items-center justify-center flex-shrink-0 transition-transform group-hover:scale-110">
+          <LinkIcon icon={link.icon} url={link.url} size={18} />
         </div>
         <div className="flex-1 min-w-0">
           <h4 className="text-sm font-semibold leading-snug">{link.title}</h4>

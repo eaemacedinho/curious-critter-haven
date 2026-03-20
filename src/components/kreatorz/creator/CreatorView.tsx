@@ -236,8 +236,8 @@ export default function CreatorView({ profile, links: rawLinks, socialLinks: raw
                           ...(link.text_color ? { color: link.text_color } : {}),
                           ...(link.border_color ? { borderColor: link.border_color, borderWidth: "1px", borderStyle: "solid" } : {}),
                         }}>
-                        <div className={`w-[44px] h-[44px] rounded-xl flex items-center justify-center flex-shrink-0 text-lg transition-transform duration-300 group-hover:scale-110 ${link.featured ? "bg-primary-foreground/15" : "bg-primary/5"}`}>
-                          {link.icon}
+                        <div className={`w-[44px] h-[44px] rounded-xl flex items-center justify-center flex-shrink-0 transition-transform duration-300 group-hover:scale-110 ${link.featured ? "bg-primary-foreground/15" : "bg-primary/5"}`}>
+                          <LinkIcon icon={link.icon} url={link.url} size={18} />
                         </div>
                         <div className="flex-1 min-w-0">
                           <h4 className="text-sm font-semibold leading-snug">{link.title}</h4>
