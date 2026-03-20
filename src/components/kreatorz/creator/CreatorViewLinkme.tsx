@@ -47,21 +47,25 @@ export default function CreatorViewLinkme({ profile, links: rawLinks, socialLink
 
   return (
     <div className="fixed inset-0 flex justify-center bg-background">
-      {/* Fixed hero background image — stays behind everything */}
-      {heroImage && (
-        <div className="fixed inset-0 z-0">
-          <img
-            src={heroImage}
-            alt={profile.name}
-            className="w-full h-full object-cover"
-          />
-          {/* Dark overlay that increases on scroll */}
-          <div
-            className="absolute inset-0 bg-background transition-opacity duration-100"
-            style={{ opacity: overlayOpacity }}
-          />
-        </div>
-      )}
+      {/* Container column — everything is inside this 430px wrapper */}
+      <div className="w-full max-w-[430px] relative">
+        {/* Fixed-position hero background — clipped to the column */}
+        {heroImage && (
+          <div className="absolute inset-0 z-0 overflow-hidden">
+            <div className="sticky top-0 w-full h-screen">
+              <img
+                src={heroImage}
+                alt={profile.name}
+                className="w-full h-full object-cover"
+              />
+              {/* Dark overlay that increases on scroll */}
+              <div
+                className="absolute inset-0 bg-background transition-opacity duration-100"
+                style={{ opacity: overlayOpacity }}
+              />
+            </div>
+          </div>
+        )}
 
       {/* Sticky top header — fades in on scroll */}
       <div
