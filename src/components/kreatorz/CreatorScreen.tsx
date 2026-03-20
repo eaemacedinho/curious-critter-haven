@@ -19,6 +19,7 @@ export default function CreatorScreen() {
     saveProducts,
     saveCampaigns,
     uploadImage,
+    uploadContentImage,
     refetch,
   } = useCreatorData(user?.id);
   const [editing, setEditing] = useState(false);
