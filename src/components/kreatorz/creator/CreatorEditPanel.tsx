@@ -94,7 +94,7 @@ interface Props {
   socialLinks: SocialLink[];
   products: CreatorProduct[];
   campaigns: CreatorCampaign[];
-  activeLayout?: "layout1" | "layout2";
+  activeLayout?: string;
   onSaveProfile: (updates: Partial<CreatorProfile>) => Promise<void>;
   onSaveLinks: (links: CreatorLink[]) => Promise<void>;
   onSaveSocialLinks: (links: SocialLink[]) => Promise<void>;
