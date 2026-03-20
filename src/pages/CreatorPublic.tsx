@@ -18,6 +18,9 @@ const normalizeProfile = (creator: any): CreatorProfile => ({
   image_shape_links: creator.image_shape_links || creator.image_shape || "rounded",
   font_family: creator.font_family || "default",
   font_size: creator.font_size || "medium",
+  color_name: creator.color_name || null,
+  color_bio: creator.color_bio || null,
+  color_section_titles: creator.color_section_titles || null,
   tags: Array.isArray(creator.tags) ? creator.tags : [],
   stats: Array.isArray(creator.stats) ? creator.stats : [],
   brands: Array.isArray(creator.brands)
