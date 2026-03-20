@@ -5,8 +5,7 @@ import ImageCropper from "./ImageCropper";
 import VerifiedBadge from "./VerifiedBadge";
 import { ConfirmDialog } from "@/components/ui/confirm-dialog";
 import CreatorLivePreview from "./CreatorLivePreview";
-import { LinkIcon, socialPlatformKeys, detectPlatform } from "./SocialIcon";
-import SocialIcon from "./SocialIcon";
+import { LinkIcon, detectPlatform } from "./SocialIcon";
 
 const emojiIcons = ["⭐", "▶", "🎵", "📄", "🛍", "📸", "🎮", "💼", "🎨", "📚", "🔗", "💰", "🎧", "📦", "🎬", "💎"];
 
