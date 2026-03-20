@@ -639,9 +639,44 @@ const CreatorEditPanel = forwardRef<CreatorEditPanelHandle, Props>(function Crea
               <button onClick={() => setCamps(camps.filter((_, j) => j !== i))} className="text-k-4 hover:text-k-err text-xs">✕</button>
             </div>
             {camp.live && (
-              <div className="flex items-center gap-2 px-2 py-1.5 bg-primary/10 rounded-lg">
-                <span className="w-2 h-2 rounded-full bg-k-err animate-k-live-dot" />
-                <span className="text-[0.65rem] text-k-300 font-semibold">Esta campanha aparecerá em destaque no topo da página</span>
+              <div className="space-y-2">
+                <div className="flex items-center gap-2 px-2 py-1.5 bg-primary/10 rounded-lg">
+                  <span className="w-2 h-2 rounded-full bg-k-err animate-k-live-dot" />
+                  <span className="text-[0.65rem] text-k-300 font-semibold">Esta campanha aparecerá em destaque no topo da página</span>
+                </div>
+                <div>
+                  <label className={labelClass}>⏱ Duração do Spotlight (dias)</label>
+                  <div className="flex gap-2 items-center">
+                    <select
+                      value={camp.expires_at ? "custom" : "indefinido"}
+                      onChange={(e) => {
+                        const arr = [...camps];
+                        if (e.target.value === "indefinido") {
+                          arr[i] = { ...arr[i], expires_at: null };
+                        } else {
+                          const days = parseInt(e.target.value === "custom" ? "7" : e.target.value);
+                          const exp = new Date();
+                          exp.setDate(exp.getDate() + days);
+                          arr[i] = { ...arr[i], expires_at: exp.toISOString() };
+                        }
+                        setCamps(arr);
+                      }}
+                      className={`${inputClass} w-40`}
+                    >
+                      <option value="indefinido">♾ Sem limite</option>
+                      <option value="1">1 dia</option>
+                      <option value="3">3 dias</option>
+                      <option value="7">7 dias</option>
+                      <option value="14">14 dias</option>
+                      <option value="30">30 dias</option>
+                    </select>
+                    {camp.expires_at && (
+                      <span className="text-[0.65rem] text-k-warn font-semibold">
+                        Expira em: {new Date(camp.expires_at).toLocaleDateString("pt-BR")}
+                      </span>
+                    )}
+                  </div>
+                </div>
               </div>
             )}
             <input value={camp.description || ""} onChange={(e) => { const arr = [...camps]; arr[i] = { ...arr[i], description: e.target.value }; setCamps(arr); }} placeholder="Descrição" className={inputClass} />
