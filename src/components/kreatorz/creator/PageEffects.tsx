@@ -1,18 +1,12 @@
 import { useEffect, useRef, useState, useMemo } from "react";
 
 export type PageEffect =
-  | "particles"
-  | "fireflies"
   | "snow"
-  | "confetti"
   | "floating-emojis"
-  | "glow-borders"
-  | "gradient-bg"
   | "sparkle-cursor"
   | "aurora"
   | "star-rain"
-  | "bubbles"
-  | "matrix";
+  | "bubbles";
 
 export interface EffectOption {
   id: PageEffect;
@@ -29,8 +23,10 @@ export const EFFECT_OPTIONS: EffectOption[] = [
   { id: "aurora", label: "Aurora Boreal", emoji: "🌌", description: "Ondas coloridas de aurora no fundo", preview: "" },
   { id: "star-rain", label: "Chuva de Estrelas", emoji: "🌠", description: "Estrelas cadentes cruzando a tela", preview: "" },
   { id: "bubbles", label: "Bolhas de Sabão", emoji: "🫧", description: "Bolhas translúcidas subindo suavemente", preview: "" },
-  { id: "matrix", label: "Código Matrix", emoji: "💻", description: "Caracteres de código caindo estilo Matrix", preview: "" },
 ];
+
+export const DEFAULT_EMOJIS = ["🎈", "⭐", "💜", "🎵", "✨", "🦋", "🌸", "💎"];
+export const EMOJI_PALETTE = ["🎈","⭐","💜","🎵","✨","🦋","🌸","💎","❤️","🔥","🎉","🌈","💫","🎀","🍀","🌺","💖","🎶","🥳","😍","🦄","🍕","☕","🌙","💐","🏆","👑","💝","🫶","🪄","🎯","🧸"];
 
 // ====== Helper: hex to HSL components ======
 function hexToHslParts(hex: string): { h: number; s: number; l: number } | null {
@@ -58,7 +54,9 @@ function useParticleCanvas(
   type: CanvasType,
   active: boolean,
   color?: string | null,
-  container?: HTMLElement | null
+  container?: HTMLElement | null,
+  customEmojis?: string[],
+  intensity?: number // 0-100, default 50
 ) {
   useEffect(() => {
     const canvas = canvasRef.current;
@@ -86,22 +84,24 @@ function useParticleCanvas(
     };
     resize();
 
-    const emojis = ["🎈", "⭐", "💜", "🎵", "✨", "🦋", "🌸", "💎"];
+    const emojis = customEmojis && customEmojis.length > 0 ? customEmojis : DEFAULT_EMOJIS;
     const w = () => canvas.width / dpr;
     const h = () => canvas.height / dpr;
+
+    // Intensity multiplier: 0-100 mapped to 0.2-2.0
+    const intMul = intensity !== undefined ? 0.2 + (intensity / 100) * 1.8 : 1;
 
     interface Particle {
       x: number; y: number; vx: number; vy: number;
       size: number; opacity: number; life: number; maxLife: number;
       emoji?: string; color?: string; angle?: number; spin?: number;
-      // bubble-specific
       wobblePhase?: number; wobbleSpeed?: number;
-      // star-rain specific
       length?: number; speed?: number;
     }
 
     const particles: Particle[] = [];
-    const count = type === "snow" ? 40 : type === "floating-emojis" ? 12 : type === "bubbles" ? 16 : type === "star-rain" ? 8 : 30;
+    const baseCount = type === "snow" ? 40 : type === "floating-emojis" ? 12 : type === "bubbles" ? 16 : type === "star-rain" ? 8 : 30;
+    const count = Math.max(2, Math.round(baseCount * intMul));
 
     const spawn = (): Particle => {
       const base: Particle = {
@@ -114,21 +114,21 @@ function useParticleCanvas(
 
       if (type === "snow") {
         base.y = -10;
-        base.vy = 0.3 + Math.random() * 0.7;
+        base.vy = (0.3 + Math.random() * 0.7) * intMul;
         base.vx = (Math.random() - 0.5) * 0.4;
         base.size = 2 + Math.random() * 4;
         base.opacity = 0.3 + Math.random() * 0.5;
         base.color = `hsl(${baseH} ${Math.max(baseS - 40, 0)}% ${Math.min(baseL + 40, 100)}%)`;
       } else if (type === "floating-emojis") {
         base.y = h() + 20;
-        base.vy = -(0.4 + Math.random() * 0.6);
+        base.vy = -(0.4 + Math.random() * 0.6) * intMul;
         base.vx = (Math.random() - 0.5) * 0.3;
         base.size = 14 + Math.random() * 10;
         base.emoji = emojis[Math.floor(Math.random() * emojis.length)];
         base.opacity = 0.7;
       } else if (type === "bubbles") {
         base.y = h() + 20;
-        base.vy = -(0.3 + Math.random() * 0.5);
+        base.vy = -(0.3 + Math.random() * 0.5) * intMul;
         base.vx = 0;
         base.size = 8 + Math.random() * 20;
         base.opacity = 0.15 + Math.random() * 0.2;
@@ -140,7 +140,7 @@ function useParticleCanvas(
         base.x = Math.random() * w() * 1.5;
         base.y = -20;
         base.angle = Math.PI / 4 + (Math.random() - 0.5) * 0.3;
-        base.speed = 3 + Math.random() * 4;
+        base.speed = (3 + Math.random() * 4) * intMul;
         base.vx = Math.cos(base.angle) * base.speed!;
         base.vy = Math.sin(base.angle) * base.speed!;
         base.length = 20 + Math.random() * 40;
@@ -250,106 +250,10 @@ function useParticleCanvas(
       cancelAnimationFrame(animId);
       ro.disconnect();
     };
-  }, [canvasRef, type, active, color, container]);
+  }, [canvasRef, type, active, color, container, customEmojis, intensity]);
 }
 
-// ====== Matrix effect ======
-function MatrixEffect({ active, color }: { active: boolean; color?: string }) {
-  const canvasRef = useRef<HTMLCanvasElement>(null);
-
-  useEffect(() => {
-    if (!active) return;
-    const canvas = canvasRef.current;
-    if (!canvas) return;
-    const ctx = canvas.getContext("2d");
-    if (!ctx) return;
-
-    const dpr = window.devicePixelRatio || 1;
-    const parent = canvas.parentElement;
-    if (!parent) return;
-
-    const hsl = color ? hexToHslParts(color) : null;
-    const baseH = hsl?.h ?? 120;
-    const baseS = hsl?.s ?? 100;
-    const baseL = hsl?.l ?? 50;
-
-    const chars = "アイウエオカキクケコサシスセソタチツテトナニヌネノハヒフヘホマミムメモヤユヨラリルレロワヲン01234567890ABCDEFabcdef<>{}[]=/\\|;:.,~!@#$%^&*";
-    const charArray = chars.split("");
-    const fontSize = 12;
-
-    let columns: number[] = [];
-    let cw = 0;
-
-    const resize = () => {
-      const rect = parent.getBoundingClientRect();
-      canvas.width = rect.width * dpr;
-      canvas.height = rect.height * dpr;
-      canvas.style.width = rect.width + "px";
-      canvas.style.height = rect.height + "px";
-      ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
-      cw = rect.width;
-      const colCount = Math.ceil(rect.width / fontSize);
-      columns = Array.from({ length: colCount }, () => Math.random() * -100);
-    };
-    resize();
-
-    let animId: number;
-    let lastTime = 0;
-    const interval = 50;
-
-    const draw = (time: number) => {
-      if (time - lastTime < interval) {
-        animId = requestAnimationFrame(draw);
-        return;
-      }
-      lastTime = time;
-
-      const ch = canvas.height / dpr;
-      ctx.fillStyle = `hsla(var(--background) / 0.08)`;
-      ctx.fillRect(0, 0, cw, ch);
-
-      ctx.font = `${fontSize}px monospace`;
-
-      for (let i = 0; i < columns.length; i++) {
-        const char = charArray[Math.floor(Math.random() * charArray.length)];
-        const x = i * fontSize;
-        const y = columns[i] * fontSize;
-
-        // Bright head character
-        ctx.fillStyle = `hsl(${baseH} ${baseS}% ${Math.min(baseL + 30, 90)}%)`;
-        ctx.globalAlpha = 0.9;
-        ctx.fillText(char, x, y);
-
-        // Trail chars with fading
-        ctx.globalAlpha = 0.15;
-        ctx.fillStyle = `hsl(${baseH} ${baseS}% ${baseL}%)`;
-
-        if (y > ch && Math.random() > 0.975) {
-          columns[i] = 0;
-        }
-        columns[i]++;
-      }
-      ctx.globalAlpha = 1;
-      animId = requestAnimationFrame(draw);
-    };
-
-    // Initial black fill
-    ctx.fillStyle = "transparent";
-    ctx.fillRect(0, 0, cw, canvas.height / dpr);
-
-    animId = requestAnimationFrame(draw);
-    const ro = new ResizeObserver(resize);
-    ro.observe(parent);
-
-    return () => {
-      cancelAnimationFrame(animId);
-      ro.disconnect();
-    };
-  }, [active, color]);
-
-  if (!active) return null;
-  return <canvas ref={canvasRef} className="absolute inset-0 pointer-events-none z-[48] opacity-40" />;
-}
+// (Matrix effect removed)
 
 // ====== Sparkle cursor ======
 function SparkleCursor({ active, color }: { active: boolean; color?: string }) {
@@ -504,35 +408,37 @@ interface PageEffectsProps {
   effects: PageEffect[];
   color?: string;
   containerRef?: React.RefObject<HTMLElement | null>;
+  emojis?: string[];
+  intensity?: Record<string, number>; // effect id -> 0-100
 }
 
-export default function PageEffects({ effects, color, containerRef }: PageEffectsProps) {
+export default function PageEffects({ effects, color, containerRef, emojis, intensity }: PageEffectsProps) {
   const particleRef = useRef<HTMLCanvasElement>(null);
+  const snowRef = useRef<HTMLCanvasElement>(null);
+  const emojiRef = useRef<HTMLCanvasElement>(null);
+  const starRef = useRef<HTMLCanvasElement>(null);
+  const bubbleRef = useRef<HTMLCanvasElement>(null);
   const container = containerRef?.current || null;
 
   const hasSnow = effects.includes("snow");
   const hasEmojis = effects.includes("floating-emojis");
   const hasStarRain = effects.includes("star-rain");
   const hasBubbles = effects.includes("bubbles");
-  const hasMatrix = effects.includes("matrix");
   const hasSparkleCursor = effects.includes("sparkle-cursor");
   const hasAurora = effects.includes("aurora");
 
-  // Pick the first canvas-based particle effect (only one canvas at a time)
-  const canvasEffect: CanvasType | null = hasSnow ? "snow"
-    : hasEmojis ? "floating-emojis"
-    : hasStarRain ? "star-rain"
-    : hasBubbles ? "bubbles"
-    : null;
-
-  useParticleCanvas(particleRef, canvasEffect || "snow", !!canvasEffect, color, container);
+  // Each canvas-based effect gets its own canvas now
+  useParticleCanvas(snowRef, "snow", hasSnow, color, container, undefined, intensity?.snow);
+  useParticleCanvas(emojiRef, "floating-emojis", hasEmojis, color, container, emojis, intensity?.["floating-emojis"]);
+  useParticleCanvas(starRef, "star-rain", hasStarRain, color, container, undefined, intensity?.["star-rain"]);
+  useParticleCanvas(bubbleRef, "bubbles", hasBubbles, color, container, undefined, intensity?.bubbles);
 
   return (
     <>
-      {canvasEffect && (
-        <canvas ref={particleRef} className="absolute inset-0 pointer-events-none z-[50]" />
-      )}
-      <MatrixEffect active={hasMatrix} color={color} />
+      {hasSnow && <canvas ref={snowRef} className="absolute inset-0 pointer-events-none z-[50]" />}
+      {hasEmojis && <canvas ref={emojiRef} className="absolute inset-0 pointer-events-none z-[50]" />}
+      {hasStarRain && <canvas ref={starRef} className="absolute inset-0 pointer-events-none z-[50]" />}
+      {hasBubbles && <canvas ref={bubbleRef} className="absolute inset-0 pointer-events-none z-[50]" />}
       <SparkleCursor active={hasSparkleCursor} color={color} />
       <AuroraEffect active={hasAurora} color={color} />
     </>

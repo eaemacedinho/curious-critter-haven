@@ -6,7 +6,8 @@ import VerifiedBadge from "./VerifiedBadge";
 import { ConfirmDialog } from "@/components/ui/confirm-dialog";
 import CreatorLivePreview from "./CreatorLivePreview";
 import { LinkIcon, detectPlatform } from "./SocialIcon";
-import { EFFECT_OPTIONS, type PageEffect } from "./PageEffects";
+import { EFFECT_OPTIONS, DEFAULT_EMOJIS, EMOJI_PALETTE, type PageEffect } from "./PageEffects";
+import { Slider } from "@/components/ui/slider";
 
 const emojiIcons = ["⭐", "▶", "🎵", "📄", "🛍", "📸", "🎮", "💼", "🎨", "📚", "🔗", "💰", "🎧", "📦", "🎬", "💎"];
 
@@ -151,6 +152,8 @@ const CreatorEditPanel = forwardRef<CreatorEditPanelHandle, Props>(function Crea
   const [shapeLinks, setShapeLinks] = useState<"rounded" | "circular" | "pill" | "shadow" | "polaroid">(profile.image_shape_links || "rounded");
   const [pageEffects, setPageEffects] = useState<PageEffect[]>((profile.page_effects?.effects || []) as PageEffect[]);
   const [effectColor, setEffectColor] = useState<string>(profile.page_effects?.color || "#8B5CF6");
+  const [effectEmojis, setEffectEmojis] = useState<string[]>(profile.page_effects?.emojis || [...DEFAULT_EMOJIS]);
+  const [effectIntensity, setEffectIntensity] = useState<Record<string, number>>(profile.page_effects?.intensity || {});
   const [links, setLinks] = useState(initialLinks);
   const [social, setSocial] = useState(() =>
     initialSocial.map((s) => {
@@ -194,8 +197,8 @@ const CreatorEditPanel = forwardRef<CreatorEditPanelHandle, Props>(function Crea
     image_shape_products: shapeProducts,
     image_shape_campaigns: shapeCampaigns,
     image_shape_links: shapeLinks,
-    page_effects: { effects: pageEffects, color: effectColor },
-  }), [profile, name, handle, bio, avatarUrl, coverUrl, avatarUrlL2, coverUrlL2, verified, tags, stats, brands, shapeProducts, shapeCampaigns, shapeLinks, pageEffects, effectColor]);
+    page_effects: { effects: pageEffects, color: effectColor, emojis: effectEmojis, intensity: effectIntensity },
+  }), [profile, name, handle, bio, avatarUrl, coverUrl, avatarUrlL2, coverUrlL2, verified, tags, stats, brands, shapeProducts, shapeCampaigns, shapeLinks, pageEffects, effectColor, effectEmojis, effectIntensity]);
 
   const isValidUrl = (url: string) => {
     if (!url) return true;
@@ -325,7 +328,7 @@ const CreatorEditPanel = forwardRef<CreatorEditPanelHandle, Props>(function Crea
           }))
           .filter((camp) => !isEmptyCampaignEntry(camp));
 
-      const baseProfile = { name, handle, bio, avatar_url: avatarUrl, cover_url: coverUrl, avatar_url_layout2: avatarUrlL2, cover_url_layout2: coverUrlL2, verified, tags, stats, brands, image_shape: shapeProducts, image_shape_products: shapeProducts, image_shape_campaigns: shapeCampaigns, image_shape_links: shapeLinks, page_effects: { effects: pageEffects, color: effectColor } };
+      const baseProfile = { name, handle, bio, avatar_url: avatarUrl, cover_url: coverUrl, avatar_url_layout2: avatarUrlL2, cover_url_layout2: coverUrlL2, verified, tags, stats, brands, image_shape: shapeProducts, image_shape_products: shapeProducts, image_shape_campaigns: shapeCampaigns, image_shape_links: shapeLinks, page_effects: { effects: pageEffects, color: effectColor, emojis: effectEmojis, intensity: effectIntensity } };
 
       if (cropImage) {
         const { file, type } = cropImage;
@@ -645,7 +648,80 @@ const CreatorEditPanel = forwardRef<CreatorEditPanelHandle, Props>(function Crea
           })}
         </div>
         {pageEffects.length > 0 && (
-          <div className="mt-3 space-y-2">
+          <div className="mt-3 space-y-3">
+            {/* Intensity sliders per active effect */}
+            <div className="space-y-2">
+              <span className="text-[0.72rem] font-semibold text-k-2">⚡ Intensidade / Velocidade</span>
+              {pageEffects.map((eid) => {
+                const opt = EFFECT_OPTIONS.find((o) => o.id === eid);
+                if (!opt) return null;
+                const val = effectIntensity[eid] ?? 50;
+                return (
+                  <div key={eid} className="flex items-center gap-3 p-2 bg-k-800/50 border border-primary/10 rounded-lg">
+                    <span className="text-sm flex-shrink-0">{opt.emoji}</span>
+                    <span className="text-[0.65rem] text-k-3 w-20 truncate">{opt.label}</span>
+                    <Slider
+                      value={[val]}
+                      min={5}
+                      max={100}
+                      step={5}
+                      onValueChange={([v]) => setEffectIntensity((prev) => ({ ...prev, [eid]: v }))}
+                      className="flex-1"
+                    />
+                    <span className="text-[0.6rem] text-k-4 w-8 text-right font-mono">{val}%</span>
+                  </div>
+                );
+              })}
+            </div>
+
+            {/* Emoji picker for floating-emojis */}
+            {pageEffects.includes("floating-emojis") && (
+              <div className="p-3 bg-k-800/50 border border-primary/10 rounded-xl space-y-2">
+                <span className="text-[0.72rem] font-semibold text-k-2">🎈 Emojis do efeito flutuante</span>
+                <p className="text-[0.58rem] text-k-4">Toque para adicionar/remover. Escolha até 12.</p>
+                <div className="flex flex-wrap gap-1.5">
+                  {EMOJI_PALETTE.map((em) => {
+                    const isSelected = effectEmojis.includes(em);
+                    return (
+                      <button
+                        key={em}
+                        onClick={() => {
+                          setEffectEmojis((prev) => {
+                            if (prev.includes(em)) return prev.filter((e) => e !== em);
+                            if (prev.length >= 12) return prev;
+                            return [...prev, em];
+                          });
+                        }}
+                        className={`w-8 h-8 rounded-lg text-base flex items-center justify-center transition-all active:scale-90 ${
+                          isSelected
+                            ? "bg-primary/20 ring-2 ring-primary/40 scale-110"
+                            : "bg-k-800 hover:bg-k-700"
+                        }`}
+                      >
+                        {em}
+                      </button>
+                    );
+                  })}
+                </div>
+                <div className="flex items-center gap-2 mt-1">
+                  <span className="text-[0.58rem] text-k-4">Selecionados:</span>
+                  <div className="flex gap-1">
+                    {effectEmojis.map((em, i) => (
+                      <span key={i} className="text-sm">{em}</span>
+                    ))}
+                  </div>
+                  {effectEmojis.length > 0 && (
+                    <button
+                      onClick={() => setEffectEmojis([...DEFAULT_EMOJIS])}
+                      className="ml-auto text-[0.58rem] text-k-4 hover:text-primary underline"
+                    >
+                      Restaurar padrão
+                    </button>
+                  )}
+                </div>
+              </div>
+            )}
+
             {/* Color picker */}
             <div className="flex items-center gap-3 p-3 bg-k-800/50 border border-primary/10 rounded-xl">
               <label
