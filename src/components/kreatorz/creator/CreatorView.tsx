@@ -5,6 +5,8 @@ import SocialIcon from "./SocialIcon";
 import VerifiedBadge from "./VerifiedBadge";
 import SpotlightCampaign from "./SpotlightCampaign";
 
+const shapeClass = (shape?: string) => shape === "circular" ? "rounded-full" : shape === "pill" ? "rounded-[2rem]" : "rounded-2xl";
+
 interface Props {
   profile: CreatorProfile;
   links: CreatorLink[];
@@ -156,7 +158,7 @@ export default function CreatorView({ profile, links: rawLinks, socialLinks: raw
           <div className="flex flex-col gap-3 mb-8 animate-k-fade-up" style={{ animationDelay: ".15s" }}>
             {links.map((link, i) => (
               <div key={link.id} onClick={() => handleLinkClick(i, link.url)}
-                className={`flex items-center gap-4 p-4 sm:p-5 rounded-2xl cursor-pointer transition-all duration-300 relative overflow-hidden group min-h-[56px]
+                className={`flex items-center gap-4 p-4 sm:p-5 ${shapeClass(profile.image_shape)} cursor-pointer transition-all duration-300 relative overflow-hidden group min-h-[56px]
                   ${clickedLink === i ? "scale-[0.97]" : ""}
                   ${link.featured
                     ? "gradient-primary border-transparent shadow-k-purple-lg hover:-translate-y-1"
@@ -186,7 +188,7 @@ export default function CreatorView({ profile, links: rawLinks, socialLinks: raw
             <div className="grid grid-cols-2 gap-3 mb-8">
               {products.map((prod) => (
                 <div key={prod.id} onClick={() => prod.url && window.open(prod.url, "_blank")}
-                  className="bg-card/65 backdrop-blur-xl border border-border rounded-2xl overflow-hidden transition-all duration-300 cursor-pointer group hover:border-primary/20 hover:-translate-y-1 hover:shadow-k-purple active:scale-[0.97]">
+                  className={`bg-card/65 backdrop-blur-xl border border-border ${shapeClass(profile.image_shape)} overflow-hidden transition-all duration-300 cursor-pointer group hover:border-primary/20 hover:-translate-y-1 hover:shadow-k-purple active:scale-[0.97]`}>
                   {prod.image_url ? (
                     <img src={prod.image_url} alt={prod.title} className="w-full h-28 object-cover" />
                   ) : (
@@ -211,9 +213,9 @@ export default function CreatorView({ profile, links: rawLinks, socialLinks: raw
             <div className="flex flex-col gap-3 mb-8">
               {pastCampaigns.map((camp) => (
                 <div key={camp.id} onClick={() => camp.url && window.open(camp.url, "_blank")}
-                  className="bg-card/65 backdrop-blur-xl border border-border rounded-2xl p-4 sm:p-5 transition-all duration-300 hover:border-primary/20 group cursor-pointer active:scale-[0.98] opacity-75 hover:opacity-100">
+                  className={`bg-card/65 backdrop-blur-xl border border-border ${shapeClass(profile.image_shape)} p-4 sm:p-5 transition-all duration-300 hover:border-primary/20 group cursor-pointer active:scale-[0.98] opacity-75 hover:opacity-100`}>
                   {camp.image_url && (
-                    <div className="w-full h-[100px] rounded-xl overflow-hidden mb-3">
+                    <div className={`w-full h-[100px] ${shapeClass(profile.image_shape)} overflow-hidden mb-3`}>
                       <img src={camp.image_url} alt="" className="w-full h-full object-cover" />
                     </div>
                   )}

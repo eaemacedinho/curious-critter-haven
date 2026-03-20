@@ -264,6 +264,7 @@ export type Database = {
           created_at: string
           handle: string
           id: string
+          image_shape: string
           name: string
           public_layout: string
           stats: Json | null
@@ -283,6 +284,7 @@ export type Database = {
           created_at?: string
           handle?: string
           id?: string
+          image_shape?: string
           name?: string
           public_layout?: string
           stats?: Json | null
@@ -302,6 +304,7 @@ export type Database = {
           created_at?: string
           handle?: string
           id?: string
+          image_shape?: string
           name?: string
           public_layout?: string
           stats?: Json | null

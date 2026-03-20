@@ -12,6 +12,7 @@ const normalizeProfile = (creator: any): CreatorProfile => ({
   cover_url_layout2: creator.cover_url_layout2 || "",
   verified: creator.verified ?? false,
   public_layout: creator.public_layout || "layout1",
+  image_shape: creator.image_shape || "rounded",
   tags: Array.isArray(creator.tags) ? creator.tags : [],
   stats: Array.isArray(creator.stats) ? creator.stats : [],
   brands: Array.isArray(creator.brands)

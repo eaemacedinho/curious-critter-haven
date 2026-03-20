@@ -1,0 +1,1 @@
+ALTER TABLE public.creators ADD COLUMN IF NOT EXISTS image_shape text NOT NULL DEFAULT 'rounded';

@@ -5,6 +5,8 @@ import VerifiedBadge from "./VerifiedBadge";
 import SpotlightCampaign from "./SpotlightCampaign";
 import type { CreatorProfile, CreatorLink, SocialLink, CreatorProduct, CreatorCampaign } from "@/hooks/useCreatorData";
 
+const shapeClass = (shape?: string) => shape === "circular" ? "rounded-full" : shape === "pill" ? "rounded-[2rem]" : "rounded-2xl";
+
 interface Props {
   profile: CreatorProfile;
   links: CreatorLink[];
@@ -201,7 +203,7 @@ export default function CreatorViewLinkme({ profile, links: rawLinks, socialLink
                   {links.length > 0 && (
                     <div className="flex flex-col gap-3 mt-6 px-4">
                       {links.map((link) => (
-                        <LinkmeCard key={link.id} link={link} />
+                        <LinkmeCard key={link.id} link={link} shape={profile.image_shape} />
                       ))}
                     </div>
                   )}
@@ -213,7 +215,7 @@ export default function CreatorViewLinkme({ profile, links: rawLinks, socialLink
                       <div className="grid grid-cols-2 gap-3">
                         {products.map((prod) => (
                           <div key={prod.id} onClick={() => prod.url && window.open(prod.url, "_blank")}
-                            className="bg-card/70 backdrop-blur-xl border border-border rounded-2xl overflow-hidden cursor-pointer transition-all duration-300 group hover:border-primary/30 hover:-translate-y-1 active:scale-[0.97]">
+                            className={`bg-card/70 backdrop-blur-xl border border-border ${shapeClass(profile.image_shape)} overflow-hidden cursor-pointer transition-all duration-300 group hover:border-primary/30 hover:-translate-y-1 active:scale-[0.97]`}>
                             {prod.image_url ? (
                               <div className="w-full aspect-square overflow-hidden">
                                 <img src={prod.image_url} alt="" className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105" />
@@ -240,7 +242,7 @@ export default function CreatorViewLinkme({ profile, links: rawLinks, socialLink
                       <div className="flex flex-col gap-3">
                         {pastCamps.map((camp) => (
                           <div key={camp.id} onClick={() => camp.url && window.open(camp.url, "_blank")}
-                            className="relative rounded-2xl overflow-hidden cursor-pointer group transition-all duration-300 hover:-translate-y-1 active:scale-[0.98] opacity-75 hover:opacity-100">
+                            className={`relative ${shapeClass(profile.image_shape)} overflow-hidden cursor-pointer group transition-all duration-300 hover:-translate-y-1 active:scale-[0.98] opacity-75 hover:opacity-100`}>
                             {camp.image_url ? (
                               <>
                                 <div className="w-full aspect-[16/9] overflow-hidden">
@@ -305,15 +307,16 @@ export default function CreatorViewLinkme({ profile, links: rawLinks, socialLink
 
 /* ── Sub-components ── */
 
-function LinkmeCard({ link }: { link: CreatorLink }) {
+function LinkmeCard({ link, shape }: { link: CreatorLink; shape?: string }) {
+  const sc = shapeClass(shape);
   return (
     <a href={link.url} target="_blank" rel="noopener noreferrer"
-      className="group relative block w-full rounded-2xl overflow-hidden transition-all duration-300 hover:-translate-y-1 active:scale-[0.98]">
+      className={`group relative block w-full ${sc} overflow-hidden transition-all duration-300 hover:-translate-y-1 active:scale-[0.98]`}>
       <div className={`flex items-center gap-4 p-4 sm:p-5 min-h-[56px] ${
         link.featured
           ? "bg-gradient-to-r from-primary/25 to-primary/10 border border-primary/25"
           : "bg-card/70 backdrop-blur-xl border border-border"
-      } rounded-2xl transition-all duration-300 group-hover:border-primary/30`}>
+      } ${sc} transition-all duration-300 group-hover:border-primary/30`}>
         <div className="w-11 h-11 rounded-xl bg-primary/10 flex items-center justify-center flex-shrink-0 text-lg transition-transform group-hover:scale-110">
           {link.icon}
         </div>

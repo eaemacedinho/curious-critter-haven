@@ -15,6 +15,7 @@ export interface CreatorProfile {
   cover_url_layout2: string;
   verified: boolean;
   public_layout: string;
+  image_shape: "rounded" | "circular" | "pill";
   tags: { label: string; color?: string }[];
   stats: { value: string; label: string }[];
   brands: { name: string; logo_url?: string }[];
@@ -71,6 +72,7 @@ const normalizeProfile = (creator: any): CreatorProfile => ({
   cover_url_layout2: creator.cover_url_layout2 || "",
   verified: creator.verified ?? false,
   public_layout: creator.public_layout || "layout1",
+  image_shape: creator.image_shape || "rounded",
   tags: Array.isArray(creator.tags) ? (creator.tags as CreatorProfile["tags"]) : [],
   stats: Array.isArray(creator.stats) ? (creator.stats as CreatorProfile["stats"]) : [],
   brands: Array.isArray(creator.brands)
