@@ -120,7 +120,7 @@ const CreatorEditPanel = forwardRef<CreatorEditPanelHandle, Props>(function Crea
   const [showIconPicker, setShowIconPicker] = useState<string | null>(null);
   const [newTag, setNewTag] = useState("");
   const [newBrand, setNewBrand] = useState("");
-  const [cropImage, setCropImage] = useState<{ src: string; type: "avatar" | "cover"; file: File } | null>(null);
+  const [cropImage, setCropImage] = useState<{ src: string; type: "avatar" | "cover" | "avatar_layout2" | "cover_layout2"; file: File } | null>(null);
   const [contentCrop, setContentCrop] = useState<ContentCropState>(null);
 
   const avatarRef = useRef<HTMLInputElement>(null);
