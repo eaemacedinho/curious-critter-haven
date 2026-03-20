@@ -4,6 +4,9 @@ import { supabase } from "@/integrations/supabase/client";
 import type { CreatorProfile, CreatorLink, SocialLink, CreatorProduct, CreatorCampaign } from "@/hooks/useCreatorData";
 import CreatorView from "@/components/kreatorz/creator/CreatorView";
 import CreatorViewLinkme from "@/components/kreatorz/creator/CreatorViewLinkme";
+import CreatorViewMinimal from "@/components/kreatorz/creator/CreatorViewMinimal";
+import CreatorViewGrid from "@/components/kreatorz/creator/CreatorViewGrid";
+import CreatorViewDark from "@/components/kreatorz/creator/CreatorViewDark";
 
 const normalizeProfile = (creator: any): CreatorProfile => ({
   ...creator,
