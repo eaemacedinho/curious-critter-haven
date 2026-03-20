@@ -151,9 +151,9 @@ export default function CreatorPublic() {
   const useLayout2 = profile.public_layout === "layout2";
 
   return useLayout2 ? (
-    <CreatorViewLinkme profile={profile} links={links} socialLinks={socialLinks} products={products} campaigns={campaigns} agencyName={agencyName} agencyLogoUrl={agencyLogoUrl} agencyFooterText={agencyFooterText} />
+    <CreatorViewLinkme profile={profile} links={links} socialLinks={socialLinks} products={products} campaigns={campaigns} agencyName={agencyName} agencyLogoUrl={agencyLogoUrl} agencyFooterText={agencyFooterText} agencyFooterVisible={agencyFooterVisible} agencyFooterLink={agencyFooterLink} />
   ) : (
-    <CreatorView profile={profile} links={links} socialLinks={socialLinks} products={products} campaigns={campaigns} agencyName={agencyName} agencyLogoUrl={agencyLogoUrl} agencyFooterText={agencyFooterText} />
+    <CreatorView profile={profile} links={links} socialLinks={socialLinks} products={products} campaigns={campaigns} agencyName={agencyName} agencyLogoUrl={agencyLogoUrl} agencyFooterText={agencyFooterText} agencyFooterVisible={agencyFooterVisible} agencyFooterLink={agencyFooterLink} />
   );
 }
 
