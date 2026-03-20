@@ -342,6 +342,28 @@ export function useCreatorData(userId: string | undefined) {
     return updatedProfile[field] || publicUrl;
   };
 
+  const uploadContentImage = async (file: File, folder: string): Promise<string | null> => {
+    if (!userId) return null;
+
+    const fileExtension = file.name.split(".").pop()?.toLowerCase() || "jpg";
+    const path = `${userId}/${folder}-${Date.now()}.${fileExtension}`;
+
+    const { error: uploadError } = await supabase.storage.from("content").upload(path, file, {
+      upsert: true,
+      cacheControl: "3600",
+      contentType: file.type || "image/jpeg",
+    });
+
+    if (uploadError) {
+      console.error("Content upload error:", uploadError);
+      toast.error("Erro no upload: " + uploadError.message);
+      return null;
+    }
+
+    const { data } = supabase.storage.from("content").getPublicUrl(path);
+    return data.publicUrl;
+  };
+
   return {
     profile,
     links,
