@@ -349,4 +349,6 @@ export default function CreatorView({ profile, links: rawLinks, socialLinks: raw
       </div>
     </div>
   );
+
+  return hasGlowBorders ? <GlowBorderProvider active>{content}</GlowBorderProvider> : content;
 }
