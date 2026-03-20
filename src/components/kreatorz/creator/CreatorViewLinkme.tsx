@@ -293,7 +293,7 @@ export default function CreatorViewLinkme({ profile, links: rawLinks, socialLink
                   {/* Past Campaigns */}
                   {pastCamps.length > 0 && (
                     <div className="mt-8 px-4">
-                      <SectionLabel label="Campanhas Anteriores" />
+                      <SectionLabel label="Campanhas Anteriores" color={profile.color_section_titles} />
                       <div className="flex flex-col gap-3">
                         {pastCamps.map((camp) => (
                           <div key={camp.id} onClick={() => camp.url && window.open(camp.url, "_blank")}
