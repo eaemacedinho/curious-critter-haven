@@ -93,6 +93,10 @@
     overflow-x: hidden;
   }
 
+  html {
+    overflow-x: hidden;
+  }
+
   ::-webkit-scrollbar {
     width: 3px;
   }
