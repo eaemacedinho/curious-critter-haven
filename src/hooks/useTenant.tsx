@@ -11,6 +11,7 @@ export interface Agency {
   primary_color: string;
   accent_color: string;
   domain: string;
+  footer_text: string;
 }
 
 interface TenantContextType {
