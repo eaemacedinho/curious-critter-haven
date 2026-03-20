@@ -328,6 +328,25 @@ const CreatorEditPanel = forwardRef<CreatorEditPanelHandle, Props>(function Crea
             <textarea value={bio} onChange={(e) => setBio(e.target.value)} maxLength={300} className={`${inputClass} resize-none min-h-[72px]`} placeholder="Conte um pouco sobre você, o que faz e o que inspira seu conteúdo..." />
             <div className="text-[0.68rem] text-k-4 text-right mt-1">{bio.length}/300</div>
           </div>
+          {/* Verified badge toggle */}
+          <div className="flex items-center justify-between mt-4 p-3 bg-k-800/50 border border-primary/10 rounded-xl">
+            <div>
+              <span className="text-sm font-semibold text-primary-foreground flex items-center gap-1.5">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" className="flex-shrink-0">
+                  <circle cx="12" cy="12" r="10" fill="hsl(220, 80%, 55%)" />
+                  <path d="M8.5 12.5l2 2 5-5" stroke="white" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
+                </svg>
+                Badge de Verificado
+              </span>
+              <p className="text-[0.65rem] text-k-4 mt-0.5">Exibir selo de verificação ao lado do nome</p>
+            </div>
+            <button
+              onClick={() => setVerified(!verified)}
+              className={`w-11 h-6 rounded-full transition-colors duration-200 relative flex-shrink-0 ${verified ? "bg-primary" : "bg-k-800 border border-primary/20"}`}
+            >
+              <span className={`block w-4.5 h-4.5 rounded-full bg-primary-foreground shadow-sm absolute top-[3px] transition-transform duration-200 ${verified ? "translate-x-[22px]" : "translate-x-[3px]"}`} />
+            </button>
+          </div>
         </div>
       </div>
 
