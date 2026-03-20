@@ -208,7 +208,7 @@ export function useCreatorData(userId: string | undefined, creatorId?: string) {
     if (deleteError) throw deleteError;
     if (normalizedLinks.length > 0) {
       const { error } = await supabase.from("creator_links").insert(
-        normalizedLinks.map((link) => ({ id: link.id, creator_id: link.creator_id, title: link.title, url: link.url, subtitle: link.subtitle || "", icon: link.icon || "🔗", featured: link.featured || false, active: link.active !== false, sort_order: link.sort_order }))
+        normalizedLinks.map((link) => ({ id: link.id, creator_id: link.creator_id, title: link.title, url: link.url, subtitle: link.subtitle || "", icon: link.icon || "🔗", featured: link.featured || false, active: link.active !== false, sort_order: link.sort_order, bg_color: link.bg_color || null, text_color: link.text_color || null, border_color: link.border_color || null }))
       );
       if (error) throw error;
     }
