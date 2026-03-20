@@ -70,12 +70,20 @@ export default function CreatorViewLinkme({ profile, links: rawLinks, socialLink
 
         {/* Sticky top header — fades in on scroll */}
         <div
-          className="absolute top-0 inset-x-0 z-50 flex items-center justify-center transition-opacity duration-300"
-          style={{ opacity: headerVisible ? 1 : 0, pointerEvents: headerVisible ? "auto" : "none" }}
+          className="sticky top-0 inset-x-0 z-50 transition-all duration-300"
+          style={{
+            opacity: headerVisible ? 1 : 0,
+            pointerEvents: headerVisible ? "auto" : "none",
+            transform: headerVisible ? "translateY(0)" : "translateY(-100%)",
+          }}
         >
           <div className="w-full flex items-center gap-3 px-4 py-2.5 bg-background/90 backdrop-blur-xl border-b border-primary/10">
-            {headerAvatar && (
-              <img src={headerAvatar} alt="" className="w-8 h-8 rounded-full object-cover" />
+            {headerAvatar ? (
+              <img src={headerAvatar} alt="" className="w-8 h-8 rounded-full object-cover ring-2 ring-primary/20" />
+            ) : (
+              <div className="w-8 h-8 rounded-full bg-k-800 flex items-center justify-center text-sm text-k-3 ring-2 ring-primary/20">
+                {profile.name?.[0] || "?"}
+              </div>
             )}
             <h1 className="text-sm font-bold text-primary-foreground truncate flex items-center gap-1.5">
               {profile.name}
