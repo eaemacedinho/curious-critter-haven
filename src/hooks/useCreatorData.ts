@@ -27,6 +27,9 @@ export interface CreatorProfile {
   page_effects: { effects: string[]; color?: string; emojis?: string[]; intensity?: Record<string, number> };
   font_family: string;
   font_size: string;
+  color_name: string | null;
+  color_bio: string | null;
+  color_section_titles: string | null;
 }
 
 export interface CreatorLink {
