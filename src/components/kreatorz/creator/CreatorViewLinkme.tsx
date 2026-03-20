@@ -223,7 +223,7 @@ export default function CreatorViewLinkme({ profile, links: rawLinks, socialLink
                       <div className="grid grid-cols-2 gap-3">
                         {products.map((prod) => (
                           <div key={prod.id} onClick={() => prod.url && window.open(prod.url, "_blank")}
-                            className={`bg-card/70 backdrop-blur-xl border border-border ${shapeClass(profile.image_shape)} overflow-hidden cursor-pointer transition-all duration-300 group hover:border-primary/30 hover:-translate-y-1 active:scale-[0.97]`}>
+                            className={`bg-card/70 backdrop-blur-xl border border-border ${shapeClass(profile.image_shape_products)} overflow-hidden cursor-pointer transition-all duration-300 group hover:border-primary/30 hover:-translate-y-1 active:scale-[0.97]`}>
                             {prod.image_url ? (
                               <div className="w-full aspect-square overflow-hidden">
                                 <img src={prod.image_url} alt="" className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105" />
