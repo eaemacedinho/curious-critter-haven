@@ -90,6 +90,7 @@ const CreatorEditPanel = forwardRef<CreatorEditPanelHandle, Props>(function Crea
     socialLinks: initialSocial,
     products: initialProducts,
     campaigns: initialCampaigns,
+    activeLayout,
     onSaveProfile,
     onSaveLinks,
     onSaveSocialLinks,
