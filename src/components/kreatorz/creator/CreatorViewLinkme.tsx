@@ -81,8 +81,8 @@ export default function CreatorViewLinkme({ profile, links: rawLinks, socialLink
           </div>
 
           {/* Hero spacer */}
-          <div className="relative w-full" style={{ height: "75vh", minHeight: "480px", maxHeight: "680px" }}>
-            <div className="absolute inset-x-0 bottom-0 h-[50%] bg-gradient-to-t from-background via-background/60 to-transparent pointer-events-none" />
+          <div className="relative w-full" style={{ height: "52vh", minHeight: "300px", maxHeight: "460px" }}>
+            <div className="absolute inset-x-0 bottom-0 h-[55%] bg-gradient-to-t from-background via-background/70 to-transparent pointer-events-none" />
             {!heroImage && (
               <div className="w-full h-full bg-gradient-to-b from-primary/30 to-background flex items-center justify-center">
                 <span className="text-7xl text-muted-foreground">{profile.name?.[0] || "?"}</span>
