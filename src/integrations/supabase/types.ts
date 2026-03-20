@@ -14,6 +14,45 @@ export type Database = {
   }
   public: {
     Tables: {
+      agencies: {
+        Row: {
+          accent_color: string | null
+          created_at: string
+          domain: string | null
+          id: string
+          logo_url: string | null
+          name: string
+          owner_id: string
+          primary_color: string | null
+          slug: string
+          updated_at: string
+        }
+        Insert: {
+          accent_color?: string | null
+          created_at?: string
+          domain?: string | null
+          id?: string
+          logo_url?: string | null
+          name?: string
+          owner_id: string
+          primary_color?: string | null
+          slug?: string
+          updated_at?: string
+        }
+        Update: {
+          accent_color?: string | null
+          created_at?: string
+          domain?: string | null
+          id?: string
+          logo_url?: string | null
+          name?: string
+          owner_id?: string
+          primary_color?: string | null
+          slug?: string
+          updated_at?: string
+        }
+        Relationships: []
+      }
       campaign_clicks: {
         Row: {
           campaign_id: string
@@ -215,6 +254,7 @@ export type Database = {
       }
       creators: {
         Row: {
+          agency_id: string | null
           avatar_url: string | null
           avatar_url_layout2: string | null
           bio: string | null
@@ -233,6 +273,7 @@ export type Database = {
           verified: boolean | null
         }
         Insert: {
+          agency_id?: string | null
           avatar_url?: string | null
           avatar_url_layout2?: string | null
           bio?: string | null
@@ -251,6 +292,7 @@ export type Database = {
           verified?: boolean | null
         }
         Update: {
+          agency_id?: string | null
           avatar_url?: string | null
           avatar_url_layout2?: string | null
           bio?: string | null
@@ -268,7 +310,15 @@ export type Database = {
           user_id?: string
           verified?: boolean | null
         }
-        Relationships: []
+        Relationships: [
+          {
+            foreignKeyName: "creators_agency_id_fkey"
+            columns: ["agency_id"]
+            isOneToOne: false
+            referencedRelation: "agencies"
+            referencedColumns: ["id"]
+          },
+        ]
       }
     }
     Views: {
