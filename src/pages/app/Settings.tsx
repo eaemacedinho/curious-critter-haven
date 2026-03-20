@@ -37,6 +37,8 @@ export default function Settings() {
         accent_color: accentColor,
         logo_url: logoUrl,
         footer_text: footerText,
+        footer_visible: footerVisible,
+        footer_link: footerLink,
       });
       toast.success("Branding salvo com sucesso!");
     } catch (err: any) {
