@@ -323,3 +323,12 @@ function LiveBadge() {
     </div>
   );
 }
+
+function VerifiedBadge({ size = 20 }: { size?: number }) {
+  return (
+    <svg width={size} height={size} viewBox="0 0 24 24" fill="none" className="inline-block flex-shrink-0">
+      <circle cx="12" cy="12" r="10" fill="hsl(220, 80%, 55%)" />
+      <path d="M8.5 12.5l2 2 5-5" stroke="white" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
+    </svg>
+  );
+}

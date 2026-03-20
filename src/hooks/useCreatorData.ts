@@ -65,6 +65,7 @@ const normalizeProfile = (creator: any): CreatorProfile => ({
   ...creator,
   avatar_url_layout2: creator.avatar_url_layout2 || "",
   cover_url_layout2: creator.cover_url_layout2 || "",
+  verified: creator.verified ?? false,
   tags: Array.isArray(creator.tags) ? (creator.tags as CreatorProfile["tags"]) : [],
   stats: Array.isArray(creator.stats) ? (creator.stats as CreatorProfile["stats"]) : [],
   brands: Array.isArray(creator.brands)
