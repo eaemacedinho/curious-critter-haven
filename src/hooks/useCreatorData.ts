@@ -36,6 +36,9 @@ export interface CreatorLink {
   featured: boolean;
   active: boolean;
   sort_order: number;
+  bg_color: string | null;
+  text_color: string | null;
+  border_color: string | null;
 }
 
 export interface SocialLink {
