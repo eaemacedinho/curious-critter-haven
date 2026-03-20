@@ -187,6 +187,15 @@ export default function CreatorViewLinkme({ profile, links: rawLinks, socialLink
               </p>
             )}
 
+            {/* 🔥 Spotlight — Live campaigns always first */}
+            {campaigns.filter(c => c.live).length > 0 && (
+              <div className="mt-6 px-4 flex flex-col gap-3">
+                {campaigns.filter(c => c.live).map((camp) => (
+                  <SpotlightCampaign key={camp.id} campaign={camp} variant="layout2" />
+                ))}
+              </div>
+            )}
+
             {/* Links as large image cards (Linkme style) */}
             {links.length > 0 && (
               <div className="flex flex-col gap-3 mt-6 px-4">
@@ -226,16 +235,16 @@ export default function CreatorViewLinkme({ profile, links: rawLinks, socialLink
               </div>
             )}
 
-            {/* Campaigns */}
-            {campaigns.length > 0 && (
+            {/* Past / Inactive Campaigns */}
+            {campaigns.filter(c => !c.live).length > 0 && (
               <div className="mt-8 px-4">
-                <SectionLabel label={`Campanhas ${campaigns.some(c => c.live) ? "Ativas" : ""}`} />
+                <SectionLabel label="Campanhas Anteriores" />
                 <div className="flex flex-col gap-3">
-                  {campaigns.map((camp) => (
+                  {campaigns.filter(c => !c.live).map((camp) => (
                     <div
                       key={camp.id}
                       onClick={() => camp.url && window.open(camp.url, "_blank")}
-                      className="relative rounded-2xl overflow-hidden cursor-pointer group transition-all duration-300 hover:-translate-y-1 active:scale-[0.98]"
+                      className="relative rounded-2xl overflow-hidden cursor-pointer group transition-all duration-300 hover:-translate-y-1 active:scale-[0.98] opacity-75 hover:opacity-100"
                     >
                       {camp.image_url ? (
                         <>
@@ -244,14 +253,12 @@ export default function CreatorViewLinkme({ profile, links: rawLinks, socialLink
                           </div>
                           <div className="absolute inset-0 bg-gradient-to-t from-background/90 via-background/30 to-transparent" />
                           <div className="absolute inset-x-0 bottom-0 p-4">
-                            {camp.live && <LiveBadge />}
                             <h5 className="text-sm font-bold text-primary-foreground">{camp.title}</h5>
                             {camp.description && <p className="text-[0.7rem] text-k-2 mt-1 line-clamp-2">{camp.description}</p>}
                           </div>
                         </>
                       ) : (
-                        <div className="bg-gradient-to-br from-primary/20 to-primary/5 border border-primary/20 rounded-2xl p-5">
-                          {camp.live && <LiveBadge />}
+                        <div className="bg-card/70 border border-primary/10 rounded-2xl p-5">
                           <h5 className="text-sm font-bold text-primary-foreground">{camp.title}</h5>
                           {camp.description && <p className="text-[0.7rem] text-k-3 mt-1">{camp.description}</p>}
                         </div>
