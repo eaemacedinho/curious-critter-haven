@@ -1,9 +1,11 @@
-import { forwardRef, useImperativeHandle, useRef, useState, useCallback } from "react";
+import { forwardRef, useImperativeHandle, useRef, useState, useCallback, useMemo } from "react";
 import { toast } from "sonner";
 import type { CreatorProfile, CreatorLink, SocialLink, CreatorProduct, CreatorCampaign } from "@/hooks/useCreatorData";
 import ImageCropper from "./ImageCropper";
 import VerifiedBadge from "./VerifiedBadge";
 import { ConfirmDialog } from "@/components/ui/confirm-dialog";
+import CreatorView from "./CreatorView";
+import CreatorViewLinkme from "./CreatorViewLinkme";
 
 const iconOptions = ["⭐", "▶", "🎵", "📄", "🛍", "📸", "🎮", "💼", "🎨", "📚", "🔗", "💰", "🎧", "📦", "🎬", "💎"];
 
