@@ -66,79 +66,45 @@ export default function OnboardingFlow({ onComplete }: { onComplete: () => void 
         accent_color: colors.accent,
       });
 
-      // Find or create creator for this agency
-      const { data: existing } = await supabase
+      // Create demo creator for this agency (creator is a business entity, created here on purpose)
+      const creatorName = purpose === "myself" ? (user.user_metadata?.full_name || name) : "Creator Demo";
+      const handle = slug + "-" + Date.now().toString(36);
+
+      const { data: newCreator, error: creatorError } = await supabase
         .from("creators")
+        .insert({
+          user_id: user.id,
+          agency_id: agency.id,
+          name: creatorName,
+          handle,
+          bio: "Olá! Esta é minha página de links. Explore meus conteúdos e redes sociais. 🚀",
+          public_layout: colors.layout,
+        })
         .select("id, handle")
-        .eq("agency_id", agency.id)
-        .limit(1);
+        .single();
 
-      let creatorId: string;
-      let handle: string;
-
-      if (existing && existing.length > 0) {
-        creatorId = existing[0].id;
-        handle = existing[0].handle;
-
-        await supabase
-          .from("creators")
-          .update({
-            name: purpose === "myself" ? (user.user_metadata?.full_name || name) : "Creator Demo",
-            bio: "Olá! Esta é minha página de links. Explore meus conteúdos e redes sociais. 🚀",
-            public_layout: colors.layout,
-          })
-          .eq("id", creatorId);
-      } else {
-        handle = slug;
-        const { data: newCreator } = await supabase
-          .from("creators")
-          .insert({
-            user_id: user.id,
-            agency_id: agency.id,
-            name: purpose === "myself" ? (user.user_metadata?.full_name || name) : "Creator Demo",
-            handle,
-            bio: "Olá! Esta é minha página de links. Explore meus conteúdos e redes sociais. 🚀",
-            public_layout: colors.layout,
-          })
-          .select("id, handle")
-          .single();
-
-        creatorId = newCreator!.id;
-        handle = newCreator!.handle;
+      if (creatorError) {
+        console.error("Creator creation error:", creatorError);
+        throw creatorError;
       }
 
-      setCreatedHandle(handle);
+      const creatorId = newCreator.id;
+      setCreatedHandle(newCreator.handle);
 
-      // Create demo links
-      const { data: existingLinks } = await supabase
-        .from("creator_links")
-        .select("id")
-        .eq("creator_id", creatorId)
-        .limit(1);
-
-      if (!existingLinks || existingLinks.length === 0) {
-        await supabase.from("creator_links").insert(
+      // Create demo links + campaign in parallel
+      await Promise.all([
+        supabase.from("creator_links").insert(
           DEMO_LINKS.map(l => ({ ...l, creator_id: creatorId }))
-        );
-      }
-
-      // Create demo spotlight campaign
-      const { data: existingCampaigns } = await supabase
-        .from("creator_campaigns")
-        .select("id")
-        .eq("creator_id", creatorId)
-        .limit(1);
-
-      if (!existingCampaigns || existingCampaigns.length === 0) {
-        await supabase.from("creator_campaigns").insert({
+        ),
+        supabase.from("creator_campaigns").insert({
           creator_id: creatorId,
           title: "🔥 Conteúdo Exclusivo",
           description: "Confira meu novo material especial",
           url: "https://exemplo.com/exclusivo",
           live: true,
           sort_order: 0,
-        });
-      }
+        }),
+      ]);
 
       // Mark onboarding as done in agency_settings
       await supabase

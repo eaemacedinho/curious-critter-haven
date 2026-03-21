@@ -66,27 +66,25 @@ export function TenantProvider({ children }: { children: ReactNode }) {
 
     setLoading(true);
 
-    // Try profiles first (new schema), fallback to user_roles
-    const { data: profileData } = await supabase
+    // profiles is the single source of truth for role + agency_id
+    const { data: profileData, error: profileError } = await supabase
       .from("profiles")
       .select("agency_id, role")
       .eq("id", user.id)
       .maybeSingle();
 
-    const roleSource = profileData || await supabase
-      .from("user_roles")
-      .select("agency_id, role")
-      .eq("user_id", user.id)
-      .limit(1)
-      .maybeSingle()
-      .then(r => r.data);
+    if (profileError) {
+      console.error("Error fetching profile:", profileError);
+      setLoading(false);
+      return;
+    }
 
-    if (roleSource) {
-      setUserRole(roleSource.role as UserRole);
+    if (profileData && profileData.agency_id) {
+      setUserRole(profileData.role as UserRole);
 
       const [agencyRes, settingsRes] = await Promise.all([
-        supabase.from("agencies").select("*").eq("id", roleSource.agency_id).maybeSingle(),
-        supabase.from("agency_settings").select("*").eq("agency_id", roleSource.agency_id).maybeSingle(),
+        supabase.from("agencies").select("*").eq("id", profileData.agency_id).maybeSingle(),
+        supabase.from("agency_settings").select("*").eq("agency_id", profileData.agency_id).maybeSingle(),
       ]);
 
       if (agencyRes.data) setAgency(agencyRes.data as Agency);
