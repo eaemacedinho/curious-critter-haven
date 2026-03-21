@@ -240,13 +240,13 @@ export default function CreatorViewLinkme({ profile, links: rawLinks, socialLink
                             const next = links[i + 1]?.display_mode === "half" ? links[i + 1] : null;
                             elements.push(
                               <div key={link.id + "-row"} className="grid grid-cols-2 gap-3">
-                                <LinkmeCard link={link} shape={profile.image_shape_links} />
-                                {next && <LinkmeCard link={next} shape={profile.image_shape_links} />}
+                                <LinkmeCard link={link} shape={profile.image_shape_links} onLinkClick={onLinkClick} />
+                                {next && <LinkmeCard link={next} shape={profile.image_shape_links} onLinkClick={onLinkClick} />}
                               </div>
                             );
                             i += next ? 2 : 1;
                           } else {
-                            elements.push(<LinkmeCard key={link.id} link={link} shape={profile.image_shape_links} />);
+                            elements.push(<LinkmeCard key={link.id} link={link} shape={profile.image_shape_links} onLinkClick={onLinkClick} />);
                             i++;
                           }
                         }
