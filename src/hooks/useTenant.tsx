@@ -66,38 +66,31 @@ export function TenantProvider({ children }: { children: ReactNode }) {
 
     setLoading(true);
 
-    // Get user's role and agency_id
-    const { data: roleData } = await supabase
+    // Try profiles first (new schema), fallback to user_roles
+    const { data: profileData } = await supabase
+      .from("profiles")
+      .select("agency_id, role")
+      .eq("id", user.id)
+      .maybeSingle();
+
+    const roleSource = profileData || await supabase
       .from("user_roles")
       .select("agency_id, role")
       .eq("user_id", user.id)
       .limit(1)
-      .maybeSingle();
+      .maybeSingle()
+      .then(r => r.data);
 
-    if (roleData) {
-      setUserRole(roleData.role as UserRole);
+    if (roleSource) {
+      setUserRole(roleSource.role as UserRole);
 
-      // Fetch agency
-      const { data: agencyData } = await supabase
-        .from("agencies")
-        .select("*")
-        .eq("id", roleData.agency_id)
-        .maybeSingle();
+      const [agencyRes, settingsRes] = await Promise.all([
+        supabase.from("agencies").select("*").eq("id", roleSource.agency_id).maybeSingle(),
+        supabase.from("agency_settings").select("*").eq("agency_id", roleSource.agency_id).maybeSingle(),
+      ]);
 
-      if (agencyData) {
-        setAgency(agencyData as Agency);
-      }
-
-      // Fetch settings
-      const { data: settingsData } = await supabase
-        .from("agency_settings")
-        .select("*")
-        .eq("agency_id", roleData.agency_id)
-        .maybeSingle();
-
-      if (settingsData) {
-        setSettings(settingsData as AgencySettings);
-      }
+      if (agencyRes.data) setAgency(agencyRes.data as Agency);
+      if (settingsRes.data) setSettings(settingsRes.data as AgencySettings);
 
       setLoading(false);
       return;

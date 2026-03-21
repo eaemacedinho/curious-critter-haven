@@ -18,6 +18,7 @@ export type Database = {
         Row: {
           accent_color: string | null
           created_at: string
+          custom_domain: string | null
           domain: string | null
           footer_link: string
           footer_text: string
@@ -27,12 +28,14 @@ export type Database = {
           name: string
           owner_id: string
           primary_color: string | null
+          secondary_color: string | null
           slug: string
           updated_at: string
         }
         Insert: {
           accent_color?: string | null
           created_at?: string
+          custom_domain?: string | null
           domain?: string | null
           footer_link?: string
           footer_text?: string
@@ -42,12 +45,14 @@ export type Database = {
           name?: string
           owner_id: string
           primary_color?: string | null
+          secondary_color?: string | null
           slug?: string
           updated_at?: string
         }
         Update: {
           accent_color?: string | null
           created_at?: string
+          custom_domain?: string | null
           domain?: string | null
           footer_link?: string
           footer_text?: string
@@ -57,6 +62,7 @@ export type Database = {
           name?: string
           owner_id?: string
           primary_color?: string | null
+          secondary_color?: string | null
           slug?: string
           updated_at?: string
         }
@@ -202,48 +208,73 @@ export type Database = {
       }
       creator_campaigns: {
         Row: {
+          agency_id: string | null
           bg_color: string | null
           border_color: string | null
+          brand_name: string | null
           creator_id: string
+          cta_label: string | null
           description: string | null
           expires_at: string | null
           id: string
           image_url: string | null
           live: boolean | null
+          priority_level: number | null
           sort_order: number | null
+          spotlight_enabled: boolean | null
+          starts_at: string | null
           text_color: string | null
           title: string
           url: string | null
         }
         Insert: {
+          agency_id?: string | null
           bg_color?: string | null
           border_color?: string | null
+          brand_name?: string | null
           creator_id: string
+          cta_label?: string | null
           description?: string | null
           expires_at?: string | null
           id?: string
           image_url?: string | null
           live?: boolean | null
+          priority_level?: number | null
           sort_order?: number | null
+          spotlight_enabled?: boolean | null
+          starts_at?: string | null
           text_color?: string | null
           title?: string
           url?: string | null
         }
         Update: {
+          agency_id?: string | null
           bg_color?: string | null
           border_color?: string | null
+          brand_name?: string | null
           creator_id?: string
+          cta_label?: string | null
           description?: string | null
           expires_at?: string | null
           id?: string
           image_url?: string | null
           live?: boolean | null
+          priority_level?: number | null
           sort_order?: number | null
+          spotlight_enabled?: boolean | null
+          starts_at?: string | null
           text_color?: string | null
           title?: string
           url?: string | null
         }
         Relationships: [
+          {
+            foreignKeyName: "creator_campaigns_agency_id_fkey"
+            columns: ["agency_id"]
+            isOneToOne: false
+            referencedRelation: "agencies"
+            referencedColumns: ["id"]
+          },
           {
             foreignKeyName: "creator_campaigns_creator_id_fkey"
             columns: ["creator_id"]
@@ -407,6 +438,7 @@ export type Database = {
           avatar_url_layout2: string | null
           bio: string | null
           brands: Json | null
+          category: string | null
           color_bio: string | null
           color_name: string | null
           color_section_titles: string | null
@@ -421,6 +453,7 @@ export type Database = {
           image_shape_campaigns: string
           image_shape_links: string
           image_shape_products: string
+          is_published: boolean
           name: string
           page_effects: Json | null
           public_layout: string
@@ -437,6 +470,7 @@ export type Database = {
           avatar_url_layout2?: string | null
           bio?: string | null
           brands?: Json | null
+          category?: string | null
           color_bio?: string | null
           color_name?: string | null
           color_section_titles?: string | null
@@ -451,6 +485,7 @@ export type Database = {
           image_shape_campaigns?: string
           image_shape_links?: string
           image_shape_products?: string
+          is_published?: boolean
           name?: string
           page_effects?: Json | null
           public_layout?: string
@@ -467,6 +502,7 @@ export type Database = {
           avatar_url_layout2?: string | null
           bio?: string | null
           brands?: Json | null
+          category?: string | null
           color_bio?: string | null
           color_name?: string | null
           color_section_titles?: string | null
@@ -481,6 +517,7 @@ export type Database = {
           image_shape_campaigns?: string
           image_shape_links?: string
           image_shape_products?: string
+          is_published?: boolean
           name?: string
           page_effects?: Json | null
           public_layout?: string
@@ -494,6 +531,47 @@ export type Database = {
         Relationships: [
           {
             foreignKeyName: "creators_agency_id_fkey"
+            columns: ["agency_id"]
+            isOneToOne: false
+            referencedRelation: "agencies"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      profiles: {
+        Row: {
+          agency_id: string | null
+          avatar_url: string | null
+          created_at: string
+          email: string
+          full_name: string
+          id: string
+          role: Database["public"]["Enums"]["app_role"]
+          updated_at: string
+        }
+        Insert: {
+          agency_id?: string | null
+          avatar_url?: string | null
+          created_at?: string
+          email?: string
+          full_name?: string
+          id: string
+          role?: Database["public"]["Enums"]["app_role"]
+          updated_at?: string
+        }
+        Update: {
+          agency_id?: string | null
+          avatar_url?: string | null
+          created_at?: string
+          email?: string
+          full_name?: string
+          id?: string
+          role?: Database["public"]["Enums"]["app_role"]
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "profiles_agency_id_fkey"
             columns: ["agency_id"]
             isOneToOne: false
             referencedRelation: "agencies"
@@ -538,6 +616,11 @@ export type Database = {
       [_ in never]: never
     }
     Functions: {
+      current_user_agency_id: { Args: never; Returns: string }
+      current_user_role: {
+        Args: never
+        Returns: Database["public"]["Enums"]["app_role"]
+      }
       get_user_agency_id: { Args: { _user_id: string }; Returns: string }
       has_role: {
         Args: {
