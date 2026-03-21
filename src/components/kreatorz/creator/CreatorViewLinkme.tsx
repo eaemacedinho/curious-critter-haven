@@ -31,6 +31,8 @@ interface Props {
   agencyFooterVisible?: boolean;
   agencyFooterLink?: string;
   embedded?: boolean;
+  onLinkClick?: (link: CreatorLink) => void;
+  onCampaignClick?: (campaign: CreatorCampaign) => void;
 }
 
 export default function CreatorViewLinkme({ profile, links: rawLinks, socialLinks: rawSocial, products: rawProducts, campaigns: rawCampaigns, agencyName, agencyLogoUrl, agencyFooterText, agencyFooterVisible = true, agencyFooterLink, embedded }: Props) {
