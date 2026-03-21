@@ -390,6 +390,7 @@ function LinkmeCard({ link, shape, onLinkClick }: { link: CreatorLink; shape?: s
   if (link.image_url) {
     return (
       <a href={link.url} target="_blank" rel="noopener noreferrer"
+        onClick={() => onLinkClick?.(link)}
         className={`group relative block w-full ${sc} overflow-hidden transition-all duration-300 hover:-translate-y-1 active:scale-[0.98]`}
         style={customStyle}>
         <div className={`relative w-full ${isHalf ? "aspect-square" : "aspect-[16/9]"} overflow-hidden`}>
