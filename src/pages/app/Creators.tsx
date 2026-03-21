@@ -10,7 +10,7 @@ import { ConfirmDialog } from "@/components/ui/confirm-dialog";
 interface CreatorRow {
   id: string;
   name: string;
-  handle: string;
+  slug: string;
   avatar_url: string;
   bio: string;
   layout_type: string;
