@@ -414,6 +414,7 @@ function LinkmeCard({ link, shape, onLinkClick }: { link: CreatorLink; shape?: s
 
   return (
     <a href={link.url} target="_blank" rel="noopener noreferrer"
+      onClick={() => onLinkClick?.(link)}
       className={`group relative block w-full ${sc} overflow-hidden transition-all duration-300 hover:-translate-y-1 active:scale-[0.98]`}>
       <div className={`flex items-center gap-4 p-4 sm:p-5 min-h-[56px] ${
         !hasCustomBg ? (link.featured
