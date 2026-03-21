@@ -129,5 +129,6 @@ export default function OnboardingChecklist({ state }: { state: OnboardingState 
         )}
       </AnimatePresence>
     </motion.div>
+    </>
   );
 }
