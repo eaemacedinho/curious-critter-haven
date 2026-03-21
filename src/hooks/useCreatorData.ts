@@ -121,10 +121,10 @@ const normalizeProfile = (creator: any): CreatorProfile => ({
 
 /**
  * Hook to manage creator data.
- * - If `creatorId` is provided, loads that specific creator.
- * - If only `userId` is provided, loads the first creator for that user (legacy compat).
+ * - If `creatorId` is provided, loads that specific creator (scoped to agency).
+ * - If only `agencyId` is provided, loads the first creator for that agency.
  */
-export function useCreatorData(userId: string | undefined, creatorId?: string) {
+export function useCreatorData(agencyId: string | undefined, creatorId?: string) {
   const [profile, setProfile] = useState<CreatorProfile | null>(null);
   const [links, setLinks] = useState<CreatorLink[]>([]);
   const [socialLinks, setSocialLinks] = useState<SocialLink[]>([]);
@@ -133,7 +133,7 @@ export function useCreatorData(userId: string | undefined, creatorId?: string) {
   const [loading, setLoading] = useState(true);
 
   const fetchData = useCallback(async () => {
-    if (!userId) {
+    if (!agencyId) {
       setLoading(false);
       return;
     }
@@ -147,7 +147,7 @@ export function useCreatorData(userId: string | undefined, creatorId?: string) {
         .from("creators")
         .select("*")
         .eq("id", creatorId)
-        .eq("user_id", userId)
+        .eq("agency_id", agencyId)
         .maybeSingle();
       if (error) console.error("Error fetching creator:", error);
       creator = data;
@@ -155,7 +155,7 @@ export function useCreatorData(userId: string | undefined, creatorId?: string) {
       const { data, error } = await supabase
         .from("creators")
         .select("*")
-        .eq("user_id", userId)
+        .eq("agency_id", agencyId)
         .order("created_at", { ascending: true })
         .limit(1)
         .maybeSingle();
@@ -183,7 +183,7 @@ export function useCreatorData(userId: string | undefined, creatorId?: string) {
     setProducts((productsRes.data as CreatorProduct[]) || []);
     setCampaigns((campaignsRes.data as CreatorCampaign[]) || []);
     setLoading(false);
-  }, [userId, creatorId]);
+  }, [agencyId, creatorId]);
 
   useEffect(() => {
     void fetchData();
@@ -191,13 +191,13 @@ export function useCreatorData(userId: string | undefined, creatorId?: string) {
 
   const persistProfile = useCallback(
     async (updates: Partial<CreatorProfile>) => {
-      if (!profile || !userId) return null;
+      if (!profile || !agencyId) return null;
 
       const { data, error } = await supabase
         .from("creators")
         .update(updates as any)
         .eq("id", profile.id)
-        .eq("user_id", userId)
+        .eq("agency_id", agencyId)
         .select("*")
         .maybeSingle();
 
@@ -215,7 +215,7 @@ export function useCreatorData(userId: string | undefined, creatorId?: string) {
       setProfile(normalized);
       return normalized;
     },
-    [profile, userId]
+    [profile, agencyId]
   );
 
   const saveProfile = async (updates: Partial<CreatorProfile>) => {
@@ -280,10 +280,10 @@ export function useCreatorData(userId: string | undefined, creatorId?: string) {
   };
 
   const uploadImage = async (file: File, type: "avatar" | "cover" | "avatar_layout2" | "cover_layout2"): Promise<string | null> => {
-    if (!userId || !profile) return null;
+    if (!agencyId || !profile) return null;
     const bucket = type.startsWith("avatar") ? "avatars" : "covers";
     const ext = file.name.split(".").pop()?.toLowerCase() || "jpg";
-    const path = `${userId}/${type}-${Date.now()}.${ext}`;
+    const path = `${agencyId}/${profile.id}/${type}-${Date.now()}.${ext}`;
     const { error: uploadError } = await supabase.storage.from(bucket).upload(path, file, { upsert: true, cacheControl: "3600", contentType: file.type || "image/jpeg" });
     if (uploadError) { toast.error("Erro no upload: " + uploadError.message); return null; }
     const { data } = supabase.storage.from(bucket).getPublicUrl(path);
@@ -296,9 +296,9 @@ export function useCreatorData(userId: string | undefined, creatorId?: string) {
   };
 
   const uploadContentImage = async (file: File, folder: string): Promise<string | null> => {
-    if (!userId) return null;
+    if (!agencyId || !profile) return null;
     const ext = file.name.split(".").pop()?.toLowerCase() || "jpg";
-    const path = `${userId}/${folder}-${Date.now()}.${ext}`;
+    const path = `${agencyId}/${profile.id}/${folder}-${Date.now()}.${ext}`;
     const { error: uploadError } = await supabase.storage.from("content").upload(path, file, { upsert: true, cacheControl: "3600", contentType: file.type || "image/jpeg" });
     if (uploadError) { toast.error("Erro no upload: " + uploadError.message); return null; }
     const { data } = supabase.storage.from("content").getPublicUrl(path);
