@@ -216,24 +216,25 @@ export default function CreatorViewLinkme({ profile, links: rawLinks, socialLink
               </p>
             )}
 
-            {/* Spotlight */}
-            {(() => {
+            {/* Dynamic sections based on section_order */}
+            {(profile.section_order || ["spotlight", "links", "products", "past_campaigns"]).map((sectionKey) => {
               const now = new Date();
               const liveCamps = campaigns.filter(c => c.live && (!c.expires_at || new Date(c.expires_at) > now));
               const pastCamps = campaigns.filter(c => !c.live || (c.expires_at && new Date(c.expires_at) <= now));
-              return (
-                <>
-                  {liveCamps.length > 0 && (
-                    <div className="mt-6 px-4 flex flex-col gap-3">
+
+              switch (sectionKey) {
+                case "spotlight":
+                  return liveCamps.length > 0 ? (
+                    <div key="spotlight" className="mt-6 px-4 flex flex-col gap-3">
                       {liveCamps.map((camp) => (
                         <SpotlightCampaign key={camp.id} campaign={camp} variant="layout2" />
                       ))}
                     </div>
-                  )}
+                  ) : null;
 
-                  {/* Links */}
-                  {links.length > 0 && (
-                    <div className="flex flex-col gap-3 mt-6 px-4">
+                case "links":
+                  return links.length > 0 ? (
+                    <div key="links" className="flex flex-col gap-3 mt-6 px-4">
                       {(() => {
                         const elements: React.ReactNode[] = [];
                         let i = 0;
@@ -256,11 +257,11 @@ export default function CreatorViewLinkme({ profile, links: rawLinks, socialLink
                         return elements;
                       })()}
                     </div>
-                  )}
+                  ) : null;
 
-                  {/* Products */}
-                  {products.length > 0 && (
-                    <div className="mt-8 px-4">
+                case "products":
+                  return products.length > 0 ? (
+                    <div key="products" className="mt-8 px-4">
                       <SectionLabel label="Produtos" color={profile.color_section_titles} />
                       <div className="grid grid-cols-2 gap-3">
                         {products.map((prod) => (
@@ -288,11 +289,11 @@ export default function CreatorViewLinkme({ profile, links: rawLinks, socialLink
                         ))}
                       </div>
                     </div>
-                  )}
+                  ) : null;
 
-                  {/* Past Campaigns */}
-                  {pastCamps.length > 0 && (
-                    <div className="mt-8 px-4">
+                case "past_campaigns":
+                  return pastCamps.length > 0 ? (
+                    <div key="past_campaigns" className="mt-8 px-4">
                       <SectionLabel label="Campanhas Anteriores" color={profile.color_section_titles} />
                       <div className="flex flex-col gap-3">
                         {pastCamps.map((camp) => (
@@ -324,10 +325,12 @@ export default function CreatorViewLinkme({ profile, links: rawLinks, socialLink
                         ))}
                       </div>
                     </div>
-                  )}
-                </>
-              );
-            })()}
+                  ) : null;
+
+                default:
+                  return null;
+              }
+            })}
 
             {/* Contact CTA */}
             <div className="px-4 mt-8">

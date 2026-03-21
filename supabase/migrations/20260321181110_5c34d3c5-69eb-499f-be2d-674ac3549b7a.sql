@@ -1,0 +1,1 @@
+ALTER TABLE public.creators ADD COLUMN IF NOT EXISTS section_order jsonb NOT NULL DEFAULT '["spotlight","links","products","past_campaigns"]'::jsonb;

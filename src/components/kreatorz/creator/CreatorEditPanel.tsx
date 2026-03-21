@@ -169,6 +169,8 @@ const CreatorEditPanel = forwardRef<CreatorEditPanelHandle, Props>(function Crea
   );
   const [prods, setProds] = useState(initialProducts);
   const [camps, setCamps] = useState(initialCampaigns);
+  const [sectionOrder, setSectionOrder] = useState<string[]>(profile.section_order || ["spotlight", "links", "products", "past_campaigns"]);
+  const [dragSectionIdx, setDragSectionIdx] = useState<number | null>(null);
   const [saving, setSaving] = useState(false);
   const [uploadingImage, setUploadingImage] = useState<"avatar" | "cover" | null>(null);
   const [uploadingContent, setUploadingContent] = useState<string | null>(null);
@@ -208,7 +210,8 @@ const CreatorEditPanel = forwardRef<CreatorEditPanelHandle, Props>(function Crea
     color_name: colorName || null,
     color_bio: colorBio || null,
     color_section_titles: colorSectionTitles || null,
-  }), [profile, name, handle, bio, avatarUrl, coverUrl, avatarUrlL2, coverUrlL2, verified, tags, stats, brands, shapeProducts, shapeCampaigns, shapeLinks, pageEffects, effectColor, effectEmojis, effectIntensity, fontFamily, fontSize, colorName, colorBio, colorSectionTitles]);
+    section_order: sectionOrder,
+  }), [profile, name, handle, bio, avatarUrl, coverUrl, avatarUrlL2, coverUrlL2, verified, tags, stats, brands, shapeProducts, shapeCampaigns, shapeLinks, pageEffects, effectColor, effectEmojis, effectIntensity, fontFamily, fontSize, colorName, colorBio, colorSectionTitles, sectionOrder]);
 
   const isValidUrl = (url: string) => {
     if (!url) return true;
@@ -338,7 +341,7 @@ const CreatorEditPanel = forwardRef<CreatorEditPanelHandle, Props>(function Crea
           }))
           .filter((camp) => !isEmptyCampaignEntry(camp));
 
-      const baseProfile = { name, handle, bio, avatar_url: avatarUrl, cover_url: coverUrl, avatar_url_layout2: avatarUrlL2, cover_url_layout2: coverUrlL2, verified, tags, stats, brands, image_shape: shapeProducts, image_shape_products: shapeProducts, image_shape_campaigns: shapeCampaigns, image_shape_links: shapeLinks, page_effects: { effects: pageEffects, color: effectColor, emojis: effectEmojis, intensity: effectIntensity }, font_family: fontFamily, font_size: fontSize, color_name: colorName || null, color_bio: colorBio || null, color_section_titles: colorSectionTitles || null };
+      const baseProfile = { name, handle, bio, avatar_url: avatarUrl, cover_url: coverUrl, avatar_url_layout2: avatarUrlL2, cover_url_layout2: coverUrlL2, verified, tags, stats, brands, image_shape: shapeProducts, image_shape_products: shapeProducts, image_shape_campaigns: shapeCampaigns, image_shape_links: shapeLinks, page_effects: { effects: pageEffects, color: effectColor, emojis: effectEmojis, intensity: effectIntensity }, font_family: fontFamily, font_size: fontSize, color_name: colorName || null, color_bio: colorBio || null, color_section_titles: colorSectionTitles || null, section_order: sectionOrder };
 
       if (cropImage) {
         const { file, type } = cropImage;
@@ -1034,6 +1037,51 @@ const CreatorEditPanel = forwardRef<CreatorEditPanelHandle, Props>(function Crea
           </div>
         ))}
         <button onClick={() => setSocial([...social, { id: crypto.randomUUID(), creator_id: profile.id, platform: "", label: "", url: "", sort_order: social.length }])} className="text-sm text-k-300 font-medium hover:text-k-200 transition-colors">+ Adicionar rede social</button>
+      </div>
+
+      {/* Section order */}
+      <div className="mb-8">
+        <div className={sectionTitle}>📐 Ordem das seções</div>
+        <p className="text-[0.68rem] text-k-4 mb-3">Arraste para reorganizar a ordem das seções abaixo da bio na página pública.</p>
+        <div className="space-y-1.5">
+          {sectionOrder.map((sec, i) => {
+            const meta: Record<string, { icon: string; label: string }> = {
+              spotlight: { icon: "🔥", label: "Campanhas Spotlight" },
+              links: { icon: "🔗", label: "Links" },
+              products: { icon: "🛍", label: "Produtos" },
+              past_campaigns: { icon: "📢", label: "Campanhas Anteriores" },
+            };
+            const m = meta[sec] || { icon: "❓", label: sec };
+            return (
+              <div
+                key={sec}
+                draggable
+                onDragStart={() => setDragSectionIdx(i)}
+                onDragEnd={() => setDragSectionIdx(null)}
+                onDragOver={(e) => { e.preventDefault(); e.dataTransfer.dropEffect = "move"; }}
+                onDrop={(e) => {
+                  e.preventDefault();
+                  if (dragSectionIdx === null || dragSectionIdx === i) return;
+                  const arr = [...sectionOrder];
+                  const [moved] = arr.splice(dragSectionIdx, 1);
+                  arr.splice(i, 0, moved);
+                  setSectionOrder(arr);
+                  setDragSectionIdx(null);
+                }}
+                className={`flex items-center gap-3 p-3 rounded-xl border transition-all cursor-grab active:cursor-grabbing ${
+                  dragSectionIdx === i ? "border-primary/50 opacity-50 scale-[0.97]" : "border-primary/10 bg-k-800 hover:border-primary/20"
+                }`}
+              >
+                <div className="text-k-4 hover:text-k-3 transition-colors flex-shrink-0 select-none">
+                  <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor"><circle cx="9" cy="5" r="1.5"/><circle cx="15" cy="5" r="1.5"/><circle cx="9" cy="12" r="1.5"/><circle cx="15" cy="12" r="1.5"/><circle cx="9" cy="19" r="1.5"/><circle cx="15" cy="19" r="1.5"/></svg>
+                </div>
+                <span className="text-lg">{m.icon}</span>
+                <span className="text-sm font-semibold text-k-2 flex-1">{m.label}</span>
+                <span className="text-[0.6rem] text-k-4 font-mono">{i + 1}º</span>
+              </div>
+            );
+          })}
+        </div>
       </div>
 
       <div className="mb-8">

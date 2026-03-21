@@ -318,6 +318,7 @@ export type Database = {
           name: string
           page_effects: Json | null
           public_layout: string
+          section_order: Json
           stats: Json | null
           tags: Json | null
           updated_at: string
@@ -347,6 +348,7 @@ export type Database = {
           name?: string
           page_effects?: Json | null
           public_layout?: string
+          section_order?: Json
           stats?: Json | null
           tags?: Json | null
           updated_at?: string
@@ -376,6 +378,7 @@ export type Database = {
           name?: string
           page_effects?: Json | null
           public_layout?: string
+          section_order?: Json
           stats?: Json | null
           tags?: Json | null
           updated_at?: string
