@@ -3,12 +3,14 @@ import { toast } from "sonner";
 import { useAuth } from "@/hooks/useAuth";
 import { extractColorsFromImage } from "@/lib/extractColors";
 import { useTenant } from "@/hooks/useTenant";
+import { usePermissions } from "@/hooks/usePermissions";
 import { supabase } from "@/integrations/supabase/client";
 import { resetOnboarding } from "@/hooks/useOnboarding";
 
 export default function Settings() {
   const { user } = useAuth();
   const { agency, updateAgency } = useTenant();
+  const { canManageAgency, isViewer, role } = usePermissions();
 
   const [activeSection, setActiveSection] = useState("branding");
   const [agencyName, setAgencyName] = useState(agency?.name || "");
@@ -49,6 +51,10 @@ export default function Settings() {
   ];
 
   const handleSaveBranding = async () => {
+    if (!canManageAgency) {
+      toast.error("Você não tem permissão para alterar configurações.");
+      return;
+    }
     setSaving(true);
     try {
       await updateAgency({
@@ -69,7 +75,7 @@ export default function Settings() {
   };
 
   const handleUploadLogo = async () => {
-    if (uploadingLogo || !user) return;
+    if (uploadingLogo || !user || !agency || !canManageAgency) return;
     const input = document.createElement("input");
     input.type = "file";
     input.accept = "image/*";
@@ -79,12 +85,12 @@ export default function Settings() {
       setUploadingLogo(true);
       try {
         const ext = file.name.split(".").pop() || "png";
-        const path = `${user.id}/agency-logo-${Date.now()}.${ext}`;
+        const path = `${agency.id}/agency-logo-${Date.now()}.${ext}`;
         const { error: uploadError } = await supabase.storage
-          .from("content")
+          .from("agency-assets")
           .upload(path, file, { cacheControl: "3600", upsert: true });
         if (uploadError) throw uploadError;
-        const { data: publicData } = supabase.storage.from("content").getPublicUrl(path);
+        const { data: publicData } = supabase.storage.from("agency-assets").getPublicUrl(path);
         setLogoUrl(publicData.publicUrl);
         toast.success("Logo atualizado!");
       } catch (err: any) {
@@ -99,6 +105,15 @@ export default function Settings() {
   return (
     <div className="max-w-[900px] mx-auto">
       <h1 className="font-display text-2xl font-normal text-foreground mb-6">Configurações</h1>
+
+      {/* Permission banner */}
+      {!canManageAgency && (
+        <div className="mb-6 p-3 bg-muted/50 border border-border rounded-xl text-center">
+          <p className="text-sm text-muted-foreground">
+            👁 Seu papel ({role}) não permite editar configurações da agência.
+          </p>
+        </div>
+      )}
 
       <div className="flex flex-col md:flex-row gap-6">
         {/* Section nav */}
@@ -133,8 +148,8 @@ export default function Settings() {
                 <label className="block text-xs font-semibold text-muted-foreground uppercase tracking-wider mb-2">Logo da agência</label>
                 <div className="flex items-center gap-4">
                   <div
-                    onClick={handleUploadLogo}
-                    className="w-20 h-20 rounded-2xl bg-card border-2 border-dashed border-border flex items-center justify-center overflow-hidden cursor-pointer hover:border-primary/30 transition-all"
+                    onClick={canManageAgency ? handleUploadLogo : undefined}
+                    className={`w-20 h-20 rounded-2xl bg-card border-2 border-dashed border-border flex items-center justify-center overflow-hidden transition-all ${canManageAgency ? "cursor-pointer hover:border-primary/30" : "opacity-60"}`}
                   >
                     {uploadingLogo ? (
                       <span className="text-xs text-muted-foreground animate-pulse">⏳</span>
@@ -145,7 +160,7 @@ export default function Settings() {
                     )}
                   </div>
                   <div>
-                    <p className="text-sm text-foreground">Clique para enviar</p>
+                    <p className="text-sm text-foreground">{canManageAgency ? "Clique para enviar" : "Logo atual"}</p>
                     <p className="text-[0.68rem] text-muted-foreground">PNG ou SVG · 512×512px</p>
                   </div>
                 </div>
@@ -157,7 +172,8 @@ export default function Settings() {
                 <input
                   value={agencyName}
                   onChange={(e) => setAgencyName(e.target.value)}
-                  className="w-full px-4 py-3 bg-background border border-border rounded-xl text-sm text-foreground outline-none focus:border-primary transition-all"
+                  disabled={!canManageAgency}
+                  className="w-full px-4 py-3 bg-background border border-border rounded-xl text-sm text-foreground outline-none focus:border-primary transition-all disabled:opacity-60"
                 />
               </div>
 
@@ -169,7 +185,8 @@ export default function Settings() {
                   <input
                     value={agencySlug}
                     onChange={(e) => setAgencySlug(e.target.value)}
-                    className="flex-1 px-3 py-3 bg-transparent text-foreground text-sm outline-none"
+                    disabled={!canManageAgency}
+                    className="flex-1 px-3 py-3 bg-transparent text-foreground text-sm outline-none disabled:opacity-60"
                   />
                 </div>
               </div>
@@ -181,17 +198,17 @@ export default function Settings() {
                   <div>
                     <label className="block text-[0.68rem] text-muted-foreground mb-1.5">Primária</label>
                     <div className="flex items-center gap-2.5 bg-background border border-border rounded-xl px-3 py-2.5">
-                      <input type="color" value={primaryColor} onChange={(e) => setPrimaryColor(e.target.value)} className="w-8 h-8 rounded-lg border-0 cursor-pointer bg-transparent" />
-                      <input value={primaryColor} onChange={(e) => setPrimaryColor(e.target.value)} className="bg-transparent text-foreground text-sm outline-none flex-1 font-mono" />
+                      <input type="color" value={primaryColor} onChange={(e) => setPrimaryColor(e.target.value)} disabled={!canManageAgency} className="w-8 h-8 rounded-lg border-0 cursor-pointer bg-transparent disabled:opacity-60" />
+                      <input value={primaryColor} onChange={(e) => setPrimaryColor(e.target.value)} disabled={!canManageAgency} className="bg-transparent text-foreground text-sm outline-none flex-1 font-mono disabled:opacity-60" />
                     </div>
                   </div>
                   <div>
                     <label className="block text-[0.68rem] text-muted-foreground mb-1.5">Destaque</label>
                     <div className="flex items-center gap-2.5 bg-background border border-border rounded-xl px-3 py-2.5">
-                      <input type="color" value={accentColor} onChange={(e) => setAccentColor(e.target.value)} className="w-8 h-8 rounded-lg border-0 cursor-pointer bg-transparent" />
-                      <input value={accentColor} onChange={(e) => setAccentColor(e.target.value)} className="bg-transparent text-foreground text-sm outline-none flex-1 font-mono" />
+                      <input type="color" value={accentColor} onChange={(e) => setAccentColor(e.target.value)} disabled={!canManageAgency} className="w-8 h-8 rounded-lg border-0 cursor-pointer bg-transparent disabled:opacity-60" />
+                      <input value={accentColor} onChange={(e) => setAccentColor(e.target.value)} disabled={!canManageAgency} className="bg-transparent text-foreground text-sm outline-none flex-1 font-mono disabled:opacity-60" />
                 </div>
-                {logoUrl && (
+                {logoUrl && canManageAgency && (
                   <button
                     onClick={handleExtractColors}
                     disabled={extracting}
@@ -214,8 +231,9 @@ export default function Settings() {
                     <div className="text-[0.66rem] text-muted-foreground">Mostrar "Powered by" nas páginas dos creators</div>
                   </div>
                   <button
-                    onClick={() => setFooterVisible(!footerVisible)}
-                    className={`w-11 h-6 rounded-full transition-colors relative ${footerVisible ? "bg-primary" : "bg-border"}`}
+                    onClick={() => canManageAgency && setFooterVisible(!footerVisible)}
+                    disabled={!canManageAgency}
+                    className={`w-11 h-6 rounded-full transition-colors relative disabled:opacity-60 ${footerVisible ? "bg-primary" : "bg-border"}`}
                   >
                     <span className={`block w-5 h-5 rounded-full bg-white shadow transition-transform absolute top-0.5 ${footerVisible ? "translate-x-[22px]" : "translate-x-0.5"}`} />
                   </button>
@@ -228,8 +246,9 @@ export default function Settings() {
                       <input
                         value={footerText}
                         onChange={(e) => setFooterText(e.target.value)}
+                        disabled={!canManageAgency}
                         placeholder="Powered by"
-                        className="w-full px-4 py-3 bg-background border border-border rounded-xl text-sm text-foreground outline-none focus:border-primary transition-all"
+                        className="w-full px-4 py-3 bg-background border border-border rounded-xl text-sm text-foreground outline-none focus:border-primary transition-all disabled:opacity-60"
                       />
                     </div>
                     <div>
@@ -237,8 +256,9 @@ export default function Settings() {
                       <input
                         value={footerLink}
                         onChange={(e) => setFooterLink(e.target.value)}
+                        disabled={!canManageAgency}
                         placeholder="https://suaagencia.com"
-                        className="w-full px-4 py-3 bg-background border border-border rounded-xl text-sm text-foreground outline-none focus:border-primary transition-all"
+                        className="w-full px-4 py-3 bg-background border border-border rounded-xl text-sm text-foreground outline-none focus:border-primary transition-all disabled:opacity-60"
                       />
                       <p className="text-[0.66rem] text-muted-foreground mt-1">Ao clicar no footer, o visitante será redirecionado para este link.</p>
                     </div>
@@ -260,13 +280,15 @@ export default function Settings() {
                 </div>
               </div>
 
-              <button
-                onClick={handleSaveBranding}
-                disabled={saving}
-                className="px-6 py-3 bg-primary text-primary-foreground font-semibold text-sm rounded-xl transition-all hover:opacity-90 active:scale-[0.97] disabled:opacity-60"
-              >
-                {saving ? "Salvando..." : "Salvar branding"}
-              </button>
+              {canManageAgency && (
+                <button
+                  onClick={handleSaveBranding}
+                  disabled={saving}
+                  className="px-6 py-3 bg-primary text-primary-foreground font-semibold text-sm rounded-xl transition-all hover:opacity-90 active:scale-[0.97] disabled:opacity-60"
+                >
+                  {saving ? "Salvando..." : "Salvar branding"}
+                </button>
+              )}
             </div>
           )}
 
@@ -289,27 +311,29 @@ export default function Settings() {
                 </div>
               </div>
 
-              <div className="bg-card border border-border rounded-2xl p-5">
-                <div className="text-[0.66rem] text-muted-foreground uppercase tracking-wider font-bold mb-3">Domínio personalizado</div>
-                <div className="flex gap-2.5">
-                  <input
-                    value={customDomain}
-                    onChange={(e) => setCustomDomain(e.target.value)}
-                    placeholder="ex: links.suaagencia.com"
-                    className="flex-1 px-4 py-3 bg-background border border-border rounded-xl text-sm text-foreground outline-none focus:border-primary transition-all placeholder:text-muted-foreground"
-                  />
-                  <button
-                    onClick={async () => {
-                      if (!customDomain) return toast.error("Digite um domínio");
-                      await updateAgency({ domain: customDomain });
-                      toast.success("Domínio salvo!");
-                    }}
-                    className="px-5 py-3 bg-primary text-primary-foreground font-semibold text-sm rounded-xl transition-all hover:opacity-90 active:scale-[0.97] whitespace-nowrap"
-                  >
-                    Conectar
-                  </button>
+              {canManageAgency && (
+                <div className="bg-card border border-border rounded-2xl p-5">
+                  <div className="text-[0.66rem] text-muted-foreground uppercase tracking-wider font-bold mb-3">Domínio personalizado</div>
+                  <div className="flex gap-2.5">
+                    <input
+                      value={customDomain}
+                      onChange={(e) => setCustomDomain(e.target.value)}
+                      placeholder="ex: links.suaagencia.com"
+                      className="flex-1 px-4 py-3 bg-background border border-border rounded-xl text-sm text-foreground outline-none focus:border-primary transition-all placeholder:text-muted-foreground"
+                    />
+                    <button
+                      onClick={async () => {
+                        if (!customDomain) return toast.error("Digite um domínio");
+                        await updateAgency({ domain: customDomain });
+                        toast.success("Domínio salvo!");
+                      }}
+                      className="px-5 py-3 bg-primary text-primary-foreground font-semibold text-sm rounded-xl transition-all hover:opacity-90 active:scale-[0.97] whitespace-nowrap"
+                    >
+                      Conectar
+                    </button>
+                  </div>
                 </div>
-              </div>
+              )}
             </div>
           )}
 
@@ -330,31 +354,37 @@ export default function Settings() {
                   <div className="text-sm text-foreground">{user?.user_metadata?.full_name || "—"}</div>
                 </div>
                 <div>
+                  <div className="text-[0.66rem] text-muted-foreground uppercase tracking-wider font-bold mb-1">Papel</div>
+                  <div className="text-sm text-foreground capitalize">{role || "—"}</div>
+                </div>
+                <div>
                   <div className="text-[0.66rem] text-muted-foreground uppercase tracking-wider font-bold mb-1">ID da Agência</div>
                   <div className="text-xs text-muted-foreground font-mono">{agency?.id || "—"}</div>
                 </div>
               </div>
 
               {/* Reset onboarding */}
-              <div className="bg-card border border-border rounded-2xl p-5">
-                <div className="flex items-center justify-between">
-                  <div>
-                    <div className="text-sm font-medium text-foreground">Refazer onboarding</div>
-                    <div className="text-[0.66rem] text-muted-foreground">Reinicie o assistente de configuração inicial</div>
+              {canManageAgency && (
+                <div className="bg-card border border-border rounded-2xl p-5">
+                  <div className="flex items-center justify-between">
+                    <div>
+                      <div className="text-sm font-medium text-foreground">Refazer onboarding</div>
+                      <div className="text-[0.66rem] text-muted-foreground">Reinicie o assistente de configuração inicial</div>
+                    </div>
+                    <button
+                      onClick={() => {
+                        if (!user) return;
+                        resetOnboarding(user.id);
+                        toast.success("Onboarding resetado! Recarregando…");
+                        setTimeout(() => window.location.href = "/app", 800);
+                      }}
+                      className="px-4 py-2 bg-primary/10 text-primary text-xs font-semibold rounded-xl hover:bg-primary/20 transition-colors"
+                    >
+                      🔄 Refazer
+                    </button>
                   </div>
-                  <button
-                    onClick={() => {
-                      if (!user) return;
-                      resetOnboarding(user.id);
-                      toast.success("Onboarding resetado! Recarregando…");
-                      setTimeout(() => window.location.href = "/app", 800);
-                    }}
-                    className="px-4 py-2 bg-primary/10 text-primary text-xs font-semibold rounded-xl hover:bg-primary/20 transition-colors"
-                  >
-                    🔄 Refazer
-                  </button>
                 </div>
-              </div>
+              )}
             </div>
           )}
         </div>
