@@ -244,7 +244,7 @@ export default function CreatorView({ profile, links: rawLinks, socialLinks: raw
                           }
 
                           return (
-                            <div key={link.id} onClick={() => handleLinkClick(linkIdx, link.url)}
+                            <div key={link.id} onClick={() => handleLinkClick(linkIdx, link.url, link)}
                               className={`flex items-center gap-4 p-4 sm:p-5 ${shapeClass(profile.image_shape_links)} cursor-pointer transition-all duration-300 relative overflow-hidden group min-h-[56px]
                                 ${clickedLink === linkIdx ? "scale-[0.97]" : ""}
                                 ${link.featured && !link.bg_color
