@@ -53,9 +53,6 @@ export default function CreatorEdit() {
   const layoutOptions = [
     { id: "layout1", label: "Padrão" },
     { id: "layout2", label: "Imersivo" },
-    { id: "minimal", label: "Minimalista" },
-    { id: "grid", label: "Grid" },
-    { id: "dark", label: "Dark" },
   ];
 
   const handleSetPublicLayout = async (layout: string) => {
