@@ -7,14 +7,14 @@ import { toast } from "sonner";
 import GuidedTooltips from "@/components/onboarding/GuidedTooltips";
 
 const navItems = [
-  { icon: "▦", label: "Dashboard", path: "/app" },
-  { icon: "👥", label: "Creators", path: "/app/creators" },
-  { icon: "📢", label: "Campanhas", path: "/app/campaigns" },
-  { icon: "📊", label: "Analytics", path: "/app/analytics" },
+  { icon: "▦", label: "Dashboard", path: "/app", tour: "dashboard" },
+  { icon: "👥", label: "Creators", path: "/app/creators", tour: "creators" },
+  { icon: "📢", label: "Campanhas", path: "/app/campaigns", tour: "campaigns" },
+  { icon: "📊", label: "Analytics", path: "/app/analytics", tour: "analytics" },
 ];
 
 const settingsItems = [
-  { icon: "⚙", label: "Configurações", path: "/app/settings" },
+  { icon: "⚙", label: "Configurações", path: "/app/settings", tour: "settings" },
 ];
 
 function hexToHsl(hex: string): string | null {
