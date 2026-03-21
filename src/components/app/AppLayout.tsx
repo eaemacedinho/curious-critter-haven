@@ -14,6 +14,7 @@ const navItems = [
 ];
 
 const settingsItems = [
+  { icon: "👥", label: "Membros", path: "/app/members", tour: "members" },
   { icon: "⚙", label: "Configurações", path: "/app/settings", tour: "settings" },
 ];
 
