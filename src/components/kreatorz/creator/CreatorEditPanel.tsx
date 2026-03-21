@@ -1170,9 +1170,9 @@ const CreatorEditPanel = forwardRef<CreatorEditPanelHandle, Props>(function Crea
                 )}
               </div>
               <input value={link.title} onChange={(e) => { const arr = [...links]; arr[i] = { ...arr[i], title: e.target.value }; setLinks(arr); setValidationErrors((v) => { const n = { ...v }; delete n[`link-title-${i}`]; return n; }); }} placeholder="Título" className={`${inputClass} flex-1 ${validationErrors[`link-title-${i}`] ? "border-destructive/50 focus:border-destructive" : ""}`} />
-              <button onClick={() => { const arr = [...links]; arr[i] = { ...arr[i], featured: !arr[i].is_featured }; setLinks(arr); }}
+              <button onClick={() => { const arr = [...links]; arr[i] = { ...arr[i], is_featured: !arr[i].is_featured }; setLinks(arr); }}
                 className={`text-xs px-2 py-1 rounded-md transition-all ${link.is_featured ? "bg-primary/20 text-k-300" : "text-k-4 hover:text-k-3"}`}>⭐</button>
-              <button onClick={() => { const arr = [...links]; arr[i] = { ...arr[i], active: !arr[i].is_active }; setLinks(arr); }}
+              <button onClick={() => { const arr = [...links]; arr[i] = { ...arr[i], is_active: !arr[i].is_active }; setLinks(arr); }}
                 className={`w-9 h-5 rounded-full relative cursor-pointer transition-all duration-300 flex-shrink-0 ${link.is_active ? "bg-primary" : "bg-k-900 border border-primary/10"}`}>
                 <span className={`absolute w-3.5 h-3.5 rounded-full bg-primary-foreground top-[3px] transition-all duration-300 shadow-sm ${link.is_active ? "left-[18px]" : "left-[3px]"}`} />
               </button>
