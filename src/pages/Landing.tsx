@@ -105,7 +105,7 @@ export default function Landing() {
                     </div>
                     <div className="text-[0.68rem] text-muted-foreground mb-3">@marinacosta</div>
                     {[
-                      { title: "Meu novo projeto — GLOW", featured: true },
+                      { title: "Meu novo projeto — GLOW", is_featured: true },
                       { title: "Canal no YouTube" },
                       { title: "Playlist do momento" },
                     ].map((link, i) => (
