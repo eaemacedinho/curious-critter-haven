@@ -40,6 +40,7 @@ function hexToHsl(hex: string): string | null {
 export default function AppLayout() {
   const { user, signOut } = useAuth();
   const { agency } = useTenant();
+  const onboarding = useOnboarding();
   const navigate = useNavigate();
   const location = useLocation();
   const [sidebarOpen, setSidebarOpen] = useState(false);
