@@ -119,6 +119,7 @@ export default function AppLayout() {
             key={item.path}
             to={item.path}
             onClick={() => setSidebarOpen(false)}
+            data-tour={item.tour}
             className={`w-full flex items-center gap-2.5 px-3 py-2.5 rounded-xl text-sm mb-0.5 transition-all duration-200 ${
               isActive(item.path)
                 ? "bg-primary/15 text-primary font-semibold"
