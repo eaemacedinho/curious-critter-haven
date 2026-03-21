@@ -377,7 +377,7 @@ export default function CreatorViewLinkme({ profile, links: rawLinks, socialLink
 
 /* ── Sub-components ── */
 
-function LinkmeCard({ link, shape }: { link: CreatorLink; shape?: string }) {
+function LinkmeCard({ link, shape, onLinkClick }: { link: CreatorLink; shape?: string; onLinkClick?: (link: CreatorLink) => void }) {
   const sc = shapeClass(shape);
   const customStyle: React.CSSProperties = {
     ...(link.bg_color ? { backgroundColor: link.bg_color } : {}),
