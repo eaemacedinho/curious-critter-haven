@@ -35,11 +35,11 @@ export default function Creators() {
       setLoading(true);
       const { data, error } = await supabase
         .from("creators")
-        .select("id, name, handle, avatar_url, bio, layout_type, verified")
+        .select("id, name, slug, avatar_url, bio, layout_type, verified")
         .eq("agency_id", agency.id)
         .order("created_at", { ascending: false });
 
-      if (!error && data) setCreators(data as CreatorRow[]);
+      if (!error && data) setCreators(data as unknown as CreatorRow[]);
       setLoading(false);
     })();
   }, [agency]);
