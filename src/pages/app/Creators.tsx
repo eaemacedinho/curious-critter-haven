@@ -13,7 +13,7 @@ interface CreatorRow {
   handle: string;
   avatar_url: string;
   bio: string;
-  public_layout: string;
+  layout_type: string;
   verified: boolean;
 }
 
@@ -35,7 +35,7 @@ export default function Creators() {
       setLoading(true);
       const { data, error } = await supabase
         .from("creators")
-        .select("id, name, handle, avatar_url, bio, public_layout, verified")
+        .select("id, name, handle, avatar_url, bio, layout_type, verified")
         .eq("agency_id", agency.id)
         .order("created_at", { ascending: false });
 
@@ -47,7 +47,7 @@ export default function Creators() {
   const filtered = creators.filter(
     (c) =>
       c.name?.toLowerCase().includes(search.toLowerCase()) ||
-      c.handle?.toLowerCase().includes(search.toLowerCase())
+      c.slug?.toLowerCase().includes(search.toLowerCase())
   );
 
   const handleCopyUrl = (handle: string) => {
@@ -69,7 +69,7 @@ export default function Creators() {
         name: `Creator ${count}`,
         handle: `creator-${count}-${uniqueSuffix}`,
       })
-      .select("id, name, handle, avatar_url, bio, public_layout, verified")
+      .select("id, name, handle, avatar_url, bio, layout_type, verified")
       .single();
 
     if (error) {
@@ -92,7 +92,7 @@ export default function Creators() {
       supabase.from("creator_links").delete().eq("creator_id", deleteTarget.id),
       supabase.from("creator_social_links").delete().eq("creator_id", deleteTarget.id),
       supabase.from("creator_products").delete().eq("creator_id", deleteTarget.id),
-      supabase.from("creator_campaigns").delete().eq("creator_id", deleteTarget.id),
+      supabase.from("campaigns").delete().eq("creator_id", deleteTarget.id),
     ]);
 
     const { error } = await supabase.from("creators").delete().eq("id", deleteTarget.id);
@@ -197,15 +197,15 @@ export default function Creators() {
                   )}
                 </div>
                 <div className="text-[0.75rem] text-muted-foreground">
-                  @{cr.handle?.replace(/^@+/, "") || "—"}
+                  @{cr.slug?.replace(/^@+/, "") || "—"}
                 </div>
               </div>
               <div className="flex items-center gap-2 flex-shrink-0">
                 <span className="hidden sm:inline-flex px-2.5 py-1 rounded-full text-[0.68rem] font-semibold bg-primary/10 text-muted-foreground">
-                  {cr.public_layout === "layout2" ? "Imersivo" : "Padrão"}
+                  {cr.layout_type === "layout2" ? "Imersivo" : "Padrão"}
                 </span>
                 <button
-                  onClick={() => handleCopyUrl(cr.handle)}
+                  onClick={() => handleCopyUrl(cr.slug)}
                   className="w-9 h-9 rounded-lg bg-background border border-border flex items-center justify-center text-xs text-muted-foreground hover:text-foreground hover:border-primary/30 transition-all"
                   title="Copiar URL"
                 >
@@ -213,7 +213,7 @@ export default function Creators() {
                 </button>
                 <button
                   onClick={() => {
-                    const handle = cr.handle?.replace(/^@+/, "");
+                    const handle = cr.slug?.replace(/^@+/, "");
                     if (handle) window.open(`/c/${handle}`, "_blank");
                   }}
                   className="w-9 h-9 rounded-lg bg-background border border-border flex items-center justify-center text-xs text-muted-foreground hover:text-foreground hover:border-primary/30 transition-all"

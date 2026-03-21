@@ -61,7 +61,7 @@ export default function CreatorViewGrid({ profile, links: rawLinks, socialLinks:
                 {profile.name}
                 {profile.verified && <VerifiedBadge size={18} />}
               </h1>
-              {profile.handle && <p className="text-xs text-muted-foreground">@{profile.handle.replace(/^@+/, "")}</p>}
+              {profile.slug && <p className="text-xs text-muted-foreground">@{profile.slug.replace(/^@+/, "")}</p>}
             </div>
           </div>
           {profile.bio && (

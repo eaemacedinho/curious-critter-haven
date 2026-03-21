@@ -154,8 +154,8 @@ export default function CreatorViewLinkme({ profile, links: rawLinks, socialLink
                 {profile.name}
                 {profile.verified && <VerifiedBadge size={24} />}
               </h2>
-              {profile.handle && (
-                <p className="font-body text-[0.82rem] text-white/60 mt-1 tracking-wide drop-shadow-[0_1px_6px_rgba(0,0,0,0.4)]">@{profile.handle.replace(/^@+/, "")}</p>
+              {profile.slug && (
+                <p className="font-body text-[0.82rem] text-white/60 mt-1 tracking-wide drop-shadow-[0_1px_6px_rgba(0,0,0,0.4)]">@{profile.slug.replace(/^@+/, "")}</p>
               )}
 
               {/* Social Icons */}
@@ -417,7 +417,7 @@ function LinkmeCard({ link, shape, onLinkClick }: { link: CreatorLink; shape?: s
       onClick={() => onLinkClick?.(link)}
       className={`group relative block w-full ${sc} overflow-hidden transition-all duration-300 hover:-translate-y-1 active:scale-[0.98]`}>
       <div className={`flex items-center gap-4 p-4 sm:p-5 min-h-[56px] ${
-        !hasCustomBg ? (link.featured
+        !hasCustomBg ? (link.is_featured
           ? "bg-gradient-to-r from-primary/25 to-primary/10 border border-primary/25"
           : "bg-card/70 backdrop-blur-xl border border-border") : ""
       } ${sc} transition-all duration-300 group-hover:border-primary/30`}

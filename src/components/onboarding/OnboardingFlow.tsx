@@ -78,7 +78,7 @@ export default function OnboardingFlow({ onComplete }: { onComplete: () => void 
           name: creatorName,
           handle,
           bio: "Olá! Esta é minha página de links. Explore meus conteúdos e redes sociais. 🚀",
-          public_layout: colors.layout,
+          layout_type: colors.layout,
         })
         .select("id, handle")
         .single();
@@ -89,14 +89,14 @@ export default function OnboardingFlow({ onComplete }: { onComplete: () => void 
       }
 
       const creatorId = newCreator.id;
-      setCreatedHandle(newCreator.handle);
+      setCreatedHandle(newCreator.slug);
 
       // Create demo links + campaign in parallel
       await Promise.all([
         supabase.from("creator_links").insert(
           DEMO_LINKS.map(l => ({ ...l, creator_id: creatorId }))
         ),
-        supabase.from("creator_campaigns").insert({
+        supabase.from("campaigns").insert({
           creator_id: creatorId,
           title: "🔥 Conteúdo Exclusivo",
           description: "Confira meu novo material especial",
@@ -370,7 +370,7 @@ export default function OnboardingFlow({ onComplete }: { onComplete: () => void 
                   <button
                     onClick={() => {
                       navigator.clipboard.writeText(`${window.location.origin}/c/${createdHandle}`);
-                      const btn = document.activeElement as HTMLButtonElement;
+                      const btn = document.is_activeElement as HTMLButtonElement;
                       if (btn) btn.textContent = "✓ Link copiado!";
                       setTimeout(() => { if (btn) btn.textContent = "📋 Copiar link da página"; }, 2000);
                     }}

@@ -57,7 +57,7 @@ export default function CreatorEdit() {
 
   const handleSetPublicLayout = async (layout: string) => {
     try {
-      await saveProfile({ public_layout: layout } as any);
+      await saveProfile({ layout_type: layout } as any);
       const name = layoutOptions.find(l => l.id === layout)?.label || layout;
       toast.success(`Layout "${name}" definido como página pública`);
     } catch {
@@ -90,7 +90,7 @@ export default function CreatorEdit() {
                 key={opt.id}
                 onClick={() => void handleSetPublicLayout(opt.id)}
                 className={`px-3 py-2 text-xs font-semibold transition-all ${
-                  profile.public_layout === opt.id
+                  profile.layout_type === opt.id
                     ? "bg-primary text-primary-foreground"
                     : "text-muted-foreground hover:text-foreground"
                 }`}
@@ -102,7 +102,7 @@ export default function CreatorEdit() {
           {/* Preview */}
           <button
             onClick={() => {
-              const handle = profile.handle?.replace(/^@+/, "");
+              const handle = profile.slug?.replace(/^@+/, "");
               if (handle) window.open(`/c/${handle}`, "_blank");
             }}
             className="px-4 py-2 bg-card border border-border text-muted-foreground font-medium text-sm rounded-xl transition-all hover:border-primary/30 hover:text-foreground"
@@ -128,7 +128,7 @@ export default function CreatorEdit() {
         socialLinks={socialLinks}
         products={products}
         campaigns={campaigns}
-        activeLayout={profile.public_layout}
+        activeLayout={profile.layout_type}
         onSaveProfile={saveProfile}
         onSaveLinks={saveLinks}
         onSaveSocialLinks={saveSocialLinks}

@@ -130,7 +130,7 @@ export default function CreatorView({ profile, links: rawLinks, socialLinks: raw
               {profile.name}
             </h1>
           )}
-          {profile.handle && <p className="text-sm text-muted-foreground mt-1">@{profile.handle.replace(/^@+/, "")}</p>}
+          {profile.slug && <p className="text-sm text-muted-foreground mt-1">@{profile.slug.replace(/^@+/, "")}</p>}
 
           {tags.length > 0 && (
             <div className="flex justify-center gap-2 mt-3 flex-wrap">
@@ -247,7 +247,7 @@ export default function CreatorView({ profile, links: rawLinks, socialLinks: raw
                             <div key={link.id} onClick={() => handleLinkClick(linkIdx, link.url, link)}
                               className={`flex items-center gap-4 p-4 sm:p-5 ${shapeClass(profile.image_shape_links)} cursor-pointer transition-all duration-300 relative overflow-hidden group min-h-[56px]
                                 ${clickedLink === linkIdx ? "scale-[0.97]" : ""}
-                                ${link.featured && !link.bg_color
+                                ${link.is_featured && !link.bg_color
                                   ? "gradient-primary border-transparent shadow-k-purple-lg hover:-translate-y-1"
                                   : !link.bg_color ? "bg-card/65 backdrop-blur-2xl border border-border hover:border-primary/20 hover:-translate-y-1 hover:shadow-k-purple" : "hover:-translate-y-1"
                                 } active:scale-[0.97]`}
@@ -256,7 +256,7 @@ export default function CreatorView({ profile, links: rawLinks, socialLinks: raw
                                 ...(link.text_color ? { color: link.text_color } : {}),
                                 ...(link.border_color ? { borderColor: link.border_color, borderWidth: "1px", borderStyle: "solid" } : {}),
                               }}>
-                              <div className={`w-[44px] h-[44px] rounded-xl flex items-center justify-center flex-shrink-0 transition-transform duration-300 group-hover:scale-110 ${link.featured ? "bg-primary-foreground/15" : "bg-primary/5"}`}>
+                              <div className={`w-[44px] h-[44px] rounded-xl flex items-center justify-center flex-shrink-0 transition-transform duration-300 group-hover:scale-110 ${link.is_featured ? "bg-primary-foreground/15" : "bg-primary/5"}`}>
                                 <LinkIcon icon={link.icon} url={link.url} size={18} />
                               </div>
                               <div className="flex-1 min-w-0">

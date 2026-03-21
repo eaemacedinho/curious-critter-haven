@@ -103,8 +103,8 @@ export default function CreatorLivePreview({
   const renderedWidth = DEVICE.w * scale;
   const renderedHeight = DEVICE.h * scale;
 
-  const publicUrl = profile.handle
-    ? `/c/${profile.handle.replace(/^@+/, "")}`
+  const publicUrl = profile.slug
+    ? `/c/${profile.slug.replace(/^@+/, "")}`
     : null;
 
   return (

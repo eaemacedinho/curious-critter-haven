@@ -13,7 +13,7 @@ const normalizeProfile = (creator: any): CreatorProfile => ({
   avatar_url_layout2: creator.avatar_url_layout2 || "",
   cover_url_layout2: creator.cover_url_layout2 || "",
   verified: creator.verified ?? false,
-  public_layout: creator.public_layout || "layout1",
+  layout_type: creator.layout_type || "layout1",
   image_shape: creator.image_shape || "rounded",
   image_shape_products: creator.image_shape_products || creator.image_shape || "rounded",
   image_shape_campaigns: creator.image_shape_campaigns || creator.image_shape || "rounded",
@@ -66,7 +66,7 @@ export default function CreatorPublic() {
       const { data } = await supabase
         .from("creators")
         .select("*")
-        .eq("handle", cleanHandle)
+        .eq("slug", cleanHandle)
         .maybeSingle();
 
       creator = data;
@@ -75,7 +75,7 @@ export default function CreatorPublic() {
         const { data: data2 } = await supabase
           .from("creators")
           .select("*")
-          .eq("handle", `@${cleanHandle}`)
+          .eq("slug", `@${cleanHandle}`)
           .maybeSingle();
         creator = data2;
       }
@@ -138,7 +138,7 @@ export default function CreatorPublic() {
       supabase.from("creator_links").select("*").eq("creator_id", creatorId).order("sort_order"),
       supabase.from("creator_social_links").select("*").eq("creator_id", creatorId).order("sort_order"),
       supabase.from("creator_products").select("*").eq("creator_id", creatorId).order("sort_order"),
-      supabase.from("creator_campaigns").select("*").eq("creator_id", creatorId).order("sort_order"),
+      supabase.from("campaigns").select("*").eq("creator_id", creatorId).order("sort_order"),
     ]);
     setLinks((linksRes.data as CreatorLink[]) || []);
     setSocialLinks((socialRes.data as SocialLink[]) || []);
@@ -191,7 +191,7 @@ export default function CreatorPublic() {
   const layoutProps = { profile, links, socialLinks, products, campaigns, agencyName, agencyLogoUrl, agencyFooterText, agencyFooterVisible, agencyFooterLink, onLinkClick: handleLinkClick, onCampaignClick: handleCampaignClick };
 
   const LayoutComponent = (() => {
-    switch (profile.public_layout) {
+    switch (profile.layout_type) {
       case "layout2": return CreatorViewLinkme;
       default: return CreatorView;
     }

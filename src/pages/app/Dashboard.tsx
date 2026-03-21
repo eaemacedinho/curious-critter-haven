@@ -48,7 +48,7 @@ export default function Dashboard() {
 
       const creatorIds = creators!.map((c) => c.id);
       const { data: campaigns } = await supabase
-        .from("creator_campaigns")
+        .from("campaigns")
         .select("id, live")
         .in("creator_id", creatorIds);
 

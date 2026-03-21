@@ -34,7 +34,7 @@ export default function CampaignAnalytics({ agencyId }: Props) {
 
       // Get all campaigns for these creators
       const { data: campaigns } = await supabase
-        .from("creator_campaigns")
+        .from("campaigns")
         .select("*")
         .in("creator_id", creators.map(c => c.id))
         .order("sort_order");
