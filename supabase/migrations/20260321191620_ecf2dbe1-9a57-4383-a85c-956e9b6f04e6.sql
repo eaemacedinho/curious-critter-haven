@@ -1,0 +1,1 @@
+ALTER TABLE public.creators ADD COLUMN IF NOT EXISTS brands_display_mode text NOT NULL DEFAULT 'static';

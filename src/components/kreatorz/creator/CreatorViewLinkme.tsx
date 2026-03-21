@@ -5,6 +5,7 @@ import VerifiedBadge from "./VerifiedBadge";
 import SpotlightCampaign from "./SpotlightCampaign";
 import type { CreatorProfile, CreatorLink, SocialLink, CreatorProduct, CreatorCampaign } from "@/hooks/useCreatorData";
 import PageEffects from "./PageEffects";
+import BrandsSection from "./BrandsSection";
 import type { PageEffect } from "./PageEffects";
 import { getFontFamily, getFontSizeScale, loadGoogleFont } from "@/lib/fontUtils";
 
@@ -197,17 +198,10 @@ export default function CreatorViewLinkme({ profile, links: rawLinks, socialLink
             )}
 
             {/* Brands */}
-            {brands.length > 0 && (
-              <div className="flex justify-center items-center gap-2.5 mt-4 flex-wrap px-5">
-                <span className="font-body text-[0.6rem] text-muted-foreground uppercase tracking-[0.16em] font-bold">Trabalhou com:</span>
-                {brands.map((brand, i) => (
-                  <span key={i} className="font-body text-[0.68rem] text-foreground font-semibold px-2.5 py-1 bg-card/80 rounded-lg border border-border/50 flex items-center gap-1.5">
-                    {brand.logo_url && <img src={brand.logo_url} alt="" className="w-3.5 h-3.5 rounded-sm object-contain" />}
-                    {brand.name}
-                  </span>
-                ))}
-              </div>
-            )}
+            <BrandsSection
+              brands={brands}
+              displayMode={profile.brands_display_mode || "static"}
+            />
 
             {profile.bio && (
               <p className="font-body text-[0.88rem] text-center leading-relaxed mt-5 px-6 max-w-[360px] mx-auto"

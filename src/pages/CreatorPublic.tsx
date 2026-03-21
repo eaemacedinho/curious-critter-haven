@@ -27,6 +27,7 @@ const normalizeProfile = (creator: any): CreatorProfile => ({
   brands: Array.isArray(creator.brands)
     ? (creator.brands as any[]).map((b: any) => (typeof b === "string" ? { name: b } : b))
     : [],
+  brands_display_mode: creator.brands_display_mode || "static",
   page_effects: (() => {
     const pe = creator.page_effects;
     if (!pe) return { effects: [], color: undefined, emojis: undefined, intensity: undefined };

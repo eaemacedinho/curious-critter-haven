@@ -5,6 +5,7 @@ import SocialIcon, { LinkIcon } from "./SocialIcon";
 import VerifiedBadge from "./VerifiedBadge";
 import SpotlightCampaign from "./SpotlightCampaign";
 import PageEffects from "./PageEffects";
+import BrandsSection from "./BrandsSection";
 import type { PageEffect } from "./PageEffects";
 import { getFontFamily, getFontSizeScale, loadGoogleFont } from "@/lib/fontUtils";
 
@@ -149,17 +150,10 @@ export default function CreatorView({ profile, links: rawLinks, socialLinks: raw
             </div>
           )}
 
-          {brands.length > 0 && (
-            <div className="flex justify-center items-center gap-3 mt-4 flex-wrap">
-              <span className="text-[0.62rem] text-muted-foreground uppercase tracking-widest font-bold">Trabalhou com:</span>
-              {brands.map((brand, i) => (
-                <span key={i} className="text-[0.65rem] text-muted-foreground font-semibold px-2.5 py-1 bg-card/80 rounded-md border border-border flex items-center gap-1.5">
-                  {brand.logo_url && <img src={brand.logo_url} alt="" className="w-4 h-4 rounded-sm object-contain" />}
-                  {brand.name}
-                </span>
-              ))}
-            </div>
-          )}
+          <BrandsSection
+            brands={brands}
+            displayMode={profile.brands_display_mode || "static"}
+          />
 
           {profile.bio && (
             <p className="text-sm leading-relaxed mt-5 max-w-[380px] mx-auto"

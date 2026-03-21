@@ -24,6 +24,7 @@ export interface CreatorProfile {
   tags: { label: string; color?: string }[];
   stats: { value: string; label: string }[];
   brands: { name: string; logo_url?: string }[];
+  brands_display_mode: "static" | "marquee";
   page_effects: { effects: string[]; color?: string; emojis?: string[]; intensity?: Record<string, number> };
   font_family: string;
   font_size: string;

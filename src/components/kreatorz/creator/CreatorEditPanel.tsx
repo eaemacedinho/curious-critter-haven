@@ -142,6 +142,7 @@ const CreatorEditPanel = forwardRef<CreatorEditPanelHandle, Props>(function Crea
   const [tags, setTags] = useState(profile.tags || []);
   const [stats, setStats] = useState(profile.stats || []);
   const [brands, setBrands] = useState(profile.brands || []);
+  const [brandsDisplayMode, setBrandsDisplayMode] = useState<"static" | "marquee">(profile.brands_display_mode || "static");
   const [avatarUrl, setAvatarUrl] = useState(profile.avatar_url || "");
   const [coverUrl, setCoverUrl] = useState(profile.cover_url || "");
   const [avatarUrlL2, setAvatarUrlL2] = useState(profile.avatar_url_layout2 || "");
@@ -200,6 +201,7 @@ const CreatorEditPanel = forwardRef<CreatorEditPanelHandle, Props>(function Crea
     tags,
     stats,
     brands,
+    brands_display_mode: brandsDisplayMode,
     image_shape: shapeProducts,
     image_shape_products: shapeProducts,
     image_shape_campaigns: shapeCampaigns,
@@ -211,7 +213,7 @@ const CreatorEditPanel = forwardRef<CreatorEditPanelHandle, Props>(function Crea
     color_bio: colorBio || null,
     color_section_titles: colorSectionTitles || null,
     section_order: sectionOrder,
-  }), [profile, name, handle, bio, avatarUrl, coverUrl, avatarUrlL2, coverUrlL2, verified, tags, stats, brands, shapeProducts, shapeCampaigns, shapeLinks, pageEffects, effectColor, effectEmojis, effectIntensity, fontFamily, fontSize, colorName, colorBio, colorSectionTitles, sectionOrder]);
+  }), [profile, name, handle, bio, avatarUrl, coverUrl, avatarUrlL2, coverUrlL2, verified, tags, stats, brands, brandsDisplayMode, shapeProducts, shapeCampaigns, shapeLinks, pageEffects, effectColor, effectEmojis, effectIntensity, fontFamily, fontSize, colorName, colorBio, colorSectionTitles, sectionOrder]);
 
   const isValidUrl = (url: string) => {
     if (!url) return true;
@@ -341,7 +343,7 @@ const CreatorEditPanel = forwardRef<CreatorEditPanelHandle, Props>(function Crea
           }))
           .filter((camp) => !isEmptyCampaignEntry(camp));
 
-      const baseProfile = { name, handle, bio, avatar_url: avatarUrl, cover_url: coverUrl, avatar_url_layout2: avatarUrlL2, cover_url_layout2: coverUrlL2, verified, tags, stats, brands, image_shape: shapeProducts, image_shape_products: shapeProducts, image_shape_campaigns: shapeCampaigns, image_shape_links: shapeLinks, page_effects: { effects: pageEffects, color: effectColor, emojis: effectEmojis, intensity: effectIntensity }, font_family: fontFamily, font_size: fontSize, color_name: colorName || null, color_bio: colorBio || null, color_section_titles: colorSectionTitles || null, section_order: sectionOrder };
+      const baseProfile = { name, handle, bio, avatar_url: avatarUrl, cover_url: coverUrl, avatar_url_layout2: avatarUrlL2, cover_url_layout2: coverUrlL2, verified, tags, stats, brands, brands_display_mode: brandsDisplayMode, image_shape: shapeProducts, image_shape_products: shapeProducts, image_shape_campaigns: shapeCampaigns, image_shape_links: shapeLinks, page_effects: { effects: pageEffects, color: effectColor, emojis: effectEmojis, intensity: effectIntensity }, font_family: fontFamily, font_size: fontSize, color_name: colorName || null, color_bio: colorBio || null, color_section_titles: colorSectionTitles || null, section_order: sectionOrder };
 
       if (cropImage) {
         const { file, type } = cropImage;
@@ -912,6 +914,31 @@ const CreatorEditPanel = forwardRef<CreatorEditPanelHandle, Props>(function Crea
       <div className="mb-8">
         <div className={sectionTitle}>🤝 Marcas parceiras</div>
         <p className="text-[0.68rem] text-k-4 mb-2">Marcas com quem você já trabalhou. Adicione o logo!</p>
+
+        {/* Display mode toggle */}
+        <div className="flex items-center gap-2 mb-3 bg-k-800 border border-primary/10 rounded-xl p-2.5">
+          <span className="text-[0.68rem] text-k-4 font-medium mr-1">Exibição:</span>
+          <button
+            onClick={() => setBrandsDisplayMode("static")}
+            className={`px-3 py-1.5 text-[0.68rem] font-semibold rounded-lg transition-all ${
+              brandsDisplayMode === "static"
+                ? "bg-primary text-primary-foreground"
+                : "text-muted-foreground hover:text-foreground hover:bg-card/60"
+            }`}
+          >
+            Estático
+          </button>
+          <button
+            onClick={() => setBrandsDisplayMode("marquee")}
+            className={`px-3 py-1.5 text-[0.68rem] font-semibold rounded-lg transition-all ${
+              brandsDisplayMode === "marquee"
+                ? "bg-primary text-primary-foreground"
+                : "text-muted-foreground hover:text-foreground hover:bg-card/60"
+            }`}
+          >
+            🎞 Esteira (loop infinito)
+          </button>
+        </div>
         <div className="flex flex-col gap-2 mb-3">
           {brands.map((brand, i) => (
             <div key={i} className="bg-k-800 border border-primary/10 rounded-xl p-3 flex items-center gap-3">
