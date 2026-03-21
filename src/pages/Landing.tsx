@@ -105,13 +105,13 @@ export default function Landing() {
                     </div>
                     <div className="text-[0.68rem] text-muted-foreground mb-3">@marinacosta</div>
                     {[
-                      { title: "Meu novo projeto — GLOW", featured: true },
+                      { title: "Meu novo projeto — GLOW", is_featured: true },
                       { title: "Canal no YouTube" },
                       { title: "Playlist do momento" },
                     ].map((link, i) => (
-                      <div key={i} className={`flex items-center gap-2.5 p-2.5 rounded-xl mb-1.5 text-left ${link.featured ? "gradient-primary" : "bg-card border border-border"}`}>
-                        <div className={`w-8 h-8 rounded-lg flex items-center justify-center flex-shrink-0 text-xs ${link.featured ? "bg-primary-foreground/15" : "bg-accent/10"}`}>
-                          {link.featured ? "⭐" : i === 1 ? "▶" : "🎵"}
+                      <div key={i} className={`flex items-center gap-2.5 p-2.5 rounded-xl mb-1.5 text-left ${link.is_featured ? "gradient-primary" : "bg-card border border-border"}`}>
+                        <div className={`w-8 h-8 rounded-lg flex items-center justify-center flex-shrink-0 text-xs ${link.is_featured ? "bg-primary-foreground/15" : "bg-accent/10"}`}>
+                          {link.is_featured ? "⭐" : i === 1 ? "▶" : "🎵"}
                         </div>
                         <h4 className="text-[0.7rem] font-semibold flex-1 text-foreground">{link.title}</h4>
                       </div>

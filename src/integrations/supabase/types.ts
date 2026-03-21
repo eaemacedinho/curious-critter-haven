@@ -155,7 +155,7 @@ export type Database = {
             foreignKeyName: "analytics_events_campaign_id_fkey"
             columns: ["campaign_id"]
             isOneToOne: false
-            referencedRelation: "creator_campaigns"
+            referencedRelation: "campaigns"
             referencedColumns: ["id"]
           },
           {
@@ -201,12 +201,12 @@ export type Database = {
             foreignKeyName: "campaign_clicks_campaign_id_fkey"
             columns: ["campaign_id"]
             isOneToOne: false
-            referencedRelation: "creator_campaigns"
+            referencedRelation: "campaigns"
             referencedColumns: ["id"]
           },
         ]
       }
-      creator_campaigns: {
+      campaigns: {
         Row: {
           agency_id: string | null
           bg_color: string | null
@@ -286,16 +286,16 @@ export type Database = {
       }
       creator_links: {
         Row: {
-          active: boolean | null
           bg_color: string | null
           border_color: string | null
           created_at: string
           creator_id: string
           display_mode: string | null
-          featured: boolean | null
           icon: string | null
           id: string
           image_url: string | null
+          is_active: boolean | null
+          is_featured: boolean | null
           sort_order: number | null
           subtitle: string | null
           text_color: string | null
@@ -303,16 +303,16 @@ export type Database = {
           url: string
         }
         Insert: {
-          active?: boolean | null
           bg_color?: string | null
           border_color?: string | null
           created_at?: string
           creator_id: string
           display_mode?: string | null
-          featured?: boolean | null
           icon?: string | null
           id?: string
           image_url?: string | null
+          is_active?: boolean | null
+          is_featured?: boolean | null
           sort_order?: number | null
           subtitle?: string | null
           text_color?: string | null
@@ -320,16 +320,16 @@ export type Database = {
           url?: string
         }
         Update: {
-          active?: boolean | null
           bg_color?: string | null
           border_color?: string | null
           created_at?: string
           creator_id?: string
           display_mode?: string | null
-          featured?: boolean | null
           icon?: string | null
           id?: string
           image_url?: string | null
+          is_active?: boolean | null
+          is_featured?: boolean | null
           sort_order?: number | null
           subtitle?: string | null
           text_color?: string | null
@@ -448,17 +448,17 @@ export type Database = {
           created_at: string
           font_family: string
           font_size: string
-          handle: string
           id: string
           image_shape: string
           image_shape_campaigns: string
           image_shape_links: string
           image_shape_products: string
           is_published: boolean
+          layout_type: string
           name: string
           page_effects: Json | null
-          public_layout: string
           section_order: Json
+          slug: string
           stats: Json | null
           tags: Json | null
           updated_at: string
@@ -481,17 +481,17 @@ export type Database = {
           created_at?: string
           font_family?: string
           font_size?: string
-          handle?: string
           id?: string
           image_shape?: string
           image_shape_campaigns?: string
           image_shape_links?: string
           image_shape_products?: string
           is_published?: boolean
+          layout_type?: string
           name?: string
           page_effects?: Json | null
-          public_layout?: string
           section_order?: Json
+          slug?: string
           stats?: Json | null
           tags?: Json | null
           updated_at?: string
@@ -514,17 +514,17 @@ export type Database = {
           created_at?: string
           font_family?: string
           font_size?: string
-          handle?: string
           id?: string
           image_shape?: string
           image_shape_campaigns?: string
           image_shape_links?: string
           image_shape_products?: string
           is_published?: boolean
+          layout_type?: string
           name?: string
           page_effects?: Json | null
-          public_layout?: string
           section_order?: Json
+          slug?: string
           stats?: Json | null
           tags?: Json | null
           updated_at?: string

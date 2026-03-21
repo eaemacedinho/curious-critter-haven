@@ -76,11 +76,11 @@ export default function OnboardingFlow({ onComplete }: { onComplete: () => void 
           user_id: user.id,
           agency_id: agency.id,
           name: creatorName,
-          handle,
+          slug: handle,
           bio: "Olá! Esta é minha página de links. Explore meus conteúdos e redes sociais. 🚀",
-          public_layout: colors.layout,
-        })
-        .select("id, handle")
+          layout_type: colors.layout,
+        } as any)
+        .select("id, slug")
         .single();
 
       if (creatorError) {
@@ -88,15 +88,15 @@ export default function OnboardingFlow({ onComplete }: { onComplete: () => void 
         throw creatorError;
       }
 
-      const creatorId = newCreator.id;
-      setCreatedHandle(newCreator.handle);
+      const creatorId = (newCreator as any).id;
+      setCreatedHandle((newCreator as any).slug);
 
       // Create demo links + campaign in parallel
       await Promise.all([
         supabase.from("creator_links").insert(
           DEMO_LINKS.map(l => ({ ...l, creator_id: creatorId }))
         ),
-        supabase.from("creator_campaigns").insert({
+        supabase.from("campaigns").insert({
           creator_id: creatorId,
           title: "🔥 Conteúdo Exclusivo",
           description: "Confira meu novo material especial",

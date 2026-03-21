@@ -94,7 +94,7 @@ export default function CreatorViewDark({ profile, links: rawLinks, socialLinks:
               {profile.verified && <span className="inline-block ml-2 align-middle"><VerifiedBadge size={20} /></span>}
             </h1>
           )}
-          {profile.handle && <p className="text-xs mt-1" style={{ color: "rgba(255,255,255,0.4)" }}>@{profile.handle.replace(/^@+/, "")}</p>}
+          {profile.slug && <p className="text-xs mt-1" style={{ color: "rgba(255,255,255,0.4)" }}>@{profile.slug.replace(/^@+/, "")}</p>}
           {profile.bio && (
             <p className="text-sm leading-relaxed mt-3 max-w-[360px] mx-auto" style={{ color: profile.color_bio || "rgba(255,255,255,0.6)" }}>
               {profile.bio}
@@ -134,7 +134,7 @@ export default function CreatorViewDark({ profile, links: rawLinks, socialLinks:
                   background: link.bg_color || darkCard,
                   border: `1px solid ${link.border_color || neonPrimary + "20"}`,
                   ...(link.text_color ? { color: link.text_color } : {}),
-                  ...(link.featured ? { boxShadow: `0 0 20px ${neonPrimary}20, inset 0 0 20px ${neonPrimary}05` } : {}),
+                  ...(link.is_featured ? { boxShadow: `0 0 20px ${neonPrimary}20, inset 0 0 20px ${neonPrimary}05` } : {}),
                 }}>
                 <div className="w-10 h-10 rounded-xl flex items-center justify-center flex-shrink-0 transition-transform hover:scale-110"
                   style={{ background: `${neonPrimary}15` }}>

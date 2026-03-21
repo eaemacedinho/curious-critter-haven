@@ -137,7 +137,7 @@ const CreatorEditPanel = forwardRef<CreatorEditPanelHandle, Props>(function Crea
   ref
 ) {
   const [name, setName] = useState(profile.name);
-  const [handle, setHandle] = useState(profile.handle);
+  const [handle, setHandle] = useState(profile.slug);
   const [bio, setBio] = useState(profile.bio || "");
   const [tags, setTags] = useState(profile.tags || []);
   const [stats, setStats] = useState(profile.stats || []);
@@ -191,7 +191,7 @@ const CreatorEditPanel = forwardRef<CreatorEditPanelHandle, Props>(function Crea
   const liveProfile = useMemo<CreatorProfile>(() => ({
     ...profile,
     name,
-    handle,
+    slug: handle,
     bio,
     avatar_url: avatarUrl,
     cover_url: coverUrl,
@@ -234,16 +234,16 @@ const CreatorEditPanel = forwardRef<CreatorEditPanelHandle, Props>(function Crea
   const validate = (): boolean => {
     const errors: Record<string, string> = {};
     if (!name.trim()) errors.name = "Nome é obrigatório";
-    if (!handle.trim()) errors.handle = "Handle é obrigatório";
-    else if (/\s/.test(handle)) errors.handle = "Handle não pode conter espaços";
-    else if (!/^[a-zA-Z0-9._-]+$/.test(handle.replace(/^@/, ""))) errors.handle = "Handle contém caracteres inválidos";
+    if (!handle.trim()) errors.slug = "Handle é obrigatório";
+    else if (/\s/.test(handle)) errors.slug = "Handle não pode conter espaços";
+    else if (!/^[a-zA-Z0-9._-]+$/.test(handle.replace(/^@/, ""))) errors.slug = "Handle contém caracteres inválidos";
 
     links.forEach((link, i) => {
       const normalizedUrl = normalizeExternalUrl(link.url);
       // Skip completely empty links (no title AND no url)
       if (!link.title.trim() && !link.url.trim()) return;
-      if (link.active && !link.title.trim()) errors[`link-title-${i}`] = "Título obrigatório";
-      if (link.active && normalizedUrl && !isValidUrl(normalizedUrl)) errors[`link-url-${i}`] = "URL inválida";
+      if (link.is_active && !link.title.trim()) errors[`link-title-${i}`] = "Título obrigatório";
+      if (link.is_active && normalizedUrl && !isValidUrl(normalizedUrl)) errors[`link-url-${i}`] = "URL inválida";
     });
 
     prods.forEach((prod, i) => {
@@ -343,7 +343,7 @@ const CreatorEditPanel = forwardRef<CreatorEditPanelHandle, Props>(function Crea
           }))
           .filter((camp) => !isEmptyCampaignEntry(camp));
 
-      const baseProfile = { name, handle, bio, avatar_url: avatarUrl, cover_url: coverUrl, avatar_url_layout2: avatarUrlL2, cover_url_layout2: coverUrlL2, verified, tags, stats, brands, brands_display_mode: brandsDisplayMode, image_shape: shapeProducts, image_shape_products: shapeProducts, image_shape_campaigns: shapeCampaigns, image_shape_links: shapeLinks, page_effects: { effects: pageEffects, color: effectColor, emojis: effectEmojis, intensity: effectIntensity }, font_family: fontFamily, font_size: fontSize, color_name: colorName || null, color_bio: colorBio || null, color_section_titles: colorSectionTitles || null, section_order: sectionOrder };
+      const baseProfile = { name, slug: handle, bio, avatar_url: avatarUrl, cover_url: coverUrl, avatar_url_layout2: avatarUrlL2, cover_url_layout2: coverUrlL2, verified, tags, stats, brands, brands_display_mode: brandsDisplayMode, image_shape: shapeProducts, image_shape_products: shapeProducts, image_shape_campaigns: shapeCampaigns, image_shape_links: shapeLinks, page_effects: { effects: pageEffects, color: effectColor, emojis: effectEmojis, intensity: effectIntensity }, font_family: fontFamily, font_size: fontSize, color_name: colorName || null, color_bio: colorBio || null, color_section_titles: colorSectionTitles || null, section_order: sectionOrder };
 
       if (cropImage) {
         const { file, type } = cropImage;
@@ -515,8 +515,8 @@ const CreatorEditPanel = forwardRef<CreatorEditPanelHandle, Props>(function Crea
           </div>
           <div>
             <label className={labelClass}>Handle <span className="text-destructive">*</span></label>
-            <input value={handle} onChange={(e) => { setHandle(e.target.value); setValidationErrors((v) => { const n = { ...v }; delete n.handle; return n; }); }} className={`${inputClass} ${validationErrors.handle ? "border-destructive/50 focus:border-destructive" : ""}`} placeholder="seunome" />
-            {validationErrors.handle ? <p className="text-[0.68rem] text-destructive mt-1">{validationErrors.handle}</p> : <p className="text-[0.68rem] text-k-4 mt-1">Identificador único, sem espaços. Ex: joaosilva, ana.creator</p>}
+            <input value={handle} onChange={(e) => { setHandle(e.target.value); setValidationErrors((v) => { const n = { ...v }; delete n.slug; return n; }); }} className={`${inputClass} ${validationErrors.slug ? "border-destructive/50 focus:border-destructive" : ""}`} placeholder="seunome" />
+            {validationErrors.slug ? <p className="text-[0.68rem] text-destructive mt-1">{validationErrors.slug}</p> : <p className="text-[0.68rem] text-k-4 mt-1">Identificador único, sem espaços. Ex: joaosilva, ana.creator</p>}
           </div>
           <div>
             <label className={labelClass}>Bio</label>
@@ -1170,11 +1170,11 @@ const CreatorEditPanel = forwardRef<CreatorEditPanelHandle, Props>(function Crea
                 )}
               </div>
               <input value={link.title} onChange={(e) => { const arr = [...links]; arr[i] = { ...arr[i], title: e.target.value }; setLinks(arr); setValidationErrors((v) => { const n = { ...v }; delete n[`link-title-${i}`]; return n; }); }} placeholder="Título" className={`${inputClass} flex-1 ${validationErrors[`link-title-${i}`] ? "border-destructive/50 focus:border-destructive" : ""}`} />
-              <button onClick={() => { const arr = [...links]; arr[i] = { ...arr[i], featured: !arr[i].featured }; setLinks(arr); }}
-                className={`text-xs px-2 py-1 rounded-md transition-all ${link.featured ? "bg-primary/20 text-k-300" : "text-k-4 hover:text-k-3"}`}>⭐</button>
-              <button onClick={() => { const arr = [...links]; arr[i] = { ...arr[i], active: !arr[i].active }; setLinks(arr); }}
-                className={`w-9 h-5 rounded-full relative cursor-pointer transition-all duration-300 flex-shrink-0 ${link.active ? "bg-primary" : "bg-k-900 border border-primary/10"}`}>
-                <span className={`absolute w-3.5 h-3.5 rounded-full bg-primary-foreground top-[3px] transition-all duration-300 shadow-sm ${link.active ? "left-[18px]" : "left-[3px]"}`} />
+              <button onClick={() => { const arr = [...links]; arr[i] = { ...arr[i], is_featured: !arr[i].is_featured }; setLinks(arr); }}
+                className={`text-xs px-2 py-1 rounded-md transition-all ${link.is_featured ? "bg-primary/20 text-k-300" : "text-k-4 hover:text-k-3"}`}>⭐</button>
+              <button onClick={() => { const arr = [...links]; arr[i] = { ...arr[i], is_active: !arr[i].is_active }; setLinks(arr); }}
+                className={`w-9 h-5 rounded-full relative cursor-pointer transition-all duration-300 flex-shrink-0 ${link.is_active ? "bg-primary" : "bg-k-900 border border-primary/10"}`}>
+                <span className={`absolute w-3.5 h-3.5 rounded-full bg-primary-foreground top-[3px] transition-all duration-300 shadow-sm ${link.is_active ? "left-[18px]" : "left-[3px]"}`} />
               </button>
               <button onClick={() => setLinks(links.filter((_, j) => j !== i))} className="text-k-4 hover:text-k-err text-xs">✕</button>
             </div>
@@ -1278,7 +1278,7 @@ const CreatorEditPanel = forwardRef<CreatorEditPanelHandle, Props>(function Crea
           </div>
         ))}
         <p className={sizeHint}>🖼 Imagem ideal: <strong>1280×720px</strong> (16:9, paisagem)</p>
-        <button onClick={() => setLinks([...links, { id: crypto.randomUUID(), creator_id: profile.id, title: "", url: "", subtitle: "", icon: "🔗", featured: false, active: true, sort_order: links.length, bg_color: null, text_color: null, border_color: null, image_url: null, display_mode: "full" as const }])}
+        <button onClick={() => setLinks([...links, { id: crypto.randomUUID(), creator_id: profile.id, title: "", url: "", subtitle: "", icon: "🔗", is_featured: false, is_active: true, sort_order: links.length, bg_color: null, text_color: null, border_color: null, image_url: null, display_mode: "full" as const }])}
           className="flex items-center justify-center gap-2 w-full p-3 border border-dashed border-k-glow rounded-xl text-k-4 text-sm font-medium mt-2 transition-all hover:border-k-400 hover:text-k-300 hover:bg-k-glow active:scale-[0.98]">
           + Adicionar link
         </button>

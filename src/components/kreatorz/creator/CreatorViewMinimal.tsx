@@ -54,7 +54,7 @@ export default function CreatorViewMinimal({ profile, links: rawLinks, socialLin
               {profile.verified && <span className="inline-block ml-1.5 align-middle"><VerifiedBadge size={18} /></span>}
             </h1>
           )}
-          {profile.handle && <p className="text-xs text-muted-foreground mt-1">@{profile.handle.replace(/^@+/, "")}</p>}
+          {profile.slug && <p className="text-xs text-muted-foreground mt-1">@{profile.slug.replace(/^@+/, "")}</p>}
           {profile.bio && (
             <p className="text-sm leading-relaxed mt-3 max-w-[320px]" style={profile.color_bio ? { color: profile.color_bio } : { color: "hsl(var(--muted-foreground))" }}>
               {profile.bio}

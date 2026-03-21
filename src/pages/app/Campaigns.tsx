@@ -26,7 +26,7 @@ export default function Campaigns() {
       }
 
       const { data: campaigns } = await supabase
-        .from("creator_campaigns")
+        .from("campaigns")
         .select("id")
         .in("creator_id", creators!.map((c) => c.id))
         .limit(1);
