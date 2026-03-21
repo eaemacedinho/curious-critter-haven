@@ -438,6 +438,7 @@ export type Database = {
           avatar_url_layout2: string | null
           bio: string | null
           brands: Json | null
+          brands_display_mode: string
           category: string | null
           color_bio: string | null
           color_name: string | null
@@ -470,6 +471,7 @@ export type Database = {
           avatar_url_layout2?: string | null
           bio?: string | null
           brands?: Json | null
+          brands_display_mode?: string
           category?: string | null
           color_bio?: string | null
           color_name?: string | null
@@ -502,6 +504,7 @@ export type Database = {
           avatar_url_layout2?: string | null
           bio?: string | null
           brands?: Json | null
+          brands_display_mode?: string
           category?: string | null
           color_bio?: string | null
           color_name?: string | null
