@@ -370,7 +370,7 @@ export default function OnboardingFlow({ onComplete }: { onComplete: () => void 
                   <button
                     onClick={() => {
                       navigator.clipboard.writeText(`${window.location.origin}/c/${createdHandle}`);
-                      const btn = document.is_activeElement as HTMLButtonElement;
+                      const btn = document.activeElement as HTMLButtonElement;
                       if (btn) btn.textContent = "✓ Link copiado!";
                       setTimeout(() => { if (btn) btn.textContent = "📋 Copiar link da página"; }, 2000);
                     }}
