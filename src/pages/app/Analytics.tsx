@@ -1,20 +1,20 @@
 import { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
-import { useAuth } from "@/hooks/useAuth";
+import { useTenant } from "@/hooks/useTenant";
 import { supabase } from "@/integrations/supabase/client";
 import CampaignAnalytics from "@/components/kreatorz/CampaignAnalytics";
 
 export default function Analytics() {
-  const { user } = useAuth();
+  const { agency } = useTenant();
   const [hasData, setHasData] = useState<boolean | null>(null);
 
   useEffect(() => {
-    if (!user) return;
+    if (!agency) return;
     (async () => {
       const { data: creators } = await supabase
         .from("creators")
         .select("id")
-        .eq("user_id", user.id);
+        .eq("agency_id", agency.id);
 
       if (!creators?.length) {
         setHasData(false);
@@ -29,7 +29,7 @@ export default function Analytics() {
 
       setHasData((campaigns?.length || 0) > 0);
     })();
-  }, [user]);
+  }, [agency]);
 
   if (hasData === null) {
     return (
@@ -79,7 +79,6 @@ export default function Analytics() {
             </Link>
           </div>
 
-          {/* What you'll see */}
           <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 mt-12 w-full max-w-2xl">
             {[
               { icon: "🖱", title: "Cliques", desc: "Total de cliques em campanhas e links dos seus creators." },
@@ -95,9 +94,7 @@ export default function Analytics() {
           </div>
         </div>
       ) : (
-        <>
-          <CampaignAnalytics userId={user?.id} />
-        </>
+        <CampaignAnalytics agencyId={agency?.id} />
       )}
     </div>
   );

@@ -1,6 +1,7 @@
 import { useState, useEffect, useCallback } from "react";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "./useAuth";
+import { useTenant } from "./useTenant";
 
 export interface OnboardingState {
   completed: boolean;
@@ -23,6 +24,7 @@ const CHECKLIST_DISMISS_KEY = "kreatorz_checklist_dismissed";
 
 export function useOnboarding(): OnboardingState {
   const { user } = useAuth();
+  const { agency } = useTenant();
   const [loading, setLoading] = useState(true);
   const [needsOnboarding, setNeedsOnboarding] = useState(false);
   const [checklistDismissed, setChecklistDismissed] = useState(false);
@@ -34,11 +36,11 @@ export function useOnboarding(): OnboardingState {
   });
 
   const refreshChecklist = useCallback(async () => {
-    if (!user) return;
+    if (!agency) return;
     const { data: creators } = await supabase
       .from("creators")
       .select("id, name, bio, avatar_url")
-      .eq("user_id", user.id);
+      .eq("agency_id", agency.id);
 
     const hasCreators = (creators?.length || 0) > 0;
     const creatorEdited = creators?.some(c => c.bio && c.bio.length > 0 && c.avatar_url && c.avatar_url.length > 0) || false;
@@ -63,14 +65,13 @@ export function useOnboarding(): OnboardingState {
       campaignCreated = (campaigns?.length || 0) > 0;
     }
 
-    // "published" = user has visited a creator public page (we track via localStorage)
     const published = !!localStorage.getItem("kreatorz_first_publish");
 
     setChecklist({ creatorEdited, linkAdded, campaignCreated, published });
-  }, [user]);
+  }, [agency]);
 
   useEffect(() => {
-    if (!user) {
+    if (!user || !agency) {
       setLoading(false);
       return;
     }
@@ -86,14 +87,12 @@ export function useOnboarding(): OnboardingState {
       return;
     }
 
-    // Check if user has any creators (meaning they've been through onboarding or are existing)
     (async () => {
       const { data: creators } = await supabase
         .from("creators")
         .select("id")
-        .eq("user_id", user.id);
+        .eq("agency_id", agency.id);
 
-      // If user has creators with links, they don't need onboarding
       if (creators && creators.length > 0) {
         const { data: links } = await supabase
           .from("creator_links")
@@ -113,7 +112,7 @@ export function useOnboarding(): OnboardingState {
       setNeedsOnboarding(true);
       setLoading(false);
     })();
-  }, [user, refreshChecklist]);
+  }, [user, agency, refreshChecklist]);
 
   const completed = !needsOnboarding;
 

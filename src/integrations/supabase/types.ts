@@ -62,6 +62,112 @@ export type Database = {
         }
         Relationships: []
       }
+      agency_settings: {
+        Row: {
+          agency_id: string
+          created_at: string
+          default_layout: string
+          favicon_url: string | null
+          id: string
+          onboarding_completed: boolean
+          platform_display_name: string
+          theme_mode: string
+          updated_at: string
+        }
+        Insert: {
+          agency_id: string
+          created_at?: string
+          default_layout?: string
+          favicon_url?: string | null
+          id?: string
+          onboarding_completed?: boolean
+          platform_display_name?: string
+          theme_mode?: string
+          updated_at?: string
+        }
+        Update: {
+          agency_id?: string
+          created_at?: string
+          default_layout?: string
+          favicon_url?: string | null
+          id?: string
+          onboarding_completed?: boolean
+          platform_display_name?: string
+          theme_mode?: string
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "agency_settings_agency_id_fkey"
+            columns: ["agency_id"]
+            isOneToOne: true
+            referencedRelation: "agencies"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      analytics_events: {
+        Row: {
+          agency_id: string | null
+          campaign_id: string | null
+          created_at: string
+          creator_id: string | null
+          event_type: string
+          id: string
+          link_id: string | null
+          metadata: Json | null
+        }
+        Insert: {
+          agency_id?: string | null
+          campaign_id?: string | null
+          created_at?: string
+          creator_id?: string | null
+          event_type: string
+          id?: string
+          link_id?: string | null
+          metadata?: Json | null
+        }
+        Update: {
+          agency_id?: string | null
+          campaign_id?: string | null
+          created_at?: string
+          creator_id?: string | null
+          event_type?: string
+          id?: string
+          link_id?: string | null
+          metadata?: Json | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "analytics_events_agency_id_fkey"
+            columns: ["agency_id"]
+            isOneToOne: false
+            referencedRelation: "agencies"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "analytics_events_campaign_id_fkey"
+            columns: ["campaign_id"]
+            isOneToOne: false
+            referencedRelation: "creator_campaigns"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "analytics_events_creator_id_fkey"
+            columns: ["creator_id"]
+            isOneToOne: false
+            referencedRelation: "creators"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "analytics_events_link_id_fkey"
+            columns: ["link_id"]
+            isOneToOne: false
+            referencedRelation: "creator_links"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       campaign_clicks: {
         Row: {
           campaign_id: string
@@ -395,15 +501,54 @@ export type Database = {
           },
         ]
       }
+      user_roles: {
+        Row: {
+          agency_id: string
+          created_at: string
+          id: string
+          role: Database["public"]["Enums"]["app_role"]
+          user_id: string
+        }
+        Insert: {
+          agency_id: string
+          created_at?: string
+          id?: string
+          role?: Database["public"]["Enums"]["app_role"]
+          user_id: string
+        }
+        Update: {
+          agency_id?: string
+          created_at?: string
+          id?: string
+          role?: Database["public"]["Enums"]["app_role"]
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "user_roles_agency_id_fkey"
+            columns: ["agency_id"]
+            isOneToOne: false
+            referencedRelation: "agencies"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
     }
     Views: {
       [_ in never]: never
     }
     Functions: {
-      [_ in never]: never
+      get_user_agency_id: { Args: { _user_id: string }; Returns: string }
+      has_role: {
+        Args: {
+          _role: Database["public"]["Enums"]["app_role"]
+          _user_id: string
+        }
+        Returns: boolean
+      }
     }
     Enums: {
-      [_ in never]: never
+      app_role: "owner" | "admin" | "editor" | "viewer"
     }
     CompositeTypes: {
       [_ in never]: never
@@ -530,6 +675,8 @@ export type CompositeTypes<
 
 export const Constants = {
   public: {
-    Enums: {},
+    Enums: {
+      app_role: ["owner", "admin", "editor", "viewer"],
+    },
   },
 } as const

@@ -16,34 +16,94 @@ export interface Agency {
   footer_link: string;
 }
 
+export interface AgencySettings {
+  id: string;
+  agency_id: string;
+  platform_display_name: string;
+  favicon_url: string;
+  default_layout: string;
+  onboarding_completed: boolean;
+  theme_mode: string;
+}
+
+export type UserRole = "owner" | "admin" | "editor" | "viewer";
+
 interface TenantContextType {
   agency: Agency | null;
+  settings: AgencySettings | null;
+  userRole: UserRole | null;
   loading: boolean;
   updateAgency: (updates: Partial<Agency>) => Promise<void>;
+  updateSettings: (updates: Partial<AgencySettings>) => Promise<void>;
   refetch: () => Promise<void>;
 }
 
 const TenantContext = createContext<TenantContextType>({
   agency: null,
+  settings: null,
+  userRole: null,
   loading: true,
   updateAgency: async () => {},
+  updateSettings: async () => {},
   refetch: async () => {},
 });
 
 export function TenantProvider({ children }: { children: ReactNode }) {
   const { user } = useAuth();
   const [agency, setAgency] = useState<Agency | null>(null);
+  const [settings, setSettings] = useState<AgencySettings | null>(null);
+  const [userRole, setUserRole] = useState<UserRole | null>(null);
   const [loading, setLoading] = useState(true);
 
   const fetchAgency = useCallback(async () => {
     if (!user) {
       setAgency(null);
+      setSettings(null);
+      setUserRole(null);
       setLoading(false);
       return;
     }
 
     setLoading(true);
 
+    // Get user's role and agency_id
+    const { data: roleData } = await supabase
+      .from("user_roles")
+      .select("agency_id, role")
+      .eq("user_id", user.id)
+      .limit(1)
+      .maybeSingle();
+
+    if (roleData) {
+      setUserRole(roleData.role as UserRole);
+
+      // Fetch agency
+      const { data: agencyData } = await supabase
+        .from("agencies")
+        .select("*")
+        .eq("id", roleData.agency_id)
+        .maybeSingle();
+
+      if (agencyData) {
+        setAgency(agencyData as Agency);
+      }
+
+      // Fetch settings
+      const { data: settingsData } = await supabase
+        .from("agency_settings")
+        .select("*")
+        .eq("agency_id", roleData.agency_id)
+        .maybeSingle();
+
+      if (settingsData) {
+        setSettings(settingsData as AgencySettings);
+      }
+
+      setLoading(false);
+      return;
+    }
+
+    // Fallback: try legacy owner_id lookup
     const { data, error } = await supabase
       .from("agencies")
       .select("*")
@@ -57,7 +117,7 @@ export function TenantProvider({ children }: { children: ReactNode }) {
     }
 
     if (!data) {
-      // Create agency for existing users who don't have one
+      // Create agency for new users
       const { data: newAgency, error: createError } = await supabase
         .from("agencies")
         .insert({
@@ -72,12 +132,14 @@ export function TenantProvider({ children }: { children: ReactNode }) {
         console.error("Error creating agency:", createError);
       } else {
         setAgency(newAgency as Agency);
+        setUserRole("owner");
       }
       setLoading(false);
       return;
     }
 
     setAgency(data as Agency);
+    setUserRole("owner");
     setLoading(false);
   }, [user]);
 
@@ -98,8 +160,21 @@ export function TenantProvider({ children }: { children: ReactNode }) {
     setAgency(data as Agency);
   };
 
+  const updateSettings = async (updates: Partial<AgencySettings>) => {
+    if (!agency) return;
+    const { data, error } = await supabase
+      .from("agency_settings")
+      .update(updates as any)
+      .eq("agency_id", agency.id)
+      .select("*")
+      .single();
+
+    if (error) throw error;
+    setSettings(data as AgencySettings);
+  };
+
   return (
-    <TenantContext.Provider value={{ agency, loading, updateAgency, refetch: fetchAgency }}>
+    <TenantContext.Provider value={{ agency, settings, userRole, loading, updateAgency, updateSettings, refetch: fetchAgency }}>
       {children}
     </TenantContext.Provider>
   );

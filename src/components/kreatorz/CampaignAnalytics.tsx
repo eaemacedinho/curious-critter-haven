@@ -11,33 +11,32 @@ interface CampaignStat {
 }
 
 interface Props {
-  userId: string | undefined;
+  agencyId: string | undefined;
 }
 
-export default function CampaignAnalytics({ userId }: Props) {
+export default function CampaignAnalytics({ agencyId }: Props) {
   const [stats, setStats] = useState<CampaignStat[]>([]);
   const [loading, setLoading] = useState(true);
   const [totalClicks, setTotalClicks] = useState(0);
 
   useEffect(() => {
-    if (!userId) return;
+    if (!agencyId) return;
     (async () => {
       setLoading(true);
 
-      // Get creator
-      const { data: creator } = await supabase
+      // Get all creators for agency
+      const { data: creators } = await supabase
         .from("creators")
         .select("id")
-        .eq("user_id", userId)
-        .maybeSingle();
+        .eq("agency_id", agencyId);
 
-      if (!creator) { setLoading(false); return; }
+      if (!creators || creators.length === 0) { setLoading(false); return; }
 
-      // Get campaigns
+      // Get all campaigns for these creators
       const { data: campaigns } = await supabase
         .from("creator_campaigns")
         .select("*")
-        .eq("creator_id", creator.id)
+        .in("creator_id", creators.map(c => c.id))
         .order("sort_order");
 
       if (!campaigns || campaigns.length === 0) { setLoading(false); return; }
@@ -67,7 +66,7 @@ export default function CampaignAnalytics({ userId }: Props) {
       );
       setLoading(false);
     })();
-  }, [userId]);
+  }, [agencyId]);
 
   if (loading) {
     return (
@@ -83,7 +82,7 @@ export default function CampaignAnalytics({ userId }: Props) {
   if (stats.length === 0) {
     return (
       <div className="bg-card/65 backdrop-blur-xl border border-primary/10 rounded-2xl p-6 text-center">
-        <p className="text-k-3 text-sm">Nenhuma campanha encontrada. Crie uma campanha no editor para ver analytics aqui.</p>
+        <p className="text-muted-foreground text-sm">Nenhuma campanha encontrada. Crie uma campanha no editor para ver analytics aqui.</p>
       </div>
     );
   }
@@ -97,7 +96,6 @@ export default function CampaignAnalytics({ userId }: Props) {
 
   return (
     <div className="space-y-5">
-      {/* Summary cards */}
       <div className="grid grid-cols-2 lg:grid-cols-4 gap-3.5">
         <StatCard label="Total de Cliques" value={totalClicks.toLocaleString()} icon="🖱" />
         <StatCard label="Campanhas Ativas" value={String(liveCount)} icon="🔥" highlight />
@@ -109,36 +107,35 @@ export default function CampaignAnalytics({ userId }: Props) {
         />
       </div>
 
-      {/* Chart */}
       {chartData.length > 0 && (
-        <div className="bg-card/65 backdrop-blur-xl border border-primary/10 rounded-2xl p-5 relative overflow-hidden">
-          <div className="absolute top-0 left-0 right-0 h-[2px] bg-gradient-to-r from-k-err via-primary to-k-300 rounded-sm opacity-40" />
+        <div className="bg-card/65 backdrop-blur-xl border border-border rounded-2xl p-5 relative overflow-hidden">
+          <div className="absolute top-0 left-0 right-0 h-[2px] bg-gradient-to-r from-destructive via-primary to-primary/50 rounded-sm opacity-40" />
           <div className="flex items-center justify-between mb-5">
             <div>
-              <h3 className="text-sm font-bold text-primary-foreground">Cliques por Campanha</h3>
-              <p className="text-[0.68rem] text-k-3 mt-0.5">Performance do Spotlight</p>
+              <h3 className="text-sm font-bold text-foreground">Cliques por Campanha</h3>
+              <p className="text-[0.68rem] text-muted-foreground mt-0.5">Performance do Spotlight</p>
             </div>
-            <span className="text-[0.68rem] text-k-300 font-bold">Total: {totalClicks} cliques</span>
+            <span className="text-[0.68rem] text-muted-foreground font-bold">Total: {totalClicks} cliques</span>
           </div>
           <div className="h-[200px]">
             <ResponsiveContainer width="100%" height="100%">
               <BarChart data={chartData}>
                 <defs>
                   <linearGradient id="gSpotlight" x1="0" y1="0" x2="0" y2="1">
-                    <stop offset="0%" stopColor="hsl(0,94%,71%)" stopOpacity={0.9} />
-                    <stop offset="100%" stopColor="hsl(268,69%,50%)" stopOpacity={0.5} />
+                    <stop offset="0%" stopColor="hsl(var(--primary))" stopOpacity={0.9} />
+                    <stop offset="100%" stopColor="hsl(var(--primary))" stopOpacity={0.3} />
                   </linearGradient>
                 </defs>
-                <CartesianGrid strokeDasharray="3 3" stroke="hsl(268,30%,18%)" />
-                <XAxis dataKey="name" tick={{ fontSize: 10, fill: "hsl(268,15%,48%)" }} axisLine={false} tickLine={false} />
-                <YAxis tick={{ fontSize: 10, fill: "hsl(268,15%,48%)" }} axisLine={false} tickLine={false} width={35} />
+                <CartesianGrid strokeDasharray="3 3" stroke="hsl(var(--border))" />
+                <XAxis dataKey="name" tick={{ fontSize: 10, fill: "hsl(var(--muted-foreground))" }} axisLine={false} tickLine={false} />
+                <YAxis tick={{ fontSize: 10, fill: "hsl(var(--muted-foreground))" }} axisLine={false} tickLine={false} width={35} />
                 <Tooltip
                   content={({ active, payload, label }) => {
                     if (!active || !payload?.length) return null;
                     return (
-                      <div className="bg-k-850 border border-primary/20 rounded-xl px-4 py-3 shadow-k text-xs">
-                        <p className="font-semibold text-primary-foreground mb-1">{label}</p>
-                        <p className="text-k-2">Cliques: <span className="font-bold text-primary-foreground">{payload[0].value}</span></p>
+                      <div className="bg-card border border-border rounded-xl px-4 py-3 shadow-lg text-xs">
+                        <p className="font-semibold text-foreground mb-1">{label}</p>
+                        <p className="text-muted-foreground">Cliques: <span className="font-bold text-foreground">{payload[0].value}</span></p>
                       </div>
                     );
                   }}
@@ -150,29 +147,28 @@ export default function CampaignAnalytics({ userId }: Props) {
         </div>
       )}
 
-      {/* Campaign list with details */}
-      <div className="bg-card/65 backdrop-blur-xl border border-primary/10 rounded-2xl overflow-hidden">
-        <div className="grid grid-cols-[2fr_0.8fr_0.8fr_1fr] items-center px-5 py-3 border-b border-primary-foreground/5 text-[0.65rem] font-bold text-k-4 uppercase tracking-wider">
+      <div className="bg-card/65 backdrop-blur-xl border border-border rounded-2xl overflow-hidden">
+        <div className="grid grid-cols-[2fr_0.8fr_0.8fr_1fr] items-center px-5 py-3 border-b border-border text-[0.65rem] font-bold text-muted-foreground uppercase tracking-wider">
           <div>Campanha</div>
           <div>Status</div>
           <div>Cliques</div>
           <div>Expiração</div>
         </div>
         {stats.map((s) => (
-          <div key={s.id} className="grid grid-cols-[2fr_0.8fr_0.8fr_1fr] items-center px-5 py-3 border-b border-primary-foreground/5 last:border-b-0 hover:bg-k-700/30 transition-colors text-sm">
-            <div className="font-semibold text-primary-foreground truncate">{s.title}</div>
+          <div key={s.id} className="grid grid-cols-[2fr_0.8fr_0.8fr_1fr] items-center px-5 py-3 border-b border-border last:border-b-0 hover:bg-accent/5 transition-colors text-sm">
+            <div className="font-semibold text-foreground truncate">{s.title}</div>
             <div>
               {s.live ? (
-                <span className="inline-flex items-center gap-1.5 px-2 py-0.5 rounded-full text-[0.65rem] font-bold bg-k-err/10 text-k-err">
-                  <span className="w-1.5 h-1.5 rounded-full bg-k-err animate-k-live-dot" />
+                <span className="inline-flex items-center gap-1.5 px-2 py-0.5 rounded-full text-[0.65rem] font-bold bg-destructive/10 text-destructive">
+                  <span className="w-1.5 h-1.5 rounded-full bg-destructive animate-pulse" />
                   Spotlight
                 </span>
               ) : (
-                <span className="text-[0.68rem] text-k-4">Inativa</span>
+                <span className="text-[0.68rem] text-muted-foreground">Inativa</span>
               )}
             </div>
-            <div className="text-k-300 font-bold">{s.clicks}</div>
-            <div className="text-[0.72rem] text-k-3">
+            <div className="text-foreground font-bold">{s.clicks}</div>
+            <div className="text-[0.72rem] text-muted-foreground">
               {s.expires_at
                 ? new Date(s.expires_at) > new Date()
                   ? `Expira ${new Date(s.expires_at).toLocaleDateString("pt-BR")}`
@@ -188,15 +184,15 @@ export default function CampaignAnalytics({ userId }: Props) {
 
 function StatCard({ label, value, icon, highlight }: { label: string; value: string; icon: string; highlight?: boolean }) {
   return (
-    <div className={`backdrop-blur-xl border rounded-2xl p-5 relative overflow-hidden group hover:border-k-glow transition-all duration-300 ${
-      highlight ? "bg-primary/10 border-primary/25" : "bg-card/65 border-primary/10"
+    <div className={`backdrop-blur-xl border rounded-2xl p-5 relative overflow-hidden group hover:border-primary/30 transition-all duration-300 ${
+      highlight ? "bg-primary/10 border-primary/25" : "bg-card/65 border-border"
     }`}>
-      <div className="absolute top-0 left-0 right-0 h-[2px] bg-gradient-to-r from-k-err to-primary rounded-sm opacity-40" />
+      <div className="absolute top-0 left-0 right-0 h-[2px] bg-gradient-to-r from-destructive to-primary rounded-sm opacity-40" />
       <div className="flex items-center justify-between mb-2">
-        <div className="text-[0.68rem] text-k-3 font-semibold uppercase tracking-wider">{label}</div>
+        <div className="text-[0.68rem] text-muted-foreground font-semibold uppercase tracking-wider">{label}</div>
         <span className="text-lg">{icon}</span>
       </div>
-      <div className="text-2xl font-extrabold text-primary-foreground tracking-tight">{value}</div>
+      <div className="text-2xl font-extrabold text-foreground tracking-tight">{value}</div>
     </div>
   );
 }

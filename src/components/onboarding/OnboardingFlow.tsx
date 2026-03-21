@@ -40,7 +40,6 @@ export default function OnboardingFlow({ onComplete }: { onComplete: () => void 
   const [loadingMsgIdx, setLoadingMsgIdx] = useState(0);
   const [createdHandle, setCreatedHandle] = useState("");
 
-  // Auto advance loading messages
   useEffect(() => {
     if (step !== "creating") return;
     const interval = setInterval(() => {
@@ -50,30 +49,28 @@ export default function OnboardingFlow({ onComplete }: { onComplete: () => void 
   }, [step]);
 
   const handleStartCreation = async () => {
-    if (!user || !style) return;
+    if (!user || !style || !agency) return;
     setStep("creating");
     setLoadingMsgIdx(0);
 
     try {
       const colors = STYLE_MAP[style];
-      const name = agencyName.trim() || agency?.name || "Minha Agência";
+      const name = agencyName.trim() || agency.name || "Minha Agência";
       const slug = name.toLowerCase().replace(/[^a-z0-9]/g, "-").replace(/-+/g, "-");
 
       // Update agency branding
-      if (agency) {
-        await updateAgency({
-          name,
-          slug,
-          primary_color: colors.primary,
-          accent_color: colors.accent,
-        });
-      }
+      await updateAgency({
+        name,
+        slug,
+        primary_color: colors.primary,
+        accent_color: colors.accent,
+      });
 
-      // Find or create creator
+      // Find or create creator for this agency
       const { data: existing } = await supabase
         .from("creators")
         .select("id, handle")
-        .eq("user_id", user.id)
+        .eq("agency_id", agency.id)
         .limit(1);
 
       let creatorId: string;
@@ -97,7 +94,7 @@ export default function OnboardingFlow({ onComplete }: { onComplete: () => void 
           .from("creators")
           .insert({
             user_id: user.id,
-            agency_id: agency?.id,
+            agency_id: agency.id,
             name: purpose === "myself" ? (user.user_metadata?.full_name || name) : "Creator Demo",
             handle,
             bio: "Olá! Esta é minha página de links. Explore meus conteúdos e redes sociais. 🚀",
@@ -112,7 +109,7 @@ export default function OnboardingFlow({ onComplete }: { onComplete: () => void 
 
       setCreatedHandle(handle);
 
-      // Create demo links (skip if already has links)
+      // Create demo links
       const { data: existingLinks } = await supabase
         .from("creator_links")
         .select("id")
@@ -143,10 +140,15 @@ export default function OnboardingFlow({ onComplete }: { onComplete: () => void 
         });
       }
 
+      // Mark onboarding as done in agency_settings
+      await supabase
+        .from("agency_settings")
+        .update({ onboarding_completed: true })
+        .eq("agency_id", agency.id);
+
       await refetch();
       markOnboardingDone(user.id);
 
-      // Small delay for the final loading message
       await new Promise(r => setTimeout(r, 1500));
       setStep("done");
     } catch (err) {
@@ -169,7 +171,6 @@ export default function OnboardingFlow({ onComplete }: { onComplete: () => void 
       animate={{ opacity: 1 }}
       className="fixed inset-0 z-[100] bg-background flex items-center justify-center"
     >
-      {/* Background decoration */}
       <div className="absolute inset-0 overflow-hidden pointer-events-none">
         <div className="absolute top-1/4 left-1/4 w-96 h-96 bg-primary/5 rounded-full blur-[120px]" />
         <div className="absolute bottom-1/4 right-1/4 w-80 h-80 bg-primary/8 rounded-full blur-[100px]" />
@@ -177,7 +178,6 @@ export default function OnboardingFlow({ onComplete }: { onComplete: () => void 
 
       <div className="relative z-10 w-full max-w-lg px-6">
         <AnimatePresence mode="wait">
-          {/* STEP 1: Purpose */}
           {step === "purpose" && (
             <motion.div
               key="purpose"
@@ -189,7 +189,7 @@ export default function OnboardingFlow({ onComplete }: { onComplete: () => void 
             >
               <div className="text-5xl mb-6">👋</div>
               <h1 className="text-2xl sm:text-3xl font-bold text-foreground mb-2">
-                Bem-vindo ao Kreatorz
+                Bem-vindo à sua plataforma
               </h1>
               <p className="text-muted-foreground mb-8 text-sm">
                 Para quem você está criando páginas?
@@ -203,7 +203,7 @@ export default function OnboardingFlow({ onComplete }: { onComplete: () => void 
                   <button
                     key={opt.id}
                     onClick={() => { setPurpose(opt.id); setStep("name"); }}
-                    className={`group flex items-center gap-4 p-4 rounded-2xl border border-border bg-card/50 backdrop-blur-sm hover:border-primary/40 hover:bg-primary/5 transition-all duration-200 text-left`}
+                    className="group flex items-center gap-4 p-4 rounded-2xl border border-border bg-card/50 backdrop-blur-sm hover:border-primary/40 hover:bg-primary/5 transition-all duration-200 text-left"
                   >
                     <span className="text-2xl group-hover:scale-110 transition-transform">{opt.icon}</span>
                     <div>
@@ -216,7 +216,6 @@ export default function OnboardingFlow({ onComplete }: { onComplete: () => void 
             </motion.div>
           )}
 
-          {/* STEP 2: Name */}
           {step === "name" && (
             <motion.div
               key="name"
@@ -259,7 +258,6 @@ export default function OnboardingFlow({ onComplete }: { onComplete: () => void 
             </motion.div>
           )}
 
-          {/* STEP 3: Style */}
           {step === "style" && (
             <motion.div
               key="style"
@@ -328,7 +326,6 @@ export default function OnboardingFlow({ onComplete }: { onComplete: () => void 
             </motion.div>
           )}
 
-          {/* CREATING */}
           {step === "creating" && (
             <motion.div
               key="creating"
@@ -367,7 +364,6 @@ export default function OnboardingFlow({ onComplete }: { onComplete: () => void 
             </motion.div>
           )}
 
-          {/* DONE */}
           {step === "done" && (
             <motion.div
               key="done"

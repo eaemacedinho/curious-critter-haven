@@ -1,21 +1,21 @@
 import { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
-import { useAuth } from "@/hooks/useAuth";
+import { useTenant } from "@/hooks/useTenant";
 import { supabase } from "@/integrations/supabase/client";
 import CampaignAnalytics from "@/components/kreatorz/CampaignAnalytics";
 
 export default function Campaigns() {
-  const { user } = useAuth();
+  const { agency } = useTenant();
   const [hasCampaigns, setHasCampaigns] = useState<boolean | null>(null);
   const [hasCreators, setHasCreators] = useState<boolean | null>(null);
 
   useEffect(() => {
-    if (!user) return;
+    if (!agency) return;
     (async () => {
       const { data: creators } = await supabase
         .from("creators")
         .select("id")
-        .eq("user_id", user.id);
+        .eq("agency_id", agency.id);
 
       const creatorsExist = (creators?.length || 0) > 0;
       setHasCreators(creatorsExist);
@@ -33,7 +33,7 @@ export default function Campaigns() {
 
       setHasCampaigns((campaigns?.length || 0) > 0);
     })();
-  }, [user]);
+  }, [agency]);
 
   if (hasCampaigns === null) {
     return (
@@ -74,13 +74,12 @@ export default function Campaigns() {
           </p>
 
           <Link
-            to={hasCreators ? "/app/creators" : "/app/creators"}
+            to="/app/creators"
             className="flex items-center justify-center gap-2 px-6 py-3 bg-primary text-primary-foreground font-semibold text-sm rounded-xl transition-all hover:opacity-90 active:scale-[0.97] min-h-[48px]"
           >
             {hasCreators ? "📝 Editar Creator e criar campanha" : "👤 Criar primeiro Creator"}
           </Link>
 
-          {/* How it works */}
           <div className="bg-card border border-border rounded-2xl p-6 mt-10 w-full max-w-lg">
             <h3 className="text-sm font-bold text-foreground mb-4 flex items-center gap-2">
               💡 Como funcionam as Campanhas Spotlight
@@ -102,7 +101,6 @@ export default function Campaigns() {
         </div>
       ) : (
         <>
-          {/* Info card */}
           <div className="bg-card border border-border rounded-2xl p-5 sm:p-6 mb-6">
             <div className="flex items-start gap-3">
               <span className="text-2xl flex-shrink-0">💡</span>
@@ -116,7 +114,7 @@ export default function Campaigns() {
             </div>
           </div>
 
-          <CampaignAnalytics userId={user?.id} />
+          <CampaignAnalytics agencyId={agency?.id} />
         </>
       )}
     </div>
