@@ -67,9 +67,9 @@ export default function Creators() {
         user_id: user.id,
         agency_id: agency.id,
         name: `Creator ${count}`,
-        handle: `creator-${count}-${uniqueSuffix}`,
-      })
-      .select("id, name, handle, avatar_url, bio, layout_type, verified")
+        slug: `creator-${count}-${uniqueSuffix}`,
+      } as any)
+      .select("id, name, slug, avatar_url, bio, layout_type, verified")
       .single();
 
     if (error) {
@@ -78,10 +78,10 @@ export default function Creators() {
       return;
     }
 
-    setCreators([data as CreatorRow, ...creators]);
+    setCreators([(data as unknown as CreatorRow), ...creators]);
     setCreating(false);
     toast.success("Creator criado! Redirecionando para edição...");
-    navigate(`/app/creators/${data.id}/edit`);
+    navigate(`/app/creators/${(data as any).id}/edit`);
   };
 
   const confirmDelete = async () => {
