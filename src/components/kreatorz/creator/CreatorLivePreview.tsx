@@ -97,9 +97,6 @@ export default function CreatorLivePreview({
   const PreviewComponent = (() => {
     switch (activeLayout) {
       case "layout2": return CreatorViewLinkme;
-      case "minimal": return CreatorViewMinimal;
-      case "grid": return CreatorViewGrid;
-      case "dark": return CreatorViewDark;
       default: return CreatorView;
     }
   })();
