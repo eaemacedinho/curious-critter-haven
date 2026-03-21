@@ -113,6 +113,15 @@ export default function CreatorPublic() {
       }
 
       await loadRelated(creator.id);
+
+      // Track page view
+      trackEvent({
+        event_type: "page_view",
+        creator_id: creator.id,
+        agency_id: creator.agency_id,
+        metadata: { handle: cleanHandle, referrer: document.referrer || null },
+      });
+
       setLoading(false);
     })();
 
