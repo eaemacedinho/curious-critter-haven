@@ -31,9 +31,11 @@ interface Props {
   agencyFooterVisible?: boolean;
   agencyFooterLink?: string;
   embedded?: boolean;
+  onLinkClick?: (link: CreatorLink) => void;
+  onCampaignClick?: (campaign: CreatorCampaign) => void;
 }
 
-export default function CreatorViewLinkme({ profile, links: rawLinks, socialLinks: rawSocial, products: rawProducts, campaigns: rawCampaigns, agencyName, agencyLogoUrl, agencyFooterText, agencyFooterVisible = true, agencyFooterLink, embedded }: Props) {
+export default function CreatorViewLinkme({ profile, links: rawLinks, socialLinks: rawSocial, products: rawProducts, campaigns: rawCampaigns, agencyName, agencyLogoUrl, agencyFooterText, agencyFooterVisible = true, agencyFooterLink, embedded, onLinkClick, onCampaignClick }: Props) {
   const [contactOpen, setContactOpen] = useState(false);
   const [overlayOpacity, setOverlayOpacity] = useState(0);
   const [headerVisible, setHeaderVisible] = useState(false);
@@ -238,13 +240,13 @@ export default function CreatorViewLinkme({ profile, links: rawLinks, socialLink
                             const next = links[i + 1]?.display_mode === "half" ? links[i + 1] : null;
                             elements.push(
                               <div key={link.id + "-row"} className="grid grid-cols-2 gap-3">
-                                <LinkmeCard link={link} shape={profile.image_shape_links} />
-                                {next && <LinkmeCard link={next} shape={profile.image_shape_links} />}
+                                <LinkmeCard link={link} shape={profile.image_shape_links} onLinkClick={onLinkClick} />
+                                {next && <LinkmeCard link={next} shape={profile.image_shape_links} onLinkClick={onLinkClick} />}
                               </div>
                             );
                             i += next ? 2 : 1;
                           } else {
-                            elements.push(<LinkmeCard key={link.id} link={link} shape={profile.image_shape_links} />);
+                            elements.push(<LinkmeCard key={link.id} link={link} shape={profile.image_shape_links} onLinkClick={onLinkClick} />);
                             i++;
                           }
                         }
@@ -375,7 +377,7 @@ export default function CreatorViewLinkme({ profile, links: rawLinks, socialLink
 
 /* ── Sub-components ── */
 
-function LinkmeCard({ link, shape }: { link: CreatorLink; shape?: string }) {
+function LinkmeCard({ link, shape, onLinkClick }: { link: CreatorLink; shape?: string; onLinkClick?: (link: CreatorLink) => void }) {
   const sc = shapeClass(shape);
   const customStyle: React.CSSProperties = {
     ...(link.bg_color ? { backgroundColor: link.bg_color } : {}),
@@ -388,6 +390,7 @@ function LinkmeCard({ link, shape }: { link: CreatorLink; shape?: string }) {
   if (link.image_url) {
     return (
       <a href={link.url} target="_blank" rel="noopener noreferrer"
+        onClick={() => onLinkClick?.(link)}
         className={`group relative block w-full ${sc} overflow-hidden transition-all duration-300 hover:-translate-y-1 active:scale-[0.98]`}
         style={customStyle}>
         <div className={`relative w-full ${isHalf ? "aspect-square" : "aspect-[16/9]"} overflow-hidden`}>
@@ -411,6 +414,7 @@ function LinkmeCard({ link, shape }: { link: CreatorLink; shape?: string }) {
 
   return (
     <a href={link.url} target="_blank" rel="noopener noreferrer"
+      onClick={() => onLinkClick?.(link)}
       className={`group relative block w-full ${sc} overflow-hidden transition-all duration-300 hover:-translate-y-1 active:scale-[0.98]`}>
       <div className={`flex items-center gap-4 p-4 sm:p-5 min-h-[56px] ${
         !hasCustomBg ? (link.featured

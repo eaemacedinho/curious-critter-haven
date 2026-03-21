@@ -31,9 +31,11 @@ interface Props {
   agencyFooterVisible?: boolean;
   agencyFooterLink?: string;
   embedded?: boolean;
+  onLinkClick?: (link: CreatorLink) => void;
+  onCampaignClick?: (campaign: CreatorCampaign) => void;
 }
 
-export default function CreatorView({ profile, links: rawLinks, socialLinks: rawSocial, products: rawProducts, campaigns: rawCampaigns, agencyName, agencyLogoUrl, agencyFooterText, agencyFooterVisible = true, agencyFooterLink, embedded }: Props) {
+export default function CreatorView({ profile, links: rawLinks, socialLinks: rawSocial, products: rawProducts, campaigns: rawCampaigns, agencyName, agencyLogoUrl, agencyFooterText, agencyFooterVisible = true, agencyFooterLink, embedded, onLinkClick, onCampaignClick }: Props) {
   const [contactOpen, setContactOpen] = useState(false);
   const [clickedLink, setClickedLink] = useState<number | null>(null);
   const [parallaxY, setParallaxY] = useState(0);
@@ -61,8 +63,9 @@ export default function CreatorView({ profile, links: rawLinks, socialLinks: raw
   const liveCampaigns = campaigns.filter(c => c.live && (!(c as any).expires_at || new Date((c as any).expires_at) > now));
   const pastCampaigns = campaigns.filter(c => !c.live || ((c as any).expires_at && new Date((c as any).expires_at) <= now));
 
-  const handleLinkClick = (i: number, url: string) => {
+  const handleLinkClick = (i: number, url: string, link?: CreatorLink) => {
     setClickedLink(i);
+    if (link && onLinkClick) onLinkClick(link);
     if (url && url !== "https://") window.open(url, "_blank");
     setTimeout(() => setClickedLink(null), 400);
   };
@@ -217,7 +220,7 @@ export default function CreatorView({ profile, links: rawLinks, socialLinks: raw
                             return (
                               <div
                                 key={link.id}
-                                onClick={() => handleLinkClick(linkIdx, link.url)}
+                                onClick={() => handleLinkClick(linkIdx, link.url, link)}
                                 className={`${shapeClass(profile.image_shape_links)} cursor-pointer transition-all duration-300 relative overflow-hidden group hover:-translate-y-1 hover:shadow-k-purple active:scale-[0.97] ${clickedLink === linkIdx ? "scale-[0.97]" : ""}`}
                                 style={{
                                   ...(link.border_color ? { borderColor: link.border_color, borderWidth: "1px", borderStyle: "solid" } : {}),
@@ -241,7 +244,7 @@ export default function CreatorView({ profile, links: rawLinks, socialLinks: raw
                           }
 
                           return (
-                            <div key={link.id} onClick={() => handleLinkClick(linkIdx, link.url)}
+                            <div key={link.id} onClick={() => handleLinkClick(linkIdx, link.url, link)}
                               className={`flex items-center gap-4 p-4 sm:p-5 ${shapeClass(profile.image_shape_links)} cursor-pointer transition-all duration-300 relative overflow-hidden group min-h-[56px]
                                 ${clickedLink === linkIdx ? "scale-[0.97]" : ""}
                                 ${link.featured && !link.bg_color

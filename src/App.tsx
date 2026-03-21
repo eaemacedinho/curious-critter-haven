@@ -19,6 +19,7 @@ import CreatorEdit from "@/pages/app/CreatorEdit";
 import Campaigns from "@/pages/app/Campaigns";
 import Analytics from "@/pages/app/Analytics";
 import Settings from "@/pages/app/Settings";
+import Members from "@/pages/app/Members";
 
 const queryClient = new QueryClient();
 
@@ -51,6 +52,7 @@ const App = () => (
                 <Route path="campaigns" element={<Campaigns />} />
                 <Route path="analytics" element={<Analytics />} />
                 <Route path="settings" element={<Settings />} />
+                <Route path="members" element={<Members />} />
               </Route>
 
               <Route path="*" element={<NotFound />} />

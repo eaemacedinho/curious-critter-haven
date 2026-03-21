@@ -1,7 +1,9 @@
 import { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
 import { supabase } from "@/integrations/supabase/client";
+import { trackEvent } from "@/lib/analytics";
 import type { CreatorProfile, CreatorLink, SocialLink, CreatorProduct, CreatorCampaign } from "@/hooks/useCreatorData";
+import { useCallback } from "react";
 import CreatorView from "@/components/kreatorz/creator/CreatorView";
 import CreatorViewLinkme from "@/components/kreatorz/creator/CreatorViewLinkme";
 
@@ -112,6 +114,15 @@ export default function CreatorPublic() {
       }
 
       await loadRelated(creator.id);
+
+      // Track page view
+      trackEvent({
+        event_type: "page_view",
+        creator_id: creator.id,
+        agency_id: creator.agency_id,
+        metadata: { handle: cleanHandle, referrer: document.referrer || null },
+      });
+
       setLoading(false);
     })();
 
@@ -135,6 +146,28 @@ export default function CreatorPublic() {
     setCampaigns((campaignsRes.data as CreatorCampaign[]) || []);
   }
 
+  const handleLinkClick = useCallback((link: CreatorLink) => {
+    if (!profile) return;
+    trackEvent({
+      event_type: "link_click",
+      creator_id: profile.id,
+      agency_id: profile.agency_id,
+      link_id: link.id,
+      metadata: { title: link.title, url: link.url },
+    });
+  }, [profile]);
+
+  const handleCampaignClick = useCallback((campaign: CreatorCampaign) => {
+    if (!profile) return;
+    trackEvent({
+      event_type: "campaign_click",
+      creator_id: profile.id,
+      agency_id: profile.agency_id,
+      campaign_id: campaign.id,
+      metadata: { title: campaign.title },
+    });
+  }, [profile]);
+
   if (loading) {
     return (
       <div className="min-h-screen bg-background flex items-center justify-center">
@@ -155,7 +188,7 @@ export default function CreatorPublic() {
     );
   }
 
-  const layoutProps = { profile, links, socialLinks, products, campaigns, agencyName, agencyLogoUrl, agencyFooterText, agencyFooterVisible, agencyFooterLink };
+  const layoutProps = { profile, links, socialLinks, products, campaigns, agencyName, agencyLogoUrl, agencyFooterText, agencyFooterVisible, agencyFooterLink, onLinkClick: handleLinkClick, onCampaignClick: handleCampaignClick };
 
   const LayoutComponent = (() => {
     switch (profile.public_layout) {
