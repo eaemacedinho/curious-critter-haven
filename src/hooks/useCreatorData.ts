@@ -9,14 +9,14 @@ export interface CreatorProfile {
   user_id: string;
   agency_id: string | null;
   name: string;
-  handle: string;
+  slug: string;
   bio: string;
   avatar_url: string;
   cover_url: string;
   avatar_url_layout2: string;
   cover_url_layout2: string;
   verified: boolean;
-  public_layout: string;
+  layout_type: string;
   image_shape: ImageShapeValue;
   image_shape_products: ImageShapeValue;
   image_shape_campaigns: ImageShapeValue;
@@ -41,8 +41,8 @@ export interface CreatorLink {
   url: string;
   subtitle: string;
   icon: string;
-  featured: boolean;
-  active: boolean;
+  is_featured: boolean;
+  is_active: boolean;
   sort_order: number;
   bg_color: string | null;
   text_color: string | null;
@@ -92,10 +92,11 @@ export interface CreatorCampaign {
 const normalizeProfile = (creator: any): CreatorProfile => ({
   ...creator,
   agency_id: creator.agency_id || null,
+  slug: creator.slug || "",
+  layout_type: creator.layout_type || "layout1",
   avatar_url_layout2: creator.avatar_url_layout2 || "",
   cover_url_layout2: creator.cover_url_layout2 || "",
   verified: creator.verified ?? false,
-  public_layout: creator.public_layout || "layout1",
   image_shape: creator.image_shape || "rounded",
   image_shape_products: creator.image_shape_products || creator.image_shape || "rounded",
   image_shape_campaigns: creator.image_shape_campaigns || creator.image_shape || "rounded",
@@ -111,6 +112,7 @@ const normalizeProfile = (creator: any): CreatorProfile => ({
   brands: Array.isArray(creator.brands)
     ? (creator.brands as any[]).map((b: any) => typeof b === "string" ? { name: b } : b)
     : [],
+  brands_display_mode: creator.brands_display_mode || "static",
   page_effects: (() => {
     const pe = creator.page_effects;
     if (!pe) return { effects: [], color: undefined, emojis: undefined, intensity: undefined };
@@ -120,11 +122,6 @@ const normalizeProfile = (creator: any): CreatorProfile => ({
   })(),
 });
 
-/**
- * Hook to manage creator data.
- * - If `creatorId` is provided, loads that specific creator (scoped to agency).
- * - If only `agencyId` is provided, loads the first creator for that agency.
- */
 export function useCreatorData(agencyId: string | undefined, creatorId?: string) {
   const [profile, setProfile] = useState<CreatorProfile | null>(null);
   const [links, setLinks] = useState<CreatorLink[]>([]);
@@ -176,7 +173,7 @@ export function useCreatorData(agencyId: string | undefined, creatorId?: string)
       supabase.from("creator_links").select("*").eq("creator_id", creator.id).order("sort_order"),
       supabase.from("creator_social_links").select("*").eq("creator_id", creator.id).order("sort_order"),
       supabase.from("creator_products").select("*").eq("creator_id", creator.id).order("sort_order"),
-      supabase.from("creator_campaigns").select("*").eq("creator_id", creator.id).order("sort_order"),
+      supabase.from("campaigns").select("*").eq("creator_id", creator.id).order("sort_order"),
     ]);
 
     setLinks((linksRes.data as CreatorLink[]) || []);
@@ -231,7 +228,7 @@ export function useCreatorData(agencyId: string | undefined, creatorId?: string)
     if (deleteError) throw deleteError;
     if (normalizedLinks.length > 0) {
       const { error } = await supabase.from("creator_links").insert(
-        normalizedLinks.map((link) => ({ id: link.id, creator_id: link.creator_id, title: link.title, url: link.url, subtitle: link.subtitle || "", icon: link.icon || "🔗", featured: link.featured || false, active: link.active !== false, sort_order: link.sort_order, bg_color: link.bg_color || null, text_color: link.text_color || null, border_color: link.border_color || null, image_url: link.image_url || null, display_mode: link.display_mode || "full" }))
+        normalizedLinks.map((link) => ({ id: link.id, creator_id: link.creator_id, title: link.title, url: link.url, subtitle: link.subtitle || "", icon: link.icon || "🔗", is_featured: link.is_featured || false, is_active: link.is_active !== false, sort_order: link.sort_order, bg_color: link.bg_color || null, text_color: link.text_color || null, border_color: link.border_color || null, image_url: link.image_url || null, display_mode: link.display_mode || "full" }))
       );
       if (error) throw error;
     }
@@ -269,10 +266,10 @@ export function useCreatorData(agencyId: string | undefined, creatorId?: string)
   const saveCampaigns = async (newCampaigns: CreatorCampaign[]) => {
     if (!profile) return;
     const normalized = newCampaigns.map((c, i) => ({ ...c, creator_id: profile.id, sort_order: i }));
-    const { error: deleteError } = await supabase.from("creator_campaigns").delete().eq("creator_id", profile.id);
+    const { error: deleteError } = await supabase.from("campaigns").delete().eq("creator_id", profile.id);
     if (deleteError) throw deleteError;
     if (normalized.length > 0) {
-      const { error } = await supabase.from("creator_campaigns").insert(
+      const { error } = await supabase.from("campaigns").insert(
         normalized.map((c) => ({ id: c.id, creator_id: c.creator_id, title: c.title, description: c.description || "", image_url: c.image_url || "", url: c.url || "", live: c.live || false, sort_order: c.sort_order, expires_at: c.expires_at || null, bg_color: c.bg_color || null, text_color: c.text_color || null, border_color: c.border_color || null }))
       );
       if (error) throw error;

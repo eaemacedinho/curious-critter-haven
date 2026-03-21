@@ -58,7 +58,7 @@ export function useOnboarding(): OnboardingState {
       linkAdded = (links?.length || 0) > 0;
 
       const { data: campaigns } = await supabase
-        .from("creator_campaigns")
+        .from("campaigns")
         .select("id")
         .in("creator_id", ids)
         .limit(1);
@@ -87,7 +87,6 @@ export function useOnboarding(): OnboardingState {
       return;
     }
 
-    // Check agency_settings.onboarding_completed as source of truth
     (async () => {
       const { data: settings } = await supabase
         .from("agency_settings")
