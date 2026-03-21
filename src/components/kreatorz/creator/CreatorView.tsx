@@ -5,6 +5,7 @@ import SocialIcon, { LinkIcon } from "./SocialIcon";
 import VerifiedBadge from "./VerifiedBadge";
 import SpotlightCampaign from "./SpotlightCampaign";
 import PageEffects from "./PageEffects";
+import BrandsSection from "./BrandsSection";
 import type { PageEffect } from "./PageEffects";
 import { getFontFamily, getFontSizeScale, loadGoogleFont } from "@/lib/fontUtils";
 
