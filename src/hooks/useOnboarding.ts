@@ -146,3 +146,10 @@ export function useOnboarding(): OnboardingState {
 export function markOnboardingDone(userId: string) {
   localStorage.setItem(`${ONBOARDING_KEY}_${userId}`, "true");
 }
+
+export function resetOnboarding(userId: string) {
+  localStorage.removeItem(`${ONBOARDING_KEY}_${userId}`);
+  localStorage.removeItem(`${CHECKLIST_DISMISS_KEY}_${userId}`);
+  localStorage.removeItem("kreatorz_confetti_shown");
+  localStorage.removeItem("kreatorz_tour_done_" + userId);
+}
