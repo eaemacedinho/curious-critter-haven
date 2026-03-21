@@ -220,7 +220,7 @@ export default function CreatorView({ profile, links: rawLinks, socialLinks: raw
                             return (
                               <div
                                 key={link.id}
-                                onClick={() => handleLinkClick(linkIdx, link.url)}
+                                onClick={() => handleLinkClick(linkIdx, link.url, link)}
                                 className={`${shapeClass(profile.image_shape_links)} cursor-pointer transition-all duration-300 relative overflow-hidden group hover:-translate-y-1 hover:shadow-k-purple active:scale-[0.97] ${clickedLink === linkIdx ? "scale-[0.97]" : ""}`}
                                 style={{
                                   ...(link.border_color ? { borderColor: link.border_color, borderWidth: "1px", borderStyle: "solid" } : {}),
