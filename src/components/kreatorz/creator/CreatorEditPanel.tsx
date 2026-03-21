@@ -169,6 +169,8 @@ const CreatorEditPanel = forwardRef<CreatorEditPanelHandle, Props>(function Crea
   );
   const [prods, setProds] = useState(initialProducts);
   const [camps, setCamps] = useState(initialCampaigns);
+  const [sectionOrder, setSectionOrder] = useState<string[]>(profile.section_order || ["spotlight", "links", "products", "past_campaigns"]);
+  const [dragSectionIdx, setDragSectionIdx] = useState<number | null>(null);
   const [saving, setSaving] = useState(false);
   const [uploadingImage, setUploadingImage] = useState<"avatar" | "cover" | null>(null);
   const [uploadingContent, setUploadingContent] = useState<string | null>(null);
