@@ -222,6 +222,11 @@ export default function AppLayout() {
           </span>
         </footer>
       </div>
+
+      {/* Guided tooltips after onboarding */}
+      {user && onboarding.completed && !onboarding.needsOnboarding && (
+        <GuidedTooltips userId={user.id} />
+      )}
     </div>
   );
 }
