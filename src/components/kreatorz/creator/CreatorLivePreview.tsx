@@ -116,7 +116,7 @@ export default function CreatorLivePreview({
         </p>
         <div className="flex items-center gap-2">
           <span className="rounded-full border border-border bg-background px-2.5 py-1 text-[0.62rem] font-semibold text-muted-foreground">
-            {{ layout1: "Layout 1", layout2: "Layout 2", minimal: "Minimalista", grid: "Grid/Bento", dark: "Dark Premium" }[activeLayout] || "Layout 1"}
+            {{ layout1: "Padrão", layout2: "Imersivo" }[activeLayout] || "Padrão"}
           </span>
           {publicUrl && (
             <button

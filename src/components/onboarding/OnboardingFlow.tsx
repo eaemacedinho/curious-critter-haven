@@ -11,9 +11,9 @@ type Purpose = "agency" | "creators" | "myself";
 type VisualStyle = "dark" | "clean" | "neon";
 
 const STYLE_MAP: Record<VisualStyle, { primary: string; accent: string; layout: string }> = {
-  dark: { primary: "#1a1a2e", accent: "#e94560", layout: "layout4" },
-  clean: { primary: "#6B2BD4", accent: "#A855F7", layout: "layout3" },
-  neon: { primary: "#00f0ff", accent: "#ff00e5", layout: "layout5" },
+  dark: { primary: "#1a1a2e", accent: "#e94560", layout: "layout1" },
+  clean: { primary: "#6B2BD4", accent: "#A855F7", layout: "layout1" },
+  neon: { primary: "#00f0ff", accent: "#ff00e5", layout: "layout2" },
 };
 
 const LOADING_MSGS = [

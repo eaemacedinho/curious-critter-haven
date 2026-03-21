@@ -158,9 +158,6 @@ export default function CreatorPublic() {
   const LayoutComponent = (() => {
     switch (profile.public_layout) {
       case "layout2": return CreatorViewLinkme;
-      case "minimal": return CreatorViewMinimal;
-      case "grid": return CreatorViewGrid;
-      case "dark": return CreatorViewDark;
       default: return CreatorView;
     }
   })();
