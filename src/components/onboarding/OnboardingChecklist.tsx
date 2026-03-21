@@ -29,11 +29,13 @@ export default function OnboardingChecklist({ state }: { state: OnboardingState 
   const progress = (state.checklistProgress / 4) * 100;
 
   return (
-    <motion.div
-      initial={{ opacity: 0, y: 20 }}
-      animate={{ opacity: 1, y: 0 }}
-      className="bg-card border border-border rounded-2xl overflow-hidden mb-6"
-    >
+    <>
+      {showConfetti && <ConfettiCelebration onComplete={() => setShowConfetti(false)} />}
+      <motion.div
+        initial={{ opacity: 0, y: 20 }}
+        animate={{ opacity: 1, y: 0 }}
+        className="bg-card border border-border rounded-2xl overflow-hidden mb-6"
+      >
       {/* Header */}
       <button
         onClick={() => setExpanded(!expanded)}
