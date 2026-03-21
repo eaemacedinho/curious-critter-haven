@@ -104,6 +104,7 @@ const normalizeProfile = (creator: any): CreatorProfile => ({
   color_name: creator.color_name || null,
   color_bio: creator.color_bio || null,
   color_section_titles: creator.color_section_titles || null,
+  section_order: Array.isArray(creator.section_order) ? creator.section_order : ["spotlight", "links", "products", "past_campaigns"],
   tags: Array.isArray(creator.tags) ? (creator.tags as CreatorProfile["tags"]) : [],
   stats: Array.isArray(creator.stats) ? (creator.stats as CreatorProfile["stats"]) : [],
   brands: Array.isArray(creator.brands)
