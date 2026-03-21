@@ -30,6 +30,7 @@ export interface CreatorProfile {
   color_name: string | null;
   color_bio: string | null;
   color_section_titles: string | null;
+  section_order: string[];
 }
 
 export interface CreatorLink {
