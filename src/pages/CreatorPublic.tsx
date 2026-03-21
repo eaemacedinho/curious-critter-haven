@@ -146,6 +146,28 @@ export default function CreatorPublic() {
     setCampaigns((campaignsRes.data as CreatorCampaign[]) || []);
   }
 
+  const handleLinkClick = useCallback((link: CreatorLink) => {
+    if (!profile) return;
+    trackEvent({
+      event_type: "link_click",
+      creator_id: profile.id,
+      agency_id: profile.agency_id,
+      link_id: link.id,
+      metadata: { title: link.title, url: link.url },
+    });
+  }, [profile]);
+
+  const handleCampaignClick = useCallback((campaign: CreatorCampaign) => {
+    if (!profile) return;
+    trackEvent({
+      event_type: "campaign_click",
+      creator_id: profile.id,
+      agency_id: profile.agency_id,
+      campaign_id: campaign.id,
+      metadata: { title: campaign.title },
+    });
+  }, [profile]);
+
   if (loading) {
     return (
       <div className="min-h-screen bg-background flex items-center justify-center">
@@ -165,26 +187,6 @@ export default function CreatorPublic() {
       </div>
     );
   }
-
-  const handleLinkClick = useCallback((link: CreatorLink) => {
-    trackEvent({
-      event_type: "link_click",
-      creator_id: profile.id,
-      agency_id: profile.agency_id,
-      link_id: link.id,
-      metadata: { title: link.title, url: link.url },
-    });
-  }, [profile]);
-
-  const handleCampaignClick = useCallback((campaign: CreatorCampaign) => {
-    trackEvent({
-      event_type: "campaign_click",
-      creator_id: profile.id,
-      agency_id: profile.agency_id,
-      campaign_id: campaign.id,
-      metadata: { title: campaign.title },
-    });
-  }, [profile]);
 
   const layoutProps = { profile, links, socialLinks, products, campaigns, agencyName, agencyLogoUrl, agencyFooterText, agencyFooterVisible, agencyFooterLink, onLinkClick: handleLinkClick, onCampaignClick: handleCampaignClick };
 
