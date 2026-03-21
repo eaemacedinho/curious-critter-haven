@@ -21,6 +21,25 @@ export default function Settings() {
   const [footerLink, setFooterLink] = useState(agency?.footer_link || "");
   const [uploadingLogo, setUploadingLogo] = useState(false);
   const [saving, setSaving] = useState(false);
+  const [extracting, setExtracting] = useState(false);
+
+  const handleExtractColors = async () => {
+    if (!logoUrl) {
+      toast.error("Envie uma logo primeiro para extrair as cores.");
+      return;
+    }
+    setExtracting(true);
+    try {
+      const colors = await extractColorsFromImage(logoUrl, 2);
+      setPrimaryColor(colors[0]);
+      setAccentColor(colors[1]);
+      toast.success("Cores extraídas da logo! Confira e salve.");
+    } catch {
+      toast.error("Não foi possível extrair as cores da logo.");
+    } finally {
+      setExtracting(false);
+    }
+  };
 
   const sections = [
     { id: "branding", icon: "🎨", label: "Branding" },
