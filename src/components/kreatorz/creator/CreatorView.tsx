@@ -63,8 +63,9 @@ export default function CreatorView({ profile, links: rawLinks, socialLinks: raw
   const liveCampaigns = campaigns.filter(c => c.live && (!(c as any).expires_at || new Date((c as any).expires_at) > now));
   const pastCampaigns = campaigns.filter(c => !c.live || ((c as any).expires_at && new Date((c as any).expires_at) <= now));
 
-  const handleLinkClick = (i: number, url: string) => {
+  const handleLinkClick = (i: number, url: string, link?: CreatorLink) => {
     setClickedLink(i);
+    if (link && onLinkClick) onLinkClick(link);
     if (url && url !== "https://") window.open(url, "_blank");
     setTimeout(() => setClickedLink(null), 400);
   };
