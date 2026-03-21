@@ -76,11 +76,11 @@ export default function OnboardingFlow({ onComplete }: { onComplete: () => void 
           user_id: user.id,
           agency_id: agency.id,
           name: creatorName,
-          handle,
+          slug: handle,
           bio: "Olá! Esta é minha página de links. Explore meus conteúdos e redes sociais. 🚀",
           layout_type: colors.layout,
-        })
-        .select("id, handle")
+        } as any)
+        .select("id, slug")
         .single();
 
       if (creatorError) {
@@ -88,8 +88,8 @@ export default function OnboardingFlow({ onComplete }: { onComplete: () => void 
         throw creatorError;
       }
 
-      const creatorId = newCreator.id;
-      setCreatedHandle(newCreator.slug);
+      const creatorId = (newCreator as any).id;
+      setCreatedHandle((newCreator as any).slug);
 
       // Create demo links + campaign in parallel
       await Promise.all([
