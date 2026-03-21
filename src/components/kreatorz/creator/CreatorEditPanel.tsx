@@ -914,6 +914,31 @@ const CreatorEditPanel = forwardRef<CreatorEditPanelHandle, Props>(function Crea
       <div className="mb-8">
         <div className={sectionTitle}>🤝 Marcas parceiras</div>
         <p className="text-[0.68rem] text-k-4 mb-2">Marcas com quem você já trabalhou. Adicione o logo!</p>
+
+        {/* Display mode toggle */}
+        <div className="flex items-center gap-2 mb-3 bg-k-800 border border-primary/10 rounded-xl p-2.5">
+          <span className="text-[0.68rem] text-k-4 font-medium mr-1">Exibição:</span>
+          <button
+            onClick={() => setBrandsDisplayMode("static")}
+            className={`px-3 py-1.5 text-[0.68rem] font-semibold rounded-lg transition-all ${
+              brandsDisplayMode === "static"
+                ? "bg-primary text-primary-foreground"
+                : "text-muted-foreground hover:text-foreground hover:bg-card/60"
+            }`}
+          >
+            Estático
+          </button>
+          <button
+            onClick={() => setBrandsDisplayMode("marquee")}
+            className={`px-3 py-1.5 text-[0.68rem] font-semibold rounded-lg transition-all ${
+              brandsDisplayMode === "marquee"
+                ? "bg-primary text-primary-foreground"
+                : "text-muted-foreground hover:text-foreground hover:bg-card/60"
+            }`}
+          >
+            🎞 Esteira (loop infinito)
+          </button>
+        </div>
         <div className="flex flex-col gap-2 mb-3">
           {brands.map((brand, i) => (
             <div key={i} className="bg-k-800 border border-primary/10 rounded-xl p-3 flex items-center gap-3">
