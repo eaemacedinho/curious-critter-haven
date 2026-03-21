@@ -191,7 +191,7 @@ const CreatorEditPanel = forwardRef<CreatorEditPanelHandle, Props>(function Crea
   const liveProfile = useMemo<CreatorProfile>(() => ({
     ...profile,
     name,
-    handle,
+    slug: handle,
     bio,
     avatar_url: avatarUrl,
     cover_url: coverUrl,
