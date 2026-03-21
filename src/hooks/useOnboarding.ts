@@ -87,26 +87,20 @@ export function useOnboarding(): OnboardingState {
       return;
     }
 
+    // Check agency_settings.onboarding_completed as source of truth
     (async () => {
-      const { data: creators } = await supabase
-        .from("creators")
-        .select("id")
-        .eq("agency_id", agency.id);
+      const { data: settings } = await supabase
+        .from("agency_settings")
+        .select("onboarding_completed")
+        .eq("agency_id", agency.id)
+        .maybeSingle();
 
-      if (creators && creators.length > 0) {
-        const { data: links } = await supabase
-          .from("creator_links")
-          .select("id")
-          .in("creator_id", creators.map(c => c.id))
-          .limit(1);
-
-        if (links && links.length > 0) {
-          localStorage.setItem(`${ONBOARDING_KEY}_${user.id}`, "true");
-          setNeedsOnboarding(false);
-          setLoading(false);
-          refreshChecklist();
-          return;
-        }
+      if (settings?.onboarding_completed) {
+        localStorage.setItem(`${ONBOARDING_KEY}_${user.id}`, "true");
+        setNeedsOnboarding(false);
+        setLoading(false);
+        refreshChecklist();
+        return;
       }
 
       setNeedsOnboarding(true);
