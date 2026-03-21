@@ -462,7 +462,7 @@ export type Database = {
           stats: Json | null
           tags: Json | null
           updated_at: string
-          user_id: string
+          user_id: string | null
           verified: boolean | null
         }
         Insert: {
@@ -495,7 +495,7 @@ export type Database = {
           stats?: Json | null
           tags?: Json | null
           updated_at?: string
-          user_id: string
+          user_id?: string | null
           verified?: boolean | null
         }
         Update: {
@@ -528,7 +528,7 @@ export type Database = {
           stats?: Json | null
           tags?: Json | null
           updated_at?: string
-          user_id?: string
+          user_id?: string | null
           verified?: boolean | null
         }
         Relationships: [

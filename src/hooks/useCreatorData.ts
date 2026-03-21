@@ -6,7 +6,7 @@ export type ImageShapeValue = "rounded" | "circular" | "pill" | "shadow" | "pola
 
 export interface CreatorProfile {
   id: string;
-  user_id: string;
+  user_id: string | null;
   agency_id: string | null;
   name: string;
   slug: string;
