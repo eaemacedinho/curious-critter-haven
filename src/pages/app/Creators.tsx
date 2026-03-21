@@ -3,6 +3,7 @@ import { Link, useNavigate } from "react-router-dom";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/hooks/useAuth";
 import { useTenant } from "@/hooks/useTenant";
+import { usePermissions } from "@/hooks/usePermissions";
 import { toast } from "sonner";
 import { ConfirmDialog } from "@/components/ui/confirm-dialog";
 
@@ -19,6 +20,7 @@ interface CreatorRow {
 export default function Creators() {
   const { user } = useAuth();
   const { agency } = useTenant();
+  const { canEdit, canDelete } = usePermissions();
   const navigate = useNavigate();
   const [creators, setCreators] = useState<CreatorRow[]>([]);
   const [loading, setLoading] = useState(true);
@@ -55,7 +57,7 @@ export default function Creators() {
   };
 
   const handleCreateCreator = async () => {
-    if (!user || !agency) return;
+    if (!user || !agency || !canEdit) return;
     setCreating(true);
     const count = creators.length + 1;
     const uniqueSuffix = Date.now().toString(36);
@@ -83,7 +85,7 @@ export default function Creators() {
   };
 
   const confirmDelete = async () => {
-    if (!deleteTarget) return;
+    if (!deleteTarget || !canDelete) return;
     setDeleting(true);
 
     await Promise.all([
@@ -122,20 +124,22 @@ export default function Creators() {
           <h1 className="font-display text-2xl font-normal text-foreground">Creators</h1>
           <p className="text-sm text-muted-foreground mt-0.5">{creators.length} creator(s) cadastrado(s)</p>
         </div>
-        <button
-          onClick={handleCreateCreator}
-          disabled={creating}
-          className="flex items-center gap-2 px-5 py-2.5 bg-primary text-primary-foreground font-semibold text-sm rounded-xl transition-all hover:opacity-90 active:scale-[0.97] disabled:opacity-60"
-        >
-          {creating ? (
-            <>
-              <span className="w-4 h-4 border-2 border-primary-foreground border-t-transparent rounded-full animate-spin" />
-              Criando...
-            </>
-          ) : (
-            "+ Novo Creator"
-          )}
-        </button>
+        {canEdit && (
+          <button
+            onClick={handleCreateCreator}
+            disabled={creating}
+            className="flex items-center gap-2 px-5 py-2.5 bg-primary text-primary-foreground font-semibold text-sm rounded-xl transition-all hover:opacity-90 active:scale-[0.97] disabled:opacity-60"
+          >
+            {creating ? (
+              <>
+                <span className="w-4 h-4 border-2 border-primary-foreground border-t-transparent rounded-full animate-spin" />
+                Criando...
+              </>
+            ) : (
+              "+ Novo Creator"
+            )}
+          </button>
+        )}
       </div>
 
       {creators.length > 0 && (
@@ -157,13 +161,15 @@ export default function Creators() {
           <p className="text-sm text-muted-foreground mb-6 max-w-sm mx-auto">
             Comece adicionando seu primeiro creator para criar páginas personalizadas.
           </p>
-          <button
-            onClick={handleCreateCreator}
-            disabled={creating}
-            className="inline-flex items-center gap-2 px-5 py-2.5 bg-primary text-primary-foreground font-semibold text-sm rounded-xl disabled:opacity-60"
-          >
-            + Criar primeiro creator
-          </button>
+          {canEdit && (
+            <button
+              onClick={handleCreateCreator}
+              disabled={creating}
+              className="inline-flex items-center gap-2 px-5 py-2.5 bg-primary text-primary-foreground font-semibold text-sm rounded-xl disabled:opacity-60"
+            >
+              + Criar primeiro creator
+            </button>
+          )}
         </div>
       )}
 
@@ -215,20 +221,24 @@ export default function Creators() {
                 >
                   👁
                 </button>
-                <Link
-                  to={`/app/creators/${cr.id}/edit`}
-                  className="w-9 h-9 rounded-lg bg-background border border-border flex items-center justify-center text-xs text-muted-foreground hover:text-foreground hover:border-primary/30 transition-all"
-                  title="Editar"
-                >
-                  ✏
-                </Link>
-                <button
-                  onClick={() => setDeleteTarget({ id: cr.id, name: cr.name })}
-                  className="w-9 h-9 rounded-lg bg-background border border-border flex items-center justify-center text-xs text-muted-foreground hover:text-destructive hover:border-destructive/30 transition-all"
-                  title="Excluir"
-                >
-                  🗑
-                </button>
+                {canEdit && (
+                  <Link
+                    to={`/app/creators/${cr.id}/edit`}
+                    className="w-9 h-9 rounded-lg bg-background border border-border flex items-center justify-center text-xs text-muted-foreground hover:text-foreground hover:border-primary/30 transition-all"
+                    title="Editar"
+                  >
+                    ✏
+                  </Link>
+                )}
+                {canDelete && (
+                  <button
+                    onClick={() => setDeleteTarget({ id: cr.id, name: cr.name })}
+                    className="w-9 h-9 rounded-lg bg-background border border-border flex items-center justify-center text-xs text-muted-foreground hover:text-destructive hover:border-destructive/30 transition-all"
+                    title="Excluir"
+                  >
+                    🗑
+                  </button>
+                )}
               </div>
             </div>
           ))}
