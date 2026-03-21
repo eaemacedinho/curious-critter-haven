@@ -142,6 +142,7 @@ const CreatorEditPanel = forwardRef<CreatorEditPanelHandle, Props>(function Crea
   const [tags, setTags] = useState(profile.tags || []);
   const [stats, setStats] = useState(profile.stats || []);
   const [brands, setBrands] = useState(profile.brands || []);
+  const [brandsDisplayMode, setBrandsDisplayMode] = useState<"static" | "marquee">(profile.brands_display_mode || "static");
   const [avatarUrl, setAvatarUrl] = useState(profile.avatar_url || "");
   const [coverUrl, setCoverUrl] = useState(profile.cover_url || "");
   const [avatarUrlL2, setAvatarUrlL2] = useState(profile.avatar_url_layout2 || "");
