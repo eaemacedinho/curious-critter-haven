@@ -1,7 +1,8 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { Link } from "react-router-dom";
 import type { OnboardingState } from "@/hooks/useOnboarding";
+import ConfettiCelebration from "./ConfettiCelebration";
 
 const TASKS = [
   { key: "creatorEdited" as const, icon: "👤", label: "Personalizar creator", desc: "Edite bio, foto e estilo", link: "/app/creators" },
@@ -10,19 +11,31 @@ const TASKS = [
   { key: "published" as const, icon: "🚀", label: "Publicar página", desc: "Compartilhe com o mundo", link: "/app/creators" },
 ];
 
+const CONFETTI_KEY = "kreatorz_confetti_shown";
+
 export default function OnboardingChecklist({ state }: { state: OnboardingState }) {
   const [expanded, setExpanded] = useState(true);
+  const [showConfetti, setShowConfetti] = useState(false);
 
-  if (state.checklistDismissed || state.checklistProgress === 4) return null;
+  useEffect(() => {
+    if (state.checklistProgress === 4 && !localStorage.getItem(CONFETTI_KEY)) {
+      setShowConfetti(true);
+      localStorage.setItem(CONFETTI_KEY, "true");
+    }
+  }, [state.checklistProgress]);
+
+  if (state.checklistDismissed && state.checklistProgress < 4) return null;
 
   const progress = (state.checklistProgress / 4) * 100;
 
   return (
-    <motion.div
-      initial={{ opacity: 0, y: 20 }}
-      animate={{ opacity: 1, y: 0 }}
-      className="bg-card border border-border rounded-2xl overflow-hidden mb-6"
-    >
+    <>
+      {showConfetti && <ConfettiCelebration onComplete={() => setShowConfetti(false)} />}
+      <motion.div
+        initial={{ opacity: 0, y: 20 }}
+        animate={{ opacity: 1, y: 0 }}
+        className="bg-card border border-border rounded-2xl overflow-hidden mb-6"
+      >
       {/* Header */}
       <button
         onClick={() => setExpanded(!expanded)}
@@ -116,5 +129,6 @@ export default function OnboardingChecklist({ state }: { state: OnboardingState 
         )}
       </AnimatePresence>
     </motion.div>
+    </>
   );
 }

@@ -2,17 +2,19 @@ import { useState, useEffect } from "react";
 import { Outlet, useNavigate, useLocation, Link } from "react-router-dom";
 import { useAuth } from "@/hooks/useAuth";
 import { useTenant } from "@/hooks/useTenant";
+import { useOnboarding } from "@/hooks/useOnboarding";
 import { toast } from "sonner";
+import GuidedTooltips from "@/components/onboarding/GuidedTooltips";
 
 const navItems = [
-  { icon: "▦", label: "Dashboard", path: "/app" },
-  { icon: "👥", label: "Creators", path: "/app/creators" },
-  { icon: "📢", label: "Campanhas", path: "/app/campaigns" },
-  { icon: "📊", label: "Analytics", path: "/app/analytics" },
+  { icon: "▦", label: "Dashboard", path: "/app", tour: "dashboard" },
+  { icon: "👥", label: "Creators", path: "/app/creators", tour: "creators" },
+  { icon: "📢", label: "Campanhas", path: "/app/campaigns", tour: "campaigns" },
+  { icon: "📊", label: "Analytics", path: "/app/analytics", tour: "analytics" },
 ];
 
 const settingsItems = [
-  { icon: "⚙", label: "Configurações", path: "/app/settings" },
+  { icon: "⚙", label: "Configurações", path: "/app/settings", tour: "settings" },
 ];
 
 function hexToHsl(hex: string): string | null {
@@ -38,6 +40,7 @@ function hexToHsl(hex: string): string | null {
 export default function AppLayout() {
   const { user, signOut } = useAuth();
   const { agency } = useTenant();
+  const onboarding = useOnboarding();
   const navigate = useNavigate();
   const location = useLocation();
   const [sidebarOpen, setSidebarOpen] = useState(false);
@@ -116,6 +119,7 @@ export default function AppLayout() {
             key={item.path}
             to={item.path}
             onClick={() => setSidebarOpen(false)}
+            data-tour={item.tour}
             className={`w-full flex items-center gap-2.5 px-3 py-2.5 rounded-xl text-sm mb-0.5 transition-all duration-200 ${
               isActive(item.path)
                 ? "bg-primary/15 text-primary font-semibold"
@@ -138,6 +142,7 @@ export default function AppLayout() {
             key={item.path}
             to={item.path}
             onClick={() => setSidebarOpen(false)}
+            data-tour={item.tour}
             className={`w-full flex items-center gap-2.5 px-3 py-2.5 rounded-xl text-sm mb-0.5 transition-all duration-200 ${
               isActive(item.path)
                 ? "bg-primary/15 text-primary font-semibold"
@@ -217,6 +222,11 @@ export default function AppLayout() {
           </span>
         </footer>
       </div>
+
+      {/* Guided tooltips after onboarding */}
+      {user && onboarding.completed && !onboarding.needsOnboarding && (
+        <GuidedTooltips userId={user.id} />
+      )}
     </div>
   );
 }

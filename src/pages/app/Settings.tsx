@@ -4,6 +4,7 @@ import { useAuth } from "@/hooks/useAuth";
 import { extractColorsFromImage } from "@/lib/extractColors";
 import { useTenant } from "@/hooks/useTenant";
 import { supabase } from "@/integrations/supabase/client";
+import { resetOnboarding } from "@/hooks/useOnboarding";
 
 export default function Settings() {
   const { user } = useAuth();
@@ -331,6 +332,27 @@ export default function Settings() {
                 <div>
                   <div className="text-[0.66rem] text-muted-foreground uppercase tracking-wider font-bold mb-1">ID da Agência</div>
                   <div className="text-xs text-muted-foreground font-mono">{agency?.id || "—"}</div>
+                </div>
+              </div>
+
+              {/* Reset onboarding */}
+              <div className="bg-card border border-border rounded-2xl p-5">
+                <div className="flex items-center justify-between">
+                  <div>
+                    <div className="text-sm font-medium text-foreground">Refazer onboarding</div>
+                    <div className="text-[0.66rem] text-muted-foreground">Reinicie o assistente de configuração inicial</div>
+                  </div>
+                  <button
+                    onClick={() => {
+                      if (!user) return;
+                      resetOnboarding(user.id);
+                      toast.success("Onboarding resetado! Recarregando…");
+                      setTimeout(() => window.location.href = "/app", 800);
+                    }}
+                    className="px-4 py-2 bg-primary/10 text-primary text-xs font-semibold rounded-xl hover:bg-primary/20 transition-colors"
+                  >
+                    🔄 Refazer
+                  </button>
                 </div>
               </div>
             </div>
