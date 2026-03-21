@@ -189,8 +189,17 @@ export default function Settings() {
                     <div className="flex items-center gap-2.5 bg-background border border-border rounded-xl px-3 py-2.5">
                       <input type="color" value={accentColor} onChange={(e) => setAccentColor(e.target.value)} className="w-8 h-8 rounded-lg border-0 cursor-pointer bg-transparent" />
                       <input value={accentColor} onChange={(e) => setAccentColor(e.target.value)} className="bg-transparent text-foreground text-sm outline-none flex-1 font-mono" />
-                    </div>
-                  </div>
+                </div>
+                {logoUrl && (
+                  <button
+                    onClick={handleExtractColors}
+                    disabled={extracting}
+                    className="mt-2 flex items-center gap-2 px-4 py-2.5 bg-accent/15 text-foreground font-semibold text-xs rounded-xl border border-border transition-all hover:bg-accent/25 active:scale-[0.97] disabled:opacity-60"
+                  >
+                    {extracting ? "⏳ Analisando..." : "🎨 Extrair cores da logo"}
+                  </button>
+                )}
+              </div>
                 </div>
               </div>
 
