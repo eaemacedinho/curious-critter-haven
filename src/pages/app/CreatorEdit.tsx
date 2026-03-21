@@ -1,18 +1,18 @@
 import { useRef, useState } from "react";
 import { Link, useParams } from "react-router-dom";
 import { toast } from "sonner";
-import { useAuth } from "@/hooks/useAuth";
+import { useTenant } from "@/hooks/useTenant";
 import { useCreatorData } from "@/hooks/useCreatorData";
 import CreatorEditPanel, { type CreatorEditPanelHandle } from "@/components/kreatorz/creator/CreatorEditPanel";
 
 export default function CreatorEdit() {
-  const { user } = useAuth();
+  const { agency } = useTenant();
   const { creatorId } = useParams<{ creatorId: string }>();
   const {
     profile, links, socialLinks, products, campaigns, loading,
     saveProfile, saveLinks, saveSocialLinks, saveProducts, saveCampaigns,
     uploadImage, uploadContentImage, refetch,
-  } = useCreatorData(user?.id, creatorId);
+  } = useCreatorData(agency?.id, creatorId);
   const editorRef = useRef<CreatorEditPanelHandle>(null);
   const [saving, setSaving] = useState(false);
 
@@ -34,10 +34,10 @@ export default function CreatorEdit() {
     );
   }
 
-  if (!user) {
+  if (!agency) {
     return (
       <div className="flex items-center justify-center py-20">
-        <p className="text-muted-foreground text-sm">Faça login para editar.</p>
+        <p className="text-muted-foreground text-sm">Carregando agência...</p>
       </div>
     );
   }

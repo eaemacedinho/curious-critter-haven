@@ -24,25 +24,23 @@ export default function Creators() {
   const [loading, setLoading] = useState(true);
   const [search, setSearch] = useState("");
   const [creating, setCreating] = useState(false);
-
-  // Delete confirmation state
   const [deleteTarget, setDeleteTarget] = useState<{ id: string; name: string } | null>(null);
   const [deleting, setDeleting] = useState(false);
 
   useEffect(() => {
-    if (!user) return;
+    if (!agency) return;
     (async () => {
       setLoading(true);
       const { data, error } = await supabase
         .from("creators")
         .select("id, name, handle, avatar_url, bio, public_layout, verified")
-        .eq("user_id", user.id)
+        .eq("agency_id", agency.id)
         .order("created_at", { ascending: false });
 
       if (!error && data) setCreators(data as CreatorRow[]);
       setLoading(false);
     })();
-  }, [user]);
+  }, [agency]);
 
   const filtered = creators.filter(
     (c) =>
@@ -73,11 +71,7 @@ export default function Creators() {
       .single();
 
     if (error) {
-      if (error.code === "23505") {
-        toast.error("Já existe um creator com esses dados. Tente novamente.");
-      } else {
-        toast.error("Não foi possível criar o creator. Tente novamente.");
-      }
+      toast.error("Não foi possível criar o creator. Tente novamente.");
       setCreating(false);
       return;
     }
@@ -144,7 +138,6 @@ export default function Creators() {
         </button>
       </div>
 
-      {/* Search */}
       {creators.length > 0 && (
         <div className="flex items-center gap-2 px-3.5 py-3 bg-card border border-border rounded-xl mb-6 focus-within:border-primary/30 transition-all max-w-sm">
           <span className="text-muted-foreground text-sm">🔍</span>
@@ -157,7 +150,6 @@ export default function Creators() {
         </div>
       )}
 
-      {/* Empty state */}
       {creators.length === 0 && (
         <div className="bg-card border border-border rounded-2xl p-12 text-center">
           <div className="text-5xl mb-4">👤</div>
@@ -175,7 +167,6 @@ export default function Creators() {
         </div>
       )}
 
-      {/* Creator cards */}
       {filtered.length > 0 && (
         <div className="grid gap-3">
           {filtered.map((cr) => (
@@ -205,7 +196,7 @@ export default function Creators() {
               </div>
               <div className="flex items-center gap-2 flex-shrink-0">
                 <span className="hidden sm:inline-flex px-2.5 py-1 rounded-full text-[0.68rem] font-semibold bg-primary/10 text-muted-foreground">
-                  {cr.public_layout === "layout2" ? "Layout 2" : "Layout 1"}
+                  {cr.public_layout === "layout2" ? "Imersivo" : "Padrão"}
                 </span>
                 <button
                   onClick={() => handleCopyUrl(cr.handle)}
@@ -250,7 +241,6 @@ export default function Creators() {
         </div>
       )}
 
-      {/* Delete confirmation modal */}
       <ConfirmDialog
         open={!!deleteTarget}
         onOpenChange={(open) => !open && setDeleteTarget(null)}

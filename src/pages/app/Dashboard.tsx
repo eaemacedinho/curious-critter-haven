@@ -3,7 +3,6 @@ import { Link } from "react-router-dom";
 import { useAuth } from "@/hooks/useAuth";
 import { useTenant } from "@/hooks/useTenant";
 import { supabase } from "@/integrations/supabase/client";
-import AnalyticsCharts from "@/components/kreatorz/AnalyticsCharts";
 import CampaignAnalytics from "@/components/kreatorz/CampaignAnalytics";
 import OnboardingFlow from "@/components/onboarding/OnboardingFlow";
 import OnboardingChecklist from "@/components/onboarding/OnboardingChecklist";
@@ -31,13 +30,13 @@ export default function Dashboard() {
   }, [onboarding.loading, onboarding.needsOnboarding]);
 
   useEffect(() => {
-    if (!user) return;
+    if (!agency) return;
     (async () => {
       setLoading(true);
       const { data: creators } = await supabase
         .from("creators")
         .select("id")
-        .eq("user_id", user.id);
+        .eq("agency_id", agency.id);
 
       const creatorsCount = creators?.length || 0;
 
@@ -68,7 +67,7 @@ export default function Dashboard() {
       setStats({ creatorsCount, campaignsCount, liveCampaigns, totalClicks });
       setLoading(false);
     })();
-  }, [user]);
+  }, [agency]);
 
   if (loading) {
     return (
@@ -93,14 +92,12 @@ export default function Dashboard() {
           <p className="text-sm text-muted-foreground mt-1">Visão geral da sua plataforma</p>
         </div>
 
-        {/* Onboarding checklist */}
         {!showOnboarding && onboarding.completed && onboarding.checklistProgress < 4 && (
           <OnboardingChecklist state={onboarding} />
         )}
 
         {isEmpty ? (
           <div className="flex flex-col items-center justify-center py-16">
-            {/* Empty state illustration */}
             <div className="relative mb-8">
               <div className="w-32 h-32 rounded-full bg-primary/5 border-2 border-dashed border-primary/20 flex items-center justify-center">
                 <div className="text-5xl animate-k-float">🚀</div>
@@ -130,7 +127,6 @@ export default function Dashboard() {
               </Link>
             </div>
 
-            {/* Steps guide */}
             <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 mt-12 w-full max-w-2xl">
               {[
                 { step: "1", icon: "👤", title: "Crie um Creator", desc: "Adicione nome, bio, foto e links do seu creator." },
@@ -151,7 +147,6 @@ export default function Dashboard() {
           </div>
         ) : (
           <>
-            {/* Stats Cards */}
             <div className="grid grid-cols-2 lg:grid-cols-4 gap-3 mb-8">
               {[
                 { label: "Creators ativos", value: String(stats!.creatorsCount), icon: "👥" },
@@ -173,7 +168,7 @@ export default function Dashboard() {
             {stats!.campaignsCount > 0 && (
               <div className="mb-8">
                 <h2 className="font-display text-lg font-normal text-foreground mb-4">📢 Spotlight Campaigns</h2>
-                <CampaignAnalytics userId={user?.id} />
+                <CampaignAnalytics agencyId={agency?.id} />
               </div>
             )}
           </>
