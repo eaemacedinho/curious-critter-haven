@@ -123,7 +123,7 @@ export default function CreatorViewLinkme({ profile, links: rawLinks, socialLink
         )}
 
         {/* Scrollable content */}
-        <div ref={scrollRef} className="w-full h-full relative z-[1] overflow-y-auto overflow-x-hidden" style={{ scrollbarWidth: "none" }}>
+        <div ref={scrollRef} data-preview-scroll className="w-full h-full relative z-[1] overflow-y-auto overflow-x-hidden" style={{ scrollbarWidth: "none" }}>
           {/* Sticky header */}
           <div className="sticky top-0 z-50 transition-all duration-500 ease-out"
             style={{ opacity: headerVisible ? 1 : 0, pointerEvents: headerVisible ? "auto" : "none", transform: headerVisible ? "translateY(0)" : "translateY(-8px)" }}>
