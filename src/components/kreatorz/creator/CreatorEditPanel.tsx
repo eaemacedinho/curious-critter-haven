@@ -1,4 +1,4 @@
-import { forwardRef, useImperativeHandle, useRef, useState, useCallback, useMemo } from "react";
+import { forwardRef, useEffect, useImperativeHandle, useRef, useState, useCallback, useMemo } from "react";
 import { toast } from "sonner";
 import type { CreatorProfile, CreatorLink, SocialLink, CreatorProduct, CreatorCampaign } from "@/hooks/useCreatorData";
 import type { HeroReelData } from "./HeroReel";
