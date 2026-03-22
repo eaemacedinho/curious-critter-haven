@@ -7,8 +7,8 @@ import { useCallback } from "react";
 import CreatorView from "@/components/kreatorz/creator/CreatorView";
 import CreatorViewLinkme from "@/components/kreatorz/creator/CreatorViewLinkme";
 import ThemeToggle, { usePageTheme } from "@/components/kreatorz/creator/ThemeToggle";
-import PromoBanner from "@/components/kreatorz/creator/PromoBanner";
-import ShareButton from "@/components/kreatorz/creator/ShareButton";
+import GrowthWatermark from "@/components/kreatorz/creator/GrowthWatermark";
+import PremiumShareModal from "@/components/kreatorz/creator/PremiumShareModal";
 
 const normalizeProfile = (creator: any): CreatorProfile => ({
   ...creator,
