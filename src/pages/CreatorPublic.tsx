@@ -54,6 +54,7 @@ export default function CreatorPublic() {
   const [agencyFooterLink, setAgencyFooterLink] = useState<string>("");
   const [loading, setLoading] = useState(true);
   const [notFound, setNotFound] = useState(false);
+  const [pageTheme, setPageTheme] = usePageTheme();
 
   useEffect(() => {
     if (!handle) return;
