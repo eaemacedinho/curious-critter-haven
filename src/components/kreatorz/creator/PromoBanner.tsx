@@ -1,7 +1,8 @@
-import { useState } from "react";
+import { useState, useEffect, useRef } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { useNavigate } from "react-router-dom";
-import { X } from "lucide-react";
+import { X, Loader2, Check, AlertCircle } from "lucide-react";
+import { supabase } from "@/integrations/supabase/client";
 import in1Icon from "@/assets/in1-icon.png";
 
 interface PromoBannerProps {
@@ -11,7 +12,33 @@ interface PromoBannerProps {
 export default function PromoBanner({ creatorName }: PromoBannerProps) {
   const [open, setOpen] = useState(false);
   const [username, setUsername] = useState("");
+  const [checking, setChecking] = useState(false);
+  const [available, setAvailable] = useState<boolean | null>(null);
+  const debounceRef = useRef<ReturnType<typeof setTimeout>>();
   const navigate = useNavigate();
+
+  // Real-time availability check
+  useEffect(() => {
+    const clean = username.trim().replace(/[^a-zA-Z0-9._-]/g, "").toLowerCase();
+    if (!clean || clean.length < 2) {
+      setAvailable(null);
+      setChecking(false);
+      return;
+    }
+    setChecking(true);
+    setAvailable(null);
+    if (debounceRef.current) clearTimeout(debounceRef.current);
+    debounceRef.current = setTimeout(async () => {
+      const { data } = await supabase
+        .from("creators")
+        .select("id")
+        .or(`slug.eq.${clean},slug.eq.@${clean}`)
+        .limit(1);
+      setAvailable(!data || data.length === 0);
+      setChecking(false);
+    }, 500);
+    return () => { if (debounceRef.current) clearTimeout(debounceRef.current); };
+  }, [username]);
 
   const handleClaim = () => {
     if (!username.trim()) return;
