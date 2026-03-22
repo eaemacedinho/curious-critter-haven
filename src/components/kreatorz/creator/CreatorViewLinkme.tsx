@@ -267,7 +267,7 @@ export default function CreatorViewLinkme({ profile, links: rawLinks, socialLink
 
                 case "products":
                   return products.length > 0 ? (
-                    <div key="products" className="mt-8 px-4">
+                    <div key="products" data-preview-section="products" className="mt-8 px-4">
                       <SectionLabel label="Produtos" color={profile.color_section_titles} />
                       <div className="grid grid-cols-2 gap-3">
                         {products.map((prod) => (
@@ -299,7 +299,7 @@ export default function CreatorViewLinkme({ profile, links: rawLinks, socialLink
 
                 case "past_campaigns":
                   return pastCamps.length > 0 ? (
-                    <div key="past_campaigns" className="mt-8 px-4">
+                    <div key="past_campaigns" data-preview-section="past_campaigns" className="mt-8 px-4">
                       <SectionLabel label="Campanhas Anteriores" color={profile.color_section_titles} />
                       <div className="flex flex-col gap-3">
                         {pastCamps.map((camp) => (
@@ -335,7 +335,7 @@ export default function CreatorViewLinkme({ profile, links: rawLinks, socialLink
 
                 case "hero_reel":
                   return activeReels.length > 0 ? (
-                    <div key="hero_reel" className="mt-6 px-4 flex flex-col gap-4">
+                    <div key="hero_reel" data-preview-section="hero_reel" className="mt-6 px-4 flex flex-col gap-4">
                       {activeReels.map((reel) => (
                         <HeroReel key={reel.id} reel={reel} embedded={embedded} agencyId={profile.agency_id} />
                       ))}

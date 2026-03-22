@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useMemo, useRef, useState, type CSSProperties } from "react";
+import { useCallback, useEffect, useMemo, useRef, useState, type CSSProperties, type RefObject } from "react";
 import type { CreatorCampaign, CreatorLink, CreatorProduct, CreatorProfile, SocialLink } from "@/hooks/useCreatorData";
 import type { HeroReelData } from "./HeroReel";
 import { useTenant } from "@/hooks/useTenant";
@@ -15,6 +15,7 @@ interface Props {
   campaigns: CreatorCampaign[];
   heroReels?: HeroReelData[];
   activeLayout?: string;
+  focusSection?: string | null;
 }
 
 function hexToHsl(hex: string): string | null {
@@ -59,10 +60,28 @@ export default function CreatorLivePreview({
   campaigns,
   heroReels,
   activeLayout = "layout1",
+  focusSection,
 }: Props) {
   const { agency } = useTenant();
   const containerRef = useRef<HTMLDivElement>(null);
   const [scale, setScale] = useState(1);
+  const previewContentRef = useRef<HTMLDivElement>(null);
+
+  // Scroll the preview's internal content to the focused section
+  useEffect(() => {
+    if (!focusSection) return;
+    const container = previewContentRef.current;
+    if (!container) return;
+    // Find the target element inside the preview
+    const target = container.querySelector(`[data-preview-section="${focusSection}"]`) as HTMLElement | null;
+    if (!target) return;
+    // Use the scrollable wrapper — for layout1 it's the overflow-y-auto div
+    const scrollable = target.closest('[data-preview-scroll]') as HTMLElement | null;
+    if (scrollable) {
+      const offsetTop = target.offsetTop - scrollable.offsetTop;
+      scrollable.scrollTo({ top: Math.max(0, offsetTop - 20), behavior: "smooth" });
+    }
+  }, [focusSection]);
 
   const updateScale = useCallback(() => {
     const element = containerRef.current;
@@ -154,7 +173,7 @@ export default function CreatorLivePreview({
               transformOrigin: "top left",
             }}
           >
-            <div className="relative h-full w-full overflow-hidden" style={previewTheme} onWheel={(e) => e.stopPropagation()}>
+            <div ref={previewContentRef} className="relative h-full w-full overflow-hidden" style={previewTheme} onWheel={(e) => e.stopPropagation()}>
               {activeLayout === "layout2" ? (
                 <PreviewComponent
                   profile={profile} links={links} socialLinks={socialLinks} products={products} campaigns={campaigns} heroReels={heroReels}
@@ -162,7 +181,7 @@ export default function CreatorLivePreview({
                   agencyFooterVisible={agency?.footer_visible} agencyFooterLink={agency?.footer_link} embedded
                 />
               ) : (
-                <div className="h-full overflow-y-auto overflow-x-hidden">
+                <div className="h-full overflow-y-auto overflow-x-hidden" data-preview-scroll>
                   <PreviewComponent
                     profile={profile} links={links} socialLinks={socialLinks} products={products} campaigns={campaigns} heroReels={heroReels}
                     agencyName={agency?.name} agencyLogoUrl={agency?.logo_url} agencyFooterText={agency?.footer_text}
