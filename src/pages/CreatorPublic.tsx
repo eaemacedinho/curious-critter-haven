@@ -57,6 +57,7 @@ export default function CreatorPublic() {
   const [loading, setLoading] = useState(true);
   const [notFound, setNotFound] = useState(false);
   const [pageTheme, setPageTheme] = usePageTheme();
+  const [topButtonsOpacity, setTopButtonsOpacity] = useState(1);
 
   useEffect(() => {
     if (!handle) return;
