@@ -170,6 +170,22 @@ export default function CreatorPublic() {
     });
   }, [profile]);
 
+  // Apply theme class to root for public page
+  useEffect(() => {
+    const root = document.documentElement;
+    if (pageTheme === "light") {
+      root.classList.remove("dark");
+      root.classList.add("light");
+    } else {
+      root.classList.remove("light");
+      root.classList.add("dark");
+    }
+    return () => {
+      root.classList.remove("light");
+      root.classList.add("dark");
+    };
+  }, [pageTheme]);
+
   if (loading) {
     return (
       <div className="min-h-screen bg-background flex items-center justify-center">
@@ -198,23 +214,6 @@ export default function CreatorPublic() {
       default: return CreatorView;
     }
   })();
-
-  // Apply theme class to root for public page
-  useEffect(() => {
-    const root = document.documentElement;
-    if (pageTheme === "light") {
-      root.classList.remove("dark");
-      root.classList.add("light");
-    } else {
-      root.classList.remove("light");
-      root.classList.add("dark");
-    }
-    return () => {
-      root.classList.remove("light");
-      // restore dark as default
-      root.classList.add("dark");
-    };
-  }, [pageTheme]);
 
   return (
     <>
