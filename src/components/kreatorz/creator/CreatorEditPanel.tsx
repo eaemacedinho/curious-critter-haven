@@ -3,6 +3,7 @@ import { toast } from "sonner";
 import type { CreatorProfile, CreatorLink, SocialLink, CreatorProduct, CreatorCampaign } from "@/hooks/useCreatorData";
 import type { HeroReelData } from "./HeroReel";
 import ImageCropper from "./ImageCropper";
+import HeroReelEditor from "./HeroReelEditor";
 import VerifiedBadge from "./VerifiedBadge";
 import { ConfirmDialog } from "@/components/ui/confirm-dialog";
 import CreatorLivePreview from "./CreatorLivePreview";
