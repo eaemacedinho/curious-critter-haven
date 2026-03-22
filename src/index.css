@@ -65,8 +65,8 @@
     --k-shadow-purple: 0 8px 40px hsl(268 69% 50% / 0.18);
     --k-shadow-purple-lg: 0 12px 50px hsl(268 69% 50% / 0.28);
 
-    --font-display: 'Instrument Serif', Georgia, serif;
-    --font-body: 'Plus Jakarta Sans', system-ui, sans-serif;
+    --font-display: 'Sora', system-ui, sans-serif;
+    --font-body: 'Sora', system-ui, sans-serif;
     --font-mono: 'JetBrains Mono', monospace;
 
     --sidebar-background: 270 60% 6%;
