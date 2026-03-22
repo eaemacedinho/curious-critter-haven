@@ -105,7 +105,7 @@ export default function AppLayout() {
             {agency?.name || "Minha Agência"}
           </div>
           <div className="text-[0.65rem] text-muted-foreground truncate">
-            {agency?.slug ? `${agency.slug}.automationmi.com.br` : ""}
+            {agency?.slug ? `in1.bio/${agency.slug}` : "in1.bio"}
           </div>
         </div>
       </div>

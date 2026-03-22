@@ -83,6 +83,7 @@ export interface CreatorCampaign {
   image_url: string;
   url: string;
   live: boolean;
+  is_active: boolean;
   sort_order: number;
   expires_at: string | null;
   bg_color: string | null;
