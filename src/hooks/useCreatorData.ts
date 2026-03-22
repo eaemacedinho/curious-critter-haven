@@ -175,17 +175,19 @@ export function useCreatorData(agencyId: string | undefined, creatorId?: string)
 
     setProfile(normalizeProfile(creator));
 
-    const [linksRes, socialRes, productsRes, campaignsRes] = await Promise.all([
+    const [linksRes, socialRes, productsRes, campaignsRes, reelsRes] = await Promise.all([
       supabase.from("creator_links").select("*").eq("creator_id", creator.id).order("sort_order"),
       supabase.from("creator_social_links").select("*").eq("creator_id", creator.id).order("sort_order"),
       supabase.from("creator_products").select("*").eq("creator_id", creator.id).order("sort_order"),
       supabase.from("campaigns").select("*").eq("creator_id", creator.id).order("sort_order"),
+      supabase.from("creator_hero_reels").select("*").eq("creator_id", creator.id).order("sort_order"),
     ]);
 
     setLinks((linksRes.data as CreatorLink[]) || []);
     setSocialLinks((socialRes.data as SocialLink[]) || []);
     setProducts((productsRes.data as CreatorProduct[]) || []);
     setCampaigns((campaignsRes.data as CreatorCampaign[]) || []);
+    setHeroReels((reelsRes.data as HeroReelData[]) || []);
     setLoading(false);
   }, [agencyId, creatorId]);
 
