@@ -195,6 +195,41 @@ const CreatorEditPanel = forwardRef<CreatorEditPanelHandle, Props>(function Crea
   const [dragLinkIdx, setDragLinkIdx] = useState<number | null>(null);
   const [dragProdIdx, setDragProdIdx] = useState<number | null>(null);
   const [dragCampIdx, setDragCampIdx] = useState<number | null>(null);
+  const [focusSection, setFocusSection] = useState<string | null>(null);
+
+  // IntersectionObserver to detect which editor section is most visible
+  useEffect(() => {
+    if (!showPreview) return;
+    const editorRoot = document.querySelector('[data-editor-root]');
+    if (!editorRoot) return;
+    const sections = editorRoot.querySelectorAll('[data-editor-section]');
+    if (!sections.length) return;
+
+    const visibleMap = new Map<string, number>();
+
+    const observer = new IntersectionObserver(
+      (entries) => {
+        for (const entry of entries) {
+          const sectionId = (entry.target as HTMLElement).dataset.editorSection!;
+          visibleMap.set(sectionId, entry.intersectionRatio);
+        }
+        // Pick the section with the highest visibility ratio
+        let best: string | null = null;
+        let bestRatio = 0;
+        visibleMap.forEach((ratio, id) => {
+          if (ratio > bestRatio) {
+            best = id;
+            bestRatio = ratio;
+          }
+        });
+        if (best) setFocusSection(best);
+      },
+      { threshold: [0, 0.1, 0.25, 0.5, 0.75, 1] }
+    );
+
+    sections.forEach((el) => observer.observe(el));
+    return () => observer.disconnect();
+  }, [showPreview]);
 
   // Build a live preview profile from current editor state
   const liveProfile = useMemo<CreatorProfile>(() => ({
@@ -446,8 +481,8 @@ const CreatorEditPanel = forwardRef<CreatorEditPanelHandle, Props>(function Crea
 
       {/* Layout 1 images — only when editing layout1 or no layout specified */}
       {(!activeLayout || activeLayout === "layout1") && (
-        <>
-          <div className="mb-6">
+        <div data-editor-section="cover">
+          <div className="mb-6" >
             <div className={sectionTitle}>🖼 Foto de Capa</div>
             <div className="relative w-full h-[160px] rounded-2xl overflow-hidden border border-primary/10 group cursor-pointer" onClick={() => coverRef.current?.click()}>
               {coverUrl ? (
@@ -464,7 +499,7 @@ const CreatorEditPanel = forwardRef<CreatorEditPanelHandle, Props>(function Crea
             <p className={sizeHint}>📐 Tamanho ideal: <strong>1600×500px</strong> (proporção 16:5)</p>
           </div>
 
-          <div className="mb-6">
+          <div className="mb-6" data-editor-section="profile">
             <div className={sectionTitle}>👤 Foto de Perfil</div>
             <div className="flex items-center gap-4">
               <div className="w-20 h-20 rounded-full overflow-hidden border-[2.5px] border-primary flex-shrink-0 shadow-[0_4px_18px] shadow-primary/20 relative group cursor-pointer" onClick={() => avatarRef.current?.click()}>
@@ -483,7 +518,7 @@ const CreatorEditPanel = forwardRef<CreatorEditPanelHandle, Props>(function Crea
               </div>
             </div>
           </div>
-        </>
+        </div>
       )}
 
       {/* Layout 2 images — only when editing layout2 */}
@@ -539,7 +574,7 @@ const CreatorEditPanel = forwardRef<CreatorEditPanelHandle, Props>(function Crea
         </div>
       )}
 
-      <div className="mb-8">
+      <div className="mb-8" data-editor-section="profile">
         <div className={sectionTitle}>👤 Dados do Perfil</div>
         <div className="space-y-3">
           <div>
@@ -658,7 +693,7 @@ const CreatorEditPanel = forwardRef<CreatorEditPanelHandle, Props>(function Crea
       </div>
 
       {/* 🔤 Tipografia */}
-      <div className="mb-8">
+      <div className="mb-8" data-editor-section="typography">
         <div className={sectionTitle}>🔤 Tipografia</div>
         <p className="text-[0.68rem] text-k-4 mb-3">Personalize a fonte e o tamanho do texto da sua página.</p>
         
@@ -756,7 +791,7 @@ const CreatorEditPanel = forwardRef<CreatorEditPanelHandle, Props>(function Crea
         </div>
       </div>
 
-      <div className="mb-8">
+      <div className="mb-8" data-editor-section="effects">
         <div className={sectionTitle}>✨ Efeitos Visuais</div>
         <p className="text-[0.68rem] text-k-4 mb-3">Adicione efeitos animados à sua página pública. Selecione quantos quiser.</p>
         <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
@@ -911,7 +946,7 @@ const CreatorEditPanel = forwardRef<CreatorEditPanelHandle, Props>(function Crea
           </div>
         )}
       </div>
-      <div className="mb-8">
+      <div className="mb-8" data-editor-section="profile">
         <div className={sectionTitle}>🏷 Tags</div>
         <p className="text-[0.68rem] text-k-4 mb-2">Palavras-chave que descrevem seu nicho. Ex: lifestyle, tech, fitness</p>
         <div className="flex flex-wrap gap-2 mb-2">
@@ -928,7 +963,7 @@ const CreatorEditPanel = forwardRef<CreatorEditPanelHandle, Props>(function Crea
         </div>
       </div>
 
-      <div className="mb-8">
+      <div className="mb-8" data-editor-section="profile">
         <div className={sectionTitle}>📊 Estatísticas</div>
         <p className="text-[0.68rem] text-k-4 mb-2">Números que impressionam. Primeiro o valor, depois o rótulo.</p>
         {stats.map((stat, i) => (
@@ -1146,7 +1181,7 @@ const CreatorEditPanel = forwardRef<CreatorEditPanelHandle, Props>(function Crea
         </div>
       </div>
 
-      <div className="mb-8">
+      <div className="mb-8" data-editor-section="links">
         <div className={sectionTitle}>🔗 Links <span className="text-k-3 normal-case tracking-normal font-normal">({links.length})</span></div>
         {links.map((link, i) => (
           <div
@@ -1323,7 +1358,7 @@ const CreatorEditPanel = forwardRef<CreatorEditPanelHandle, Props>(function Crea
         </button>
       </div>
 
-      <div className="mb-8">
+      <div className="mb-8" data-editor-section="products">
         <div className={sectionTitle}>🛍 Produtos</div>
         {prods.map((prod, i) => (
           <div
@@ -1447,7 +1482,7 @@ const CreatorEditPanel = forwardRef<CreatorEditPanelHandle, Props>(function Crea
         </button>
       </div>
 
-      <div className="mb-8">
+      <div className="mb-8" data-editor-section="past_campaigns">
         <div className={sectionTitle}>📢 Campanhas / Spotlight</div>
         <p className="text-[0.68rem] text-k-4 mb-3">Campanhas marcadas como <strong>"Ao vivo"</strong> aparecem automaticamente no <strong>topo da página</strong> com destaque visual (Spotlight).</p>
         {camps.map((camp, i) => (
@@ -1688,6 +1723,7 @@ const CreatorEditPanel = forwardRef<CreatorEditPanelHandle, Props>(function Crea
               campaigns={camps}
               heroReels={heroReels}
               activeLayout={activeLayout}
+              focusSection={focusSection}
             />
           </div>
         )}
