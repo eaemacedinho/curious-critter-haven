@@ -2,7 +2,7 @@ import { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
 import { supabase } from "@/integrations/supabase/client";
 import { trackEvent } from "@/lib/analytics";
-import type { CreatorProfile, CreatorLink, SocialLink, CreatorProduct, CreatorCampaign } from "@/hooks/useCreatorData";
+import type { CreatorProfile, CreatorLink, SocialLink, CreatorProduct, CreatorCampaign, HeroReelData } from "@/hooks/useCreatorData";
 import { useCallback } from "react";
 import CreatorView from "@/components/kreatorz/creator/CreatorView";
 import CreatorViewLinkme from "@/components/kreatorz/creator/CreatorViewLinkme";
