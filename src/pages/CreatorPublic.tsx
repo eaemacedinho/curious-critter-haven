@@ -223,6 +223,12 @@ export default function CreatorPublic() {
   return (
     <>
       <PromoBanner creatorName={profile.name} />
+      <ShareButton
+        creatorName={profile.name}
+        creatorSlug={profile.slug}
+        creatorAvatar={profile.avatar_url || undefined}
+        creatorBio={profile.bio || undefined}
+      />
       <ThemeToggle theme={pageTheme} onChange={setPageTheme} />
       <LayoutComponent {...layoutProps} />
     </>
