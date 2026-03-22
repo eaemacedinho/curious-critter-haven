@@ -79,9 +79,22 @@ export default function Login() {
             <span className="w-9 h-9 rounded-xl gradient-primary flex items-center justify-center text-sm text-primary-foreground font-extrabold">1</span>
             All in<span className="text-primary"> 1</span>
           </Link>
-          <p className="text-sm text-muted-foreground">
-            {isSignUp ? "Crie sua conta e comece agora" : "Bem-vindo de volta"}
-          </p>
+          {claimedUsername ? (
+            <div className="mt-2">
+              <p className="text-sm text-muted-foreground">
+                {isSignUp ? "Você está criando" : "Bem-vindo de volta"}
+              </p>
+              {isSignUp && (
+                <p className="text-base font-bold text-primary mt-1">
+                  in1.bio/<span className="text-foreground">{claimedUsername}</span>
+                </p>
+              )}
+            </div>
+          ) : (
+            <p className="text-sm text-muted-foreground">
+              {isSignUp ? "Crie sua conta e comece agora" : "Bem-vindo de volta"}
+            </p>
+          )}
         </div>
 
         <div className="bg-card border border-border rounded-2xl p-6 sm:p-8 relative overflow-hidden">
