@@ -181,7 +181,7 @@ export default function Settings() {
               <div>
                 <label className="block text-xs font-semibold text-muted-foreground uppercase tracking-wider mb-1.5">Slug</label>
                 <div className="flex items-center bg-background border border-border rounded-xl overflow-hidden focus-within:border-primary transition-all">
-                  <span className="px-3 text-muted-foreground text-sm border-r border-border">automationmi.com.br/</span>
+                  <span className="px-3 text-muted-foreground text-sm border-r border-border">in1.bio/</span>
                   <input
                     value={agencySlug}
                     onChange={(e) => setAgencySlug(e.target.value)}
