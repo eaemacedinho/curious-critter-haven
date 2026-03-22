@@ -1,4 +1,4 @@
-import { forwardRef, useEffect, useImperativeHandle, useRef, useState, useCallback, useMemo } from "react";
+import { forwardRef, useEffect, useImperativeHandle, useRef, useState, useCallback, useMemo, type CSSProperties } from "react";
 import { toast } from "sonner";
 import type { CreatorProfile, CreatorLink, SocialLink, CreatorProduct, CreatorCampaign } from "@/hooks/useCreatorData";
 import type { HeroReelData } from "./HeroReel";
@@ -411,9 +411,9 @@ const CreatorEditPanel = forwardRef<CreatorEditPanelHandle, Props>(function Crea
         </button>
       </div>
 
-      <div className={showPreview ? "flex gap-5 items-start relative" : ""}>
+      <div className={showPreview ? "lg:mr-[440px]" : ""}>
         {/* Editor column */}
-        <div className={showPreview ? "flex-1 min-w-0" : ""}>
+        <div>
     <div className={`${showPreview ? "" : "max-w-[560px]"} mx-auto px-6 py-8 pt-4 animate-k-fade-up`}>
       <input ref={avatarRef} type="file" accept="image/*" className="hidden" onChange={(e) => e.target.files?.[0] && handleFileSelected(e.target.files[0], "avatar")} />
       <input ref={coverRef} type="file" accept="image/*" className="hidden" onChange={(e) => e.target.files?.[0] && handleFileSelected(e.target.files[0], "cover")} />
@@ -1651,9 +1651,9 @@ const CreatorEditPanel = forwardRef<CreatorEditPanelHandle, Props>(function Crea
     </div>
         </div>
 
-        {/* Preview column — phone mockup sticky on the right */}
+        {/* Preview column — fixed phone mockup on the right */}
         {showPreview && (
-          <div className="hidden min-w-0 flex-[0_0_420px] lg:block sticky top-4" style={{ maxHeight: 'calc(100vh - 2rem)' }}>
+          <div className="hidden lg:block fixed top-[4.5rem] right-0 w-[440px] bottom-0 p-4 overflow-hidden z-30">
             <CreatorLivePreview
               profile={liveProfile}
               links={links}

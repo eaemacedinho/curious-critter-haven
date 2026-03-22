@@ -111,7 +111,7 @@ export default function CreatorLivePreview({
     : null;
 
   return (
-    <div className="space-y-3">
+    <div className="flex flex-col h-full gap-3">
       {/* Header bar */}
       <div className="flex items-center justify-between rounded-2xl border border-border bg-card/80 px-4 py-3 backdrop-blur-sm">
         <p className="text-[0.72rem] font-semibold text-foreground">
@@ -135,7 +135,7 @@ export default function CreatorLivePreview({
       {/* Preview area */}
       <div
         ref={containerRef}
-        className="relative flex h-[calc(100vh-6rem)] min-h-[500px] items-start justify-center overflow-hidden rounded-[2rem] border border-border bg-muted/20 p-4"
+        className="relative flex flex-1 min-h-0 items-start justify-center overflow-hidden rounded-[2rem] border border-border bg-muted/20 p-4"
       >
         <div
           className="relative overflow-hidden border border-border bg-background shadow-[0_24px_80px_hsl(var(--foreground)/0.12)]"
