@@ -29,7 +29,7 @@ export default function Login() {
     setLoading(true);
 
     if (isSignUp) {
-      const { error } = await supabase.auth.signUp({
+      const { data, error } = await supabase.auth.signUp({
         email,
         password,
         options: {
@@ -40,6 +40,25 @@ export default function Login() {
       if (error) {
         toast.error(error.message);
       } else {
+        // If a username was claimed, auto-create a creator with that slug
+        if (claimedUsername && data.user) {
+          // Wait briefly for the trigger to create agency/profile
+          await new Promise((r) => setTimeout(r, 1500));
+          const { data: profile } = await supabase
+            .from("profiles")
+            .select("agency_id")
+            .eq("id", data.user.id)
+            .single();
+
+          if (profile?.agency_id) {
+            await supabase.from("creators").insert({
+              slug: claimedUsername.toLowerCase().replace(/[^a-z0-9_-]/g, ""),
+              name: name || claimedUsername,
+              agency_id: profile.agency_id,
+              is_published: false,
+            });
+          }
+        }
         toast.success("Conta criada!");
         navigate("/app");
       }
@@ -79,9 +98,22 @@ export default function Login() {
             <span className="w-9 h-9 rounded-xl gradient-primary flex items-center justify-center text-sm text-primary-foreground font-extrabold">1</span>
             All in<span className="text-primary"> 1</span>
           </Link>
-          <p className="text-sm text-muted-foreground">
-            {isSignUp ? "Crie sua conta e comece agora" : "Bem-vindo de volta"}
-          </p>
+          {claimedUsername ? (
+            <div className="mt-2">
+              <p className="text-sm text-muted-foreground">
+                {isSignUp ? "Você está criando" : "Bem-vindo de volta"}
+              </p>
+              {isSignUp && (
+                <p className="text-base font-bold text-primary mt-1">
+                  in1.bio/<span className="text-foreground">{claimedUsername}</span>
+                </p>
+              )}
+            </div>
+          ) : (
+            <p className="text-sm text-muted-foreground">
+              {isSignUp ? "Crie sua conta e comece agora" : "Bem-vindo de volta"}
+            </p>
+          )}
         </div>
 
         <div className="bg-card border border-border rounded-2xl p-6 sm:p-8 relative overflow-hidden">
