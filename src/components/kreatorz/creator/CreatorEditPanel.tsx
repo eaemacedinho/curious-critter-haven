@@ -516,7 +516,7 @@ const CreatorEditPanel = forwardRef<CreatorEditPanelHandle, Props>(function Crea
           <div>
             <label className={labelClass}>Handle <span className="text-destructive">*</span></label>
             <input value={handle} onChange={(e) => { setHandle(e.target.value); setValidationErrors((v) => { const n = { ...v }; delete n.slug; return n; }); }} className={`${inputClass} ${validationErrors.slug ? "border-destructive/50 focus:border-destructive" : ""}`} placeholder="seunome" />
-            {validationErrors.slug ? <p className="text-[0.68rem] text-destructive mt-1">{validationErrors.slug}</p> : <p className="text-[0.68rem] text-k-4 mt-1">Identificador único, sem espaços. Ex: joaosilva, ana.creator</p>}
+            {validationErrors.slug ? <p className="text-[0.68rem] text-destructive mt-1">{validationErrors.slug}</p> : <p className="text-[0.68rem] text-k-4 mt-1">Identificador único, sem espaços. Ex: in1.bio/{handle.replace(/^@/, "") || "seunome"}</p>}
           </div>
           <div>
             <label className={labelClass}>Bio</label>
