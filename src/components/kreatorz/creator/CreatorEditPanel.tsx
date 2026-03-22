@@ -411,7 +411,7 @@ const CreatorEditPanel = forwardRef<CreatorEditPanelHandle, Props>(function Crea
         </button>
       </div>
 
-      <div className={showPreview ? "flex gap-5" : ""}>
+      <div className={showPreview ? "flex gap-5 items-start relative" : ""}>
         {/* Editor column */}
         <div className={showPreview ? "flex-1 min-w-0" : ""}>
     <div className={`${showPreview ? "" : "max-w-[560px]"} mx-auto px-6 py-8 pt-4 animate-k-fade-up`}>
@@ -1653,7 +1653,7 @@ const CreatorEditPanel = forwardRef<CreatorEditPanelHandle, Props>(function Crea
 
         {/* Preview column — phone mockup sticky on the right */}
         {showPreview && (
-          <div className="hidden min-w-0 flex-[0_0_420px] lg:block self-start sticky top-0">
+          <div className="hidden min-w-0 flex-[0_0_420px] lg:block sticky top-4" style={{ maxHeight: 'calc(100vh - 2rem)' }}>
             <CreatorLivePreview
               profile={liveProfile}
               links={links}
