@@ -154,9 +154,9 @@ export default function OnboardingFlow({ onComplete }: { onComplete: () => void 
               className="text-center"
             >
               <div className="text-5xl mb-6">👋</div>
-              <h1 className="text-2xl sm:text-3xl font-bold text-foreground mb-2">
-                Bem-vindo à sua plataforma
-              </h1>
+               <h1 className="text-2xl sm:text-3xl font-bold text-foreground mb-2">
+                 Bem-vindo ao All in 1
+               </h1>
               <p className="text-muted-foreground mb-8 text-sm">
                 Para quem você está criando páginas?
               </p>
