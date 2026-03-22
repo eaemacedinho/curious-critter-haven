@@ -20,6 +20,7 @@ import Campaigns from "@/pages/app/Campaigns";
 import Analytics from "@/pages/app/Analytics";
 import Settings from "@/pages/app/Settings";
 import Members from "@/pages/app/Members";
+import Referrals from "@/pages/app/Referrals";
 
 const queryClient = new QueryClient();
 
