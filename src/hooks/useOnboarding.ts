@@ -139,6 +139,8 @@ export function useOnboarding(): OnboardingState {
     setTourDone(true);
   };
 
+  const markFresh = () => setFreshOnboarding(true);
+
   return {
     completed,
     needsOnboarding,
@@ -150,6 +152,7 @@ export function useOnboarding(): OnboardingState {
     checklistDismissed,
     refreshChecklist,
     markTourDone,
+    markFresh,
   };
 }
 
