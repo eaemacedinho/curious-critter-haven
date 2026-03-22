@@ -29,7 +29,7 @@ export default function Login() {
     setLoading(true);
 
     if (isSignUp) {
-      const { error } = await supabase.auth.signUp({
+      const { data, error } = await supabase.auth.signUp({
         email,
         password,
         options: {
@@ -40,6 +40,25 @@ export default function Login() {
       if (error) {
         toast.error(error.message);
       } else {
+        // If a username was claimed, auto-create a creator with that slug
+        if (claimedUsername && data.user) {
+          // Wait briefly for the trigger to create agency/profile
+          await new Promise((r) => setTimeout(r, 1500));
+          const { data: profile } = await supabase
+            .from("profiles")
+            .select("agency_id")
+            .eq("id", data.user.id)
+            .single();
+
+          if (profile?.agency_id) {
+            await supabase.from("creators").insert({
+              slug: claimedUsername.toLowerCase().replace(/[^a-z0-9_-]/g, ""),
+              name: name || claimedUsername,
+              agency_id: profile.agency_id,
+              is_published: false,
+            });
+          }
+        }
         toast.success("Conta criada!");
         navigate("/app");
       }
