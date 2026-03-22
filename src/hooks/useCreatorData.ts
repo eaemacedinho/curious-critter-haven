@@ -133,6 +133,7 @@ export function useCreatorData(agencyId: string | undefined, creatorId?: string)
   const [socialLinks, setSocialLinks] = useState<SocialLink[]>([]);
   const [products, setProducts] = useState<CreatorProduct[]>([]);
   const [campaigns, setCampaigns] = useState<CreatorCampaign[]>([]);
+  const [heroReels, setHeroReels] = useState<HeroReelData[]>([]);
   const [loading, setLoading] = useState(true);
 
   const fetchData = useCallback(async () => {
