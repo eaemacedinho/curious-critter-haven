@@ -136,6 +136,13 @@ export default function HeroReelEditor({ reels, onChange, creatorId, agencyId, o
         <span className="flex-1 h-px bg-border" />
       </div>
 
+      {reels.length > 3 && (
+        <div className="flex items-center gap-2 px-3.5 py-2.5 rounded-xl bg-amber-500/10 border border-amber-500/20 text-amber-400 text-[0.72rem] font-medium">
+          <span>⚠️</span>
+          <span>Você tem {reels.length} reels, mas apenas os <strong>3 primeiros</strong> serão exibidos na página pública por questões de performance.</span>
+        </div>
+      )}
+
       {reels.map((reel, i) => (
         <div
           key={reel.id}
