@@ -9,8 +9,8 @@ export default function CreatorEdit() {
   const { agency } = useTenant();
   const { creatorId } = useParams<{ creatorId: string }>();
   const {
-    profile, links, socialLinks, products, campaigns, loading,
-    saveProfile, saveLinks, saveSocialLinks, saveProducts, saveCampaigns,
+    profile, links, socialLinks, products, campaigns, heroReels, loading,
+    saveProfile, saveLinks, saveSocialLinks, saveProducts, saveCampaigns, saveHeroReels,
     uploadImage, uploadContentImage, refetch,
   } = useCreatorData(agency?.id, creatorId);
   const editorRef = useRef<CreatorEditPanelHandle>(null);
