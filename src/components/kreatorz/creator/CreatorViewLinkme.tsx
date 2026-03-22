@@ -27,6 +27,7 @@ interface Props {
   socialLinks: SocialLink[];
   products: CreatorProduct[];
   campaigns: CreatorCampaign[];
+  heroReels?: HeroReelData[];
   agencyName?: string;
   agencyLogoUrl?: string;
   agencyFooterText?: string;
@@ -37,7 +38,7 @@ interface Props {
   onCampaignClick?: (campaign: CreatorCampaign) => void;
 }
 
-export default function CreatorViewLinkme({ profile, links: rawLinks, socialLinks: rawSocial, products: rawProducts, campaigns: rawCampaigns, agencyName, agencyLogoUrl, agencyFooterText, agencyFooterVisible = true, agencyFooterLink, embedded, onLinkClick, onCampaignClick }: Props) {
+export default function CreatorViewLinkme({ profile, links: rawLinks, socialLinks: rawSocial, products: rawProducts, campaigns: rawCampaigns, heroReels: rawReels, agencyName, agencyLogoUrl, agencyFooterText, agencyFooterVisible = true, agencyFooterLink, embedded, onLinkClick, onCampaignClick }: Props) {
   const [contactOpen, setContactOpen] = useState(false);
   const [overlayOpacity, setOverlayOpacity] = useState(0);
   const [headerVisible, setHeaderVisible] = useState(false);
