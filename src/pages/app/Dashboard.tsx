@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import { Link } from "react-router-dom";
 import { useAuth } from "@/hooks/useAuth";
 import { useTenant } from "@/hooks/useTenant";
@@ -22,9 +22,11 @@ export default function Dashboard() {
   const [loading, setLoading] = useState(true);
   const onboarding = useOnboarding();
   const [showOnboarding, setShowOnboarding] = useState(false);
+  const onboardingTriggered = useRef(false);
 
   useEffect(() => {
-    if (!onboarding.loading && onboarding.needsOnboarding) {
+    if (!onboarding.loading && onboarding.needsOnboarding && !onboardingTriggered.current) {
+      onboardingTriggered.current = true;
       setShowOnboarding(true);
     }
   }, [onboarding.loading, onboarding.needsOnboarding]);
@@ -82,7 +84,7 @@ export default function Dashboard() {
   return (
     <>
       {showOnboarding && (
-        <OnboardingFlow onComplete={() => { setShowOnboarding(false); onboarding.refreshChecklist(); window.location.reload(); }} />
+        <OnboardingFlow onComplete={() => { setShowOnboarding(false); onboarding.refreshChecklist(); }} />
       )}
       <div className="max-w-[1200px] mx-auto">
         <div className="mb-8">
