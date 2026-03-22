@@ -146,7 +146,7 @@ export default function CreatorViewMinimal({ profile, links: rawLinks, socialLin
             ) : (
               <div className="px-3 py-1.5 rounded-full bg-card/60 border border-border/40 flex items-center gap-2 text-[0.64rem] text-muted-foreground/70">
                 {agencyLogoUrl ? <img src={agencyLogoUrl} alt="" className="w-3.5 h-3.5 rounded-sm object-contain" /> : <span className="opacity-60">⚡</span>}
-                <span>{agencyFooterText || "Powered by"} <span className="font-semibold text-foreground/60">{agencyName || "Kreatorz"}</span></span>
+                <span>{agencyFooterText || "Powered by"} <span className="font-semibold text-foreground/60">{agencyName || "All in 1"}</span></span>
               </div>
             )}
           </div>

@@ -214,7 +214,7 @@ export default function CreatorViewDark({ profile, links: rawLinks, socialLinks:
               <div className="px-4 py-2 rounded-full flex items-center gap-2 text-[0.68rem]"
                 style={{ background: "rgba(255,255,255,0.04)", border: "1px solid rgba(255,255,255,0.08)", color: "rgba(255,255,255,0.4)" }}>
                 {agencyLogoUrl ? <img src={agencyLogoUrl} alt="" className="w-4 h-4 rounded-sm object-contain" /> : <span className="opacity-60">⚡</span>}
-                <span>{agencyFooterText || "Powered by"} <span className="font-semibold" style={{ color: "rgba(255,255,255,0.6)" }}>{agencyName || "Kreatorz"}</span></span>
+                <span>{agencyFooterText || "Powered by"} <span className="font-semibold" style={{ color: "rgba(255,255,255,0.6)" }}>{agencyName || "All in 1"}</span></span>
               </div>
             )}
           </div>
