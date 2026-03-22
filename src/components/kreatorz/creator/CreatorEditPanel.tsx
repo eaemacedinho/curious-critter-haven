@@ -1473,13 +1473,21 @@ const CreatorEditPanel = forwardRef<CreatorEditPanelHandle, Props>(function Crea
                   <label className={labelClass}>⏱ Duração do Spotlight (dias)</label>
                   <div className="flex gap-2 items-center">
                     <select
-                      value={camp.expires_at ? "custom" : "indefinido"}
+                      value={(() => {
+                        if (!camp.expires_at) return "indefinido";
+                        const diff = Math.round((new Date(camp.expires_at).getTime() - Date.now()) / (1000 * 60 * 60 * 24));
+                        if (diff <= 1) return "1";
+                        if (diff <= 3) return "3";
+                        if (diff <= 7) return "7";
+                        if (diff <= 14) return "14";
+                        return "30";
+                      })()}
                       onChange={(e) => {
                         const arr = [...camps];
                         if (e.target.value === "indefinido") {
                           arr[i] = { ...arr[i], expires_at: null };
                         } else {
-                          const days = parseInt(e.target.value === "custom" ? "7" : e.target.value);
+                          const days = parseInt(e.target.value);
                           const exp = new Date();
                           exp.setDate(exp.getDate() + days);
                           arr[i] = { ...arr[i], expires_at: exp.toISOString() };
