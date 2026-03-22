@@ -7,8 +7,8 @@ import { useCallback } from "react";
 import CreatorView from "@/components/kreatorz/creator/CreatorView";
 import CreatorViewLinkme from "@/components/kreatorz/creator/CreatorViewLinkme";
 import ThemeToggle, { usePageTheme } from "@/components/kreatorz/creator/ThemeToggle";
-import PromoBanner from "@/components/kreatorz/creator/PromoBanner";
-import ShareButton from "@/components/kreatorz/creator/ShareButton";
+import GrowthWatermark from "@/components/kreatorz/creator/GrowthWatermark";
+import PremiumShareModal from "@/components/kreatorz/creator/PremiumShareModal";
 
 const normalizeProfile = (creator: any): CreatorProfile => ({
   ...creator,
@@ -226,11 +226,11 @@ export default function CreatorPublic() {
       <div className="fixed top-0 left-0 right-0 z-[60] pointer-events-none">
         <div className="relative max-w-[640px] mx-auto">
           <div className="absolute top-4 left-4 pointer-events-auto">
-            <PromoBanner creatorName={profile.name} />
+            <GrowthWatermark creatorName={profile.name} />
           </div>
           <div className="absolute top-4 right-4 pointer-events-auto flex items-center gap-2">
             <ThemeToggle theme={pageTheme} onChange={setPageTheme} />
-            <ShareButton
+            <PremiumShareModal
               creatorName={profile.name}
               creatorSlug={profile.slug}
               creatorAvatar={profile.avatar_url || undefined}
