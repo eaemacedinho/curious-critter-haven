@@ -22,9 +22,11 @@ export default function Dashboard() {
   const [loading, setLoading] = useState(true);
   const onboarding = useOnboarding();
   const [showOnboarding, setShowOnboarding] = useState(false);
+  const onboardingTriggered = useRef(false);
 
   useEffect(() => {
-    if (!onboarding.loading && onboarding.needsOnboarding) {
+    if (!onboarding.loading && onboarding.needsOnboarding && !onboardingTriggered.current) {
+      onboardingTriggered.current = true;
       setShowOnboarding(true);
     }
   }, [onboarding.loading, onboarding.needsOnboarding]);
