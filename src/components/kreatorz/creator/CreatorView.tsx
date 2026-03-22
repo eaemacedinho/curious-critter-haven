@@ -310,7 +310,7 @@ export default function CreatorView({ profile, links: rawLinks, socialLinks: raw
                         )}
                         <div className="p-3.5">
                           <h5 className="text-[0.82rem] font-semibold mb-1">{prod.title}</h5>
-                          {prod.price && <span className="text-[0.72rem] font-bold" style={{ color: prod.text_color || "hsl(var(--primary))" }}>{prod.price}</span>}
+                          {prod.price && <span className="text-[0.72rem] font-bold text-foreground" style={prod.text_color ? { color: prod.text_color } : undefined}>{prod.price}</span>}
                         </div>
                       </div>
                     ))}
