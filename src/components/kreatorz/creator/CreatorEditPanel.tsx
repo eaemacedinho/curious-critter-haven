@@ -1085,6 +1085,7 @@ const CreatorEditPanel = forwardRef<CreatorEditPanelHandle, Props>(function Crea
               links: { icon: "🔗", label: "Links" },
               products: { icon: "🛍", label: "Produtos" },
               past_campaigns: { icon: "📢", label: "Campanhas Anteriores" },
+              hero_reel: { icon: "🎬", label: "Hero Reel" },
             };
             const m = meta[sec] || { icon: "❓", label: sec };
             return (
