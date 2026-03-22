@@ -611,6 +611,7 @@ export type Database = {
           email: string
           full_name: string
           id: string
+          referral_code: string | null
           role: Database["public"]["Enums"]["app_role"]
           updated_at: string
         }
@@ -621,6 +622,7 @@ export type Database = {
           email?: string
           full_name?: string
           id: string
+          referral_code?: string | null
           role?: Database["public"]["Enums"]["app_role"]
           updated_at?: string
         }
@@ -631,6 +633,7 @@ export type Database = {
           email?: string
           full_name?: string
           id?: string
+          referral_code?: string | null
           role?: Database["public"]["Enums"]["app_role"]
           updated_at?: string
         }
@@ -643,6 +646,36 @@ export type Database = {
             referencedColumns: ["id"]
           },
         ]
+      }
+      referrals: {
+        Row: {
+          converted_at: string | null
+          created_at: string
+          id: string
+          referred_email: string | null
+          referred_user_id: string | null
+          referrer_user_id: string
+          status: string
+        }
+        Insert: {
+          converted_at?: string | null
+          created_at?: string
+          id?: string
+          referred_email?: string | null
+          referred_user_id?: string | null
+          referrer_user_id: string
+          status?: string
+        }
+        Update: {
+          converted_at?: string | null
+          created_at?: string
+          id?: string
+          referred_email?: string | null
+          referred_user_id?: string | null
+          referrer_user_id?: string
+          status?: string
+        }
+        Relationships: []
       }
       user_roles: {
         Row: {
