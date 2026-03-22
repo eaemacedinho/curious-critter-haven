@@ -13,6 +13,7 @@ interface Props {
   socialLinks: SocialLink[];
   products: CreatorProduct[];
   campaigns: CreatorCampaign[];
+  heroReels?: HeroReelData[];
   activeLayout?: string;
 }
 
