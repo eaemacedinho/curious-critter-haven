@@ -1664,7 +1664,7 @@ const CreatorEditPanel = forwardRef<CreatorEditPanelHandle, Props>(function Crea
 
         {/* Preview column — fixed phone mockup on the right */}
         {showPreview && (
-          <div className="hidden lg:block fixed top-[4.5rem] right-0 w-[440px] bottom-0 p-4 overflow-hidden z-30">
+          <div className="hidden lg:block fixed right-0 w-[440px] bottom-0 p-4 overflow-hidden z-30" style={{ top: previewTopOffset }}>
             <CreatorLivePreview
               profile={liveProfile}
               links={links}
