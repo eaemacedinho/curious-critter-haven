@@ -59,6 +59,29 @@ export default function CreatorPublic() {
   const [pageTheme, setPageTheme] = usePageTheme();
   const [topButtonsOpacity, setTopButtonsOpacity] = useState(1);
 
+  // Scroll-based fade for top buttons (like Linktree)
+  useEffect(() => {
+    const handleScroll = () => {
+      const scrollEl = document.querySelector('[data-preview-scroll]') as HTMLElement | null;
+      const scrollY = scrollEl ? scrollEl.scrollTop : window.scrollY;
+      setTopButtonsOpacity(Math.max(0, 1 - scrollY / 120));
+    };
+
+    window.addEventListener("scroll", handleScroll, { passive: true });
+    // Also listen on layout2's internal scroll container
+    const timer = setTimeout(() => {
+      const scrollEl = document.querySelector('[data-preview-scroll]') as HTMLElement | null;
+      scrollEl?.addEventListener("scroll", handleScroll, { passive: true });
+    }, 500);
+
+    return () => {
+      window.removeEventListener("scroll", handleScroll);
+      clearTimeout(timer);
+      const scrollEl = document.querySelector('[data-preview-scroll]') as HTMLElement | null;
+      scrollEl?.removeEventListener("scroll", handleScroll);
+    };
+  }, [profile]);
+
   useEffect(() => {
     if (!handle) return;
     const cleanHandle = handle.replace(/^@+/, "");
