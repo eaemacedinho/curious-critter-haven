@@ -1,9 +1,8 @@
-import { useEffect, useState } from "react";
+import { useEffect, useState, useCallback } from "react";
 import { useParams } from "react-router-dom";
 import { supabase } from "@/integrations/supabase/client";
 import { trackEvent } from "@/lib/analytics";
 import type { CreatorProfile, CreatorLink, SocialLink, CreatorProduct, CreatorCampaign, HeroReelData } from "@/hooks/useCreatorData";
-import { useCallback } from "react";
 import CreatorView from "@/components/kreatorz/creator/CreatorView";
 import CreatorViewLinkme from "@/components/kreatorz/creator/CreatorViewLinkme";
 import ThemeToggle, { usePageTheme } from "@/components/kreatorz/creator/ThemeToggle";
@@ -58,6 +57,30 @@ export default function CreatorPublic() {
   const [loading, setLoading] = useState(true);
   const [notFound, setNotFound] = useState(false);
   const [pageTheme, setPageTheme] = usePageTheme();
+  const [topButtonsOpacity, setTopButtonsOpacity] = useState(1);
+
+  // Scroll-based fade for top buttons (like Linktree)
+  useEffect(() => {
+    const handleScroll = () => {
+      const scrollEl = document.querySelector('[data-preview-scroll]') as HTMLElement | null;
+      const scrollY = scrollEl ? scrollEl.scrollTop : window.scrollY;
+      setTopButtonsOpacity(Math.max(0, 1 - scrollY / 120));
+    };
+
+    window.addEventListener("scroll", handleScroll, { passive: true });
+    // Also listen on layout2's internal scroll container
+    const timer = setTimeout(() => {
+      const scrollEl = document.querySelector('[data-preview-scroll]') as HTMLElement | null;
+      scrollEl?.addEventListener("scroll", handleScroll, { passive: true });
+    }, 500);
+
+    return () => {
+      window.removeEventListener("scroll", handleScroll);
+      clearTimeout(timer);
+      const scrollEl = document.querySelector('[data-preview-scroll]') as HTMLElement | null;
+      scrollEl?.removeEventListener("scroll", handleScroll);
+    };
+  }, [profile]);
 
   useEffect(() => {
     if (!handle) return;
@@ -220,11 +243,15 @@ export default function CreatorPublic() {
     }
   })();
 
+
   return (
     <div className="relative">
-      {/* Floating buttons - positioned inside page content area */}
-      <div className="fixed top-0 left-0 right-0 z-[60] pointer-events-none">
-        <div className="relative max-w-[640px] mx-auto">
+      {/* Top buttons - inside content area, fade on scroll */}
+      <div
+        className="fixed top-0 left-0 right-0 z-[60] pointer-events-none transition-opacity duration-200"
+        style={{ opacity: topButtonsOpacity, pointerEvents: topButtonsOpacity < 0.1 ? "none" : undefined }}
+      >
+        <div className="relative max-w-[520px] mx-auto">
           <div className="absolute top-4 left-4 pointer-events-auto">
             <GrowthWatermark creatorName={profile.name} />
           </div>
