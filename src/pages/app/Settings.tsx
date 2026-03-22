@@ -276,7 +276,7 @@ export default function Settings() {
                 </div>
                 <div>
                   <div className="font-bold text-foreground">{agencyName || "Sua Agência"}</div>
-                  <div className="text-[0.7rem] text-muted-foreground">{agencySlug}.automationmi.com.br</div>
+                  <div className="text-[0.7rem] text-muted-foreground">in1.bio/{agencySlug}</div>
                 </div>
               </div>
 
