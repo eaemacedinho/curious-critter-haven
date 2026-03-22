@@ -40,6 +40,15 @@ export default function OnboardingFlow({ onComplete }: { onComplete: () => void 
   const [loadingMsgIdx, setLoadingMsgIdx] = useState(0);
   const [createdHandle, setCreatedHandle] = useState("");
 
+  const handleSkip = async () => {
+    if (!user || !agency) return;
+    await supabase
+      .from("agency_settings")
+      .update({ onboarding_completed: true })
+      .eq("agency_id", agency.id);
+    markOnboardingDone(user.id);
+    onComplete();
+  };
   useEffect(() => {
     if (step !== "creating") return;
     const interval = setInterval(() => {
@@ -179,6 +188,12 @@ export default function OnboardingFlow({ onComplete }: { onComplete: () => void 
                   </button>
                 ))}
               </div>
+              <button
+                onClick={handleSkip}
+                className="mt-6 text-xs text-muted-foreground hover:text-foreground transition-colors underline underline-offset-2"
+              >
+                Pular e configurar depois
+              </button>
             </motion.div>
           )}
 
@@ -221,6 +236,12 @@ export default function OnboardingFlow({ onComplete }: { onComplete: () => void 
                   Continuar
                 </button>
               </div>
+              <button
+                onClick={handleSkip}
+                className="mt-4 text-xs text-muted-foreground hover:text-foreground transition-colors underline underline-offset-2"
+              >
+                Pular e configurar depois
+              </button>
             </motion.div>
           )}
 
@@ -289,6 +310,12 @@ export default function OnboardingFlow({ onComplete }: { onComplete: () => void 
                   Criar minha página 🚀
                 </button>
               </div>
+              <button
+                onClick={handleSkip}
+                className="mt-4 text-xs text-muted-foreground hover:text-foreground transition-colors underline underline-offset-2"
+              >
+                Pular e configurar depois
+              </button>
             </motion.div>
           )}
 
