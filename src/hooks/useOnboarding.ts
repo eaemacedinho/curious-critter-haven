@@ -7,6 +7,7 @@ export interface OnboardingState {
   completed: boolean;
   needsOnboarding: boolean;
   loading: boolean;
+  freshOnboarding: boolean;
   checklist: {
     creatorEdited: boolean;
     linkAdded: boolean;
@@ -16,7 +17,8 @@ export interface OnboardingState {
   checklistProgress: number;
   dismissChecklist: () => void;
   checklistDismissed: boolean;
-  refreshChecklist: () => Promise<void>;
+  refreshChecklist: () => void;
+  markTourDone: () => void;
 }
 
 const ONBOARDING_KEY = "in1_onboarding_done";
