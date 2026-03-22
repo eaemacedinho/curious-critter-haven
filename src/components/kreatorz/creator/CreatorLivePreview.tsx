@@ -157,9 +157,10 @@ export default function CreatorLivePreview({
             <div className="relative h-full w-full overflow-hidden" style={previewTheme}>
               {activeLayout === "layout2" ? (
                 <PreviewComponent
-                  profile={profile} links={links} socialLinks={socialLinks} products={products} campaigns={campaigns}
+                  profile={profile} links={links} socialLinks={socialLinks} products={products} campaigns={campaigns} heroReels={heroReels}
                   agencyName={agency?.name} agencyLogoUrl={agency?.logo_url} agencyFooterText={agency?.footer_text}
                   agencyFooterVisible={agency?.footer_visible} agencyFooterLink={agency?.footer_link} embedded
+                />
                 />
               ) : (
                 <div className="h-full overflow-y-auto overflow-x-hidden">
