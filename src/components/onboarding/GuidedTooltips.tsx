@@ -73,6 +73,7 @@ export default function GuidedTooltips({ userId, onComplete }: { userId: string;
   const handleDismiss = () => {
     localStorage.setItem(`${TOUR_KEY}_${userId}`, "true");
     setVisible(false);
+    onComplete?.();
   };
 
   if (!visible || !targetRect) return null;

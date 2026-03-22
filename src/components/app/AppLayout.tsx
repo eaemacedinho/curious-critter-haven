@@ -224,9 +224,9 @@ export default function AppLayout() {
         </footer>
       </div>
 
-      {/* Guided tooltips after onboarding */}
-      {user && onboarding.completed && !onboarding.needsOnboarding && (
-        <GuidedTooltips userId={user.id} />
+      {/* Guided tooltips — only on fresh onboarding session, never on repeat logins */}
+      {user && onboarding.freshOnboarding && (
+        <GuidedTooltips userId={user.id} onComplete={() => onboarding.markTourDone()} />
       )}
     </div>
   );
