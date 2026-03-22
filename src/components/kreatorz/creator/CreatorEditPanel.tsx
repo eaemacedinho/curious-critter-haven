@@ -1651,6 +1651,7 @@ const CreatorEditPanel = forwardRef<CreatorEditPanelHandle, Props>(function Crea
               socialLinks={social}
               products={prods}
               campaigns={camps}
+              heroReels={heroReels}
               activeLayout={activeLayout}
             />
           </div>
