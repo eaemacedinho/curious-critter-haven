@@ -397,21 +397,36 @@ const CreatorEditPanel = forwardRef<CreatorEditPanelHandle, Props>(function Crea
   const sectionTitle = "text-[0.66rem] font-bold text-k-4 tracking-[0.12em] uppercase mb-3.5 flex items-center gap-2";
   const sizeHint = "text-[0.62rem] text-k-4 mt-1";
 
+  // Keep preview top offset in sync with the toggle button position
+  useEffect(() => {
+    if (!showPreview) return;
+    const update = () => {
+      if (previewToggleRef.current) {
+        const rect = previewToggleRef.current.getBoundingClientRect();
+        // Preview starts below the toggle, but never above the navbar (56px)
+        const top = Math.max(56, rect.bottom + 8);
+        setPreviewTopOffset(top);
+      }
+    };
+    update();
+    window.addEventListener("scroll", update, { passive: true });
+    window.addEventListener("resize", update, { passive: true });
+    // Also listen on the closest scrollable parent
+    const scrollParent = previewToggleRef.current?.closest("[class*='overflow']");
+    scrollParent?.addEventListener("scroll", update, { passive: true } as any);
+    return () => {
+      window.removeEventListener("scroll", update);
+      window.removeEventListener("resize", update);
+      scrollParent?.removeEventListener("scroll", update);
+    };
+  }, [showPreview]);
+
   return (
     <div className="relative">
       {/* Preview toggle */}
       <div className="mb-4" ref={previewToggleRef}>
         <button
-          onClick={() => {
-            setShowPreview(!showPreview);
-            // Measure toggle bottom after next paint
-            requestAnimationFrame(() => {
-              if (previewToggleRef.current) {
-                const rect = previewToggleRef.current.getBoundingClientRect();
-                setPreviewTopOffset(rect.bottom + 8);
-              }
-            });
-          }}
+          onClick={() => setShowPreview(!showPreview)}
           className={`w-full px-4 py-2.5 rounded-xl text-sm font-semibold transition-all duration-300 active:scale-[0.98] flex items-center justify-center gap-2 ${
             showPreview
               ? "bg-primary text-primary-foreground shadow-lg shadow-primary/20"
