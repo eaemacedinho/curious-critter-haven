@@ -154,12 +154,12 @@ export default function CreatorViewLinkme({ profile, links: rawLinks, socialLink
             {/* Name + handle + socials overlaid at bottom of hero */}
               <div className="absolute inset-x-0 bottom-0 z-10 flex flex-col items-center pb-5 px-5">
               <h2 className="font-display text-[1.85rem] font-bold tracking-[-0.01em] leading-[1.1] inline-flex items-center justify-center gap-2 drop-shadow-[0_2px_12px_rgba(0,0,0,0.5)]"
-                style={{ textShadow: "0 2px 16px rgba(0,0,0,0.6)", color: profile.color_name || "white" }}>
+                style={{ textShadow: "0 2px 16px rgba(0,0,0,0.6)", color: profile.color_name || "hsl(var(--foreground))" }}>
                 {profile.name}
                 {profile.verified && <VerifiedBadge size={24} />}
               </h2>
               {profile.slug && (
-                <p className="font-body text-[0.82rem] text-white/60 mt-1 tracking-wide drop-shadow-[0_1px_6px_rgba(0,0,0,0.4)]">@{profile.slug.replace(/^@+/, "")}</p>
+                <p className="font-body text-[0.82rem] text-muted-foreground mt-1 tracking-wide drop-shadow-[0_1px_6px_rgba(0,0,0,0.4)]">@{profile.slug.replace(/^@+/, "")}</p>
               )}
 
               {/* Social Icons */}
@@ -167,7 +167,7 @@ export default function CreatorViewLinkme({ profile, links: rawLinks, socialLink
                 <div className="flex justify-center gap-2.5 mt-3.5">
                   {socialLinks.map((soc) => (
                     <a key={soc.id} href={soc.url} target="_blank" rel="noopener noreferrer"
-                      className="w-[46px] h-[46px] flex items-center justify-center rounded-full bg-white/12 backdrop-blur-md border border-white/15 transition-all duration-300 hover:scale-110 hover:bg-white/20 active:scale-95"
+                      className="w-[46px] h-[46px] flex items-center justify-center rounded-full bg-card/60 backdrop-blur-md border border-border/50 transition-all duration-300 hover:scale-110 hover:bg-card/80 active:scale-95"
                       title={soc.platform}>
                       <SocialIcon platform={soc.platform || soc.url} url={soc.url} size={22} />
                     </a>

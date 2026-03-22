@@ -30,15 +30,14 @@ export default function SpotlightCampaign({ campaign, variant = "layout1" }: Pro
   return (
     <div
       onClick={handleClick}
-      className="animate-k-spotlight-enter animate-k-spotlight-shimmer animate-k-spotlight-border relative rounded-3xl border-2 cursor-pointer group transition-all duration-300 hover:scale-[1.02] hover:shadow-k-purple-lg active:scale-[0.98] overflow-hidden"
+      className="animate-k-spotlight-enter animate-k-spotlight-shimmer animate-k-spotlight-border relative rounded-3xl border-2 border-primary/30 cursor-pointer group transition-all duration-300 hover:scale-[1.02] hover:shadow-k-purple-lg active:scale-[0.98] overflow-hidden bg-card"
       style={{
-        background: "linear-gradient(135deg, hsl(268 69% 50% / 0.15), hsl(268 40% 10% / 0.8))",
-        boxShadow: "0 0 40px hsl(268 69% 50% / 0.15), 0 8px 32px hsl(0 0% 0% / 0.3)",
+        boxShadow: "0 0 40px hsl(268 69% 50% / 0.15), 0 8px 32px hsl(0 0% 0% / 0.1)",
       }}
     >
       {/* Glow ring behind */}
       <div className="absolute -inset-px rounded-3xl pointer-events-none" style={{
-        background: "linear-gradient(135deg, hsl(268 85% 61% / 0.2), hsl(268 69% 50% / 0.05), hsl(268 100% 71% / 0.15))",
+        background: "linear-gradient(135deg, hsl(268 85% 61% / 0.15), transparent, hsl(268 100% 71% / 0.1))",
       }} />
 
       {/* Image */}
@@ -49,7 +48,7 @@ export default function SpotlightCampaign({ campaign, variant = "layout1" }: Pro
             alt=""
             className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105"
           />
-          <div className="absolute inset-0 bg-gradient-to-t from-background via-background/40 to-transparent" />
+          <div className="absolute inset-0 bg-gradient-to-t from-card via-card/40 to-transparent" />
         </div>
       )}
 
@@ -58,29 +57,29 @@ export default function SpotlightCampaign({ campaign, variant = "layout1" }: Pro
         {/* Badges row */}
         <div className="flex items-center gap-2 mb-3 flex-wrap">
           {campaign.live && (
-            <span className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-[0.65rem] font-bold uppercase tracking-wider bg-k-err/20 text-k-err border border-k-err/20">
-              <span className="w-2 h-2 rounded-full bg-k-err animate-k-live-dot" />
+            <span className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-[0.65rem] font-bold uppercase tracking-wider bg-destructive/15 text-destructive border border-destructive/20">
+              <span className="w-2 h-2 rounded-full bg-destructive animate-k-live-dot" />
               Ao Vivo
             </span>
           )}
-          <span className="inline-flex items-center gap-1 px-2.5 py-1 rounded-full text-[0.62rem] font-bold uppercase tracking-wider bg-primary/15 text-k-300 border border-primary/20">
+          <span className="inline-flex items-center gap-1 px-2.5 py-1 rounded-full text-[0.62rem] font-bold uppercase tracking-wider bg-primary/15 text-primary border border-primary/20">
             ✨ Destaque
           </span>
           {timeLeft && (
-            <span className="inline-flex items-center gap-1 px-2.5 py-1 rounded-full text-[0.62rem] font-semibold bg-k-warn/10 text-k-warn border border-k-warn/20">
+            <span className="inline-flex items-center gap-1 px-2.5 py-1 rounded-full text-[0.62rem] font-semibold bg-yellow-500/10 text-yellow-600 dark:text-yellow-400 border border-yellow-500/20">
               ⏱ {timeLeft}
             </span>
           )}
         </div>
 
         {/* Title */}
-        <h3 className="text-lg font-bold text-primary-foreground leading-tight mb-1.5 tracking-tight">
+        <h3 className="text-lg font-bold text-foreground leading-tight mb-1.5 tracking-tight">
           {campaign.title}
         </h3>
 
         {/* Description */}
         {campaign.description && (
-          <p className="text-[0.78rem] text-k-2 leading-relaxed mb-4 line-clamp-2">
+          <p className="text-[0.78rem] text-muted-foreground leading-relaxed mb-4 line-clamp-2">
             {campaign.description}
           </p>
         )}
