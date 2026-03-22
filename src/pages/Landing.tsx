@@ -170,7 +170,7 @@ export default function Landing() {
       {/* Footer */}
       <footer className="border-t border-border py-6 px-6 text-center">
         <span className="text-[0.7rem] text-muted-foreground">
-          © {new Date().getFullYear()} · Plataforma de gestão para agências de creators
+          © {new Date().getFullYear()} All in 1 · in1.bio
         </span>
       </footer>
     </div>

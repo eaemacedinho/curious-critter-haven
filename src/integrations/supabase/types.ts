@@ -218,6 +218,7 @@ export type Database = {
           expires_at: string | null
           id: string
           image_url: string | null
+          is_active: boolean
           live: boolean | null
           priority_level: number | null
           sort_order: number | null
@@ -238,6 +239,7 @@ export type Database = {
           expires_at?: string | null
           id?: string
           image_url?: string | null
+          is_active?: boolean
           live?: boolean | null
           priority_level?: number | null
           sort_order?: number | null
@@ -258,6 +260,7 @@ export type Database = {
           expires_at?: string | null
           id?: string
           image_url?: string | null
+          is_active?: boolean
           live?: boolean | null
           priority_level?: number | null
           sort_order?: number | null
@@ -354,6 +357,7 @@ export type Database = {
           icon: string | null
           id: string
           image_url: string | null
+          is_active: boolean
           price: string | null
           sort_order: number | null
           text_color: string | null
@@ -367,6 +371,7 @@ export type Database = {
           icon?: string | null
           id?: string
           image_url?: string | null
+          is_active?: boolean
           price?: string | null
           sort_order?: number | null
           text_color?: string | null
@@ -380,6 +385,7 @@ export type Database = {
           icon?: string | null
           id?: string
           image_url?: string | null
+          is_active?: boolean
           price?: string | null
           sort_order?: number | null
           text_color?: string | null

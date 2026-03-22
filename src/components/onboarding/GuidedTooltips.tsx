@@ -35,7 +35,7 @@ const TOOLTIP_STEPS: TooltipStep[] = [
   },
 ];
 
-const TOUR_KEY = "kreatorz_tour_done";
+const TOUR_KEY = "in1_tour_done";
 
 export default function GuidedTooltips({ userId }: { userId: string }) {
   const [currentStep, setCurrentStep] = useState(0);

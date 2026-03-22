@@ -142,6 +142,6 @@ export function markOnboardingDone(userId: string) {
 export function resetOnboarding(userId: string) {
   localStorage.removeItem(`${ONBOARDING_KEY}_${userId}`);
   localStorage.removeItem(`${CHECKLIST_DISMISS_KEY}_${userId}`);
-  localStorage.removeItem("kreatorz_confetti_shown");
-  localStorage.removeItem("kreatorz_tour_done_" + userId);
+  localStorage.removeItem("in1_confetti_shown");
+  localStorage.removeItem("in1_tour_done_" + userId);
 }
