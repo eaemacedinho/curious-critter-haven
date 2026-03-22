@@ -152,8 +152,12 @@ export function useOnboarding(): OnboardingState {
   };
 }
 
-export function markOnboardingDone(userId: string) {
+export function markOnboardingDone(userId: string, setFresh?: (v: boolean) => void) {
   localStorage.setItem(`${ONBOARDING_KEY}_${userId}`, "true");
+}
+
+export function markOnboardingFresh(setter: (v: boolean) => void) {
+  setter(true);
 }
 
 export function resetOnboarding(userId: string) {
