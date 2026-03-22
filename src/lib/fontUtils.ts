@@ -1,5 +1,5 @@
 const FONT_MAP: Record<string, string> = {
-  default: "'Instrument Serif', 'Plus Jakarta Sans', serif",
+  default: "'Sora', sans-serif",
   inter: "'Inter', sans-serif",
   playfair: "'Playfair Display', serif",
   "space-grotesk": "'Space Grotesk', sans-serif",

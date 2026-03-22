@@ -14,8 +14,8 @@ export default {
     },
     extend: {
       fontFamily: {
-        display: ["'Instrument Serif'", "Georgia", "serif"],
-        body: ["'Plus Jakarta Sans'", "system-ui", "sans-serif"],
+        display: ["'Sora'", "system-ui", "sans-serif"],
+        body: ["'Sora'", "system-ui", "sans-serif"],
         mono: ["'JetBrains Mono'", "monospace"],
       },
       colors: {
