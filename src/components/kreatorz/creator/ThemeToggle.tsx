@@ -27,7 +27,7 @@ export default function ThemeToggle({ theme, onChange }: { theme: PageTheme; onC
   return (
     <button
       onClick={() => onChange(isDark ? "light" : "dark")}
-      className="fixed top-4 right-4 z-[60] w-10 h-10 rounded-full bg-card/70 backdrop-blur-xl border border-border/50 flex items-center justify-center transition-all duration-300 hover:scale-110 hover:bg-card/90 active:scale-95 shadow-lg"
+      className="fixed top-4 right-16 z-[60] w-10 h-10 rounded-full bg-card/70 backdrop-blur-xl border border-border/50 flex items-center justify-center transition-all duration-300 hover:scale-110 hover:bg-card/90 active:scale-95 shadow-lg"
       title={isDark ? "Modo claro" : "Modo escuro"}
       aria-label={isDark ? "Mudar para modo claro" : "Mudar para modo escuro"}
     >
