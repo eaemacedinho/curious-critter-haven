@@ -45,14 +45,19 @@ export default function CreatorView({ profile, links: rawLinks, socialLinks: raw
   const coverRef = useRef<HTMLDivElement>(null);
 
   const handleScroll = useCallback(() => {
+    if (embedded) return;
     const y = window.scrollY;
     setParallaxY(y * 0.3);
-  }, []);
+  }, [embedded]);
 
   useEffect(() => {
+    if (embedded) {
+      setParallaxY(0);
+      return;
+    }
     window.addEventListener("scroll", handleScroll, { passive: true });
     return () => window.removeEventListener("scroll", handleScroll);
-  }, [handleScroll]);
+  }, [embedded, handleScroll]);
 
   const links = rawLinks.filter(l => l.title?.trim() && l.url?.trim() && l.is_active !== false);
   const socialLinks = rawSocial.filter(s => s.url?.trim() && (s.label?.trim() || s.platform?.trim()));

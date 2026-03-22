@@ -68,11 +68,17 @@ export default function CreatorViewLinkme({ profile, links: rawLinks, socialLink
   }, []);
 
   useEffect(() => {
+    if (embedded) {
+      setOverlayOpacity(0);
+      setHeaderVisible(false);
+      setParallaxY(0);
+      return;
+    }
     const el = scrollRef.current;
     if (!el) return;
     el.addEventListener("scroll", handleScroll, { passive: true });
     return () => el.removeEventListener("scroll", handleScroll);
-  }, [handleScroll]);
+  }, [embedded, handleScroll]);
 
   const pe = profile.page_effects || { effects: [], color: undefined };
   const effects = (pe.effects || []) as PageEffect[];
