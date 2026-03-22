@@ -1653,7 +1653,7 @@ const CreatorEditPanel = forwardRef<CreatorEditPanelHandle, Props>(function Crea
 
         {/* Preview column — phone mockup sticky on the right */}
         {showPreview && (
-          <div className="hidden min-w-0 flex-[0_0_420px] lg:block">
+          <div className="hidden min-w-0 flex-[0_0_420px] lg:block self-start sticky top-0">
             <CreatorLivePreview
               profile={liveProfile}
               links={links}
