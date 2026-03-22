@@ -19,6 +19,7 @@ export interface OnboardingState {
   checklistDismissed: boolean;
   refreshChecklist: () => void;
   markTourDone: () => void;
+  markFresh: () => void;
 }
 
 const ONBOARDING_KEY = "in1_onboarding_done";
