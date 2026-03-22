@@ -56,12 +56,12 @@ export function parseEmbedUrl(url: string): EmbedInfo {
 function getEmbedSrc(info: EmbedInfo, autoplay: boolean): string {
   if (!info) return "";
   if (info.type === "youtube") {
-    const params = new URLSearchParams({ rel: "0", modestbranding: "1", playsinline: "1" });
-    if (autoplay) { params.set("autoplay", "1"); params.set("mute", "1"); params.set("loop", "1"); params.set("playlist", info.id); }
+    const params = new URLSearchParams({ rel: "0", modestbranding: "1", playsinline: "1", mute: "1" });
+    if (autoplay) { params.set("autoplay", "1"); params.set("loop", "1"); params.set("playlist", info.id); }
     return `https://www.youtube-nocookie.com/embed/${info.id}?${params}`;
   }
-  const params = new URLSearchParams({ dnt: "1", playsinline: "1" });
-  if (autoplay) { params.set("autoplay", "1"); params.set("muted", "1"); params.set("loop", "1"); params.set("background", "1"); }
+  const params = new URLSearchParams({ dnt: "1", playsinline: "1", muted: "1" });
+  if (autoplay) { params.set("autoplay", "1"); params.set("loop", "1"); params.set("background", "1"); }
   return `https://player.vimeo.com/video/${info.id}?${params}`;
 }
 
