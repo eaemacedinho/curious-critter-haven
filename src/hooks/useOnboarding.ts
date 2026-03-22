@@ -131,15 +131,24 @@ export function useOnboarding(): OnboardingState {
     checklist.published,
   ].filter(Boolean).length;
 
+  const markTourDone = () => {
+    if (user) {
+      localStorage.setItem(`in1_tour_done_${user.id}`, "true");
+    }
+    setTourDone(true);
+  };
+
   return {
     completed,
     needsOnboarding,
     loading,
+    freshOnboarding: freshOnboarding && !tourDone,
     checklist,
     checklistProgress,
     dismissChecklist,
     checklistDismissed,
     refreshChecklist,
+    markTourDone,
   };
 }
 
