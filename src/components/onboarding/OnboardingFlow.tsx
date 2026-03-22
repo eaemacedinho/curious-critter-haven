@@ -40,6 +40,15 @@ export default function OnboardingFlow({ onComplete }: { onComplete: () => void 
   const [loadingMsgIdx, setLoadingMsgIdx] = useState(0);
   const [createdHandle, setCreatedHandle] = useState("");
 
+  const handleSkip = async () => {
+    if (!user || !agency) return;
+    await supabase
+      .from("agency_settings")
+      .update({ onboarding_completed: true })
+      .eq("agency_id", agency.id);
+    markOnboardingDone(user.id);
+    onComplete();
+  };
   useEffect(() => {
     if (step !== "creating") return;
     const interval = setInterval(() => {
