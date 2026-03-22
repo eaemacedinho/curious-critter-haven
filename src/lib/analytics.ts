@@ -1,7 +1,7 @@
 import { supabase } from "@/integrations/supabase/client";
 
 interface TrackEventParams {
-  event_type: "page_view" | "link_click" | "campaign_click";
+  event_type: "page_view" | "link_click" | "campaign_click" | "reel_play" | "reel_watch_time" | "reel_cta_click";
   creator_id: string;
   agency_id?: string | null;
   link_id?: string | null;
