@@ -1580,6 +1580,15 @@ const CreatorEditPanel = forwardRef<CreatorEditPanelHandle, Props>(function Crea
         </button>
       </div>
 
+      {/* Hero Reel Editor */}
+      <HeroReelEditor
+        reels={heroReels}
+        onChange={setHeroReels}
+        creatorId={profile.id}
+        agencyId={profile.agency_id || ""}
+        onUploadContentImage={onUploadContentImage}
+      />
+
       <div className="sticky bottom-4 z-10">
         <button onClick={() => void handleSaveAll()} disabled={saving || Boolean(uploadingImage) || Boolean(uploadingContent)}
           className="w-full py-4 gradient-primary text-primary-foreground font-bold text-sm rounded-2xl transition-all duration-300 hover:shadow-k-purple-lg active:scale-[0.98] disabled:opacity-50 shadow-k-purple">
