@@ -303,7 +303,7 @@ export default function Settings() {
                 <div className="flex items-center justify-between">
                   <div>
                     <div className="text-[0.66rem] text-muted-foreground uppercase tracking-wider font-bold mb-1">Domínio padrão</div>
-                    <div className="text-sm text-foreground font-semibold font-mono">{agencySlug || agency?.slug}.automationmi.com.br</div>
+                    <div className="text-sm text-foreground font-semibold font-mono">in1.bio/{agencySlug || agency?.slug}</div>
                   </div>
                   <span className="px-2.5 py-1 rounded-full text-[0.68rem] font-semibold bg-emerald-500/10 text-emerald-500 flex items-center gap-1.5">
                     <span className="w-1.5 h-1.5 rounded-full bg-current" /> Ativo
