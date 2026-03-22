@@ -119,7 +119,7 @@ export default function Members() {
   };
 
   const handleRemove = async (member: Member) => {
-    if (!confirm(`Remover ${member.full_name || member.email} da agência?`)) return;
+    if (!confirm(`Remover ${member.full_name || member.email || "este membro"} da agência?`)) return;
 
     const { error } = await supabase.from("profiles").delete().eq("id", member.id);
 
