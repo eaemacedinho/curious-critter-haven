@@ -7,6 +7,7 @@ export interface OnboardingState {
   completed: boolean;
   needsOnboarding: boolean;
   loading: boolean;
+  freshOnboarding: boolean;
   checklist: {
     creatorEdited: boolean;
     linkAdded: boolean;
@@ -16,7 +17,9 @@ export interface OnboardingState {
   checklistProgress: number;
   dismissChecklist: () => void;
   checklistDismissed: boolean;
-  refreshChecklist: () => Promise<void>;
+  refreshChecklist: () => void;
+  markTourDone: () => void;
+  markFresh: () => void;
 }
 
 const ONBOARDING_KEY = "in1_onboarding_done";
@@ -27,6 +30,8 @@ export function useOnboarding(): OnboardingState {
   const { agency } = useTenant();
   const [loading, setLoading] = useState(true);
   const [needsOnboarding, setNeedsOnboarding] = useState(false);
+  const [freshOnboarding, setFreshOnboarding] = useState(false);
+  const [tourDone, setTourDone] = useState(false);
   const [checklistDismissed, setChecklistDismissed] = useState(false);
   const [checklist, setChecklist] = useState({
     creatorEdited: false,
@@ -78,10 +83,13 @@ export function useOnboarding(): OnboardingState {
 
     const done = localStorage.getItem(`${ONBOARDING_KEY}_${user.id}`);
     const dismissed = localStorage.getItem(`${CHECKLIST_DISMISS_KEY}_${user.id}`);
+    const tourAlreadyDone = localStorage.getItem(`in1_tour_done_${user.id}`);
     setChecklistDismissed(!!dismissed);
+    setTourDone(!!tourAlreadyDone);
 
     if (done) {
       setNeedsOnboarding(false);
+      setFreshOnboarding(false);
       setLoading(false);
       refreshChecklist();
       return;
@@ -97,6 +105,7 @@ export function useOnboarding(): OnboardingState {
       if (settings?.onboarding_completed) {
         localStorage.setItem(`${ONBOARDING_KEY}_${user.id}`, "true");
         setNeedsOnboarding(false);
+        setFreshOnboarding(false);
         setLoading(false);
         refreshChecklist();
         return;
@@ -123,20 +132,36 @@ export function useOnboarding(): OnboardingState {
     checklist.published,
   ].filter(Boolean).length;
 
+  const markTourDone = () => {
+    if (user) {
+      localStorage.setItem(`in1_tour_done_${user.id}`, "true");
+    }
+    setTourDone(true);
+  };
+
+  const markFresh = () => setFreshOnboarding(true);
+
   return {
     completed,
     needsOnboarding,
     loading,
+    freshOnboarding: freshOnboarding && !tourDone,
     checklist,
     checklistProgress,
     dismissChecklist,
     checklistDismissed,
     refreshChecklist,
+    markTourDone,
+    markFresh,
   };
 }
 
-export function markOnboardingDone(userId: string) {
+export function markOnboardingDone(userId: string, setFresh?: (v: boolean) => void) {
   localStorage.setItem(`${ONBOARDING_KEY}_${userId}`, "true");
+}
+
+export function markOnboardingFresh(setter: (v: boolean) => void) {
+  setter(true);
 }
 
 export function resetOnboarding(userId: string) {

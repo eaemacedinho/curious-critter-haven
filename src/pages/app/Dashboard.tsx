@@ -84,7 +84,7 @@ export default function Dashboard() {
   return (
     <>
       {showOnboarding && (
-        <OnboardingFlow onComplete={() => { setShowOnboarding(false); onboarding.refreshChecklist(); }} />
+        <OnboardingFlow onComplete={() => { setShowOnboarding(false); onboarding.refreshChecklist(); onboarding.markFresh(); }} />
       )}
       <div className="max-w-[1200px] mx-auto">
         <div className="mb-8">

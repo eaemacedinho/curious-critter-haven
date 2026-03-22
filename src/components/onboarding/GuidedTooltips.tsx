@@ -37,16 +37,18 @@ const TOOLTIP_STEPS: TooltipStep[] = [
 
 const TOUR_KEY = "in1_tour_done";
 
-export default function GuidedTooltips({ userId }: { userId: string }) {
+export default function GuidedTooltips({ userId, onComplete }: { userId: string; onComplete?: () => void }) {
   const [currentStep, setCurrentStep] = useState(0);
   const [visible, setVisible] = useState(false);
   const [targetRect, setTargetRect] = useState<DOMRect | null>(null);
 
   useEffect(() => {
     const done = localStorage.getItem(`${TOUR_KEY}_${userId}`);
-    if (done) return;
+    if (done) {
+      onComplete?.();
+      return;
+    }
 
-    // Delay to let sidebar render
     const timer = setTimeout(() => setVisible(true), 1500);
     return () => clearTimeout(timer);
   }, [userId]);
@@ -71,6 +73,7 @@ export default function GuidedTooltips({ userId }: { userId: string }) {
   const handleDismiss = () => {
     localStorage.setItem(`${TOUR_KEY}_${userId}`, "true");
     setVisible(false);
+    onComplete?.();
   };
 
   if (!visible || !targetRect) return null;
