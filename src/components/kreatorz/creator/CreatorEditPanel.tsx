@@ -1325,10 +1325,13 @@ const CreatorEditPanel = forwardRef<CreatorEditPanelHandle, Props>(function Crea
               </div>
               <input value={prod.title} onChange={(e) => { const arr = [...prods]; arr[i] = { ...arr[i], title: e.target.value }; setProds(arr); setValidationErrors((v) => { const n = { ...v }; delete n[`prod-title-${i}`]; return n; }); }} placeholder="Nome do produto" className={`${inputClass} flex-1 ${validationErrors[`prod-title-${i}`] ? "border-destructive/50 focus:border-destructive" : ""}`} />
               <button onClick={() => { const arr = [...prods]; arr[i] = { ...arr[i], is_active: !(arr[i].is_active ?? true) }; setProds(arr); }}
-                className={`w-9 h-5 rounded-full relative cursor-pointer transition-all duration-300 flex-shrink-0 ${(prod.is_active ?? true) ? "bg-primary" : "bg-k-900 border border-primary/10"}`}
+                className={`w-9 h-5 rounded-full relative cursor-pointer transition-all duration-300 flex-shrink-0 ${(prod.is_active ?? true) ? "bg-emerald-500" : "bg-k-900 border border-primary/10"}`}
                 title={(prod.is_active ?? true) ? "Visível na página" : "Oculto da página"}>
-                <span className={`absolute w-3.5 h-3.5 rounded-full bg-primary-foreground top-[3px] transition-all duration-300 shadow-sm ${(prod.is_active ?? true) ? "left-[18px]" : "left-[3px]"}`} />
+                <span className={`absolute w-3.5 h-3.5 rounded-full bg-white top-[3px] transition-all duration-300 shadow-sm ${(prod.is_active ?? true) ? "left-[18px]" : "left-[3px]"}`} />
               </button>
+              <span className={`text-[0.6rem] font-semibold px-1.5 py-0.5 rounded ${(prod.is_active ?? true) ? "bg-emerald-500/15 text-emerald-400" : "bg-muted text-muted-foreground"}`}>
+                {(prod.is_active ?? true) ? "ativo" : "inativo"}
+              </span>
               <button onClick={() => setProds(prods.filter((_, j) => j !== i))} className="text-k-4 hover:text-k-err text-xs">✕</button>
             </div>
             {validationErrors[`prod-title-${i}`] && <p className="text-[0.68rem] text-destructive -mt-1">{validationErrors[`prod-title-${i}`]}</p>}
