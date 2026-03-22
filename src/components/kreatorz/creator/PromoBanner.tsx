@@ -125,14 +125,29 @@ export default function PromoBanner({ creatorName }: PromoBannerProps) {
                       onChange={(e) => setUsername(e.target.value.replace(/\s/g, ""))}
                       onKeyDown={(e) => e.key === "Enter" && handleClaim()}
                       placeholder="seuusuario"
-                      className="w-full h-12 pl-[4.5rem] pr-4 rounded-xl bg-white text-foreground text-sm font-medium placeholder:text-muted-foreground/50 outline-none border-2 border-transparent focus:border-primary-foreground/30 transition-colors"
+                      className={`w-full h-12 pl-[4.5rem] pr-10 rounded-xl bg-white text-foreground text-sm font-medium placeholder:text-muted-foreground/50 outline-none border-2 transition-colors ${
+                        available === true ? "border-emerald-400" : available === false ? "border-red-400" : "border-transparent focus:border-primary-foreground/30"
+                      }`}
                       autoFocus
                       maxLength={30}
                     />
+                    {/* Status indicator */}
+                    <div className="absolute right-3 top-1/2 -translate-y-1/2">
+                      {checking && <Loader2 className="w-4 h-4 text-muted-foreground animate-spin" />}
+                      {!checking && available === true && <Check className="w-4 h-4 text-emerald-500" />}
+                      {!checking && available === false && <AlertCircle className="w-4 h-4 text-red-500" />}
+                    </div>
                   </div>
+                  {/* Availability message */}
+                  {!checking && available === false && username.trim().length >= 2 && (
+                    <p className="text-red-200 text-xs -mt-1">Esse username já está em uso. Tente outro.</p>
+                  )}
+                  {!checking && available === true && (
+                    <p className="text-emerald-200 text-xs -mt-1">✨ Disponível!</p>
+                  )}
                   <button
                     onClick={handleClaim}
-                    disabled={!username.trim()}
+                    disabled={!username.trim() || available === false || checking}
                     className="w-full h-12 rounded-xl bg-foreground text-background font-bold text-sm transition-all duration-200 hover:opacity-90 active:scale-[0.98] disabled:opacity-40 disabled:cursor-not-allowed"
                   >
                     Criar minha página grátis
