@@ -154,7 +154,7 @@ export default function CreatorLivePreview({
               transformOrigin: "top left",
             }}
           >
-            <div className="relative h-full w-full overflow-hidden" style={previewTheme}>
+            <div className="relative h-full w-full overflow-hidden" style={previewTheme} onWheel={(e) => e.stopPropagation()}>
               {activeLayout === "layout2" ? (
                 <PreviewComponent
                   profile={profile} links={links} socialLinks={socialLinks} products={products} campaigns={campaigns} heroReels={heroReels}
