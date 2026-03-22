@@ -141,7 +141,7 @@ export default function CreatorViewMinimal({ profile, links: rawLinks, socialLin
               <a href={agencyFooterLink.startsWith("http") ? agencyFooterLink : `https://${agencyFooterLink}`} target="_blank" rel="noopener noreferrer"
                 className="px-3 py-1.5 rounded-full bg-card/60 border border-border/40 flex items-center gap-2 text-[0.64rem] text-muted-foreground/70 hover:text-muted-foreground transition-colors">
                 {agencyLogoUrl ? <img src={agencyLogoUrl} alt="" className="w-3.5 h-3.5 rounded-sm object-contain" /> : <span className="opacity-60">⚡</span>}
-                <span>{agencyFooterText || "Powered by"} <span className="font-semibold text-foreground/60">{agencyName || "Kreatorz"}</span></span>
+                <span>{agencyFooterText || "Powered by"} <span className="font-semibold text-foreground/60">{agencyName || "All in 1"}</span></span>
               </a>
             ) : (
               <div className="px-3 py-1.5 rounded-full bg-card/60 border border-border/40 flex items-center gap-2 text-[0.64rem] text-muted-foreground/70">
