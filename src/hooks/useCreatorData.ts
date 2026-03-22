@@ -69,6 +69,7 @@ export interface CreatorProduct {
   url: string;
   image_url: string;
   sort_order: number;
+  is_active: boolean;
   bg_color: string | null;
   text_color: string | null;
   border_color: string | null;
