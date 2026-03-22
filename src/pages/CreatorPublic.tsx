@@ -248,14 +248,14 @@ export default function CreatorPublic() {
     <div className="relative">
       {/* Top buttons - inside content area, fade on scroll */}
       <div
-        className="fixed top-0 left-0 right-0 z-[60] pointer-events-none transition-opacity duration-200"
+        className="fixed top-0 left-0 right-0 z-[60] pointer-events-none transition-opacity duration-300"
         style={{ opacity: topButtonsOpacity, pointerEvents: topButtonsOpacity < 0.1 ? "none" : undefined }}
       >
-        <div className="relative max-w-[520px] mx-auto">
-          <div className="absolute top-4 left-4 pointer-events-auto">
+        <div className="max-w-[520px] mx-auto flex items-center justify-between px-4 pt-3">
+          <div className="pointer-events-auto">
             <GrowthWatermark creatorName={profile.name} />
           </div>
-          <div className="absolute top-4 right-4 pointer-events-auto flex items-center gap-2">
+          <div className="pointer-events-auto flex items-center gap-1.5">
             <ThemeToggle theme={pageTheme} onChange={setPageTheme} />
             <PremiumShareModal
               creatorName={profile.name}
