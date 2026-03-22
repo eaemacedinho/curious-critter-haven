@@ -475,7 +475,7 @@ const CreatorEditPanel = forwardRef<CreatorEditPanelHandle, Props>(function Crea
       <div className={showPreview ? "lg:mr-[440px]" : ""}>
         {/* Editor column */}
         <div>
-    <div className={`${showPreview ? "" : "max-w-[560px]"} mx-auto px-6 py-8 pt-4 animate-k-fade-up`}>
+    <div data-editor-root className={`${showPreview ? "" : "max-w-[560px]"} mx-auto px-6 py-8 pt-4 animate-k-fade-up`}>
       <input ref={avatarRef} type="file" accept="image/*" className="hidden" onChange={(e) => e.target.files?.[0] && handleFileSelected(e.target.files[0], "avatar")} />
       <input ref={coverRef} type="file" accept="image/*" className="hidden" onChange={(e) => e.target.files?.[0] && handleFileSelected(e.target.files[0], "cover")} />
 
@@ -1652,6 +1652,7 @@ const CreatorEditPanel = forwardRef<CreatorEditPanelHandle, Props>(function Crea
       </div>
 
       {/* Hero Reel Editor */}
+      <div data-editor-section="hero_reel">
       <HeroReelEditor
         reels={heroReels}
         onChange={setHeroReels}
@@ -1659,6 +1660,7 @@ const CreatorEditPanel = forwardRef<CreatorEditPanelHandle, Props>(function Crea
         agencyId={profile.agency_id || ""}
         onUploadContentImage={onUploadContentImage}
       />
+      </div>
 
       <div className="sticky bottom-4 z-10">
         <button onClick={() => void handleSaveAll()} disabled={saving || Boolean(uploadingImage) || Boolean(uploadingContent)}
