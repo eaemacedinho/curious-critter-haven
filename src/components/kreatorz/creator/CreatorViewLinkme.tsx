@@ -223,7 +223,10 @@ export default function CreatorViewLinkme({ profile, links: rawLinks, socialLink
             )}
 
             {/* Dynamic sections based on section_order */}
-            {(profile.section_order || ["spotlight", "links", "products", "past_campaigns"]).map((sectionKey) => {
+            {(() => {
+              const order = profile.section_order || ["spotlight", "links", "products", "past_campaigns"];
+              return order.includes("hero_reel") ? order : [...order, "hero_reel"];
+            })().map((sectionKey) => {
               const now = new Date();
               const liveCamps = campaigns.filter(c => c.live && (!c.expires_at || new Date(c.expires_at) > now));
               const pastCamps = campaigns.filter(c => !c.live || (c.expires_at && new Date(c.expires_at) <= now));
