@@ -65,7 +65,7 @@ export function useOnboarding(): OnboardingState {
       campaignCreated = (campaigns?.length || 0) > 0;
     }
 
-    const published = !!localStorage.getItem("kreatorz_first_publish");
+    const published = !!localStorage.getItem("in1_first_publish");
 
     setChecklist({ creatorEdited, linkAdded, campaignCreated, published });
   }, [agency]);
