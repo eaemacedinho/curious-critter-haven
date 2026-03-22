@@ -335,7 +335,7 @@ export default function CreatorViewLinkme({ profile, links: rawLinks, socialLink
 
                 case "hero_reel":
                   return activeReels.length > 0 ? (
-                    <div key="hero_reel" className="mt-6 px-4 flex flex-col gap-4">
+                    <div key="hero_reel" data-preview-section="hero_reel" className="mt-6 px-4 flex flex-col gap-4">
                       {activeReels.map((reel) => (
                         <HeroReel key={reel.id} reel={reel} embedded={embedded} agencyId={profile.agency_id} />
                       ))}
