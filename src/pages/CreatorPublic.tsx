@@ -220,28 +220,6 @@ export default function CreatorPublic() {
     }
   })();
 
-  // Scroll-based fade for top buttons (like Linktree)
-  const [topButtonsOpacity, setTopButtonsOpacity] = useState(1);
-
-  useEffect(() => {
-    const handleScroll = () => {
-      // For layout2, listen on the scrollable container inside CreatorViewLinkme
-      const scrollEl = document.querySelector('[data-preview-scroll]') as HTMLElement | null;
-      const scrollY = scrollEl ? scrollEl.scrollTop : window.scrollY;
-      // Fade out over the first 120px of scroll
-      setTopButtonsOpacity(Math.max(0, 1 - scrollY / 120));
-    };
-
-    // Listen on both window and the layout2 scroll container
-    window.addEventListener("scroll", handleScroll, { passive: true });
-    const scrollEl = document.querySelector('[data-preview-scroll]') as HTMLElement | null;
-    scrollEl?.addEventListener("scroll", handleScroll, { passive: true });
-
-    return () => {
-      window.removeEventListener("scroll", handleScroll);
-      scrollEl?.removeEventListener("scroll", handleScroll);
-    };
-  }, [profile]);
 
   return (
     <div className="relative">
