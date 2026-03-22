@@ -42,10 +42,10 @@ export default function CreatorViewLinkme({ profile, links: rawLinks, socialLink
   const [parallaxY, setParallaxY] = useState(0);
   const scrollRef = useRef<HTMLDivElement>(null);
 
-  const links = rawLinks.filter(l => l.title?.trim() && l.url?.trim());
+  const links = rawLinks.filter(l => l.title?.trim() && l.url?.trim() && l.is_active !== false);
   const socialLinks = rawSocial.filter(s => s.url?.trim() && (s.label?.trim() || s.platform?.trim()));
-  const products = rawProducts.filter(p => p.title?.trim());
-  const campaigns = rawCampaigns.filter(c => c.title?.trim());
+  const products = rawProducts.filter(p => p.title?.trim() && (p as any).is_active !== false);
+  const campaigns = rawCampaigns.filter(c => c.title?.trim() && (c as any).is_active !== false);
   const stats = profile.stats.filter(s => s.value?.trim() && s.label?.trim());
   const tags = profile.tags.filter(t => t.label?.trim());
   const brands = profile.brands.filter(b => b?.name?.trim());
