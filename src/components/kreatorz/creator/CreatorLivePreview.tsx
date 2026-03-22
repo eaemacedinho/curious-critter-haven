@@ -1,5 +1,6 @@
 import { useCallback, useEffect, useMemo, useRef, useState, type CSSProperties } from "react";
 import type { CreatorCampaign, CreatorLink, CreatorProduct, CreatorProfile, SocialLink } from "@/hooks/useCreatorData";
+import type { HeroReelData } from "./HeroReel";
 import { useTenant } from "@/hooks/useTenant";
 import CreatorView from "./CreatorView";
 import CreatorViewLinkme from "./CreatorViewLinkme";
