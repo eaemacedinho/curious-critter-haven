@@ -1,5 +1,6 @@
 import { motion } from "framer-motion";
 import { Link } from "react-router-dom";
+import in1Logo from "@/assets/in1-logo.png";
 
 const fadeUp = {
   hidden: { opacity: 0, y: 40 },
