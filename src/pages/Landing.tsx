@@ -27,11 +27,8 @@ export default function Landing() {
       {/* Navbar */}
       <nav className="fixed top-0 left-0 right-0 z-50 px-6 bg-background/80 backdrop-blur-xl border-b border-border">
         <div className="max-w-[1200px] mx-auto flex items-center justify-between h-14">
-          <div className="flex items-center gap-2 font-extrabold text-lg tracking-tight text-foreground">
-            <span className="w-7 h-7 rounded-lg gradient-primary flex items-center justify-center text-xs text-primary-foreground font-extrabold">
-              1
-            </span>
-            All in<span className="text-primary"> 1</span>
+          <div className="flex items-center gap-2">
+            <img src={in1Logo} alt="in1.bio" className="h-7 object-contain invert dark:invert-0" />
           </div>
           <div className="flex items-center gap-3">
             <Link

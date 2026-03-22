@@ -221,6 +221,7 @@ export default function CreatorPublic() {
 
   return (
     <>
+      <PromoBanner creatorName={profile.name} />
       <ThemeToggle theme={pageTheme} onChange={setPageTheme} />
       <LayoutComponent {...layoutProps} />
     </>
