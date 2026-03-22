@@ -92,6 +92,8 @@ export interface CreatorCampaign {
   border_color: string | null;
 }
 
+export type { HeroReelData };
+
 const normalizeProfile = (creator: any): CreatorProfile => ({
   ...creator,
   agency_id: creator.agency_id || null,
