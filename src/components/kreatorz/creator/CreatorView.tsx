@@ -286,7 +286,7 @@ export default function CreatorView({ profile, links: rawLinks, socialLinks: raw
 
             case "products":
               return products.length > 0 ? (
-                <div key="products" className="animate-k-fade-up" style={{ animationDelay: ".25s" }}>
+                <div key="products" data-preview-section="products" className="animate-k-fade-up" style={{ animationDelay: ".25s" }}>
                   <div className="text-[0.66rem] font-bold tracking-[0.14em] uppercase mb-3.5 flex items-center gap-2.5"
                     style={profile.color_section_titles ? { color: profile.color_section_titles } : { color: "hsl(var(--muted-foreground))" }}>
                     Meus Produtos <span className="flex-1 h-px bg-border" />
@@ -317,7 +317,7 @@ export default function CreatorView({ profile, links: rawLinks, socialLinks: raw
 
             case "past_campaigns":
               return pastCampaigns.length > 0 ? (
-                <div key="past_campaigns" className="animate-k-fade-up" style={{ animationDelay: ".3s" }}>
+                <div key="past_campaigns" data-preview-section="past_campaigns" className="animate-k-fade-up" style={{ animationDelay: ".3s" }}>
                   <div className="text-[0.66rem] font-bold tracking-[0.14em] uppercase mb-3.5 flex items-center gap-2.5"
                     style={profile.color_section_titles ? { color: profile.color_section_titles } : { color: "hsl(var(--muted-foreground))" }}>
                     Campanhas Anteriores <span className="flex-1 h-px bg-border" />
@@ -346,7 +346,7 @@ export default function CreatorView({ profile, links: rawLinks, socialLinks: raw
 
             case "hero_reel":
               return activeReels.length > 0 ? (
-                <div key="hero_reel" className="flex flex-col gap-4 mb-8 animate-k-fade-up" style={{ animationDelay: ".35s" }}>
+                <div key="hero_reel" data-preview-section="hero_reel" className="flex flex-col gap-4 mb-8 animate-k-fade-up" style={{ animationDelay: ".35s" }}>
                   {activeReels.map((reel) => (
                     <HeroReel key={reel.id} reel={reel} embedded={embedded} agencyId={profile.agency_id} />
                   ))}
