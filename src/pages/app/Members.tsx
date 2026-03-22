@@ -225,7 +225,7 @@ export default function Members() {
                   {member.avatar_url ? (
                     <img src={member.avatar_url} alt="" className="w-full h-full rounded-full object-cover" />
                   ) : (
-                    (member.full_name?.[0] || member.email[0]).toUpperCase()
+                    (member.full_name?.[0] || member.email?.[0] || "?").toUpperCase()
                   )}
                 </div>
 
