@@ -21,10 +21,10 @@ interface Props {
 }
 
 export default function CreatorViewMinimal({ profile, links: rawLinks, socialLinks: rawSocial, products: rawProducts, campaigns: rawCampaigns, agencyName, agencyLogoUrl, agencyFooterText, agencyFooterVisible = true, agencyFooterLink, embedded }: Props) {
-  const links = rawLinks.filter(l => l.title?.trim() && l.url?.trim());
+  const links = rawLinks.filter(l => l.title?.trim() && l.url?.trim() && l.is_active !== false);
   const socialLinks = rawSocial.filter(s => s.url?.trim() && (s.label?.trim() || s.platform?.trim()));
-  const products = rawProducts.filter(p => p.title?.trim());
-  const campaigns = rawCampaigns.filter(c => c.title?.trim() && c.live);
+  const products = rawProducts.filter(p => p.title?.trim() && (p as any).is_active !== false);
+  const campaigns = rawCampaigns.filter(c => c.title?.trim() && c.live && (c as any).is_active !== false);
 
   const pe = profile.page_effects || { effects: [] };
   const effects = (pe.effects || []) as PageEffect[];
