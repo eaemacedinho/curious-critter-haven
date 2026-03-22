@@ -135,7 +135,7 @@ export default function CreatorLivePreview({
       {/* Preview area */}
       <div
         ref={containerRef}
-        className="relative flex h-[calc(100vh-8rem)] min-h-[620px] items-start justify-center overflow-hidden rounded-[2rem] border border-border bg-muted/20 p-4"
+        className="relative flex h-[calc(100vh-6rem)] min-h-[500px] items-start justify-center overflow-hidden rounded-[2rem] border border-border bg-muted/20 p-4"
       >
         <div
           className="relative overflow-hidden border border-border bg-background shadow-[0_24px_80px_hsl(var(--foreground)/0.12)]"
