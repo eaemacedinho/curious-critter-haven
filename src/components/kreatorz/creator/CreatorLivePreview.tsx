@@ -57,6 +57,7 @@ export default function CreatorLivePreview({
   socialLinks,
   products,
   campaigns,
+  heroReels,
   activeLayout = "layout1",
 }: Props) {
   const { agency } = useTenant();
