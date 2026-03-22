@@ -111,7 +111,7 @@ export default function CreatorLivePreview({
     : null;
 
   return (
-    <div className="space-y-3">
+    <div className="flex flex-col h-full gap-3">
       {/* Header bar */}
       <div className="flex items-center justify-between rounded-2xl border border-border bg-card/80 px-4 py-3 backdrop-blur-sm">
         <p className="text-[0.72rem] font-semibold text-foreground">
