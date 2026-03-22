@@ -1436,6 +1436,11 @@ const CreatorEditPanel = forwardRef<CreatorEditPanelHandle, Props>(function Crea
                 <input type="checkbox" checked={camp.live} onChange={(e) => { const arr = [...camps]; arr[i] = { ...arr[i], live: e.target.checked }; setCamps(arr); }} className="accent-primary" />
                 {camp.live ? "🔥 Spotlight" : "Ao vivo"}
               </label>
+              <button onClick={() => { const arr = [...camps]; arr[i] = { ...arr[i], is_active: !(arr[i].is_active ?? true) }; setCamps(arr); }}
+                className={`w-9 h-5 rounded-full relative cursor-pointer transition-all duration-300 flex-shrink-0 ${(camp.is_active ?? true) ? "bg-primary" : "bg-k-900 border border-primary/10"}`}
+                title={(camp.is_active ?? true) ? "Visível na página" : "Oculto da página"}>
+                <span className={`absolute w-3.5 h-3.5 rounded-full bg-primary-foreground top-[3px] transition-all duration-300 shadow-sm ${(camp.is_active ?? true) ? "left-[18px]" : "left-[3px]"}`} />
+              </button>
               <button onClick={() => setDeleteCampTarget(i)} className="text-k-4 hover:text-k-err text-xs">✕</button>
             </div>
             {validationErrors[`camp-title-${i}`] && <p className="text-[0.68rem] text-destructive -mt-1">{validationErrors[`camp-title-${i}`]}</p>}
