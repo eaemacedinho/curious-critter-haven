@@ -7,6 +7,7 @@ import { useCallback } from "react";
 import CreatorView from "@/components/kreatorz/creator/CreatorView";
 import CreatorViewLinkme from "@/components/kreatorz/creator/CreatorViewLinkme";
 import ThemeToggle, { usePageTheme } from "@/components/kreatorz/creator/ThemeToggle";
+import PromoBanner from "@/components/kreatorz/creator/PromoBanner";
 
 const normalizeProfile = (creator: any): CreatorProfile => ({
   ...creator,
@@ -220,6 +221,7 @@ export default function CreatorPublic() {
 
   return (
     <>
+      <PromoBanner creatorName={profile.name} />
       <ThemeToggle theme={pageTheme} onChange={setPageTheme} />
       <LayoutComponent {...layoutProps} />
     </>
