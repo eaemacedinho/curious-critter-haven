@@ -221,17 +221,26 @@ export default function CreatorPublic() {
   })();
 
   return (
-    <>
-      <PromoBanner creatorName={profile.name} />
-      <ShareButton
-        creatorName={profile.name}
-        creatorSlug={profile.slug}
-        creatorAvatar={profile.avatar_url || undefined}
-        creatorBio={profile.bio || undefined}
-      />
-      <ThemeToggle theme={pageTheme} onChange={setPageTheme} />
+    <div className="relative">
+      {/* Floating buttons - positioned inside page content area */}
+      <div className="fixed top-0 left-0 right-0 z-[60] pointer-events-none">
+        <div className="relative max-w-[640px] mx-auto">
+          <div className="absolute top-4 left-4 pointer-events-auto">
+            <PromoBanner creatorName={profile.name} />
+          </div>
+          <div className="absolute top-4 right-4 pointer-events-auto flex items-center gap-2">
+            <ThemeToggle theme={pageTheme} onChange={setPageTheme} />
+            <ShareButton
+              creatorName={profile.name}
+              creatorSlug={profile.slug}
+              creatorAvatar={profile.avatar_url || undefined}
+              creatorBio={profile.bio || undefined}
+            />
+          </div>
+        </div>
+      </div>
       <LayoutComponent {...layoutProps} />
-    </>
+    </div>
   );
 }
 
