@@ -1,5 +1,6 @@
 import { useState, useRef } from "react";
 import type { HeroReelData } from "./HeroReel";
+import { parseEmbedUrl } from "./HeroReel";
 import { toast } from "sonner";
 import { supabase } from "@/integrations/supabase/client";
 
@@ -181,18 +182,37 @@ export default function HeroReelEditor({ reels, onChange, creatorId, agencyId, o
             </button>
           </div>
 
-          {/* Video upload/URL */}
           <div>
             <label className={labelClass}>Vídeo</label>
             {reel.video_url ? (
               <div className="relative rounded-xl overflow-hidden border border-primary/10 bg-black">
-                <video
-                  src={reel.video_url}
-                  className="w-full max-h-[180px] object-contain"
-                  muted
-                  playsInline
-                  preload="metadata"
-                />
+                {(() => {
+                  const embed = parseEmbedUrl(reel.video_url);
+                  if (embed) {
+                    const src = embed.type === "youtube"
+                      ? `https://www.youtube-nocookie.com/embed/${embed.id}?rel=0&modestbranding=1`
+                      : `https://player.vimeo.com/video/${embed.id}?dnt=1`;
+                    return (
+                      <div className="relative">
+                        <iframe src={src} className="w-full aspect-video" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowFullScreen style={{ border: 0 }} />
+                        <div className="absolute top-2 left-2">
+                          <span className="px-2 py-0.5 bg-black/60 backdrop-blur-sm text-white text-[0.6rem] font-semibold rounded-lg">
+                            {embed.type === "youtube" ? "▶ YouTube" : "▶ Vimeo"}
+                          </span>
+                        </div>
+                      </div>
+                    );
+                  }
+                  return (
+                    <video
+                      src={reel.video_url}
+                      className="w-full max-h-[180px] object-contain"
+                      muted
+                      playsInline
+                      preload="metadata"
+                    />
+                  );
+                })()}
                 <div className="absolute top-2 right-2 flex gap-1">
                   <button
                     onClick={() => updateReel(i, { video_url: "" })}
@@ -230,10 +250,13 @@ export default function HeroReelEditor({ reels, onChange, creatorId, agencyId, o
                   <input
                     value={reel.video_url}
                     onChange={(e) => updateReel(i, { video_url: e.target.value })}
-                    placeholder="https://exemplo.com/video.mp4"
+                    placeholder="YouTube, Vimeo ou link direto .mp4"
                     className={`${inputClass} flex-1 text-xs`}
                   />
                 </div>
+                <p className="text-[0.58rem] text-[hsl(var(--k-text-4))] opacity-70">
+                  Suporta: YouTube, Vimeo, ou link direto para vídeo MP4/WebM
+                </p>
               </div>
             )}
           </div>
