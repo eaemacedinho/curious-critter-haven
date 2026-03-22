@@ -403,15 +403,15 @@ const CreatorEditPanel = forwardRef<CreatorEditPanelHandle, Props>(function Crea
     const update = () => {
       if (previewToggleRef.current) {
         const rect = previewToggleRef.current.getBoundingClientRect();
-        // Preview starts below the toggle, but never above the navbar (56px)
-        const top = Math.max(56, rect.bottom + 8);
-        setPreviewTopOffset(top);
+        // When toggle is visible, preview starts below it.
+        // When toggle scrolls above navbar (56px), lock preview at 56px.
+        const toggleBottom = rect.bottom + 8;
+        setPreviewTopOffset(toggleBottom > 56 ? toggleBottom : 56);
       }
     };
     update();
     window.addEventListener("scroll", update, { passive: true });
     window.addEventListener("resize", update, { passive: true });
-    // Also listen on the closest scrollable parent
     const scrollParent = previewToggleRef.current?.closest("[class*='overflow']");
     scrollParent?.addEventListener("scroll", update, { passive: true } as any);
     return () => {
