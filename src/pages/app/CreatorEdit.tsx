@@ -128,12 +128,14 @@ export default function CreatorEdit() {
         socialLinks={socialLinks}
         products={products}
         campaigns={campaigns}
+        heroReels={heroReels}
         activeLayout={profile.layout_type}
         onSaveProfile={saveProfile}
         onSaveLinks={saveLinks}
         onSaveSocialLinks={saveSocialLinks}
         onSaveProducts={saveProducts}
         onSaveCampaigns={saveCampaigns}
+        onSaveHeroReels={saveHeroReels}
         onUploadImage={uploadImage}
         onUploadContentImage={uploadContentImage}
         onDone={() => void refetch()}
