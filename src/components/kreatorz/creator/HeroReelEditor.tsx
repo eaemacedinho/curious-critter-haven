@@ -1,5 +1,6 @@
 import { useState, useRef } from "react";
 import type { HeroReelData } from "./HeroReel";
+import { parseEmbedUrl } from "./HeroReel";
 import { toast } from "sonner";
 import { supabase } from "@/integrations/supabase/client";
 
