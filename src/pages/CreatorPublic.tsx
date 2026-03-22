@@ -6,6 +6,7 @@ import type { CreatorProfile, CreatorLink, SocialLink, CreatorProduct, CreatorCa
 import { useCallback } from "react";
 import CreatorView from "@/components/kreatorz/creator/CreatorView";
 import CreatorViewLinkme from "@/components/kreatorz/creator/CreatorViewLinkme";
+import ThemeToggle, { usePageTheme } from "@/components/kreatorz/creator/ThemeToggle";
 
 const normalizeProfile = (creator: any): CreatorProfile => ({
   ...creator,
