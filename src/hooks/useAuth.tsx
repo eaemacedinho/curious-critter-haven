@@ -1,6 +1,7 @@
 import { createContext, useContext, useEffect, useState, ReactNode } from "react";
 import { supabase } from "@/integrations/supabase/client";
 import type { User, Session } from "@supabase/supabase-js";
+import { linkReferralOnSignup } from "@/hooks/useReferral";
 
 interface AuthContextType {
   user: User | null;
@@ -22,10 +23,15 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    const { data: { subscription } } = supabase.auth.onAuthStateChange((_event, session) => {
+    const { data: { subscription } } = supabase.auth.onAuthStateChange((event, session) => {
       setSession(session);
       setUser(session?.user ?? null);
       setLoading(false);
+
+      // Link referral on new signup
+      if (event === "SIGNED_IN" && session?.user) {
+        linkReferralOnSignup(session.user.id);
+      }
     });
 
     supabase.auth.getSession().then(({ data: { session } }) => {

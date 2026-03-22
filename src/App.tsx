@@ -20,6 +20,7 @@ import Campaigns from "@/pages/app/Campaigns";
 import Analytics from "@/pages/app/Analytics";
 import Settings from "@/pages/app/Settings";
 import Members from "@/pages/app/Members";
+import Referrals from "@/pages/app/Referrals";
 
 const queryClient = new QueryClient();
 
@@ -53,6 +54,7 @@ const App = () => (
                 <Route path="analytics" element={<Analytics />} />
                 <Route path="settings" element={<Settings />} />
                 <Route path="members" element={<Members />} />
+                <Route path="referrals" element={<Referrals />} />
               </Route>
 
               <Route path="*" element={<NotFound />} />
