@@ -343,7 +343,7 @@ export default function CreatorView({ profile, links: rawLinks, socialLinks: raw
               return activeReels.length > 0 ? (
                 <div key="hero_reel" className="flex flex-col gap-4 mb-8 animate-k-fade-up" style={{ animationDelay: ".35s" }}>
                   {activeReels.map((reel) => (
-                    <HeroReel key={reel.id} reel={reel} embedded={embedded} />
+                    <HeroReel key={reel.id} reel={reel} embedded={embedded} agencyId={profile.agency_id} />
                   ))}
                 </div>
               ) : null;
