@@ -83,7 +83,7 @@ export default function PremiumShareModal({ creatorName, creatorSlug, creatorAva
       {/* Share trigger button */}
       <button
         onClick={handleOpen}
-        className="group w-10 h-10 rounded-xl bg-card/80 backdrop-blur-xl border border-border/60 shadow-lg flex items-center justify-center transition-all duration-300 hover:scale-110 hover:shadow-[0_0_20px_hsl(var(--primary)/0.2)] hover:border-primary/30 active:scale-95"
+        className="group w-9 h-9 rounded-full bg-black/20 backdrop-blur-md flex items-center justify-center transition-all duration-300 hover:bg-black/40 hover:scale-110 active:scale-95"
         aria-label="Compartilhar página"
       >
         <Share2 className="w-[18px] h-[18px] text-foreground/80 group-hover:text-foreground transition-colors" />

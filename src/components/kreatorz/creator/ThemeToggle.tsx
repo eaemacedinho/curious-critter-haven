@@ -27,11 +27,11 @@ export default function ThemeToggle({ theme, onChange }: { theme: PageTheme; onC
   return (
     <button
       onClick={() => onChange(isDark ? "light" : "dark")}
-      className="w-10 h-10 rounded-full bg-card/70 backdrop-blur-xl border border-border/50 flex items-center justify-center transition-all duration-300 hover:scale-110 hover:bg-card/90 active:scale-95 shadow-lg"
+      className="w-9 h-9 rounded-full bg-black/20 backdrop-blur-md flex items-center justify-center transition-all duration-300 hover:bg-black/40 hover:scale-110 active:scale-95"
       title={isDark ? "Modo claro" : "Modo escuro"}
       aria-label={isDark ? "Mudar para modo claro" : "Mudar para modo escuro"}
     >
-      <span className="text-base transition-transform duration-300" style={{ transform: isDark ? "rotate(0deg)" : "rotate(180deg)" }}>
+      <span className="text-sm transition-transform duration-300" style={{ transform: isDark ? "rotate(0deg)" : "rotate(180deg)" }}>
         {isDark ? "☀️" : "🌙"}
       </span>
     </button>
