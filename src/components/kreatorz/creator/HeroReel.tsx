@@ -56,12 +56,12 @@ export function parseEmbedUrl(url: string): EmbedInfo {
 function getEmbedSrc(info: EmbedInfo, autoplay: boolean): string {
   if (!info) return "";
   if (info.type === "youtube") {
-    const params = new URLSearchParams({ rel: "0", modestbranding: "1", playsinline: "1" });
-    if (autoplay) { params.set("autoplay", "1"); params.set("mute", "1"); params.set("loop", "1"); params.set("playlist", info.id); }
+    const params = new URLSearchParams({ rel: "0", modestbranding: "1", playsinline: "1", mute: "1" });
+    if (autoplay) { params.set("autoplay", "1"); params.set("loop", "1"); params.set("playlist", info.id); }
     return `https://www.youtube-nocookie.com/embed/${info.id}?${params}`;
   }
-  const params = new URLSearchParams({ dnt: "1", playsinline: "1" });
-  if (autoplay) { params.set("autoplay", "1"); params.set("muted", "1"); params.set("loop", "1"); params.set("background", "1"); }
+  const params = new URLSearchParams({ dnt: "1", playsinline: "1", muted: "1" });
+  if (autoplay) { params.set("autoplay", "1"); params.set("loop", "1"); params.set("background", "1"); }
   return `https://player.vimeo.com/video/${info.id}?${params}`;
 }
 
@@ -196,7 +196,7 @@ function NativePlayer({ reel, aspectClass, maxHeightClass, embedded, analyticsCt
   const [isPlaying, setIsPlaying] = useState(false);
   const [isLoaded, setIsLoaded] = useState(false);
   const [isVisible, setIsVisible] = useState(false);
-  const [showControls, setShowControls] = useState(false);
+  const [isMuted, setIsMuted] = useState(true);
   const hasTrackedPlay = useRef(false);
 
   const isAutoplay = reel.playback_mode === "autoplay";
@@ -227,7 +227,8 @@ function NativePlayer({ reel, aspectClass, maxHeightClass, embedded, analyticsCt
     }
   }, [isVisible, isLoaded, isAutoplay, analyticsCtx]);
 
-  const handlePlayClick = useCallback(() => {
+  const togglePlay = useCallback((e: React.MouseEvent) => {
+    e.stopPropagation();
     const video = videoRef.current;
     if (!video) return;
     if (video.paused) {
@@ -243,6 +244,14 @@ function NativePlayer({ reel, aspectClass, maxHeightClass, embedded, analyticsCt
     }
   }, [analyticsCtx]);
 
+  const toggleMute = useCallback((e: React.MouseEvent) => {
+    e.stopPropagation();
+    const video = videoRef.current;
+    if (!video) return;
+    video.muted = !video.muted;
+    setIsMuted(video.muted);
+  }, []);
+
   const handleCtaClick = useCallback((e: React.MouseEvent, ctaUrl: string) => {
     e.stopPropagation();
     if (analyticsCtx) trackReelCtaClick(analyticsCtx, ctaUrl);
@@ -253,9 +262,7 @@ function NativePlayer({ reel, aspectClass, maxHeightClass, embedded, analyticsCt
       ref={containerRef}
       className={`relative ${aspectClass} ${maxHeightClass} w-full mx-auto rounded-2xl overflow-hidden group cursor-pointer`}
       style={{ boxShadow: "0 8px 40px -8px hsl(var(--primary) / 0.2), 0 4px 20px -4px hsl(0 0% 0% / 0.3)" }}
-      onClick={!isAutoplay ? handlePlayClick : undefined}
-      onMouseEnter={() => setShowControls(true)}
-      onMouseLeave={() => setShowControls(false)}
+      onClick={togglePlay}
     >
       {reel.thumbnail_url && !isLoaded && (
         <img src={reel.thumbnail_url} alt={reel.title || "Video preview"} className="absolute inset-0 w-full h-full object-cover z-[1]" />
@@ -270,30 +277,47 @@ function NativePlayer({ reel, aspectClass, maxHeightClass, embedded, analyticsCt
           ref={videoRef}
           src={reel.video_url}
           className={`absolute inset-0 w-full h-full object-cover transition-opacity duration-500 ${isLoaded ? "opacity-100" : "opacity-0"}`}
-          muted={isAutoplay}
-          loop={isAutoplay}
+          muted
+          loop
           playsInline
           preload="metadata"
           onLoadedData={() => setIsLoaded(true)}
-          onEnded={() => !isAutoplay && setIsPlaying(false)}
+          onEnded={() => { if (!isAutoplay) { setIsPlaying(false); } }}
+          onPause={() => setIsPlaying(false)}
+          onPlay={() => setIsPlaying(true)}
         />
       )}
       <div className="absolute inset-0 z-[2] pointer-events-none bg-gradient-to-t from-black/60 via-transparent to-black/10" />
 
-      {!isAutoplay && !isPlaying && isLoaded && (
-        <motion.div initial={{ scale: 0.8, opacity: 0 }} animate={{ scale: 1, opacity: 1 }} className="absolute inset-0 z-[3] flex items-center justify-center">
-          <div className="w-16 h-16 rounded-full bg-white/20 backdrop-blur-xl border border-white/30 flex items-center justify-center transition-transform duration-300 group-hover:scale-110 shadow-[0_8px_32px_rgba(0,0,0,0.3)]">
+      {/* Play button overlay */}
+      {!isPlaying && isLoaded && (
+        <motion.div initial={{ scale: 0.8, opacity: 0 }} animate={{ scale: 1, opacity: 1 }} className="absolute inset-0 z-[3] flex items-center justify-center pointer-events-none">
+          <div className="w-16 h-16 rounded-full bg-white/20 backdrop-blur-xl border border-white/30 flex items-center justify-center shadow-[0_8px_32px_rgba(0,0,0,0.3)]">
             <svg width="24" height="24" viewBox="0 0 24 24" fill="white" className="ml-1"><path d="M8 5v14l11-7z" /></svg>
           </div>
         </motion.div>
       )}
 
-      {!isAutoplay && isPlaying && showControls && (
-        <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} className="absolute inset-0 z-[3] flex items-center justify-center" onClick={handlePlayClick}>
-          <div className="w-14 h-14 rounded-full bg-black/30 backdrop-blur-md flex items-center justify-center">
-            <svg width="20" height="20" viewBox="0 0 24 24" fill="white"><path d="M6 4h4v16H6V4zm8 0h4v16h-4V4z" /></svg>
-          </div>
-        </motion.div>
+      {/* Mute/Unmute button - top right */}
+      {isLoaded && (
+        <button
+          onClick={toggleMute}
+          className="absolute top-3 right-3 z-[6] w-9 h-9 rounded-full bg-black/40 backdrop-blur-md flex items-center justify-center text-white transition-all hover:bg-black/60 active:scale-90"
+        >
+          {isMuted ? (
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+              <path d="M11 5L6 9H2v6h4l5 4V5z" />
+              <line x1="23" y1="9" x2="17" y2="15" />
+              <line x1="17" y1="9" x2="23" y2="15" />
+            </svg>
+          ) : (
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+              <path d="M11 5L6 9H2v6h4l5 4V5z" />
+              <path d="M19.07 4.93a10 10 0 0 1 0 14.14" />
+              <path d="M15.54 8.46a5 5 0 0 1 0 7.07" />
+            </svg>
+          )}
+        </button>
       )}
 
       {(reel.title || reel.cta_label) && (
