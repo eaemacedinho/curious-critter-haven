@@ -8,6 +8,7 @@ import CreatorView from "@/components/kreatorz/creator/CreatorView";
 import CreatorViewLinkme from "@/components/kreatorz/creator/CreatorViewLinkme";
 import ThemeToggle, { usePageTheme } from "@/components/kreatorz/creator/ThemeToggle";
 import PromoBanner from "@/components/kreatorz/creator/PromoBanner";
+import ShareButton from "@/components/kreatorz/creator/ShareButton";
 
 const normalizeProfile = (creator: any): CreatorProfile => ({
   ...creator,
