@@ -29,6 +29,8 @@ export function useOnboarding(): OnboardingState {
   const { agency } = useTenant();
   const [loading, setLoading] = useState(true);
   const [needsOnboarding, setNeedsOnboarding] = useState(false);
+  const [freshOnboarding, setFreshOnboarding] = useState(false);
+  const [tourDone, setTourDone] = useState(false);
   const [checklistDismissed, setChecklistDismissed] = useState(false);
   const [checklist, setChecklist] = useState({
     creatorEdited: false,
