@@ -411,9 +411,9 @@ const CreatorEditPanel = forwardRef<CreatorEditPanelHandle, Props>(function Crea
         </button>
       </div>
 
-      <div className={showPreview ? "flex gap-5 items-start relative" : ""}>
+      <div className={showPreview ? "lg:mr-[440px]" : ""}>
         {/* Editor column */}
-        <div className={showPreview ? "flex-1 min-w-0" : ""}>
+        <div>
     <div className={`${showPreview ? "" : "max-w-[560px]"} mx-auto px-6 py-8 pt-4 animate-k-fade-up`}>
       <input ref={avatarRef} type="file" accept="image/*" className="hidden" onChange={(e) => e.target.files?.[0] && handleFileSelected(e.target.files[0], "avatar")} />
       <input ref={coverRef} type="file" accept="image/*" className="hidden" onChange={(e) => e.target.files?.[0] && handleFileSelected(e.target.files[0], "cover")} />
