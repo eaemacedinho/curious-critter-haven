@@ -516,7 +516,7 @@ const CreatorEditPanel = forwardRef<CreatorEditPanelHandle, Props>(function Crea
           <div>
             <label className={labelClass}>Handle <span className="text-destructive">*</span></label>
             <input value={handle} onChange={(e) => { setHandle(e.target.value); setValidationErrors((v) => { const n = { ...v }; delete n.slug; return n; }); }} className={`${inputClass} ${validationErrors.slug ? "border-destructive/50 focus:border-destructive" : ""}`} placeholder="seunome" />
-            {validationErrors.slug ? <p className="text-[0.68rem] text-destructive mt-1">{validationErrors.slug}</p> : <p className="text-[0.68rem] text-k-4 mt-1">Identificador único, sem espaços. Ex: joaosilva, ana.creator</p>}
+            {validationErrors.slug ? <p className="text-[0.68rem] text-destructive mt-1">{validationErrors.slug}</p> : <p className="text-[0.68rem] text-k-4 mt-1">Identificador único, sem espaços. Ex: in1.bio/{handle.replace(/^@/, "") || "seunome"}</p>}
           </div>
           <div>
             <label className={labelClass}>Bio</label>
@@ -1320,6 +1320,11 @@ const CreatorEditPanel = forwardRef<CreatorEditPanelHandle, Props>(function Crea
                 )}
               </div>
               <input value={prod.title} onChange={(e) => { const arr = [...prods]; arr[i] = { ...arr[i], title: e.target.value }; setProds(arr); setValidationErrors((v) => { const n = { ...v }; delete n[`prod-title-${i}`]; return n; }); }} placeholder="Nome do produto" className={`${inputClass} flex-1 ${validationErrors[`prod-title-${i}`] ? "border-destructive/50 focus:border-destructive" : ""}`} />
+              <button onClick={() => { const arr = [...prods]; arr[i] = { ...arr[i], is_active: !(arr[i].is_active ?? true) }; setProds(arr); }}
+                className={`w-9 h-5 rounded-full relative cursor-pointer transition-all duration-300 flex-shrink-0 ${(prod.is_active ?? true) ? "bg-primary" : "bg-k-900 border border-primary/10"}`}
+                title={(prod.is_active ?? true) ? "Visível na página" : "Oculto da página"}>
+                <span className={`absolute w-3.5 h-3.5 rounded-full bg-primary-foreground top-[3px] transition-all duration-300 shadow-sm ${(prod.is_active ?? true) ? "left-[18px]" : "left-[3px]"}`} />
+              </button>
               <button onClick={() => setProds(prods.filter((_, j) => j !== i))} className="text-k-4 hover:text-k-err text-xs">✕</button>
             </div>
             {validationErrors[`prod-title-${i}`] && <p className="text-[0.68rem] text-destructive -mt-1">{validationErrors[`prod-title-${i}`]}</p>}
@@ -1394,7 +1399,7 @@ const CreatorEditPanel = forwardRef<CreatorEditPanelHandle, Props>(function Crea
           </div>
         ))}
         <p className={sizeHint}>📐 Imagem ideal: <strong>400×400px</strong> (1:1, quadrada)</p>
-        <button onClick={() => setProds([...prods, { id: crypto.randomUUID(), creator_id: profile.id, title: "", price: "", icon: "📦", url: "", image_url: "", sort_order: prods.length, bg_color: null, text_color: null, border_color: null }])}
+        <button onClick={() => setProds([...prods, { id: crypto.randomUUID(), creator_id: profile.id, title: "", price: "", icon: "📦", url: "", image_url: "", sort_order: prods.length, is_active: true, bg_color: null, text_color: null, border_color: null }])}
           className="flex items-center justify-center gap-2 w-full p-3 border border-dashed border-k-glow rounded-xl text-k-4 text-sm font-medium mt-2 transition-all hover:border-k-400 hover:text-k-300 hover:bg-k-glow active:scale-[0.98]">
           + Adicionar produto
         </button>
@@ -1431,6 +1436,11 @@ const CreatorEditPanel = forwardRef<CreatorEditPanelHandle, Props>(function Crea
                 <input type="checkbox" checked={camp.live} onChange={(e) => { const arr = [...camps]; arr[i] = { ...arr[i], live: e.target.checked }; setCamps(arr); }} className="accent-primary" />
                 {camp.live ? "🔥 Spotlight" : "Ao vivo"}
               </label>
+              <button onClick={() => { const arr = [...camps]; arr[i] = { ...arr[i], is_active: !(arr[i].is_active ?? true) }; setCamps(arr); }}
+                className={`w-9 h-5 rounded-full relative cursor-pointer transition-all duration-300 flex-shrink-0 ${(camp.is_active ?? true) ? "bg-primary" : "bg-k-900 border border-primary/10"}`}
+                title={(camp.is_active ?? true) ? "Visível na página" : "Oculto da página"}>
+                <span className={`absolute w-3.5 h-3.5 rounded-full bg-primary-foreground top-[3px] transition-all duration-300 shadow-sm ${(camp.is_active ?? true) ? "left-[18px]" : "left-[3px]"}`} />
+              </button>
               <button onClick={() => setDeleteCampTarget(i)} className="text-k-4 hover:text-k-err text-xs">✕</button>
             </div>
             {validationErrors[`camp-title-${i}`] && <p className="text-[0.68rem] text-destructive -mt-1">{validationErrors[`camp-title-${i}`]}</p>}
@@ -1547,7 +1557,7 @@ const CreatorEditPanel = forwardRef<CreatorEditPanelHandle, Props>(function Crea
           </div>
         ))}
         <p className={sizeHint}>📐 Imagem ideal: <strong>1280×720px</strong> (16:9, paisagem)</p>
-        <button onClick={() => setCamps([...camps, { id: crypto.randomUUID(), creator_id: profile.id, title: "", description: "", image_url: "", url: "", live: false, sort_order: camps.length, expires_at: null, bg_color: null, text_color: null, border_color: null }])}
+        <button onClick={() => setCamps([...camps, { id: crypto.randomUUID(), creator_id: profile.id, title: "", description: "", image_url: "", url: "", live: false, is_active: true, sort_order: camps.length, expires_at: null, bg_color: null, text_color: null, border_color: null }])}
           className="flex items-center justify-center gap-2 w-full p-3 border border-dashed border-k-glow rounded-xl text-k-4 text-sm font-medium mt-2 transition-all hover:border-k-400 hover:text-k-300 hover:bg-k-glow active:scale-[0.98]">
           + Adicionar campanha
         </button>

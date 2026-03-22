@@ -28,9 +28,9 @@ export default function Landing() {
         <div className="max-w-[1200px] mx-auto flex items-center justify-between h-14">
           <div className="flex items-center gap-2 font-extrabold text-lg tracking-tight text-foreground">
             <span className="w-7 h-7 rounded-lg gradient-primary flex items-center justify-center text-xs text-primary-foreground font-extrabold">
-              K
+              1
             </span>
-            Creator<span className="text-primary">Hub</span>
+            All in<span className="text-primary"> 1</span>
           </div>
           <div className="flex items-center gap-3">
             <Link
@@ -170,7 +170,7 @@ export default function Landing() {
       {/* Footer */}
       <footer className="border-t border-border py-6 px-6 text-center">
         <span className="text-[0.7rem] text-muted-foreground">
-          © {new Date().getFullYear()} · Plataforma de gestão para agências de creators
+          © {new Date().getFullYear()} All in 1 · in1.bio
         </span>
       </footer>
     </div>

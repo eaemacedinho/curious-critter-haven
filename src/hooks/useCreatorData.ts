@@ -69,6 +69,7 @@ export interface CreatorProduct {
   url: string;
   image_url: string;
   sort_order: number;
+  is_active: boolean;
   bg_color: string | null;
   text_color: string | null;
   border_color: string | null;
@@ -82,6 +83,7 @@ export interface CreatorCampaign {
   image_url: string;
   url: string;
   live: boolean;
+  is_active: boolean;
   sort_order: number;
   expires_at: string | null;
   bg_color: string | null;

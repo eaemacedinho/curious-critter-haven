@@ -74,8 +74,8 @@ export default function Login() {
       >
         <div className="text-center mb-8">
           <Link to="/" className="inline-flex items-center gap-2.5 font-extrabold text-2xl tracking-tight text-foreground mb-3">
-            <span className="w-9 h-9 rounded-xl gradient-primary flex items-center justify-center text-sm text-primary-foreground font-extrabold">K</span>
-            Creator<span className="text-primary">Hub</span>
+            <span className="w-9 h-9 rounded-xl gradient-primary flex items-center justify-center text-sm text-primary-foreground font-extrabold">1</span>
+            All in<span className="text-primary"> 1</span>
           </Link>
           <p className="text-sm text-muted-foreground">
             {isSignUp ? "Crie sua conta e comece agora" : "Bem-vindo de volta"}

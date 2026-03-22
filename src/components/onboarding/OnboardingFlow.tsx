@@ -154,9 +154,9 @@ export default function OnboardingFlow({ onComplete }: { onComplete: () => void 
               className="text-center"
             >
               <div className="text-5xl mb-6">👋</div>
-              <h1 className="text-2xl sm:text-3xl font-bold text-foreground mb-2">
-                Bem-vindo à sua plataforma
-              </h1>
+               <h1 className="text-2xl sm:text-3xl font-bold text-foreground mb-2">
+                 Bem-vindo ao All in 1
+               </h1>
               <p className="text-muted-foreground mb-8 text-sm">
                 Para quem você está criando páginas?
               </p>
@@ -354,9 +354,9 @@ export default function OnboardingFlow({ onComplete }: { onComplete: () => void 
                 {agencyName ? `${agencyName} está` : "Tudo está"} configurado e pronto para usar.
               </p>
               {createdHandle && (
-                <div className="mb-6 p-3 bg-card border border-border rounded-xl">
-                  <p className="text-xs text-muted-foreground mb-1">Sua página pública</p>
-                  <p className="text-sm font-mono text-primary">/c/{createdHandle}</p>
+                 <div className="mb-6 p-3 bg-card border border-border rounded-xl">
+                   <p className="text-xs text-muted-foreground mb-1">Sua página pública</p>
+                   <p className="text-sm font-mono text-primary">in1.bio/{createdHandle}</p>
                 </div>
               )}
               <div className="flex flex-col gap-3">

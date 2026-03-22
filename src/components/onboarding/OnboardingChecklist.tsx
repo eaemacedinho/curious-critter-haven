@@ -11,7 +11,7 @@ const TASKS = [
   { key: "published" as const, icon: "🚀", label: "Publicar página", desc: "Compartilhe com o mundo", link: "/app/creators" },
 ];
 
-const CONFETTI_KEY = "kreatorz_confetti_shown";
+const CONFETTI_KEY = "in1_confetti_shown";
 
 export default function OnboardingChecklist({ state }: { state: OnboardingState }) {
   const [expanded, setExpanded] = useState(true);

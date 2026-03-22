@@ -19,8 +19,8 @@ export interface OnboardingState {
   refreshChecklist: () => Promise<void>;
 }
 
-const ONBOARDING_KEY = "kreatorz_onboarding_done";
-const CHECKLIST_DISMISS_KEY = "kreatorz_checklist_dismissed";
+const ONBOARDING_KEY = "in1_onboarding_done";
+const CHECKLIST_DISMISS_KEY = "in1_checklist_dismissed";
 
 export function useOnboarding(): OnboardingState {
   const { user } = useAuth();
@@ -65,7 +65,7 @@ export function useOnboarding(): OnboardingState {
       campaignCreated = (campaigns?.length || 0) > 0;
     }
 
-    const published = !!localStorage.getItem("kreatorz_first_publish");
+    const published = !!localStorage.getItem("in1_first_publish");
 
     setChecklist({ creatorEdited, linkAdded, campaignCreated, published });
   }, [agency]);
@@ -142,6 +142,6 @@ export function markOnboardingDone(userId: string) {
 export function resetOnboarding(userId: string) {
   localStorage.removeItem(`${ONBOARDING_KEY}_${userId}`);
   localStorage.removeItem(`${CHECKLIST_DISMISS_KEY}_${userId}`);
-  localStorage.removeItem("kreatorz_confetti_shown");
-  localStorage.removeItem("kreatorz_tour_done_" + userId);
+  localStorage.removeItem("in1_confetti_shown");
+  localStorage.removeItem("in1_tour_done_" + userId);
 }

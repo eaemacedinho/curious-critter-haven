@@ -21,10 +21,10 @@ interface Props {
 }
 
 export default function CreatorViewMinimal({ profile, links: rawLinks, socialLinks: rawSocial, products: rawProducts, campaigns: rawCampaigns, agencyName, agencyLogoUrl, agencyFooterText, agencyFooterVisible = true, agencyFooterLink, embedded }: Props) {
-  const links = rawLinks.filter(l => l.title?.trim() && l.url?.trim());
+  const links = rawLinks.filter(l => l.title?.trim() && l.url?.trim() && l.is_active !== false);
   const socialLinks = rawSocial.filter(s => s.url?.trim() && (s.label?.trim() || s.platform?.trim()));
-  const products = rawProducts.filter(p => p.title?.trim());
-  const campaigns = rawCampaigns.filter(c => c.title?.trim() && c.live);
+  const products = rawProducts.filter(p => p.title?.trim() && (p as any).is_active !== false);
+  const campaigns = rawCampaigns.filter(c => c.title?.trim() && c.live && (c as any).is_active !== false);
 
   const pe = profile.page_effects || { effects: [] };
   const effects = (pe.effects || []) as PageEffect[];
@@ -141,12 +141,12 @@ export default function CreatorViewMinimal({ profile, links: rawLinks, socialLin
               <a href={agencyFooterLink.startsWith("http") ? agencyFooterLink : `https://${agencyFooterLink}`} target="_blank" rel="noopener noreferrer"
                 className="px-3 py-1.5 rounded-full bg-card/60 border border-border/40 flex items-center gap-2 text-[0.64rem] text-muted-foreground/70 hover:text-muted-foreground transition-colors">
                 {agencyLogoUrl ? <img src={agencyLogoUrl} alt="" className="w-3.5 h-3.5 rounded-sm object-contain" /> : <span className="opacity-60">⚡</span>}
-                <span>{agencyFooterText || "Powered by"} <span className="font-semibold text-foreground/60">{agencyName || "Kreatorz"}</span></span>
+                <span>{agencyFooterText || "Powered by"} <span className="font-semibold text-foreground/60">{agencyName || "All in 1"}</span></span>
               </a>
             ) : (
               <div className="px-3 py-1.5 rounded-full bg-card/60 border border-border/40 flex items-center gap-2 text-[0.64rem] text-muted-foreground/70">
                 {agencyLogoUrl ? <img src={agencyLogoUrl} alt="" className="w-3.5 h-3.5 rounded-sm object-contain" /> : <span className="opacity-60">⚡</span>}
-                <span>{agencyFooterText || "Powered by"} <span className="font-semibold text-foreground/60">{agencyName || "Kreatorz"}</span></span>
+                <span>{agencyFooterText || "Powered by"} <span className="font-semibold text-foreground/60">{agencyName || "All in 1"}</span></span>
               </div>
             )}
           </div>
