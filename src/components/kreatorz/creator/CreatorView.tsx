@@ -58,6 +58,7 @@ export default function CreatorView({ profile, links: rawLinks, socialLinks: raw
   const socialLinks = rawSocial.filter(s => s.url?.trim() && (s.label?.trim() || s.platform?.trim()));
   const products = rawProducts.filter(p => p.title?.trim() && (p as any).is_active !== false);
   const campaigns = rawCampaigns.filter(c => c.title?.trim() && (c as any).is_active !== false);
+  const activeReels = (rawReels || []).filter(r => r.is_active && r.video_url?.trim());
   const stats = profile.stats.filter(s => s.value?.trim() && s.label?.trim());
   const tags = profile.tags.filter(t => t.label?.trim());
   const brands = profile.brands.filter(b => b?.name?.trim());
