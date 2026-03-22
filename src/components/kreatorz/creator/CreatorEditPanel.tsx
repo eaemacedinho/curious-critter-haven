@@ -523,7 +523,7 @@ const CreatorEditPanel = forwardRef<CreatorEditPanelHandle, Props>(function Crea
 
       {/* Layout 2 images — only when editing layout2 */}
       {activeLayout === "layout2" && (
-        <div className="mb-6 bg-card/40 border border-primary/10 rounded-2xl p-4">
+        <div className="mb-6 bg-card/40 border border-primary/10 rounded-2xl p-4" data-editor-section="cover">
           <div className={sectionTitle}>🎨 Imagens — Layout 2 (Linkme)</div>
           <p className="text-[0.68rem] text-k-4 mb-3">Use uma foto em retrato/vertical para melhor resultado.</p>
 
