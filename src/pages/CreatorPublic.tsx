@@ -6,6 +6,7 @@ import type { CreatorProfile, CreatorLink, SocialLink, CreatorProduct, CreatorCa
 import { useCallback } from "react";
 import CreatorView from "@/components/kreatorz/creator/CreatorView";
 import CreatorViewLinkme from "@/components/kreatorz/creator/CreatorViewLinkme";
+import ThemeToggle, { usePageTheme } from "@/components/kreatorz/creator/ThemeToggle";
 
 const normalizeProfile = (creator: any): CreatorProfile => ({
   ...creator,
@@ -53,6 +54,7 @@ export default function CreatorPublic() {
   const [agencyFooterLink, setAgencyFooterLink] = useState<string>("");
   const [loading, setLoading] = useState(true);
   const [notFound, setNotFound] = useState(false);
+  const [pageTheme, setPageTheme] = usePageTheme();
 
   useEffect(() => {
     if (!handle) return;
@@ -168,6 +170,22 @@ export default function CreatorPublic() {
     });
   }, [profile]);
 
+  // Apply theme class to root for public page
+  useEffect(() => {
+    const root = document.documentElement;
+    if (pageTheme === "light") {
+      root.classList.remove("dark");
+      root.classList.add("light");
+    } else {
+      root.classList.remove("light");
+      root.classList.add("dark");
+    }
+    return () => {
+      root.classList.remove("light");
+      root.classList.add("dark");
+    };
+  }, [pageTheme]);
+
   if (loading) {
     return (
       <div className="min-h-screen bg-background flex items-center justify-center">
@@ -197,7 +215,12 @@ export default function CreatorPublic() {
     }
   })();
 
-  return <LayoutComponent {...layoutProps} />;
+  return (
+    <>
+      <ThemeToggle theme={pageTheme} onChange={setPageTheme} />
+      <LayoutComponent {...layoutProps} />
+    </>
+  );
 }
 
 function hexToHsl(hex: string): string | null {
