@@ -190,6 +190,8 @@ const CreatorEditPanel = forwardRef<CreatorEditPanelHandle, Props>(function Crea
   const [deleteCampTarget, setDeleteCampTarget] = useState<number | null>(null);
   const [validationErrors, setValidationErrors] = useState<Record<string, string>>({});
   const [showPreview, setShowPreview] = useState(false);
+  const previewToggleRef = useRef<HTMLDivElement>(null);
+  const [previewTopOffset, setPreviewTopOffset] = useState(72);
   const [dragLinkIdx, setDragLinkIdx] = useState<number | null>(null);
   const [dragProdIdx, setDragProdIdx] = useState<number | null>(null);
   const [dragCampIdx, setDragCampIdx] = useState<number | null>(null);
@@ -395,10 +397,34 @@ const CreatorEditPanel = forwardRef<CreatorEditPanelHandle, Props>(function Crea
   const sectionTitle = "text-[0.66rem] font-bold text-k-4 tracking-[0.12em] uppercase mb-3.5 flex items-center gap-2";
   const sizeHint = "text-[0.62rem] text-k-4 mt-1";
 
+  // Keep preview top offset in sync with the toggle button position
+  useEffect(() => {
+    if (!showPreview) return;
+    const update = () => {
+      if (previewToggleRef.current) {
+        const rect = previewToggleRef.current.getBoundingClientRect();
+        // Preview starts below the toggle, but never above the navbar (56px)
+        const top = Math.max(56, rect.bottom + 8);
+        setPreviewTopOffset(top);
+      }
+    };
+    update();
+    window.addEventListener("scroll", update, { passive: true });
+    window.addEventListener("resize", update, { passive: true });
+    // Also listen on the closest scrollable parent
+    const scrollParent = previewToggleRef.current?.closest("[class*='overflow']");
+    scrollParent?.addEventListener("scroll", update, { passive: true } as any);
+    return () => {
+      window.removeEventListener("scroll", update);
+      window.removeEventListener("resize", update);
+      scrollParent?.removeEventListener("scroll", update);
+    };
+  }, [showPreview]);
+
   return (
     <div className="relative">
       {/* Preview toggle */}
-      <div className="mb-4">
+      <div className="mb-4" ref={previewToggleRef}>
         <button
           onClick={() => setShowPreview(!showPreview)}
           className={`w-full px-4 py-2.5 rounded-xl text-sm font-semibold transition-all duration-300 active:scale-[0.98] flex items-center justify-center gap-2 ${
@@ -1653,7 +1679,7 @@ const CreatorEditPanel = forwardRef<CreatorEditPanelHandle, Props>(function Crea
 
         {/* Preview column — fixed phone mockup on the right */}
         {showPreview && (
-          <div className="hidden lg:block fixed top-[4.5rem] right-0 w-[440px] bottom-0 p-4 overflow-hidden z-30">
+          <div className="hidden lg:block fixed right-0 w-[440px] bottom-0 p-4 overflow-hidden z-30" style={{ top: previewTopOffset }}>
             <CreatorLivePreview
               profile={liveProfile}
               links={links}
