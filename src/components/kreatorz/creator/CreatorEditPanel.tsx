@@ -411,7 +411,7 @@ const CreatorEditPanel = forwardRef<CreatorEditPanelHandle, Props>(function Crea
         </button>
       </div>
 
-      <div className={showPreview ? "flex gap-5" : ""}>
+      <div className={showPreview ? "flex gap-5 items-start relative" : ""}>
         {/* Editor column */}
         <div className={showPreview ? "flex-1 min-w-0" : ""}>
     <div className={`${showPreview ? "" : "max-w-[560px]"} mx-auto px-6 py-8 pt-4 animate-k-fade-up`}>
