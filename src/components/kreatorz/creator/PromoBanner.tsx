@@ -1,7 +1,8 @@
-import { useState } from "react";
+import { useState, useEffect, useRef } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { useNavigate } from "react-router-dom";
-import { X } from "lucide-react";
+import { X, Loader2, Check, AlertCircle } from "lucide-react";
+import { supabase } from "@/integrations/supabase/client";
 import in1Icon from "@/assets/in1-icon.png";
 
 interface PromoBannerProps {
@@ -11,7 +12,33 @@ interface PromoBannerProps {
 export default function PromoBanner({ creatorName }: PromoBannerProps) {
   const [open, setOpen] = useState(false);
   const [username, setUsername] = useState("");
+  const [checking, setChecking] = useState(false);
+  const [available, setAvailable] = useState<boolean | null>(null);
+  const debounceRef = useRef<ReturnType<typeof setTimeout>>();
   const navigate = useNavigate();
+
+  // Real-time availability check
+  useEffect(() => {
+    const clean = username.trim().replace(/[^a-zA-Z0-9._-]/g, "").toLowerCase();
+    if (!clean || clean.length < 2) {
+      setAvailable(null);
+      setChecking(false);
+      return;
+    }
+    setChecking(true);
+    setAvailable(null);
+    if (debounceRef.current) clearTimeout(debounceRef.current);
+    debounceRef.current = setTimeout(async () => {
+      const { data } = await supabase
+        .from("creators")
+        .select("id")
+        .or(`slug.eq.${clean},slug.eq.@${clean}`)
+        .limit(1);
+      setAvailable(!data || data.length === 0);
+      setChecking(false);
+    }, 500);
+    return () => { if (debounceRef.current) clearTimeout(debounceRef.current); };
+  }, [username]);
 
   const handleClaim = () => {
     if (!username.trim()) return;
@@ -21,10 +48,10 @@ export default function PromoBanner({ creatorName }: PromoBannerProps) {
 
   return (
     <>
-      {/* Floating logo button */}
+      {/* Logo button - positioned by parent */}
       <button
         onClick={() => setOpen(true)}
-        className="fixed top-4 left-4 z-[60] w-10 h-10 rounded-xl bg-card/90 backdrop-blur-md border border-border shadow-lg flex items-center justify-center transition-all duration-300 hover:scale-110 hover:shadow-xl active:scale-95 group"
+        className="w-10 h-10 rounded-xl bg-card/90 backdrop-blur-md border border-border shadow-lg flex items-center justify-center transition-all duration-300 hover:scale-110 hover:shadow-xl active:scale-95 group"
         aria-label="Criar sua página no in1.bio"
       >
         <img src={in1Icon} alt="in1.bio" className="w-6 h-6 object-contain invert dark:invert-0" />
@@ -98,14 +125,29 @@ export default function PromoBanner({ creatorName }: PromoBannerProps) {
                       onChange={(e) => setUsername(e.target.value.replace(/\s/g, ""))}
                       onKeyDown={(e) => e.key === "Enter" && handleClaim()}
                       placeholder="seuusuario"
-                      className="w-full h-12 pl-[4.5rem] pr-4 rounded-xl bg-white text-foreground text-sm font-medium placeholder:text-muted-foreground/50 outline-none border-2 border-transparent focus:border-primary-foreground/30 transition-colors"
+                      className={`w-full h-12 pl-[4.5rem] pr-10 rounded-xl bg-white text-foreground text-sm font-medium placeholder:text-muted-foreground/50 outline-none border-2 transition-colors ${
+                        available === true ? "border-emerald-400" : available === false ? "border-red-400" : "border-transparent focus:border-primary-foreground/30"
+                      }`}
                       autoFocus
                       maxLength={30}
                     />
+                    {/* Status indicator */}
+                    <div className="absolute right-3 top-1/2 -translate-y-1/2">
+                      {checking && <Loader2 className="w-4 h-4 text-muted-foreground animate-spin" />}
+                      {!checking && available === true && <Check className="w-4 h-4 text-emerald-500" />}
+                      {!checking && available === false && <AlertCircle className="w-4 h-4 text-red-500" />}
+                    </div>
                   </div>
+                  {/* Availability message */}
+                  {!checking && available === false && username.trim().length >= 2 && (
+                    <p className="text-red-200 text-xs -mt-1">Esse username já está em uso. Tente outro.</p>
+                  )}
+                  {!checking && available === true && (
+                    <p className="text-emerald-200 text-xs -mt-1">✨ Disponível!</p>
+                  )}
                   <button
                     onClick={handleClaim}
-                    disabled={!username.trim()}
+                    disabled={!username.trim() || available === false || checking}
                     className="w-full h-12 rounded-xl bg-foreground text-background font-bold text-sm transition-all duration-200 hover:opacity-90 active:scale-[0.98] disabled:opacity-40 disabled:cursor-not-allowed"
                   >
                     Criar minha página grátis
