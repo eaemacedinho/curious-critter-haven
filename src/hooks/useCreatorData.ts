@@ -1,6 +1,7 @@
 import { useState, useEffect, useCallback } from "react";
 import { supabase } from "@/integrations/supabase/client";
 import { toast } from "sonner";
+import type { HeroReelData } from "@/components/kreatorz/creator/HeroReel";
 
 export type ImageShapeValue = "rounded" | "circular" | "pill" | "shadow" | "polaroid";
 
