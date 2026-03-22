@@ -124,8 +124,8 @@ export default function AppLayout() {
             data-tour={item.tour}
             className={`w-full flex items-center gap-2.5 px-3 py-2.5 rounded-xl text-sm mb-0.5 transition-all duration-200 ${
               isActive(item.path)
-                ? "bg-primary/15 text-primary font-semibold"
-                : "text-muted-foreground hover:bg-accent/10 hover:text-foreground"
+                ? "bg-card border border-border text-foreground font-semibold shadow-sm"
+                : "text-muted-foreground hover:bg-card/50 hover:text-foreground"
             }`}
           >
             <span className="text-xs w-4 text-center">{item.icon}</span>
@@ -147,8 +147,8 @@ export default function AppLayout() {
             data-tour={item.tour}
             className={`w-full flex items-center gap-2.5 px-3 py-2.5 rounded-xl text-sm mb-0.5 transition-all duration-200 ${
               isActive(item.path)
-                ? "bg-primary/15 text-primary font-semibold"
-                : "text-muted-foreground hover:bg-accent/10 hover:text-foreground"
+                ? "bg-card border border-border text-foreground font-semibold shadow-sm"
+                : "text-muted-foreground hover:bg-card/50 hover:text-foreground"
             }`}
           >
             <span className="text-xs w-4 text-center">{item.icon}</span>
