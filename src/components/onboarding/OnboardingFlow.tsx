@@ -310,6 +310,12 @@ export default function OnboardingFlow({ onComplete }: { onComplete: () => void 
                   Criar minha página 🚀
                 </button>
               </div>
+              <button
+                onClick={handleSkip}
+                className="mt-4 text-xs text-muted-foreground hover:text-foreground transition-colors underline underline-offset-2"
+              >
+                Pular e configurar depois
+              </button>
             </motion.div>
           )}
 
