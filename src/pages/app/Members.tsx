@@ -119,7 +119,7 @@ export default function Members() {
   };
 
   const handleRemove = async (member: Member) => {
-    if (!confirm(`Remover ${member.full_name || member.email} da agência?`)) return;
+    if (!confirm(`Remover ${member.full_name || member.email || "este membro"} da agência?`)) return;
 
     const { error } = await supabase.from("profiles").delete().eq("id", member.id);
 
@@ -234,7 +234,7 @@ export default function Members() {
                   <div className="text-sm font-semibold text-foreground truncate">
                     {member.full_name || "Sem nome"}
                   </div>
-                  <div className="text-xs text-muted-foreground truncate">{member.email}</div>
+                  <div className="text-xs text-muted-foreground truncate">{member.email || "Sem e-mail"}</div>
                 </div>
 
                 {/* Role badge */}
