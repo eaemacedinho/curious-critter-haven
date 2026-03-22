@@ -82,10 +82,13 @@ export function useOnboarding(): OnboardingState {
 
     const done = localStorage.getItem(`${ONBOARDING_KEY}_${user.id}`);
     const dismissed = localStorage.getItem(`${CHECKLIST_DISMISS_KEY}_${user.id}`);
+    const tourAlreadyDone = localStorage.getItem(`in1_tour_done_${user.id}`);
     setChecklistDismissed(!!dismissed);
+    setTourDone(!!tourAlreadyDone);
 
     if (done) {
       setNeedsOnboarding(false);
+      setFreshOnboarding(false);
       setLoading(false);
       refreshChecklist();
       return;
@@ -101,6 +104,7 @@ export function useOnboarding(): OnboardingState {
       if (settings?.onboarding_completed) {
         localStorage.setItem(`${ONBOARDING_KEY}_${user.id}`, "true");
         setNeedsOnboarding(false);
+        setFreshOnboarding(false);
         setLoading(false);
         refreshChecklist();
         return;
