@@ -19,8 +19,8 @@ export interface OnboardingState {
   refreshChecklist: () => Promise<void>;
 }
 
-const ONBOARDING_KEY = "kreatorz_onboarding_done";
-const CHECKLIST_DISMISS_KEY = "kreatorz_checklist_dismissed";
+const ONBOARDING_KEY = "in1_onboarding_done";
+const CHECKLIST_DISMISS_KEY = "in1_checklist_dismissed";
 
 export function useOnboarding(): OnboardingState {
   const { user } = useAuth();
