@@ -1,7 +1,9 @@
 import { forwardRef, useImperativeHandle, useRef, useState, useCallback, useMemo } from "react";
 import { toast } from "sonner";
 import type { CreatorProfile, CreatorLink, SocialLink, CreatorProduct, CreatorCampaign } from "@/hooks/useCreatorData";
+import type { HeroReelData } from "./HeroReel";
 import ImageCropper from "./ImageCropper";
+import HeroReelEditor from "./HeroReelEditor";
 import VerifiedBadge from "./VerifiedBadge";
 import { ConfirmDialog } from "@/components/ui/confirm-dialog";
 import CreatorLivePreview from "./CreatorLivePreview";
@@ -94,12 +96,14 @@ interface Props {
   socialLinks: SocialLink[];
   products: CreatorProduct[];
   campaigns: CreatorCampaign[];
+  heroReels: HeroReelData[];
   activeLayout?: string;
   onSaveProfile: (updates: Partial<CreatorProfile>) => Promise<void>;
   onSaveLinks: (links: CreatorLink[]) => Promise<void>;
   onSaveSocialLinks: (links: SocialLink[]) => Promise<void>;
   onSaveProducts: (products: CreatorProduct[]) => Promise<void>;
   onSaveCampaigns: (campaigns: CreatorCampaign[]) => Promise<void>;
+  onSaveHeroReels: (reels: HeroReelData[]) => Promise<void>;
   onUploadImage: (file: File, type: "avatar" | "cover" | "avatar_layout2" | "cover_layout2") => Promise<string | null>;
   onUploadContentImage: (file: File, folder: string) => Promise<string | null>;
   onDone: () => void;
@@ -124,12 +128,14 @@ const CreatorEditPanel = forwardRef<CreatorEditPanelHandle, Props>(function Crea
     socialLinks: initialSocial,
     products: initialProducts,
     campaigns: initialCampaigns,
+    heroReels: initialHeroReels,
     activeLayout,
     onSaveProfile,
     onSaveLinks,
     onSaveSocialLinks,
     onSaveProducts,
     onSaveCampaigns,
+    onSaveHeroReels,
     onUploadImage,
     onUploadContentImage,
     onDone,
@@ -170,7 +176,8 @@ const CreatorEditPanel = forwardRef<CreatorEditPanelHandle, Props>(function Crea
   );
   const [prods, setProds] = useState(initialProducts);
   const [camps, setCamps] = useState(initialCampaigns);
-  const [sectionOrder, setSectionOrder] = useState<string[]>(profile.section_order || ["spotlight", "links", "products", "past_campaigns"]);
+  const [heroReels, setHeroReels] = useState(initialHeroReels);
+  const [sectionOrder, setSectionOrder] = useState<string[]>(profile.section_order || ["spotlight", "links", "products", "past_campaigns", "hero_reel"]);
   const [dragSectionIdx, setDragSectionIdx] = useState<number | null>(null);
   const [saving, setSaving] = useState(false);
   const [uploadingImage, setUploadingImage] = useState<"avatar" | "cover" | null>(null);
@@ -366,6 +373,7 @@ const CreatorEditPanel = forwardRef<CreatorEditPanelHandle, Props>(function Crea
       await onSaveSocialLinks(social);
         await onSaveProducts(sanitizedProducts);
         await onSaveCampaigns(sanitizedCampaigns);
+      await onSaveHeroReels(heroReels.filter(r => r.video_url?.trim()));
       toast.success("Tudo salvo! 🎉");
       if (closeAfterSave) onDone();
       return true;
@@ -1573,6 +1581,15 @@ const CreatorEditPanel = forwardRef<CreatorEditPanelHandle, Props>(function Crea
         </button>
       </div>
 
+      {/* Hero Reel Editor */}
+      <HeroReelEditor
+        reels={heroReels}
+        onChange={setHeroReels}
+        creatorId={profile.id}
+        agencyId={profile.agency_id || ""}
+        onUploadContentImage={onUploadContentImage}
+      />
+
       <div className="sticky bottom-4 z-10">
         <button onClick={() => void handleSaveAll()} disabled={saving || Boolean(uploadingImage) || Boolean(uploadingContent)}
           className="w-full py-4 gradient-primary text-primary-foreground font-bold text-sm rounded-2xl transition-all duration-300 hover:shadow-k-purple-lg active:scale-[0.98] disabled:opacity-50 shadow-k-purple">
@@ -1634,6 +1651,7 @@ const CreatorEditPanel = forwardRef<CreatorEditPanelHandle, Props>(function Crea
               socialLinks={social}
               products={prods}
               campaigns={camps}
+              heroReels={heroReels}
               activeLayout={activeLayout}
             />
           </div>

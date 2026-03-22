@@ -287,6 +287,62 @@ export type Database = {
           },
         ]
       }
+      creator_hero_reels: {
+        Row: {
+          aspect_ratio: string
+          created_at: string | null
+          creator_id: string
+          cta_label: string | null
+          cta_url: string | null
+          id: string
+          is_active: boolean
+          playback_mode: string
+          sort_order: number | null
+          subtitle: string | null
+          thumbnail_url: string | null
+          title: string
+          video_url: string
+        }
+        Insert: {
+          aspect_ratio?: string
+          created_at?: string | null
+          creator_id: string
+          cta_label?: string | null
+          cta_url?: string | null
+          id?: string
+          is_active?: boolean
+          playback_mode?: string
+          sort_order?: number | null
+          subtitle?: string | null
+          thumbnail_url?: string | null
+          title?: string
+          video_url?: string
+        }
+        Update: {
+          aspect_ratio?: string
+          created_at?: string | null
+          creator_id?: string
+          cta_label?: string | null
+          cta_url?: string | null
+          id?: string
+          is_active?: boolean
+          playback_mode?: string
+          sort_order?: number | null
+          subtitle?: string | null
+          thumbnail_url?: string | null
+          title?: string
+          video_url?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "creator_hero_reels_creator_id_fkey"
+            columns: ["creator_id"]
+            isOneToOne: false
+            referencedRelation: "creators"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       creator_links: {
         Row: {
           bg_color: string | null

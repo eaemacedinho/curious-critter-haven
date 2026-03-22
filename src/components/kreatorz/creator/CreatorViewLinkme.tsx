@@ -3,7 +3,9 @@ import { toast } from "sonner";
 import SocialIcon, { LinkIcon } from "./SocialIcon";
 import VerifiedBadge from "./VerifiedBadge";
 import SpotlightCampaign from "./SpotlightCampaign";
+import HeroReel from "./HeroReel";
 import type { CreatorProfile, CreatorLink, SocialLink, CreatorProduct, CreatorCampaign } from "@/hooks/useCreatorData";
+import type { HeroReelData } from "./HeroReel";
 import PageEffects from "./PageEffects";
 import BrandsSection from "./BrandsSection";
 import type { PageEffect } from "./PageEffects";
@@ -25,6 +27,7 @@ interface Props {
   socialLinks: SocialLink[];
   products: CreatorProduct[];
   campaigns: CreatorCampaign[];
+  heroReels?: HeroReelData[];
   agencyName?: string;
   agencyLogoUrl?: string;
   agencyFooterText?: string;
@@ -35,7 +38,7 @@ interface Props {
   onCampaignClick?: (campaign: CreatorCampaign) => void;
 }
 
-export default function CreatorViewLinkme({ profile, links: rawLinks, socialLinks: rawSocial, products: rawProducts, campaigns: rawCampaigns, agencyName, agencyLogoUrl, agencyFooterText, agencyFooterVisible = true, agencyFooterLink, embedded, onLinkClick, onCampaignClick }: Props) {
+export default function CreatorViewLinkme({ profile, links: rawLinks, socialLinks: rawSocial, products: rawProducts, campaigns: rawCampaigns, heroReels: rawReels, agencyName, agencyLogoUrl, agencyFooterText, agencyFooterVisible = true, agencyFooterLink, embedded, onLinkClick, onCampaignClick }: Props) {
   const [contactOpen, setContactOpen] = useState(false);
   const [overlayOpacity, setOverlayOpacity] = useState(0);
   const [headerVisible, setHeaderVisible] = useState(false);
@@ -46,6 +49,7 @@ export default function CreatorViewLinkme({ profile, links: rawLinks, socialLink
   const socialLinks = rawSocial.filter(s => s.url?.trim() && (s.label?.trim() || s.platform?.trim()));
   const products = rawProducts.filter(p => p.title?.trim() && (p as any).is_active !== false);
   const campaigns = rawCampaigns.filter(c => c.title?.trim() && (c as any).is_active !== false);
+  const activeReels = (rawReels || []).filter(r => r.is_active && r.video_url?.trim());
   const stats = profile.stats.filter(s => s.value?.trim() && s.label?.trim());
   const tags = profile.tags.filter(t => t.label?.trim());
   const brands = profile.brands.filter(b => b?.name?.trim());
@@ -320,6 +324,15 @@ export default function CreatorViewLinkme({ profile, links: rawLinks, socialLink
                           </div>
                         ))}
                       </div>
+                    </div>
+                  ) : null;
+
+                case "hero_reel":
+                  return activeReels.length > 0 ? (
+                    <div key="hero_reel" className="mt-6 px-4 flex flex-col gap-4">
+                      {activeReels.map((reel) => (
+                        <HeroReel key={reel.id} reel={reel} embedded={embedded} />
+                      ))}
                     </div>
                   ) : null;
 

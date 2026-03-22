@@ -1,6 +1,7 @@
 import { useState, useEffect, useCallback } from "react";
 import { supabase } from "@/integrations/supabase/client";
 import { toast } from "sonner";
+import type { HeroReelData } from "@/components/kreatorz/creator/HeroReel";
 
 export type ImageShapeValue = "rounded" | "circular" | "pill" | "shadow" | "polaroid";
 
@@ -91,6 +92,8 @@ export interface CreatorCampaign {
   border_color: string | null;
 }
 
+export type { HeroReelData };
+
 const normalizeProfile = (creator: any): CreatorProfile => ({
   ...creator,
   agency_id: creator.agency_id || null,
@@ -130,6 +133,7 @@ export function useCreatorData(agencyId: string | undefined, creatorId?: string)
   const [socialLinks, setSocialLinks] = useState<SocialLink[]>([]);
   const [products, setProducts] = useState<CreatorProduct[]>([]);
   const [campaigns, setCampaigns] = useState<CreatorCampaign[]>([]);
+  const [heroReels, setHeroReels] = useState<HeroReelData[]>([]);
   const [loading, setLoading] = useState(true);
 
   const fetchData = useCallback(async () => {
@@ -171,17 +175,19 @@ export function useCreatorData(agencyId: string | undefined, creatorId?: string)
 
     setProfile(normalizeProfile(creator));
 
-    const [linksRes, socialRes, productsRes, campaignsRes] = await Promise.all([
+    const [linksRes, socialRes, productsRes, campaignsRes, reelsRes] = await Promise.all([
       supabase.from("creator_links").select("*").eq("creator_id", creator.id).order("sort_order"),
       supabase.from("creator_social_links").select("*").eq("creator_id", creator.id).order("sort_order"),
       supabase.from("creator_products").select("*").eq("creator_id", creator.id).order("sort_order"),
       supabase.from("campaigns").select("*").eq("creator_id", creator.id).order("sort_order"),
+      supabase.from("creator_hero_reels").select("*").eq("creator_id", creator.id).order("sort_order"),
     ]);
 
     setLinks((linksRes.data as CreatorLink[]) || []);
     setSocialLinks((socialRes.data as SocialLink[]) || []);
     setProducts((productsRes.data as CreatorProduct[]) || []);
     setCampaigns((campaignsRes.data as CreatorCampaign[]) || []);
+    setHeroReels((reelsRes.data as HeroReelData[]) || []);
     setLoading(false);
   }, [agencyId, creatorId]);
 
@@ -279,6 +285,26 @@ export function useCreatorData(agencyId: string | undefined, creatorId?: string)
     setCampaigns(normalized);
   };
 
+  const saveHeroReels = async (newReels: HeroReelData[]) => {
+    if (!profile) return;
+    const normalized = newReels.map((r, i) => ({ ...r, creator_id: profile.id, sort_order: i }));
+    const { error: deleteError } = await supabase.from("creator_hero_reels").delete().eq("creator_id", profile.id);
+    if (deleteError) throw deleteError;
+    if (normalized.length > 0) {
+      const { error } = await supabase.from("creator_hero_reels").insert(
+        normalized.map((r) => ({
+          id: r.id, creator_id: r.creator_id, title: r.title || "", subtitle: r.subtitle || "",
+          video_url: r.video_url || "", thumbnail_url: r.thumbnail_url || "",
+          cta_label: r.cta_label || "", cta_url: r.cta_url || "",
+          aspect_ratio: r.aspect_ratio || "9:16", playback_mode: r.playback_mode || "autoplay",
+          is_active: r.is_active !== false, sort_order: r.sort_order,
+        }))
+      );
+      if (error) throw error;
+    }
+    setHeroReels(normalized);
+  };
+
   const uploadImage = async (file: File, type: "avatar" | "cover" | "avatar_layout2" | "cover_layout2"): Promise<string | null> => {
     if (!agencyId || !profile) return null;
     const bucket = type.startsWith("avatar") ? "avatars" : "covers";
@@ -306,8 +332,8 @@ export function useCreatorData(agencyId: string | undefined, creatorId?: string)
   };
 
   return {
-    profile, links, socialLinks, products, campaigns, loading,
-    saveProfile, saveLinks, saveSocialLinks, saveProducts, saveCampaigns,
+    profile, links, socialLinks, products, campaigns, heroReels, loading,
+    saveProfile, saveLinks, saveSocialLinks, saveProducts, saveCampaigns, saveHeroReels,
     uploadImage, uploadContentImage, refetch: fetchData,
   };
 }

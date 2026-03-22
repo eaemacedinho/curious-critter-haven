@@ -1,5 +1,6 @@
 import { useCallback, useEffect, useMemo, useRef, useState, type CSSProperties } from "react";
 import type { CreatorCampaign, CreatorLink, CreatorProduct, CreatorProfile, SocialLink } from "@/hooks/useCreatorData";
+import type { HeroReelData } from "./HeroReel";
 import { useTenant } from "@/hooks/useTenant";
 import CreatorView from "./CreatorView";
 import CreatorViewLinkme from "./CreatorViewLinkme";
@@ -12,6 +13,7 @@ interface Props {
   socialLinks: SocialLink[];
   products: CreatorProduct[];
   campaigns: CreatorCampaign[];
+  heroReels?: HeroReelData[];
   activeLayout?: string;
 }
 
@@ -55,6 +57,7 @@ export default function CreatorLivePreview({
   socialLinks,
   products,
   campaigns,
+  heroReels,
   activeLayout = "layout1",
 }: Props) {
   const { agency } = useTenant();
@@ -154,14 +157,14 @@ export default function CreatorLivePreview({
             <div className="relative h-full w-full overflow-hidden" style={previewTheme}>
               {activeLayout === "layout2" ? (
                 <PreviewComponent
-                  profile={profile} links={links} socialLinks={socialLinks} products={products} campaigns={campaigns}
+                  profile={profile} links={links} socialLinks={socialLinks} products={products} campaigns={campaigns} heroReels={heroReels}
                   agencyName={agency?.name} agencyLogoUrl={agency?.logo_url} agencyFooterText={agency?.footer_text}
                   agencyFooterVisible={agency?.footer_visible} agencyFooterLink={agency?.footer_link} embedded
                 />
               ) : (
                 <div className="h-full overflow-y-auto overflow-x-hidden">
                   <PreviewComponent
-                    profile={profile} links={links} socialLinks={socialLinks} products={products} campaigns={campaigns}
+                    profile={profile} links={links} socialLinks={socialLinks} products={products} campaigns={campaigns} heroReels={heroReels}
                     agencyName={agency?.name} agencyLogoUrl={agency?.logo_url} agencyFooterText={agency?.footer_text}
                     agencyFooterVisible={agency?.footer_visible} agencyFooterLink={agency?.footer_link} embedded
                   />

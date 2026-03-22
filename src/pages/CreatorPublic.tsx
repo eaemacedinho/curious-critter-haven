@@ -2,7 +2,7 @@ import { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
 import { supabase } from "@/integrations/supabase/client";
 import { trackEvent } from "@/lib/analytics";
-import type { CreatorProfile, CreatorLink, SocialLink, CreatorProduct, CreatorCampaign } from "@/hooks/useCreatorData";
+import type { CreatorProfile, CreatorLink, SocialLink, CreatorProduct, CreatorCampaign, HeroReelData } from "@/hooks/useCreatorData";
 import { useCallback } from "react";
 import CreatorView from "@/components/kreatorz/creator/CreatorView";
 import CreatorViewLinkme from "@/components/kreatorz/creator/CreatorViewLinkme";
@@ -47,6 +47,7 @@ export default function CreatorPublic() {
   const [socialLinks, setSocialLinks] = useState<SocialLink[]>([]);
   const [products, setProducts] = useState<CreatorProduct[]>([]);
   const [campaigns, setCampaigns] = useState<CreatorCampaign[]>([]);
+  const [heroReels, setHeroReels] = useState<HeroReelData[]>([]);
   const [agencyName, setAgencyName] = useState<string>("");
   const [agencyLogoUrl, setAgencyLogoUrl] = useState<string>("");
   const [agencyFooterText, setAgencyFooterText] = useState<string>("Powered by");
@@ -136,16 +137,18 @@ export default function CreatorPublic() {
   }, [handle]);
 
   async function loadRelated(creatorId: string) {
-    const [linksRes, socialRes, productsRes, campaignsRes] = await Promise.all([
+    const [linksRes, socialRes, productsRes, campaignsRes, reelsRes] = await Promise.all([
       supabase.from("creator_links").select("*").eq("creator_id", creatorId).order("sort_order"),
       supabase.from("creator_social_links").select("*").eq("creator_id", creatorId).order("sort_order"),
       supabase.from("creator_products").select("*").eq("creator_id", creatorId).order("sort_order"),
       supabase.from("campaigns").select("*").eq("creator_id", creatorId).order("sort_order"),
+      supabase.from("creator_hero_reels").select("*").eq("creator_id", creatorId).order("sort_order"),
     ]);
     setLinks((linksRes.data as CreatorLink[]) || []);
     setSocialLinks((socialRes.data as SocialLink[]) || []);
     setProducts((productsRes.data as CreatorProduct[]) || []);
     setCampaigns((campaignsRes.data as CreatorCampaign[]) || []);
+    setHeroReels((reelsRes.data as HeroReelData[]) || []);
   }
 
   const handleLinkClick = useCallback((link: CreatorLink) => {
@@ -206,7 +209,7 @@ export default function CreatorPublic() {
     );
   }
 
-  const layoutProps = { profile, links, socialLinks, products, campaigns, agencyName, agencyLogoUrl, agencyFooterText, agencyFooterVisible, agencyFooterLink, onLinkClick: handleLinkClick, onCampaignClick: handleCampaignClick };
+  const layoutProps = { profile, links, socialLinks, products, campaigns, heroReels, agencyName, agencyLogoUrl, agencyFooterText, agencyFooterVisible, agencyFooterLink, onLinkClick: handleLinkClick, onCampaignClick: handleCampaignClick };
 
   const LayoutComponent = (() => {
     switch (profile.layout_type) {
