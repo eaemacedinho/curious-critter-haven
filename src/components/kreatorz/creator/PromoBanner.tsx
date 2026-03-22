@@ -48,10 +48,10 @@ export default function PromoBanner({ creatorName }: PromoBannerProps) {
 
   return (
     <>
-      {/* Floating logo button */}
+      {/* Logo button - positioned by parent */}
       <button
         onClick={() => setOpen(true)}
-        className="fixed top-4 left-4 z-[60] w-10 h-10 rounded-xl bg-card/90 backdrop-blur-md border border-border shadow-lg flex items-center justify-center transition-all duration-300 hover:scale-110 hover:shadow-xl active:scale-95 group"
+        className="w-10 h-10 rounded-xl bg-card/90 backdrop-blur-md border border-border shadow-lg flex items-center justify-center transition-all duration-300 hover:scale-110 hover:shadow-xl active:scale-95 group"
         aria-label="Criar sua página no in1.bio"
       >
         <img src={in1Icon} alt="in1.bio" className="w-6 h-6 object-contain invert dark:invert-0" />

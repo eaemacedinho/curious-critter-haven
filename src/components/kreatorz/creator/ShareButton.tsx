@@ -117,10 +117,10 @@ export default function ShareButton({ creatorName, creatorSlug, creatorAvatar, c
 
   return (
     <>
-      {/* Share button */}
+      {/* Share button - positioned by parent */}
       <button
         onClick={handleNativeShare}
-        className="fixed top-4 right-4 z-[60] w-10 h-10 rounded-xl bg-card/90 backdrop-blur-md border border-border shadow-lg flex items-center justify-center transition-all duration-300 hover:scale-110 hover:shadow-xl active:scale-95"
+        className="w-10 h-10 rounded-xl bg-card/90 backdrop-blur-md border border-border shadow-lg flex items-center justify-center transition-all duration-300 hover:scale-110 hover:shadow-xl active:scale-95"
         aria-label="Compartilhar página"
       >
         <Share2 className="w-[18px] h-[18px] text-foreground" />
