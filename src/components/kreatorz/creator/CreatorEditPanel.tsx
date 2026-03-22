@@ -400,9 +400,18 @@ const CreatorEditPanel = forwardRef<CreatorEditPanelHandle, Props>(function Crea
   return (
     <div className="relative">
       {/* Preview toggle */}
-      <div className="mb-4">
+      <div className="mb-4" ref={previewToggleRef}>
         <button
-          onClick={() => setShowPreview(!showPreview)}
+          onClick={() => {
+            setShowPreview(!showPreview);
+            // Measure toggle bottom after next paint
+            requestAnimationFrame(() => {
+              if (previewToggleRef.current) {
+                const rect = previewToggleRef.current.getBoundingClientRect();
+                setPreviewTopOffset(rect.bottom + 8);
+              }
+            });
+          }}
           className={`w-full px-4 py-2.5 rounded-xl text-sm font-semibold transition-all duration-300 active:scale-[0.98] flex items-center justify-center gap-2 ${
             showPreview
               ? "bg-primary text-primary-foreground shadow-lg shadow-primary/20"
