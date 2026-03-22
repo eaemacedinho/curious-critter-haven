@@ -199,7 +199,29 @@ export default function CreatorPublic() {
     }
   })();
 
-  return <LayoutComponent {...layoutProps} />;
+  // Apply theme class to root for public page
+  useEffect(() => {
+    const root = document.documentElement;
+    if (pageTheme === "light") {
+      root.classList.remove("dark");
+      root.classList.add("light");
+    } else {
+      root.classList.remove("light");
+      root.classList.add("dark");
+    }
+    return () => {
+      root.classList.remove("light");
+      // restore dark as default
+      root.classList.add("dark");
+    };
+  }, [pageTheme]);
+
+  return (
+    <>
+      <ThemeToggle theme={pageTheme} onChange={setPageTheme} />
+      <LayoutComponent {...layoutProps} />
+    </>
+  );
 }
 
 function hexToHsl(hex: string): string | null {
