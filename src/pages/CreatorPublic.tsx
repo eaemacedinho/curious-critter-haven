@@ -219,11 +219,37 @@ export default function CreatorPublic() {
     }
   })();
 
+  // Scroll-based fade for top buttons (like Linktree)
+  const [topButtonsOpacity, setTopButtonsOpacity] = useState(1);
+
+  useEffect(() => {
+    const handleScroll = () => {
+      // For layout2, listen on the scrollable container inside CreatorViewLinkme
+      const scrollEl = document.querySelector('[data-preview-scroll]') as HTMLElement | null;
+      const scrollY = scrollEl ? scrollEl.scrollTop : window.scrollY;
+      // Fade out over the first 120px of scroll
+      setTopButtonsOpacity(Math.max(0, 1 - scrollY / 120));
+    };
+
+    // Listen on both window and the layout2 scroll container
+    window.addEventListener("scroll", handleScroll, { passive: true });
+    const scrollEl = document.querySelector('[data-preview-scroll]') as HTMLElement | null;
+    scrollEl?.addEventListener("scroll", handleScroll, { passive: true });
+
+    return () => {
+      window.removeEventListener("scroll", handleScroll);
+      scrollEl?.removeEventListener("scroll", handleScroll);
+    };
+  }, [profile]);
+
   return (
     <div className="relative">
-      {/* Floating buttons - positioned inside page content area */}
-      <div className="fixed top-0 left-0 right-0 z-[60] pointer-events-none">
-        <div className="relative max-w-[640px] mx-auto">
+      {/* Top buttons - inside content area, fade on scroll */}
+      <div
+        className="fixed top-0 left-0 right-0 z-[60] pointer-events-none transition-opacity duration-200"
+        style={{ opacity: topButtonsOpacity, pointerEvents: topButtonsOpacity < 0.1 ? "none" : undefined }}
+      >
+        <div className="relative max-w-[520px] mx-auto">
           <div className="absolute top-4 left-4 pointer-events-auto">
             <GrowthWatermark creatorName={profile.name} />
           </div>
