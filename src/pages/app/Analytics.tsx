@@ -102,6 +102,7 @@ export default function Analytics() {
           <div className="space-y-8">
             <ReelAnalytics agencyId={agency?.id} />
             <CampaignAnalytics agencyId={agency?.id} />
+            <CookieMetrics />
           </div>
         )}
       </div>
