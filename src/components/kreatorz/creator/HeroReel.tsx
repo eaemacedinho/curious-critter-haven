@@ -1,5 +1,5 @@
 import { useState, useRef, useEffect, useCallback } from "react";
-import { motion } from "framer-motion";
+import { motion, useScroll, useTransform, useSpring } from "framer-motion";
 import { trackEvent } from "@/lib/analytics";
 
 export interface HeroReelData {
@@ -349,6 +349,7 @@ export default function HeroReel({ reel, embedded, agencyId }: Props) {
   const aspectClass = ASPECT_MAP[reel.aspect_ratio] || ASPECT_MAP["9:16"];
   const maxHeightClass = MAX_HEIGHT_MAP[reel.aspect_ratio] || MAX_HEIGHT_MAP["9:16"];
   const embed = parseEmbedUrl(reel.video_url);
+  const containerRef = useRef<HTMLDivElement>(null);
 
   const analyticsCtx: AnalyticsContext | null = embedded ? null : {
     creatorId: reel.creator_id,
@@ -358,18 +359,43 @@ export default function HeroReel({ reel, embedded, agencyId }: Props) {
     source: embed?.type || "native",
   };
 
+  // Parallax: card moves slower than scroll for depth effect
+  const { scrollYProgress } = useScroll({
+    target: containerRef,
+    offset: ["start end", "end start"],
+  });
+
+  const rawY = useTransform(scrollYProgress, [0, 1], [30, -30]);
+  const rawScale = useTransform(scrollYProgress, [0, 0.3, 0.7, 1], [0.95, 1, 1, 0.97]);
+  const rawRotate = useTransform(scrollYProgress, [0, 0.5, 1], [1, 0, -1]);
+
+  const y = useSpring(rawY, { stiffness: 120, damping: 30 });
+  const scale = useSpring(rawScale, { stiffness: 120, damping: 30 });
+  const rotate = useSpring(rawRotate, { stiffness: 120, damping: 30 });
+
+  // Disable parallax for embedded previews
+  const parallaxStyle = embedded ? {} : { y, scale, rotateZ: rotate };
+
   return (
     <motion.div
-      initial={{ opacity: 0, y: 16 }}
-      animate={{ opacity: 1, y: 0 }}
-      transition={{ duration: 0.5, ease: "easeOut" }}
-      className="w-full"
+      ref={containerRef}
+      initial={{ opacity: 0, y: 24, scale: 0.96 }}
+      animate={{ opacity: 1, y: 0, scale: 1 }}
+      transition={{ duration: 0.6, ease: [0.22, 1, 0.36, 1] }}
+      style={parallaxStyle}
+      whileHover={embedded ? undefined : { scale: 1.02, transition: { duration: 0.3 } }}
+      className="w-full will-change-transform"
     >
       {embed ? (
         <>
           <EmbedPlayer embed={embed} autoplay={reel.playback_mode === "autoplay"} aspectClass={aspectClass} maxHeightClass={maxHeightClass} analyticsCtx={analyticsCtx} />
           {(reel.title || reel.cta_label) && (
-            <div className="mt-3 px-1">
+            <motion.div
+              initial={{ opacity: 0, y: 8 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ delay: 0.3, duration: 0.4 }}
+              className="mt-3 px-1"
+            >
               {reel.title && <h3 className="text-sm font-bold text-foreground leading-snug mb-0.5">{reel.title}</h3>}
               {reel.subtitle && <p className="text-muted-foreground text-[0.72rem] leading-relaxed mb-2">{reel.subtitle}</p>}
               {reel.cta_label && reel.cta_url && (
@@ -380,7 +406,7 @@ export default function HeroReel({ reel, embedded, agencyId }: Props) {
                   <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5"><path d="M5 12h14M12 5l7 7-7 7" /></svg>
                 </a>
               )}
-            </div>
+            </motion.div>
           )}
         </>
       ) : (
