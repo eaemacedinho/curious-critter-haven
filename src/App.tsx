@@ -10,6 +10,7 @@ import AppLayout from "@/components/app/AppLayout";
 
 import Landing from "@/pages/Landing";
 import Login from "@/pages/Login";
+import Templates from "@/pages/Templates";
 import CreatorPublic from "@/pages/CreatorPublic";
 import NotFound from "@/pages/NotFound";
 import ResetPassword from "@/pages/ResetPassword";
@@ -38,6 +39,7 @@ const App = () => (
               {/* Public routes */}
               <Route path="/" element={<Landing />} />
               <Route path="/login" element={<Login />} />
+              <Route path="/templates" element={<Templates />} />
               <Route path="/reset-password" element={<ResetPassword />} />
               <Route path="/c/:handle" element={<CreatorPublic />} />
 
