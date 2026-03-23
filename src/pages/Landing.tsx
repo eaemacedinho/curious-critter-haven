@@ -610,6 +610,9 @@ export default function Landing() {
           </span>
           <div className="flex items-center gap-6">
             <Link to="/login" className="text-xs text-muted-foreground hover:text-foreground transition-colors">Login</Link>
+            <Link to="/privacidade" className="text-xs text-muted-foreground hover:text-foreground transition-colors">Privacidade</Link>
+            <Link to="/termos" className="text-xs text-muted-foreground hover:text-foreground transition-colors">Termos de Uso</Link>
+            <Link to="/cookies" className="text-xs text-muted-foreground hover:text-foreground transition-colors">Cookies</Link>
             <a href="mailto:contato@in1.bio" className="text-xs text-muted-foreground hover:text-foreground transition-colors">Contato</a>
           </div>
           <span className="text-[0.72rem] text-muted-foreground/50">
