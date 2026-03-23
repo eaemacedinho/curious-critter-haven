@@ -12,6 +12,7 @@ import Landing from "@/pages/Landing";
 import Login from "@/pages/Login";
 import CreatorPublic from "@/pages/CreatorPublic";
 import NotFound from "@/pages/NotFound";
+import ResetPassword from "@/pages/ResetPassword";
 
 import Dashboard from "@/pages/app/Dashboard";
 import Creators from "@/pages/app/Creators";
