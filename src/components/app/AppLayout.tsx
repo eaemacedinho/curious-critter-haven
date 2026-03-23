@@ -105,14 +105,37 @@ export default function AppLayout() {
           </div>
         )}
         <div className="min-w-0 flex-1">
-          <div className="text-sm font-bold text-foreground truncate">
-            {agency?.name || "Minha Agência"}
+          <div className="flex items-center gap-1.5">
+            <span className="text-sm font-bold text-foreground truncate">
+              {agency?.name || "Minha Agência"}
+            </span>
+            <span className={`text-[0.5rem] font-extrabold px-1.5 py-0.5 rounded-md uppercase tracking-wider ${
+              isPro ? "bg-primary/15 text-primary" : "bg-muted text-muted-foreground"
+            }`}>
+              {currentPlan === "scale" ? "Scale" : isPro ? "Pro" : "Free"}
+            </span>
           </div>
           <div className="text-[0.65rem] text-muted-foreground truncate">
             {agency?.slug ? `in1.bio/${agency.slug}` : "in1.bio"}
           </div>
         </div>
       </div>
+
+      {/* Upgrade CTA for free users */}
+      {!isPro && (
+        <div className="mx-3 mb-5 p-3 bg-primary/5 border border-primary/10 rounded-xl">
+          <div className="flex items-center gap-2 mb-1.5">
+            <Crown className="w-3.5 h-3.5 text-primary" />
+            <span className="text-[0.68rem] font-bold text-foreground">Upgrade Pro</span>
+          </div>
+          <p className="text-[0.6rem] text-muted-foreground mb-2 leading-relaxed">
+            Desbloqueie analytics, layout imersivo e mais por R$17,90/mês
+          </p>
+          <button className="w-full py-2 bg-primary text-primary-foreground text-[0.65rem] font-bold rounded-lg transition-all hover:shadow-[0_0_20px_hsl(var(--primary)/0.2)]">
+            Fazer upgrade
+          </button>
+        </div>
+      )}
 
       {/* Main nav */}
       <div className="mb-6">
