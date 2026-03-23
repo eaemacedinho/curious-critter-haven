@@ -1,6 +1,7 @@
 import { toast } from "sonner";
 import type { CreatorProfile, CreatorLink, SocialLink, CreatorProduct, CreatorCampaign } from "@/hooks/useCreatorData";
 import type { HeroReelData } from "./HeroReel";
+import type { Testimonial } from "./TestimonialsSection";
 import { useState, useEffect, useRef, useCallback } from "react";
 import SocialIcon, { LinkIcon } from "./SocialIcon";
 import VerifiedBadge from "./VerifiedBadge";
@@ -8,6 +9,8 @@ import SpotlightCampaign from "./SpotlightCampaign";
 import HeroReel from "./HeroReel";
 import PageEffects from "./PageEffects";
 import BrandsSection from "./BrandsSection";
+import SpotifyEmbed from "./SpotifyEmbed";
+import TestimonialsSection from "./TestimonialsSection";
 import type { PageEffect } from "./PageEffects";
 import { getFontFamily, getFontSizeScale, loadGoogleFont } from "@/lib/fontUtils";
 
