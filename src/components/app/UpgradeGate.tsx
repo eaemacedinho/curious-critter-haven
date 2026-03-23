@@ -120,6 +120,7 @@ function UpgradeModal({ featureLabel, onClose }: { featureLabel: string; onClose
           </div>
 
           <button
+            onClick={() => { onClose(); navigate("/app/checkout"); }}
             className="w-full py-3.5 bg-primary text-primary-foreground font-bold rounded-2xl transition-all hover:shadow-[0_0_30px_hsl(var(--primary)/0.25)] hover:scale-[1.02] active:scale-[0.98] flex items-center justify-center gap-2"
           >
             Fazer upgrade — R$17,90/mês
