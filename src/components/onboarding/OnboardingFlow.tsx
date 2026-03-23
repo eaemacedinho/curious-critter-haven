@@ -149,6 +149,8 @@ export default function OnboardingFlow({ onComplete }: { onComplete: () => void 
       // Create demo creator for this agency (creator is a business entity, created here on purpose)
       const creatorName = purpose === "myself" ? (user.user_metadata?.full_name || name) : "Creator Demo";
       const handle = slug + "-" + Date.now().toString(36);
+      const creatorBio = templatePreset?.bio || "Olá! Esta é minha página de links. Explore meus conteúdos e redes sociais. 🚀";
+      const creatorLayout = templatePreset?.layout || colors.layout;
 
       const { data: newCreator, error: creatorError } = await supabase
         .from("creators")
@@ -157,8 +159,8 @@ export default function OnboardingFlow({ onComplete }: { onComplete: () => void 
           agency_id: agency.id,
           name: creatorName,
           slug: handle,
-          bio: "Olá! Esta é minha página de links. Explore meus conteúdos e redes sociais. 🚀",
-          layout_type: colors.layout,
+          bio: creatorBio,
+          layout_type: creatorLayout,
         } as any)
         .select("id, slug")
         .single();
@@ -171,19 +173,17 @@ export default function OnboardingFlow({ onComplete }: { onComplete: () => void 
       const creatorId = (newCreator as any).id;
       setCreatedHandle((newCreator as any).slug);
 
-      // Create demo links + campaign in parallel
+      // Create links + campaign in parallel (use template preset if available)
+      const linksToCreate = templatePreset?.links || DEMO_LINKS;
+      const campaignData = templatePreset?.campaign
+        ? { ...templatePreset.campaign, creator_id: creatorId, live: true, sort_order: 0 }
+        : { creator_id: creatorId, title: "🔥 Conteúdo Exclusivo", description: "Confira meu novo material especial", url: "https://exemplo.com/exclusivo", live: true, sort_order: 0 };
+
       await Promise.all([
         supabase.from("creator_links").insert(
-          DEMO_LINKS.map(l => ({ ...l, creator_id: creatorId }))
+          linksToCreate.map(l => ({ ...l, creator_id: creatorId }))
         ),
-        supabase.from("campaigns").insert({
-          creator_id: creatorId,
-          title: "🔥 Conteúdo Exclusivo",
-          description: "Confira meu novo material especial",
-          url: "https://exemplo.com/exclusivo",
-          live: true,
-          sort_order: 0,
-        }),
+        supabase.from("campaigns").insert(campaignData),
       ]);
 
       // Mark onboarding as done in agency_settings
