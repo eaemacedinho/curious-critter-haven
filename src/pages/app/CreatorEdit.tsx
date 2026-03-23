@@ -14,6 +14,7 @@ export default function CreatorEdit() {
     saveProfile, saveLinks, saveSocialLinks, saveProducts, saveCampaigns, saveHeroReels,
     uploadImage, uploadContentImage, refetch,
   } = useCreatorData(agency?.id, creatorId);
+  const { canUse } = useSubscription();
   const editorRef = useRef<CreatorEditPanelHandle>(null);
   const [saving, setSaving] = useState(false);
 
@@ -50,8 +51,6 @@ export default function CreatorEdit() {
       </div>
     );
   }
-
-  const { canUse } = useSubscription();
 
   const layoutOptions = [
     { id: "layout1", label: "Padrão" },
