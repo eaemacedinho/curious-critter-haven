@@ -12,6 +12,7 @@ export default function Settings() {
   const { user } = useAuth();
   const { agency, updateAgency } = useTenant();
   const { canManageAgency, isViewer, role } = usePermissions();
+  const { subscription, currentPlan, isPro, loading: subLoading, refetch: refetchSub } = useSubscription();
 
   const [activeSection, setActiveSection] = useState("branding");
   const [agencyName, setAgencyName] = useState(agency?.name || "");
