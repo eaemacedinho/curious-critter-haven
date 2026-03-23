@@ -61,7 +61,8 @@ export default function Login() {
           }
         }
         toast.success("Conta criada!");
-        navigate("/app");
+        const dest = templateParam ? `/app?template=${templateParam}` : "/app";
+        navigate(dest);
       }
     } else {
       const { error } = await supabase.auth.signInWithPassword({ email, password });
@@ -69,7 +70,8 @@ export default function Login() {
         toast.error(error.message);
       } else {
         toast.success("Login realizado!");
-        navigate("/app");
+        const dest = templateParam ? `/app?template=${templateParam}` : "/app";
+        navigate(dest);
       }
     }
     setLoading(false);
