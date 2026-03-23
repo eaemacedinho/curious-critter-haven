@@ -37,6 +37,7 @@ const App = () => (
               {/* Public routes */}
               <Route path="/" element={<Landing />} />
               <Route path="/login" element={<Login />} />
+              <Route path="/reset-password" element={<ResetPassword />} />
               <Route path="/c/:handle" element={<CreatorPublic />} />
 
               {/* Protected app routes */}
