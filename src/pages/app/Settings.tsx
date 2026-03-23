@@ -4,6 +4,7 @@ import { useAuth } from "@/hooks/useAuth";
 import { extractColorsFromImage } from "@/lib/extractColors";
 import { useTenant } from "@/hooks/useTenant";
 import { usePermissions } from "@/hooks/usePermissions";
+import { useSubscription } from "@/hooks/useSubscription";
 import { supabase } from "@/integrations/supabase/client";
 import { resetOnboarding } from "@/hooks/useOnboarding";
 
@@ -11,6 +12,7 @@ export default function Settings() {
   const { user } = useAuth();
   const { agency, updateAgency } = useTenant();
   const { canManageAgency, isViewer, role } = usePermissions();
+  const { subscription, currentPlan, isPro, loading: subLoading, refetch: refetchSub } = useSubscription();
 
   const [activeSection, setActiveSection] = useState("branding");
   const [agencyName, setAgencyName] = useState(agency?.name || "");
@@ -25,6 +27,32 @@ export default function Settings() {
   const [uploadingLogo, setUploadingLogo] = useState(false);
   const [saving, setSaving] = useState(false);
   const [extracting, setExtracting] = useState(false);
+  const [canceling, setCanceling] = useState(false);
+
+  const handleCancelSubscription = async () => {
+    if (!confirm("Tem certeza que deseja cancelar sua assinatura Pro? Você perderá acesso aos recursos premium.")) return;
+    setCanceling(true);
+    try {
+      const { data: { session } } = await supabase.auth.getSession();
+      if (!session) throw new Error("Não autenticado");
+      const projectId = import.meta.env.VITE_SUPABASE_PROJECT_ID;
+      const res = await fetch(`https://${projectId}.supabase.co/functions/v1/pagarme-cancel`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${session.access_token}`,
+        },
+      });
+      const data = await res.json();
+      if (!res.ok) throw new Error(data.error || "Erro ao cancelar");
+      toast.success("Assinatura cancelada com sucesso.");
+      refetchSub();
+    } catch (err: any) {
+      toast.error(err.message || "Erro ao cancelar assinatura");
+    } finally {
+      setCanceling(false);
+    }
+  };
 
   const handleExtractColors = async () => {
     if (!logoUrl) {
@@ -46,6 +74,7 @@ export default function Settings() {
 
   const sections = [
     { id: "branding", icon: "🎨", label: "Branding" },
+    { id: "subscription", icon: "💎", label: "Assinatura" },
     { id: "domain", icon: "🌐", label: "Domínios" },
     { id: "account", icon: "⚙", label: "Conta" },
   ];
@@ -288,6 +317,65 @@ export default function Settings() {
                 >
                   {saving ? "Salvando..." : "Salvar branding"}
                 </button>
+              )}
+            </div>
+          )}
+
+          {activeSection === "subscription" && (
+            <div className="space-y-6">
+              <div>
+                <h2 className="text-lg font-bold text-foreground mb-1">Assinatura</h2>
+                <p className="text-sm text-muted-foreground mb-6">Gerencie seu plano e pagamento.</p>
+              </div>
+
+              <div className="bg-card border border-border rounded-2xl p-5">
+                <div className="flex items-center justify-between">
+                  <div>
+                    <div className="text-[0.66rem] text-muted-foreground uppercase tracking-wider font-bold mb-1">Plano atual</div>
+                    <div className="text-lg font-bold text-foreground capitalize">{currentPlan}</div>
+                    {isPro && (
+                      <div className="text-xs text-muted-foreground mt-1">R$17,90/mês</div>
+                    )}
+                  </div>
+                  <span className={`px-3 py-1.5 rounded-full text-xs font-semibold flex items-center gap-1.5 ${
+                    isPro
+                      ? "bg-primary/10 text-primary"
+                      : "bg-muted text-muted-foreground"
+                  }`}>
+                    <span className="w-1.5 h-1.5 rounded-full bg-current" />
+                    {isPro ? "Ativo" : "Free"}
+                  </span>
+                </div>
+              </div>
+
+              {isPro && subscription?.status === "active" && (
+                <div className="bg-card border border-border rounded-2xl p-5">
+                  <div className="flex items-center justify-between">
+                    <div>
+                      <div className="text-sm font-medium text-foreground">Cancelar assinatura</div>
+                      <div className="text-[0.66rem] text-muted-foreground">Seu plano será revertido para Free imediatamente</div>
+                    </div>
+                    <button
+                      onClick={handleCancelSubscription}
+                      disabled={canceling}
+                      className="px-4 py-2 bg-destructive/10 text-destructive text-xs font-semibold rounded-xl hover:bg-destructive/20 transition-colors disabled:opacity-60"
+                    >
+                      {canceling ? "Cancelando..." : "Cancelar plano"}
+                    </button>
+                  </div>
+                </div>
+              )}
+
+              {!isPro && (
+                <div className="bg-card border border-border rounded-2xl p-5 text-center">
+                  <p className="text-sm text-muted-foreground mb-3">Faça upgrade para o Pro e desbloqueie todos os recursos.</p>
+                  <a
+                    href="/app/checkout"
+                    className="inline-block px-5 py-2.5 bg-primary text-primary-foreground font-semibold text-sm rounded-xl hover:opacity-90 transition-all"
+                  >
+                    Fazer upgrade — R$17,90/mês
+                  </a>
+                </div>
               )}
             </div>
           )}
