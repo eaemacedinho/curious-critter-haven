@@ -43,6 +43,9 @@ const App = () => (
               <Route path="/" element={<Landing />} />
               <Route path="/login" element={<Login />} />
               <Route path="/templates" element={<Templates />} />
+              <Route path="/privacidade" element={<Privacy />} />
+              <Route path="/cookies" element={<Cookies />} />
+              <Route path="/termos" element={<Terms />} />
               <Route path="/reset-password" element={<ResetPassword />} />
               <Route path="/c/:handle" element={<CreatorPublic />} />
 
