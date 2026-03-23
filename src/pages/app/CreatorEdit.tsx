@@ -10,8 +10,8 @@ export default function CreatorEdit() {
   const { agency } = useTenant();
   const { creatorId } = useParams<{ creatorId: string }>();
   const {
-    profile, links, socialLinks, products, campaigns, heroReels, loading,
-    saveProfile, saveLinks, saveSocialLinks, saveProducts, saveCampaigns, saveHeroReels,
+    profile, links, socialLinks, products, campaigns, heroReels, testimonials, loading,
+    saveProfile, saveLinks, saveSocialLinks, saveProducts, saveCampaigns, saveHeroReels, saveTestimonials,
     uploadImage, uploadContentImage, refetch,
   } = useCreatorData(agency?.id, creatorId);
   const { canUse } = useSubscription();
