@@ -28,6 +28,7 @@ export default function Settings() {
   const [saving, setSaving] = useState(false);
   const [extracting, setExtracting] = useState(false);
   const [canceling, setCanceling] = useState(false);
+  const [exporting, setExporting] = useState(false);
 
   const handleCancelSubscription = async () => {
     if (!confirm("Tem certeza que deseja cancelar sua assinatura Pro? Você perderá acesso aos recursos premium.")) return;
@@ -448,6 +449,60 @@ export default function Settings() {
                 <div>
                   <div className="text-[0.66rem] text-muted-foreground uppercase tracking-wider font-bold mb-1">ID da Agência</div>
                   <div className="text-xs text-muted-foreground font-mono">{agency?.id || "—"}</div>
+                </div>
+              </div>
+
+              {/* LGPD Data Export */}
+              <div className="bg-card border border-border rounded-2xl p-5">
+                <div className="flex items-center justify-between">
+                  <div>
+                    <div className="text-sm font-medium text-foreground">Exportar meus dados (LGPD)</div>
+                    <div className="text-[0.66rem] text-muted-foreground">Baixe todos os seus dados pessoais em formato JSON — direito de portabilidade</div>
+                  </div>
+                  <button
+                    onClick={async () => {
+                      if (!user || !agency) return;
+                      setExporting(true);
+                      try {
+                        const [profileRes, creatorsRes, linksRes, campaignsRes, socialRes, testimonialsRes, productsRes] = await Promise.all([
+                          supabase.from("profiles").select("*").eq("id", user.id).maybeSingle(),
+                          supabase.from("creators").select("*").eq("agency_id", agency.id),
+                          supabase.from("creator_links").select("*").in("creator_id", (await supabase.from("creators").select("id").eq("agency_id", agency.id)).data?.map((c: any) => c.id) || []),
+                          supabase.from("campaigns").select("*").eq("agency_id", agency.id),
+                          supabase.from("creator_social_links").select("*").in("creator_id", (await supabase.from("creators").select("id").eq("agency_id", agency.id)).data?.map((c: any) => c.id) || []),
+                          supabase.from("creator_testimonials").select("*").in("creator_id", (await supabase.from("creators").select("id").eq("agency_id", agency.id)).data?.map((c: any) => c.id) || []),
+                          supabase.from("creator_products").select("*").in("creator_id", (await supabase.from("creators").select("id").eq("agency_id", agency.id)).data?.map((c: any) => c.id) || []),
+                        ]);
+                        const exportData = {
+                          exported_at: new Date().toISOString(),
+                          profile: profileRes.data,
+                          agency: agency,
+                          creators: creatorsRes.data,
+                          links: linksRes.data,
+                          campaigns: campaignsRes.data,
+                          social_links: socialRes.data,
+                          testimonials: testimonialsRes.data,
+                          products: productsRes.data,
+                        };
+                        const blob = new Blob([JSON.stringify(exportData, null, 2)], { type: "application/json" });
+                        const url = URL.createObjectURL(blob);
+                        const a = document.createElement("a");
+                        a.href = url;
+                        a.download = `in1bio-dados-${new Date().toISOString().slice(0, 10)}.json`;
+                        a.click();
+                        URL.revokeObjectURL(url);
+                        toast.success("Dados exportados com sucesso!");
+                      } catch (err: any) {
+                        toast.error("Erro ao exportar dados: " + (err.message || "tente novamente"));
+                      } finally {
+                        setExporting(false);
+                      }
+                    }}
+                    disabled={exporting}
+                    className="px-4 py-2 bg-primary/10 text-primary text-xs font-semibold rounded-xl hover:bg-primary/20 transition-colors disabled:opacity-60"
+                  >
+                    {exporting ? "⏳ Exportando..." : "📦 Exportar"}
+                  </button>
                 </div>
               </div>
 
