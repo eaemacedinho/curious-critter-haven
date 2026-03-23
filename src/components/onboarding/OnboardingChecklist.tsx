@@ -1,6 +1,9 @@
 import { useState, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { Link } from "react-router-dom";
+import { supabase } from "@/integrations/supabase/client";
+import { useTenant } from "@/hooks/useTenant";
+import { toast } from "sonner";
 import type { OnboardingState } from "@/hooks/useOnboarding";
 import ConfettiCelebration from "./ConfettiCelebration";
 
@@ -8,7 +11,7 @@ const TASKS = [
   { key: "creatorEdited" as const, icon: "👤", label: "Personalizar creator", desc: "Edite bio, foto e estilo", link: "/app/creators" },
   { key: "linkAdded" as const, icon: "🔗", label: "Adicionar um link", desc: "Insira links para suas redes", link: "/app/creators" },
   { key: "campaignCreated" as const, icon: "📢", label: "Criar campanha", desc: "Lance uma campanha spotlight", link: "/app/campaigns" },
-  { key: "published" as const, icon: "🚀", label: "Publicar página", desc: "Compartilhe com o mundo", link: "/app/creators" },
+  { key: "published" as const, icon: "🚀", label: "Publicar página", desc: "Compartilhe com o mundo", link: null },
 ];
 
 const CONFETTI_KEY = "in1_confetti_shown";
