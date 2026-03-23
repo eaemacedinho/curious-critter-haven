@@ -28,6 +28,11 @@ export default function CookieConsent() {
     const final = all ? { essential: true, analytics: true, marketing: true } : prefs;
     localStorage.setItem(COOKIE_CONSENT_KEY, JSON.stringify(final));
     setVisible(false);
+    // Track consent event
+    supabase.from("analytics_events").insert({
+      event_type: "cookie_consent",
+      metadata: { action: all ? "accept_all" : "custom", prefs: final },
+    }).then();
   };
 
   if (!visible) return null;
