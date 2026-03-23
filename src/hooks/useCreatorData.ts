@@ -311,6 +311,25 @@ export function useCreatorData(agencyId: string | undefined, creatorId?: string)
     setHeroReels(normalized);
   };
 
+  const saveTestimonials = async (newTestimonials: Testimonial[]) => {
+    if (!profile) return;
+    const normalized = newTestimonials.map((t, i) => ({ ...t, creator_id: profile.id, sort_order: i }));
+    const { error: deleteError } = await supabase.from("creator_testimonials").delete().eq("creator_id", profile.id);
+    if (deleteError) throw deleteError;
+    if (normalized.length > 0) {
+      const { error } = await supabase.from("creator_testimonials").insert(
+        normalized.map((t) => ({
+          id: t.id, creator_id: t.creator_id, author_name: t.author_name || "",
+          author_role: t.author_role || "", author_avatar_url: t.author_avatar_url || "",
+          content: t.content || "", rating: t.rating ?? 5,
+          is_active: t.is_active !== false, sort_order: t.sort_order,
+        }))
+      );
+      if (error) throw error;
+    }
+    setTestimonials(normalized);
+  };
+
   const uploadImage = async (file: File, type: "avatar" | "cover" | "avatar_layout2" | "cover_layout2"): Promise<string | null> => {
     if (!agencyId || !profile) return null;
     const bucket = type.startsWith("avatar") ? "avatars" : "covers";
@@ -338,8 +357,8 @@ export function useCreatorData(agencyId: string | undefined, creatorId?: string)
   };
 
   return {
-    profile, links, socialLinks, products, campaigns, heroReels, loading,
-    saveProfile, saveLinks, saveSocialLinks, saveProducts, saveCampaigns, saveHeroReels,
+    profile, links, socialLinks, products, campaigns, heroReels, testimonials, loading,
+    saveProfile, saveLinks, saveSocialLinks, saveProducts, saveCampaigns, saveHeroReels, saveTestimonials,
     uploadImage, uploadContentImage, refetch: fetchData,
   };
 }
