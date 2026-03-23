@@ -1,18 +1,10 @@
-import { useState } from "react";
+import { useState, useMemo } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { Link, useNavigate } from "react-router-dom";
 import { ArrowRight, X, Eye, Sparkles } from "lucide-react";
 import in1Logo from "@/assets/in1-logo.png";
-
-import templatePortfolio from "@/assets/templates/template-portfolio.jpg";
-import templateSales from "@/assets/templates/template-sales.jpg";
-import templateInfluencer from "@/assets/templates/template-influencer.jpg";
-import templateProfessional from "@/assets/templates/template-professional.jpg";
-import templateLocal from "@/assets/templates/template-local.jpg";
-import templateArtist from "@/assets/templates/template-artist.jpg";
-import templatePodcast from "@/assets/templates/template-podcast.jpg";
-import templateCoach from "@/assets/templates/template-coach.jpg";
-import templateEcommerce from "@/assets/templates/template-ecommerce.jpg";
+import { TEMPLATE_DATA, type FullTemplateData } from "@/lib/templateData";
+import TemplatePreviewCard from "@/components/kreatorz/creator/TemplatePreviewCard";
 
 const NICHES = [
   { id: "all", label: "Todos", emoji: "✨" },
@@ -29,94 +21,6 @@ const NICHES = [
   { id: "ecommerce", label: "E-commerce", emoji: "🛒" },
 ];
 
-interface Template {
-  id: string;
-  name: string;
-  description: string;
-  objective: string;
-  image: string;
-  niches: string[];
-  popular?: boolean;
-}
-
-const TEMPLATES: Template[] = [
-  {
-    id: "portfolio",
-    name: "Portfólio Visual",
-    description: "Mostre seu trabalho com impacto. Grid de imagens, vídeos e links organizados.",
-    objective: "Exibir trabalhos e atrair clientes",
-    image: templatePortfolio,
-    niches: ["creator", "fotografo", "videomaker", "artista"],
-    popular: true,
-  },
-  {
-    id: "sales",
-    name: "Página de Vendas",
-    description: "Converta seguidores em clientes com CTA poderosos e vitrine de produtos.",
-    objective: "Vender produtos e serviços",
-    image: templateSales,
-    niches: ["freelancer", "social", "agencia", "ecommerce"],
-  },
-  {
-    id: "influencer",
-    name: "Influencer Bio",
-    description: "Bio completa com stats, parcerias de marcas e links para todas as redes.",
-    objective: "Centralizar presença digital",
-    image: templateInfluencer,
-    niches: ["creator", "social"],
-    popular: true,
-  },
-  {
-    id: "professional",
-    name: "Profissional",
-    description: "Cartão de visita digital com serviços, contato e credibilidade.",
-    objective: "Gerar autoridade e leads",
-    image: templateProfessional,
-    niches: ["freelancer", "agencia", "social", "coach"],
-  },
-  {
-    id: "local",
-    name: "Negócio Local",
-    description: "Horários, localização, cardápio e avaliações. Tudo em um link.",
-    objective: "Facilitar acesso do cliente local",
-    image: templateLocal,
-    niches: ["local"],
-  },
-  {
-    id: "artist",
-    name: "Artista",
-    description: "Galeria visual imersiva para exibir portfólio artístico e exposições.",
-    objective: "Criar presença artística impactante",
-    image: templateArtist,
-    niches: ["artista", "fotografo", "videomaker"],
-  },
-  {
-    id: "podcast",
-    name: "Podcast",
-    description: "Centralize seus episódios, plataformas de áudio e links para ouvintes.",
-    objective: "Crescer audiência e facilitar acesso",
-    image: templatePodcast,
-    niches: ["podcast", "creator"],
-    popular: true,
-  },
-  {
-    id: "coach",
-    name: "Coach & Mentor",
-    description: "Apresente seus serviços, depoimentos e agenda de sessões em um só lugar.",
-    objective: "Atrair alunos e gerar autoridade",
-    image: templateCoach,
-    niches: ["coach", "freelancer"],
-  },
-  {
-    id: "ecommerce",
-    name: "Loja Online",
-    description: "Vitrine de produtos com links diretos para compra e promoções em destaque.",
-    objective: "Vender produtos e aumentar conversão",
-    image: templateEcommerce,
-    niches: ["ecommerce", "local"],
-  },
-];
-
 const fadeUp = {
   hidden: { opacity: 0, y: 32 },
   visible: (i: number) => ({
@@ -128,17 +32,17 @@ const fadeUp = {
 
 export default function Templates() {
   const [activeNiche, setActiveNiche] = useState("all");
-  const [selectedTemplate, setSelectedTemplate] = useState<Template | null>(null);
+  const [selectedTemplate, setSelectedTemplate] = useState<FullTemplateData | null>(null);
   const navigate = useNavigate();
 
   const handleUseTemplate = (templateId: string) => {
     navigate(`/login?template=${templateId}`);
   };
 
-  const filtered =
-    activeNiche === "all"
-      ? TEMPLATES
-      : TEMPLATES.filter((t) => t.niches.includes(activeNiche));
+  const filtered = useMemo(
+    () => activeNiche === "all" ? TEMPLATE_DATA : TEMPLATE_DATA.filter((t) => t.niches.includes(activeNiche)),
+    [activeNiche]
+  );
 
   return (
     <div className="min-h-screen bg-background text-foreground">
@@ -149,16 +53,10 @@ export default function Templates() {
             <img src={in1Logo} alt="in1.bio" className="h-7" />
           </Link>
           <div className="flex items-center gap-3">
-            <Link
-              to="/login"
-              className="text-sm font-medium text-muted-foreground hover:text-foreground transition-colors"
-            >
+            <Link to="/login" className="text-sm font-medium text-muted-foreground hover:text-foreground transition-colors">
               Entrar
             </Link>
-            <Link
-              to="/login"
-              className="rounded-xl bg-primary px-5 py-2.5 text-sm font-bold text-primary-foreground transition-all hover:opacity-90 active:scale-[0.97]"
-            >
+            <Link to="/login" className="rounded-xl bg-primary px-5 py-2.5 text-sm font-bold text-primary-foreground transition-all hover:opacity-90 active:scale-[0.97]">
               Criar grátis
             </Link>
           </div>
@@ -168,11 +66,7 @@ export default function Templates() {
       {/* Hero */}
       <section className="relative overflow-hidden pt-20 pb-16 text-center">
         <div className="pointer-events-none absolute -top-40 left-1/2 -translate-x-1/2 h-[500px] w-[800px] rounded-full bg-primary/[0.06] blur-[120px]" />
-        <motion.div
-          initial="hidden"
-          animate="visible"
-          className="relative mx-auto max-w-3xl px-6"
-        >
+        <motion.div initial="hidden" animate="visible" className="relative mx-auto max-w-3xl px-6">
           <motion.div variants={fadeUp} custom={0} className="mb-4 inline-flex items-center gap-2 rounded-full border border-border bg-card/60 px-4 py-1.5 text-xs font-semibold text-muted-foreground backdrop-blur-sm">
             <Sparkles className="h-3.5 w-3.5 text-primary" />
             Templates prontos para usar
@@ -211,10 +105,7 @@ export default function Templates() {
 
       {/* Grid */}
       <section className="mx-auto max-w-7xl px-6 py-12">
-        <motion.div
-          layout
-          className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3"
-        >
+        <motion.div layout className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
           <AnimatePresence mode="popLayout">
             {filtered.map((template, i) => (
               <motion.div
@@ -231,14 +122,7 @@ export default function Templates() {
                   </div>
                 )}
                 <div className="relative aspect-[3/4] overflow-hidden">
-                  <img
-                    src={template.image}
-                    alt={template.name}
-                    loading="lazy"
-                    width={640}
-                    height={960}
-                    className="h-full w-full object-cover transition-transform duration-500 group-hover:scale-105"
-                  />
+                  <TemplatePreviewCard template={template} />
                   <div className="absolute inset-0 flex items-center justify-center bg-background/60 opacity-0 backdrop-blur-sm transition-opacity duration-300 group-hover:opacity-100">
                     <button
                       onClick={() => setSelectedTemplate(template)}
@@ -320,24 +204,16 @@ export default function Templates() {
               >
                 <X className="h-5 w-5" />
               </button>
-              <div className="hidden w-1/2 overflow-hidden md:block">
-                <img
-                  src={selectedTemplate.image}
-                  alt={selectedTemplate.name}
-                  className="h-full w-full object-cover"
-                />
+              <div className="hidden w-1/2 overflow-y-auto md:block bg-background">
+                <TemplatePreviewCard template={selectedTemplate} fullHeight />
               </div>
               <div className="flex w-full flex-col justify-center p-8 md:w-1/2 md:p-10">
                 <div className="mb-4 inline-flex w-fit items-center gap-1.5 rounded-full border border-primary/30 bg-primary/10 px-3 py-1 text-xs font-semibold text-primary">
                   <Sparkles className="h-3 w-3" />
                   Template
                 </div>
-                <h2 className="font-display text-3xl font-extrabold text-foreground">
-                  {selectedTemplate.name}
-                </h2>
-                <p className="mt-3 text-muted-foreground leading-relaxed">
-                  {selectedTemplate.description}
-                </p>
+                <h2 className="font-display text-3xl font-extrabold text-foreground">{selectedTemplate.name}</h2>
+                <p className="mt-3 text-muted-foreground leading-relaxed">{selectedTemplate.description}</p>
                 <div className="mt-5 rounded-xl border border-border bg-background/50 p-4">
                   <p className="text-xs font-semibold text-muted-foreground uppercase tracking-wider mb-1">Objetivo</p>
                   <p className="text-sm font-medium text-foreground">{selectedTemplate.objective}</p>
