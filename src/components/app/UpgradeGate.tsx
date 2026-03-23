@@ -2,6 +2,7 @@ import { ReactNode, useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { Crown, X, Sparkles, ArrowRight } from "lucide-react";
 import { useSubscription } from "@/hooks/useSubscription";
+import { useNavigate } from "react-router-dom";
 
 interface UpgradeGateProps {
   /** The feature key to check — must be a boolean allow_ field */
@@ -68,6 +69,7 @@ export default function UpgradeGate({
 }
 
 function UpgradeModal({ featureLabel, onClose }: { featureLabel: string; onClose: () => void }) {
+  const navigate = useNavigate();
   return (
     <motion.div
       className="fixed inset-0 z-[9999] flex items-center justify-center p-4"
@@ -118,6 +120,7 @@ function UpgradeModal({ featureLabel, onClose }: { featureLabel: string; onClose
           </div>
 
           <button
+            onClick={() => { onClose(); navigate("/app/checkout"); }}
             className="w-full py-3.5 bg-primary text-primary-foreground font-bold rounded-2xl transition-all hover:shadow-[0_0_30px_hsl(var(--primary)/0.25)] hover:scale-[1.02] active:scale-[0.98] flex items-center justify-center gap-2"
           >
             Fazer upgrade — R$17,90/mês

@@ -17,6 +17,7 @@ import ResetPassword from "@/pages/ResetPassword";
 import Dashboard from "@/pages/app/Dashboard";
 import Creators from "@/pages/app/Creators";
 import CreatorEdit from "@/pages/app/CreatorEdit";
+import Checkout from "@/pages/app/Checkout";
 import Campaigns from "@/pages/app/Campaigns";
 import Analytics from "@/pages/app/Analytics";
 import Settings from "@/pages/app/Settings";
@@ -57,6 +58,7 @@ const App = () => (
                 <Route path="settings" element={<Settings />} />
                 <Route path="members" element={<Members />} />
                 <Route path="referrals" element={<Referrals />} />
+                <Route path="checkout" element={<Checkout />} />
               </Route>
 
               <Route path="*" element={<NotFound />} />
