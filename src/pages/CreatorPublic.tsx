@@ -66,7 +66,7 @@ export default function CreatorPublic() {
     const handleScroll = () => {
       const scrollEl = document.querySelector('[data-preview-scroll]') as HTMLElement | null;
       const scrollY = scrollEl ? scrollEl.scrollTop : window.scrollY;
-      setTopButtonsOpacity(Math.max(0, 1 - scrollY / 120));
+      setTopButtonsOpacity(Math.max(0, 1 - scrollY / 60));
     };
 
     window.addEventListener("scroll", handleScroll, { passive: true });
@@ -252,7 +252,7 @@ export default function CreatorPublic() {
     <div className="relative">
       {/* Top buttons - inside content area, fade on scroll */}
       <div
-        className="fixed top-0 left-0 right-0 z-[40] pointer-events-none transition-opacity duration-300"
+        className="fixed top-0 left-0 right-0 z-[30] pointer-events-none transition-opacity duration-200"
         style={{ opacity: topButtonsOpacity, pointerEvents: topButtonsOpacity < 0.1 ? "none" : undefined }}
       >
         <div className="max-w-[520px] mx-auto flex items-center justify-between px-4 pt-3">

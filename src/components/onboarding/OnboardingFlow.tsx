@@ -220,11 +220,11 @@ export default function OnboardingFlow({ onComplete }: { onComplete: () => void 
         ? { ...templatePreset.campaign, creator_id: creatorId, live: true, sort_order: 0 }
         : { creator_id: creatorId, title: "🔥 Conteúdo Exclusivo", description: "Confira meu novo material especial", url: "https://exemplo.com/exclusivo", live: true, sort_order: 0 };
 
-      const promises: Promise<any>[] = [
+      const promises: PromiseLike<any>[] = [
         supabase.from("creator_links").insert(
           linksToCreate.map(l => ({ ...l, creator_id: creatorId }))
-        ),
-        supabase.from("campaigns").insert(campaignData),
+        ).then(),
+        supabase.from("campaigns").insert(campaignData).then(),
       ];
 
       if (templatePreset?.testimonials?.length) {
@@ -234,7 +234,7 @@ export default function OnboardingFlow({ onComplete }: { onComplete: () => void 
               creator_id: creatorId, author_name: t.author_name, author_role: t.author_role,
               content: t.content, rating: t.rating, is_active: true, sort_order: i,
             }))
-          )
+          ).then()
         );
       }
 
