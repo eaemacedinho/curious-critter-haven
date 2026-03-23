@@ -90,12 +90,71 @@ export default function OnboardingChecklist({ state }: { state: OnboardingState 
             className="overflow-hidden"
           >
             <div className="px-4 pb-4 space-y-1.5">
-              {TASKS.map((task, i) => {
+              {TASKS.map((task) => {
                 const done = state.checklist[task.key];
+                const isPublish = task.key === "published";
+
+                const handlePublish = async () => {
+                  if (done || publishing || !agency) return;
+                  setPublishing(true);
+                  try {
+                    const { data: creators } = await supabase
+                      .from("creators")
+                      .select("id, is_published")
+                      .eq("agency_id", agency.id);
+                    if (!creators?.length) {
+                      toast.error("Crie um creator primeiro!");
+                      setPublishing(false);
+                      return;
+                    }
+                    const unpublished = creators.filter(c => !c.is_published);
+                    const toPublish = unpublished.length > 0 ? unpublished : creators;
+                    await supabase.from("creators").update({ is_published: true }).eq("id", toPublish[0].id);
+                    localStorage.setItem("in1_first_publish", "true");
+                    toast.success("Página publicada com sucesso! 🚀");
+                    state.refreshChecklist();
+                  } catch {
+                    toast.error("Erro ao publicar");
+                  }
+                  setPublishing(false);
+                };
+
+                if (isPublish) {
+                  return (
+                    <button
+                      key={task.key}
+                      onClick={handlePublish}
+                      disabled={done || publishing}
+                      className={`w-full flex items-center gap-3 p-3 rounded-xl transition-all duration-200 text-left ${
+                        done
+                          ? "bg-primary/5 opacity-60"
+                          : "bg-card hover:bg-primary/5 border border-border hover:border-primary/20"
+                      }`}
+                    >
+                      <div className={`w-7 h-7 rounded-full flex items-center justify-center text-sm flex-shrink-0 transition-all ${
+                        done ? "bg-primary/20 text-primary" : "bg-muted text-muted-foreground"
+                      }`}>
+                        {done ? "✓" : task.icon}
+                      </div>
+                      <div className="flex-1 min-w-0">
+                        <div className={`text-sm font-medium ${done ? "line-through text-muted-foreground" : "text-foreground"}`}>
+                          {task.label}
+                        </div>
+                        <div className="text-[0.68rem] text-muted-foreground">{task.desc}</div>
+                      </div>
+                      {!done && (
+                        <span className="text-xs text-primary font-medium">
+                          {publishing ? "Publicando..." : "Publicar →"}
+                        </span>
+                      )}
+                    </button>
+                  );
+                }
+
                 return (
                   <Link
                     key={task.key}
-                    to={task.link}
+                    to={task.link!}
                     className={`flex items-center gap-3 p-3 rounded-xl transition-all duration-200 ${
                       done
                         ? "bg-primary/5 opacity-60"
@@ -103,9 +162,7 @@ export default function OnboardingChecklist({ state }: { state: OnboardingState 
                     }`}
                   >
                     <div className={`w-7 h-7 rounded-full flex items-center justify-center text-sm flex-shrink-0 transition-all ${
-                      done
-                        ? "bg-primary/20 text-primary"
-                        : "bg-muted text-muted-foreground"
+                      done ? "bg-primary/20 text-primary" : "bg-muted text-muted-foreground"
                     }`}>
                       {done ? "✓" : task.icon}
                     </div>
