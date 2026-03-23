@@ -31,6 +31,7 @@ interface Props {
   products: CreatorProduct[];
   campaigns: CreatorCampaign[];
   heroReels?: HeroReelData[];
+  testimonials?: Testimonial[];
   agencyName?: string;
   agencyLogoUrl?: string;
   agencyFooterText?: string;
