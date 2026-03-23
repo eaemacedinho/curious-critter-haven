@@ -98,7 +98,10 @@ export default function Analytics() {
             </div>
           </div>
         ) : (
-          <CampaignAnalytics agencyId={agency?.id} />
+          <div className="space-y-8">
+            <ReelAnalytics agencyId={agency?.id} />
+            <CampaignAnalytics agencyId={agency?.id} />
+          </div>
         )}
       </div>
     </UpgradeGate>
