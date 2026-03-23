@@ -18,7 +18,7 @@ const STYLE_MAP: Record<VisualStyle, { primary: string; accent: string; layout: 
   neon: { primary: "#00f0ff", accent: "#ff00e5", layout: "layout2" },
 };
 
-export const TEMPLATE_PRESETS: Record<string, { bio: string; layout: string; style: VisualStyle; links: { title: string; url: string; icon: string; sort_order: number }[]; campaign?: { title: string; description: string; url: string } }> = {
+export const TEMPLATE_PRESETS: Record<string, { bio: string; layout: string; style: VisualStyle; links: { title: string; url: string; icon: string; sort_order: number }[]; campaign?: { title: string; description: string; url: string }; testimonials?: { author_name: string; author_role: string; content: string; rating: number }[] }> = {
   portfolio: {
     bio: "Confira meu portfólio e trabalhos recentes. 📸",
     layout: "layout1",
