@@ -21,7 +21,6 @@ export default function OnboardingChecklist({ state }: { state: OnboardingState 
   const [expanded, setExpanded] = useState(true);
   const [showConfetti, setShowConfetti] = useState(false);
   const [publishing, setPublishing] = useState(false);
-  const [showConfetti, setShowConfetti] = useState(false);
 
   useEffect(() => {
     if (state.checklistProgress === 4 && !localStorage.getItem(CONFETTI_KEY)) {
