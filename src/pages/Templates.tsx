@@ -98,6 +98,11 @@ const fadeUp = {
 export default function Templates() {
   const [activeNiche, setActiveNiche] = useState("all");
   const [selectedTemplate, setSelectedTemplate] = useState<Template | null>(null);
+  const navigate = useNavigate();
+
+  const handleUseTemplate = (templateId: string) => {
+    navigate(`/login?template=${templateId}`);
+  };
 
   const filtered =
     activeNiche === "all"
