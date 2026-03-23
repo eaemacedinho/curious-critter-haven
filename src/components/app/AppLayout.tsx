@@ -2,15 +2,17 @@ import { useState, useEffect } from "react";
 import { Outlet, useNavigate, useLocation, Link } from "react-router-dom";
 import { useAuth } from "@/hooks/useAuth";
 import { useTenant } from "@/hooks/useTenant";
+import { useSubscription } from "@/hooks/useSubscription";
 import { useOnboarding } from "@/hooks/useOnboarding";
 import { toast } from "sonner";
 import GuidedTooltips from "@/components/onboarding/GuidedTooltips";
+import { Crown } from "lucide-react";
 
 const navItems = [
   { icon: "▦", label: "Dashboard", path: "/app", tour: "dashboard" },
   { icon: "👥", label: "Creators", path: "/app/creators", tour: "creators" },
   { icon: "📢", label: "Campanhas", path: "/app/campaigns", tour: "campaigns" },
-  { icon: "📊", label: "Analytics", path: "/app/analytics", tour: "analytics" },
+  { icon: "📊", label: "Analytics", path: "/app/analytics", tour: "analytics", pro: true },
 ];
 
 const settingsItems = [
@@ -42,6 +44,7 @@ function hexToHsl(hex: string): string | null {
 export default function AppLayout() {
   const { user, signOut } = useAuth();
   const { agency } = useTenant();
+  const { currentPlan, isPro } = useSubscription();
   const onboarding = useOnboarding();
   const navigate = useNavigate();
   const location = useLocation();
@@ -102,14 +105,37 @@ export default function AppLayout() {
           </div>
         )}
         <div className="min-w-0 flex-1">
-          <div className="text-sm font-bold text-foreground truncate">
-            {agency?.name || "Minha Agência"}
+          <div className="flex items-center gap-1.5">
+            <span className="text-sm font-bold text-foreground truncate">
+              {agency?.name || "Minha Agência"}
+            </span>
+            <span className={`text-[0.5rem] font-extrabold px-1.5 py-0.5 rounded-md uppercase tracking-wider ${
+              isPro ? "bg-primary/15 text-primary" : "bg-muted text-muted-foreground"
+            }`}>
+              {currentPlan === "scale" ? "Scale" : isPro ? "Pro" : "Free"}
+            </span>
           </div>
           <div className="text-[0.65rem] text-muted-foreground truncate">
             {agency?.slug ? `in1.bio/${agency.slug}` : "in1.bio"}
           </div>
         </div>
       </div>
+
+      {/* Upgrade CTA for free users */}
+      {!isPro && (
+        <div className="mx-3 mb-5 p-3 bg-primary/5 border border-primary/10 rounded-xl">
+          <div className="flex items-center gap-2 mb-1.5">
+            <Crown className="w-3.5 h-3.5 text-primary" />
+            <span className="text-[0.68rem] font-bold text-foreground">Upgrade Pro</span>
+          </div>
+          <p className="text-[0.6rem] text-muted-foreground mb-2 leading-relaxed">
+            Desbloqueie analytics, layout imersivo e mais por R$17,90/mês
+          </p>
+          <button className="w-full py-2 bg-primary text-primary-foreground text-[0.65rem] font-bold rounded-lg transition-all hover:shadow-[0_0_20px_hsl(var(--primary)/0.2)]">
+            Fazer upgrade
+          </button>
+        </div>
+      )}
 
       {/* Main nav */}
       <div className="mb-6">
@@ -130,6 +156,12 @@ export default function AppLayout() {
           >
             <span className="text-xs w-4 text-center">{item.icon}</span>
             {item.label}
+            {(item as any).pro && !isPro && (
+              <span className="ml-auto inline-flex items-center gap-0.5 px-1.5 py-0.5 bg-primary/10 text-primary text-[0.55rem] font-extrabold rounded-md uppercase tracking-wider">
+                <Crown className="w-2.5 h-2.5" />
+                Pro
+              </span>
+            )}
           </Link>
         ))}
       </div>

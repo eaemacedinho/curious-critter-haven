@@ -603,6 +603,60 @@ export type Database = {
           },
         ]
       }
+      plan_limits: {
+        Row: {
+          allow_analytics: boolean
+          allow_custom_colors: boolean
+          allow_custom_domain: boolean
+          allow_layout_immersive: boolean
+          allow_page_effects: boolean
+          allow_remove_branding: boolean
+          allow_team_members: boolean
+          allow_verified_badge: boolean
+          id: string
+          max_campaigns: number
+          max_creators: number
+          max_hero_reels: number
+          max_links: number
+          max_products: number
+          plan: Database["public"]["Enums"]["plan_type"]
+        }
+        Insert: {
+          allow_analytics?: boolean
+          allow_custom_colors?: boolean
+          allow_custom_domain?: boolean
+          allow_layout_immersive?: boolean
+          allow_page_effects?: boolean
+          allow_remove_branding?: boolean
+          allow_team_members?: boolean
+          allow_verified_badge?: boolean
+          id?: string
+          max_campaigns?: number
+          max_creators?: number
+          max_hero_reels?: number
+          max_links?: number
+          max_products?: number
+          plan: Database["public"]["Enums"]["plan_type"]
+        }
+        Update: {
+          allow_analytics?: boolean
+          allow_custom_colors?: boolean
+          allow_custom_domain?: boolean
+          allow_layout_immersive?: boolean
+          allow_page_effects?: boolean
+          allow_remove_branding?: boolean
+          allow_team_members?: boolean
+          allow_verified_badge?: boolean
+          id?: string
+          max_campaigns?: number
+          max_creators?: number
+          max_hero_reels?: number
+          max_links?: number
+          max_products?: number
+          plan?: Database["public"]["Enums"]["plan_type"]
+        }
+        Relationships: []
+      }
       profiles: {
         Row: {
           agency_id: string | null
@@ -677,6 +731,53 @@ export type Database = {
         }
         Relationships: []
       }
+      subscriptions: {
+        Row: {
+          agency_id: string
+          created_at: string
+          expires_at: string | null
+          id: string
+          payment_id: string | null
+          payment_provider: string | null
+          plan: Database["public"]["Enums"]["plan_type"]
+          started_at: string
+          status: string
+          updated_at: string
+        }
+        Insert: {
+          agency_id: string
+          created_at?: string
+          expires_at?: string | null
+          id?: string
+          payment_id?: string | null
+          payment_provider?: string | null
+          plan?: Database["public"]["Enums"]["plan_type"]
+          started_at?: string
+          status?: string
+          updated_at?: string
+        }
+        Update: {
+          agency_id?: string
+          created_at?: string
+          expires_at?: string | null
+          id?: string
+          payment_id?: string | null
+          payment_provider?: string | null
+          plan?: Database["public"]["Enums"]["plan_type"]
+          started_at?: string
+          status?: string
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "subscriptions_agency_id_fkey"
+            columns: ["agency_id"]
+            isOneToOne: true
+            referencedRelation: "agencies"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       user_roles: {
         Row: {
           agency_id: string
@@ -730,6 +831,7 @@ export type Database = {
     }
     Enums: {
       app_role: "owner" | "admin" | "editor" | "viewer"
+      plan_type: "free" | "pro" | "scale"
     }
     CompositeTypes: {
       [_ in never]: never
@@ -858,6 +960,7 @@ export const Constants = {
   public: {
     Enums: {
       app_role: ["owner", "admin", "editor", "viewer"],
+      plan_type: ["free", "pro", "scale"],
     },
   },
 } as const

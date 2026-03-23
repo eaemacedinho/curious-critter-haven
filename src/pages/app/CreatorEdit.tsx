@@ -3,6 +3,7 @@ import { Link, useParams } from "react-router-dom";
 import { toast } from "sonner";
 import { useTenant } from "@/hooks/useTenant";
 import { useCreatorData } from "@/hooks/useCreatorData";
+import { useSubscription } from "@/hooks/useSubscription";
 import CreatorEditPanel, { type CreatorEditPanelHandle } from "@/components/kreatorz/creator/CreatorEditPanel";
 
 export default function CreatorEdit() {
@@ -50,12 +51,18 @@ export default function CreatorEdit() {
     );
   }
 
+  const { canUse } = useSubscription();
+
   const layoutOptions = [
     { id: "layout1", label: "Padrão" },
-    { id: "layout2", label: "Imersivo" },
+    { id: "layout2", label: "Imersivo", pro: true },
   ];
 
   const handleSetPublicLayout = async (layout: string) => {
+    if (layout === "layout2" && !canUse("allow_layout_immersive")) {
+      toast.error("Layout Imersivo é exclusivo do plano Pro. Faça upgrade!");
+      return;
+    }
     try {
       await saveProfile({ layout_type: layout } as any);
       const name = layoutOptions.find(l => l.id === layout)?.label || layout;
