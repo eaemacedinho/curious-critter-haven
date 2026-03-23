@@ -1,6 +1,7 @@
 import { useRef, useState } from "react";
-import { Link, useParams } from "react-router-dom";
+import { Link, useParams, useNavigate } from "react-router-dom";
 import { toast } from "sonner";
+import { Sparkles } from "lucide-react";
 import { useTenant } from "@/hooks/useTenant";
 import { useCreatorData } from "@/hooks/useCreatorData";
 import { useSubscription } from "@/hooks/useSubscription";
