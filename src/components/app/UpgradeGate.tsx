@@ -2,6 +2,8 @@ import { ReactNode, useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { Crown, X, Sparkles, ArrowRight } from "lucide-react";
 import { useSubscription } from "@/hooks/useSubscription";
+import { useNavigate } from "react-router-dom";
+import { useSubscription } from "@/hooks/useSubscription";
 
 interface UpgradeGateProps {
   /** The feature key to check — must be a boolean allow_ field */

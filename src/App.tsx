@@ -58,6 +58,7 @@ const App = () => (
                 <Route path="settings" element={<Settings />} />
                 <Route path="members" element={<Members />} />
                 <Route path="referrals" element={<Referrals />} />
+                <Route path="checkout" element={<Checkout />} />
               </Route>
 
               <Route path="*" element={<NotFound />} />
