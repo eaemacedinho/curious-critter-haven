@@ -493,6 +493,53 @@ export type Database = {
           },
         ]
       }
+      creator_testimonials: {
+        Row: {
+          author_avatar_url: string | null
+          author_name: string
+          author_role: string | null
+          content: string
+          created_at: string
+          creator_id: string
+          id: string
+          is_active: boolean
+          rating: number | null
+          sort_order: number | null
+        }
+        Insert: {
+          author_avatar_url?: string | null
+          author_name?: string
+          author_role?: string | null
+          content?: string
+          created_at?: string
+          creator_id: string
+          id?: string
+          is_active?: boolean
+          rating?: number | null
+          sort_order?: number | null
+        }
+        Update: {
+          author_avatar_url?: string | null
+          author_name?: string
+          author_role?: string | null
+          content?: string
+          created_at?: string
+          creator_id?: string
+          id?: string
+          is_active?: boolean
+          rating?: number | null
+          sort_order?: number | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "creator_testimonials_creator_id_fkey"
+            columns: ["creator_id"]
+            isOneToOne: false
+            referencedRelation: "creators"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       creators: {
         Row: {
           agency_id: string | null
@@ -521,6 +568,7 @@ export type Database = {
           page_effects: Json | null
           section_order: Json
           slug: string
+          spotify_url: string | null
           stats: Json | null
           tags: Json | null
           updated_at: string
@@ -554,6 +602,7 @@ export type Database = {
           page_effects?: Json | null
           section_order?: Json
           slug?: string
+          spotify_url?: string | null
           stats?: Json | null
           tags?: Json | null
           updated_at?: string
@@ -587,6 +636,7 @@ export type Database = {
           page_effects?: Json | null
           section_order?: Json
           slug?: string
+          spotify_url?: string | null
           stats?: Json | null
           tags?: Json | null
           updated_at?: string
