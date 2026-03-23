@@ -66,7 +66,7 @@ export default function CreatorPublic() {
     const handleScroll = () => {
       const scrollEl = document.querySelector('[data-preview-scroll]') as HTMLElement | null;
       const scrollY = scrollEl ? scrollEl.scrollTop : window.scrollY;
-      setTopButtonsOpacity(Math.max(0, 1 - scrollY / 120));
+      setTopButtonsOpacity(Math.max(0, 1 - scrollY / 60));
     };
 
     window.addEventListener("scroll", handleScroll, { passive: true });
