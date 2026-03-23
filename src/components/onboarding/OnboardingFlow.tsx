@@ -220,12 +220,25 @@ export default function OnboardingFlow({ onComplete }: { onComplete: () => void 
         ? { ...templatePreset.campaign, creator_id: creatorId, live: true, sort_order: 0 }
         : { creator_id: creatorId, title: "🔥 Conteúdo Exclusivo", description: "Confira meu novo material especial", url: "https://exemplo.com/exclusivo", live: true, sort_order: 0 };
 
-      await Promise.all([
+      const promises: Promise<any>[] = [
         supabase.from("creator_links").insert(
           linksToCreate.map(l => ({ ...l, creator_id: creatorId }))
         ),
         supabase.from("campaigns").insert(campaignData),
-      ]);
+      ];
+
+      if (templatePreset?.testimonials?.length) {
+        promises.push(
+          supabase.from("creator_testimonials").insert(
+            templatePreset.testimonials.map((t, i) => ({
+              creator_id: creatorId, author_name: t.author_name, author_role: t.author_role,
+              content: t.content, rating: t.rating, is_active: true, sort_order: i,
+            }))
+          )
+        );
+      }
+
+      await Promise.all(promises);
 
       await supabase
         .from("agency_settings")
