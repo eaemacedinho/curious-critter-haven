@@ -164,18 +164,20 @@ export default function CreatorPublic() {
   }, [handle]);
 
   async function loadRelated(creatorId: string) {
-    const [linksRes, socialRes, productsRes, campaignsRes, reelsRes] = await Promise.all([
+    const [linksRes, socialRes, productsRes, campaignsRes, reelsRes, testimonialsRes] = await Promise.all([
       supabase.from("creator_links").select("*").eq("creator_id", creatorId).order("sort_order"),
       supabase.from("creator_social_links").select("*").eq("creator_id", creatorId).order("sort_order"),
       supabase.from("creator_products").select("*").eq("creator_id", creatorId).order("sort_order"),
       supabase.from("campaigns").select("*").eq("creator_id", creatorId).order("sort_order"),
       supabase.from("creator_hero_reels").select("*").eq("creator_id", creatorId).order("sort_order"),
+      supabase.from("creator_testimonials").select("*").eq("creator_id", creatorId).order("sort_order"),
     ]);
     setLinks((linksRes.data as CreatorLink[]) || []);
     setSocialLinks((socialRes.data as SocialLink[]) || []);
     setProducts((productsRes.data as CreatorProduct[]) || []);
     setCampaigns((campaignsRes.data as CreatorCampaign[]) || []);
     setHeroReels((reelsRes.data as HeroReelData[]) || []);
+    setTestimonials((testimonialsRes.data as Testimonial[]) || []);
   }
 
   const handleLinkClick = useCallback((link: CreatorLink) => {
