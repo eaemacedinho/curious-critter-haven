@@ -2,9 +2,11 @@ import { useState, useEffect } from "react";
 import { Outlet, useNavigate, useLocation, Link } from "react-router-dom";
 import { useAuth } from "@/hooks/useAuth";
 import { useTenant } from "@/hooks/useTenant";
+import { useSubscription } from "@/hooks/useSubscription";
 import { useOnboarding } from "@/hooks/useOnboarding";
 import { toast } from "sonner";
 import GuidedTooltips from "@/components/onboarding/GuidedTooltips";
+import { Crown } from "lucide-react";
 
 const navItems = [
   { icon: "▦", label: "Dashboard", path: "/app", tour: "dashboard" },
