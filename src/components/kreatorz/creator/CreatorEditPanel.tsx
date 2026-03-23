@@ -1659,6 +1659,57 @@ const CreatorEditPanel = forwardRef<CreatorEditPanelHandle, Props>(function Crea
         </button>
       </div>
 
+      {/* 🎙 Spotify Embed */}
+      <div className="mb-8" data-editor-section="spotify">
+        <div className={sectionTitle}>🎙 Spotify / Podcast</div>
+        <p className="text-[0.68rem] text-k-4 mb-3">Cole o link do seu podcast ou perfil no Spotify para exibir o player embutido.</p>
+        <input
+          value={spotifyUrl}
+          onChange={e => setSpotifyUrl(e.target.value)}
+          placeholder="https://open.spotify.com/show/..."
+          className={inputClass}
+        />
+      </div>
+
+      {/* ⭐ Depoimentos */}
+      <div className="mb-8" data-editor-section="testimonials">
+        <div className={sectionTitle}>⭐ Depoimentos <span className="text-k-3 normal-case tracking-normal font-normal">({testimonialsList.length})</span></div>
+        <p className="text-[0.68rem] text-k-4 mb-3">Adicione depoimentos de clientes para aumentar sua credibilidade.</p>
+        {testimonialsList.map((t, i) => (
+          <div key={t.id} className="bg-k-800 border border-primary/10 rounded-2xl p-4 mb-3 space-y-2">
+            <div className="flex items-center justify-between">
+              <span className="text-xs font-semibold text-k-2">Depoimento {i + 1}</span>
+              <div className="flex items-center gap-2">
+                <button onClick={() => setTestimonialsList(testimonialsList.map((x, j) => j === i ? { ...x, is_active: !x.is_active } : x))}
+                  className={`text-[0.65rem] px-2 py-0.5 rounded-full border ${t.is_active ? "border-green-500/30 text-green-400 bg-green-500/10" : "border-border text-k-4"}`}>
+                  {t.is_active ? "ativo" : "inativo"}
+                </button>
+                <button onClick={() => setTestimonialsList(testimonialsList.filter((_, j) => j !== i))} className="text-k-4 hover:text-red-400 text-xs">✕</button>
+              </div>
+            </div>
+            <textarea value={t.content} onChange={e => setTestimonialsList(testimonialsList.map((x, j) => j === i ? { ...x, content: e.target.value } : x))}
+              placeholder="O que o cliente disse..." className={`${inputClass} min-h-[60px] resize-none`} />
+            <div className="grid grid-cols-2 gap-2">
+              <input value={t.author_name} onChange={e => setTestimonialsList(testimonialsList.map((x, j) => j === i ? { ...x, author_name: e.target.value } : x))}
+                placeholder="Nome do autor" className={inputClass} />
+              <input value={t.author_role} onChange={e => setTestimonialsList(testimonialsList.map((x, j) => j === i ? { ...x, author_role: e.target.value } : x))}
+                placeholder="Cargo / Empresa" className={inputClass} />
+            </div>
+            <div className="flex items-center gap-2">
+              <span className="text-xs text-k-4">Nota:</span>
+              {[1,2,3,4,5].map(star => (
+                <button key={star} onClick={() => setTestimonialsList(testimonialsList.map((x, j) => j === i ? { ...x, rating: star } : x))}
+                  className={`text-sm ${star <= t.rating ? "text-primary" : "text-muted"}`}>★</button>
+              ))}
+            </div>
+          </div>
+        ))}
+        <button onClick={() => setTestimonialsList([...testimonialsList, { id: crypto.randomUUID(), creator_id: profile.id, author_name: "", author_role: "", author_avatar_url: "", content: "", rating: 5, is_active: true, sort_order: testimonialsList.length }])}
+          className="flex items-center justify-center gap-2 w-full p-3 border border-dashed border-k-glow rounded-xl text-k-4 text-sm font-medium mt-2 transition-all hover:border-k-400 hover:text-k-300 hover:bg-k-glow active:scale-[0.98]">
+          + Adicionar depoimento
+        </button>
+      </div>
+
       {/* Hero Reel Editor */}
       <div data-editor-section="hero_reel">
       <HeroReelEditor
