@@ -1,5 +1,6 @@
 import { useState } from "react";
 import { toast } from "sonner";
+import { useNavigate } from "react-router-dom";
 import { useAuth } from "@/hooks/useAuth";
 import { extractColorsFromImage } from "@/lib/extractColors";
 import { useTenant } from "@/hooks/useTenant";
@@ -29,6 +30,9 @@ export default function Settings() {
   const [extracting, setExtracting] = useState(false);
   const [canceling, setCanceling] = useState(false);
   const [exporting, setExporting] = useState(false);
+  const [deleting, setDeleting] = useState(false);
+  const [confirmDelete, setConfirmDelete] = useState(false);
+  const navigate = useNavigate();
 
   const handleCancelSubscription = async () => {
     if (!confirm("Tem certeza que deseja cancelar sua assinatura Pro? Você perderá acesso aos recursos premium.")) return;
@@ -528,6 +532,69 @@ export default function Settings() {
                   </div>
                 </div>
               )}
+
+              {/* LGPD Delete Account */}
+              <div className="bg-card border border-destructive/30 rounded-2xl p-5">
+                <div className="flex items-center justify-between">
+                  <div>
+                    <div className="text-sm font-medium text-destructive">Excluir minha conta</div>
+                    <div className="text-[0.66rem] text-muted-foreground">Remove permanentemente todos os seus dados — direito ao esquecimento (LGPD)</div>
+                  </div>
+                  <button
+                    onClick={() => setConfirmDelete(true)}
+                    disabled={deleting}
+                    className="px-4 py-2 bg-destructive/10 text-destructive text-xs font-semibold rounded-xl hover:bg-destructive/20 transition-colors disabled:opacity-60"
+                  >
+                    {deleting ? "⏳ Excluindo..." : "🗑 Excluir conta"}
+                  </button>
+                </div>
+
+                {confirmDelete && (
+                  <div className="mt-4 p-4 bg-destructive/5 border border-destructive/20 rounded-xl space-y-3">
+                    <p className="text-xs text-destructive font-semibold">⚠️ Essa ação é irreversível!</p>
+                    <p className="text-[0.66rem] text-muted-foreground">
+                      Todos os seus creators, links, campanhas, analytics e dados pessoais serão removidos permanentemente.
+                    </p>
+                    <div className="flex gap-2">
+                      <button
+                        onClick={() => setConfirmDelete(false)}
+                        className="px-4 py-2 text-xs text-muted-foreground border border-border rounded-xl hover:bg-accent/10 transition-colors"
+                      >
+                        Cancelar
+                      </button>
+                      <button
+                        onClick={async () => {
+                          setDeleting(true);
+                          try {
+                            const { data: { session } } = await supabase.auth.getSession();
+                            if (!session) throw new Error("Não autenticado");
+                            const projectId = import.meta.env.VITE_SUPABASE_PROJECT_ID;
+                            const res = await fetch(`https://${projectId}.supabase.co/functions/v1/delete-account`, {
+                              method: "POST",
+                              headers: {
+                                "Content-Type": "application/json",
+                                Authorization: `Bearer ${session.access_token}`,
+                              },
+                            });
+                            const data = await res.json();
+                            if (!res.ok) throw new Error(data.error || "Erro ao excluir");
+                            await supabase.auth.signOut();
+                            toast.success("Conta excluída com sucesso.");
+                            navigate("/");
+                          } catch (err: any) {
+                            toast.error(err.message || "Erro ao excluir conta");
+                            setDeleting(false);
+                          }
+                        }}
+                        disabled={deleting}
+                        className="px-4 py-2 bg-destructive text-destructive-foreground text-xs font-bold rounded-xl hover:bg-destructive/90 transition-colors disabled:opacity-60"
+                      >
+                        {deleting ? "Excluindo..." : "Confirmar exclusão"}
+                      </button>
+                    </div>
+                  </div>
+                )}
+              </div>
             </div>
           )}
         </div>
