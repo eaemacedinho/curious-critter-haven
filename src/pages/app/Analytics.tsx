@@ -6,6 +6,7 @@ import { supabase } from "@/integrations/supabase/client";
 import CampaignAnalytics from "@/components/kreatorz/CampaignAnalytics";
 import ReelAnalytics from "@/components/kreatorz/ReelAnalytics";
 import CookieMetrics from "@/components/kreatorz/CookieMetrics";
+import AnalyticsPdfExport from "@/components/app/AnalyticsPdfExport";
 import UpgradeGate from "@/components/app/UpgradeGate";
 
 export default function Analytics() {
@@ -46,11 +47,14 @@ export default function Analytics() {
   return (
     <UpgradeGate feature="allow_analytics" featureLabel="Analytics">
       <div className="max-w-[1200px] mx-auto">
-        <div className="mb-8">
-          <h1 className="font-display text-2xl font-normal text-foreground">Analytics</h1>
-          <p className="text-sm text-muted-foreground mt-0.5">
-            Acompanhe o desempenho de todos os seus creators e campanhas.
-          </p>
+        <div className="mb-8 flex items-center justify-between">
+          <div>
+            <h1 className="font-display text-2xl font-normal text-foreground">Analytics</h1>
+            <p className="text-sm text-muted-foreground mt-0.5">
+              Acompanhe o desempenho de todos os seus creators e campanhas.
+            </p>
+          </div>
+          <AnalyticsPdfExport agencyId={agency?.id} agencyName={agency?.name} />
         </div>
 
         {!hasData ? (

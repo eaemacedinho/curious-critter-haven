@@ -6,6 +6,7 @@ import { useSubscription } from "@/hooks/useSubscription";
 import { useOnboarding } from "@/hooks/useOnboarding";
 import { toast } from "sonner";
 import GuidedTooltips from "@/components/onboarding/GuidedTooltips";
+import DashboardThemeToggle from "@/components/app/ThemeToggle";
 import { Crown } from "lucide-react";
 
 const navItems = [
@@ -239,6 +240,7 @@ export default function AppLayout() {
             ☰
           </button>
           <div className="flex-1" />
+          <DashboardThemeToggle />
           <span className="text-[0.65rem] font-semibold text-muted-foreground">
             {agency?.name || ""}
           </span>
