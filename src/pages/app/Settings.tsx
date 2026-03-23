@@ -4,6 +4,7 @@ import { useAuth } from "@/hooks/useAuth";
 import { extractColorsFromImage } from "@/lib/extractColors";
 import { useTenant } from "@/hooks/useTenant";
 import { usePermissions } from "@/hooks/usePermissions";
+import { useSubscription } from "@/hooks/useSubscription";
 import { supabase } from "@/integrations/supabase/client";
 import { resetOnboarding } from "@/hooks/useOnboarding";
 
