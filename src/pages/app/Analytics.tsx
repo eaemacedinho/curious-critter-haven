@@ -1,8 +1,10 @@
 import { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
 import { useTenant } from "@/hooks/useTenant";
+import { useSubscription } from "@/hooks/useSubscription";
 import { supabase } from "@/integrations/supabase/client";
 import CampaignAnalytics from "@/components/kreatorz/CampaignAnalytics";
+import UpgradeGate from "@/components/app/UpgradeGate";
 
 export default function Analytics() {
   const { agency } = useTenant();

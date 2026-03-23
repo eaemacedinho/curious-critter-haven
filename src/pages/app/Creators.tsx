@@ -57,8 +57,14 @@ export default function Creators() {
     toast.success("URL copiada!");
   };
 
+  const { isWithinLimit } = useSubscription();
+
   const handleCreateCreator = async () => {
     if (!user || !agency || !canEdit) return;
+    if (!isWithinLimit("creators", creators.length)) {
+      toast.error("Limite de creators atingido no plano Free. Faça upgrade para o Pro!");
+      return;
+    }
     setCreating(true);
     const count = creators.length + 1;
     const uniqueSuffix = Date.now().toString(36);
