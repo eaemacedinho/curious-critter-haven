@@ -238,7 +238,7 @@ export default function CreatorPublic() {
     );
   }
 
-  const layoutProps = { profile, links, socialLinks, products, campaigns, heroReels, agencyName, agencyLogoUrl, agencyFooterText, agencyFooterVisible, agencyFooterLink, onLinkClick: handleLinkClick, onCampaignClick: handleCampaignClick };
+  const layoutProps = { profile, links, socialLinks, products, campaigns, heroReels, testimonials, agencyName, agencyLogoUrl, agencyFooterText, agencyFooterVisible, agencyFooterLink, onLinkClick: handleLinkClick, onCampaignClick: handleCampaignClick };
 
   const LayoutComponent = (() => {
     switch (profile.layout_type) {
