@@ -321,7 +321,65 @@ export default function Settings() {
             </div>
           )}
 
-          {activeSection === "domain" && (
+          {activeSection === "subscription" && (
+            <div className="space-y-6">
+              <div>
+                <h2 className="text-lg font-bold text-foreground mb-1">Assinatura</h2>
+                <p className="text-sm text-muted-foreground mb-6">Gerencie seu plano e pagamento.</p>
+              </div>
+
+              <div className="bg-card border border-border rounded-2xl p-5">
+                <div className="flex items-center justify-between">
+                  <div>
+                    <div className="text-[0.66rem] text-muted-foreground uppercase tracking-wider font-bold mb-1">Plano atual</div>
+                    <div className="text-lg font-bold text-foreground capitalize">{currentPlan}</div>
+                    {isPro && (
+                      <div className="text-xs text-muted-foreground mt-1">R$17,90/mês</div>
+                    )}
+                  </div>
+                  <span className={`px-3 py-1.5 rounded-full text-xs font-semibold flex items-center gap-1.5 ${
+                    isPro
+                      ? "bg-primary/10 text-primary"
+                      : "bg-muted text-muted-foreground"
+                  }`}>
+                    <span className="w-1.5 h-1.5 rounded-full bg-current" />
+                    {isPro ? "Ativo" : "Free"}
+                  </span>
+                </div>
+              </div>
+
+              {isPro && subscription?.status === "active" && (
+                <div className="bg-card border border-border rounded-2xl p-5">
+                  <div className="flex items-center justify-between">
+                    <div>
+                      <div className="text-sm font-medium text-foreground">Cancelar assinatura</div>
+                      <div className="text-[0.66rem] text-muted-foreground">Seu plano será revertido para Free imediatamente</div>
+                    </div>
+                    <button
+                      onClick={handleCancelSubscription}
+                      disabled={canceling}
+                      className="px-4 py-2 bg-destructive/10 text-destructive text-xs font-semibold rounded-xl hover:bg-destructive/20 transition-colors disabled:opacity-60"
+                    >
+                      {canceling ? "Cancelando..." : "Cancelar plano"}
+                    </button>
+                  </div>
+                </div>
+              )}
+
+              {!isPro && (
+                <div className="bg-card border border-border rounded-2xl p-5 text-center">
+                  <p className="text-sm text-muted-foreground mb-3">Faça upgrade para o Pro e desbloqueie todos os recursos.</p>
+                  <a
+                    href="/app/checkout"
+                    className="inline-block px-5 py-2.5 bg-primary text-primary-foreground font-semibold text-sm rounded-xl hover:opacity-90 transition-all"
+                  >
+                    Fazer upgrade — R$17,90/mês
+                  </a>
+                </div>
+              )}
+            </div>
+          )}
+
             <div className="space-y-6">
               <div>
                 <h2 className="text-lg font-bold text-foreground mb-1">Domínios</h2>
