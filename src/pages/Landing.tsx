@@ -485,13 +485,17 @@ export default function Landing() {
             <p className="text-sm text-muted-foreground mb-6">Para começar e sentir o poder.</p>
             <ul className="space-y-0 mb-7">
               {[
+                { ok: true, text: "1 creator" },
                 { ok: true, text: "Até 5 links" },
+                { ok: true, text: "Até 3 produtos" },
                 { ok: true, text: "1 layout básico" },
                 { ok: true, text: "Redes sociais" },
-                { ok: true, text: "Analytics básico" },
+                { ok: false, text: "Analytics" },
                 { ok: false, text: "Campanhas spotlight" },
-                { ok: false, text: "Remover branding" },
+                { ok: false, text: "Layout imersivo" },
                 { ok: false, text: "Personalização avançada" },
+                { ok: false, text: "Hero Reels" },
+                { ok: false, text: "Remover branding" },
               ].map((item, i) => (
                 <li key={i} className="flex items-center gap-2.5 py-2 border-b border-border/30 last:border-b-0 text-sm text-muted-foreground">
                   {item.ok ? <Check className="w-4 h-4 text-primary flex-shrink-0" /> : <span className="text-muted-foreground/30 flex-shrink-0">—</span>}
