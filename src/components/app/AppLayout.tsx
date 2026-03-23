@@ -6,6 +6,7 @@ import { useSubscription } from "@/hooks/useSubscription";
 import { useOnboarding } from "@/hooks/useOnboarding";
 import { toast } from "sonner";
 import GuidedTooltips from "@/components/onboarding/GuidedTooltips";
+import DashboardThemeToggle from "@/components/app/ThemeToggle";
 import { Crown } from "lucide-react";
 
 const navItems = [
