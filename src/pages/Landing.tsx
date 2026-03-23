@@ -1,48 +1,67 @@
 import { useState } from "react";
 import { motion } from "framer-motion";
 import { Link, useNavigate } from "react-router-dom";
-import { ArrowRight, Zap, BarChart3, Palette, Users, Globe, Shield, Sparkles, ChevronRight } from "lucide-react";
+import { ArrowRight, ChevronRight, Check, X } from "lucide-react";
 import in1Logo from "@/assets/in1-logo.png";
 import in1Icon from "@/assets/in1-icon.png";
+import heroCreator from "@/assets/landing-hero-creator.jpg";
+import teamImg from "@/assets/landing-team.jpg";
 
 const fadeUp = {
   hidden: { opacity: 0, y: 32 },
   visible: (i: number) => ({
     opacity: 1, y: 0,
-    transition: { duration: 0.65, delay: i * 0.08, ease: [0.22, 1, 0.36, 1] },
+    transition: { duration: 0.7, delay: i * 0.1, ease: [0.16, 1, 0.3, 1] },
   }),
 };
 
-const stagger = {
-  hidden: {},
-  visible: { transition: { staggerChildren: 0.1 } },
+const stagger = { hidden: {}, visible: { transition: { staggerChildren: 0.08 } } };
+const cardFade = {
+  hidden: { opacity: 0, y: 24 },
+  visible: { opacity: 1, y: 0, transition: { duration: 0.6, ease: [0.16, 1, 0.3, 1] } },
 };
 
-const cardFade = {
-  hidden: { opacity: 0, y: 24, scale: 0.98 },
-  visible: { opacity: 1, y: 0, scale: 1, transition: { duration: 0.5, ease: [0.22, 1, 0.36, 1] } },
-};
+const PROBLEMS = [
+  { num: "01", title: "Bio limitada a 1 link", desc: "Redes sociais permitem apenas um link. Você é forçado a escolher o que mostrar — e sempre perde algo." },
+  { num: "02", title: "Links bagunçados", desc: "Uma lista genérica de links sem hierarquia, sem destaque, sem estratégia. O visitante se perde." },
+  { num: "03", title: "Apresentação amadora", desc: "Profissionais e creators usando templates gratuitos que não comunicam o valor do trabalho deles." },
+  { num: "04", title: "Zero conversão", desc: "Sem campanhas destacadas, sem analytics, sem call-to-action. Tráfego desperdiçado todo dia." },
+];
 
 const FEATURES = [
-  { icon: Palette, title: "White-Label Total", desc: "Sua marca, cores e domínio. Ninguém sabe que somos nós por trás." },
-  { icon: Users, title: "Gestão de Creators", desc: "Gerencie perfis, links e campanhas de todos os seus talentos em um painel." },
-  { icon: Zap, title: "Spotlight Campaigns", desc: "Destaque campanhas com contagem regressiva, CTA e analytics integrados." },
-  { icon: BarChart3, title: "Analytics em Tempo Real", desc: "Cliques, visualizações, engajamento e CTR por creator e campanha." },
-  { icon: Globe, title: "Página Pública Premium", desc: "Layouts modernos, tipografia customizada, efeitos visuais e Hero Reels." },
-  { icon: Shield, title: "Multi-Tenancy Seguro", desc: "Isolamento completo por agência com RLS e controle de permissões." },
+  { emoji: "🔗", title: "Links inteligentes", desc: "Organize, destaque e ative/desative links com um clique. Drag & drop para reordenar." },
+  { emoji: "📢", title: "Campanhas Spotlight", desc: "Destaque parcerias e lançamentos com cards visuais no topo da página. Com tracking de cliques." },
+  { emoji: "🎬", title: "Preview de vídeo", desc: "Integre vídeos do YouTube, TikTok e Reels direto na sua página. Sem sair." },
+  { emoji: "🎨", title: "Layout premium", desc: "Múltiplos layouts, efeitos visuais, fontes e cores customizáveis. Sua página, sua identidade." },
+  { emoji: "📊", title: "Analytics real", desc: "Views, cliques, CTR, origem do tráfego. Saiba o que funciona e otimize." },
+  { emoji: "⚡", title: "Carregamento instantâneo", desc: "Páginas ultra-rápidas que abrem em milissegundos. Sem perder nenhum visitante." },
 ];
 
-const STATS = [
-  { value: "2M+", label: "Links clicados" },
-  { value: "500+", label: "Creators ativos" },
-  { value: "99.9%", label: "Uptime" },
-  { value: "< 200ms", label: "Tempo de carga" },
+const AUDIENCE = [
+  { emoji: "🎬", label: "Creators" },
+  { emoji: "📸", label: "Fotógrafos" },
+  { emoji: "🎥", label: "Videomakers" },
+  { emoji: "💻", label: "Freelancers" },
+  { emoji: "🏢", label: "Agências" },
+  { emoji: "🚀", label: "Autônomos" },
 ];
 
-const TESTIMONIALS = [
-  { name: "Lucas Ferreira", role: "CEO, Influence Hub", avatar: "https://i.pravatar.cc/80?img=12", text: "Transformou completamente como gerenciamos nossos creators. O white-label é impecável." },
-  { name: "Camila Santos", role: "Gerente, TalentFlow", avatar: "https://i.pravatar.cc/80?img=5", text: "O analytics em tempo real mudou nosso jogo. Agora temos dados para cada decisão." },
-  { name: "Rafael Costa", role: "Founder, DigitalPulse", avatar: "https://i.pravatar.cc/80?img=68", text: "Nossos creators adoram as páginas. O spotlight de campanhas gera um engajamento absurdo." },
+const DIFF_OLD = [
+  "Apenas uma lista de links",
+  "Template que todo mundo usa",
+  "Sem destaque para campanhas",
+  "Analytics básico e limitado",
+  "Zero personalização real",
+  "Parece amador para marcas",
+];
+
+const DIFF_NEW = [
+  "Página completa com links, vídeos e campanhas",
+  "Layouts premium e identidade própria",
+  "Campanhas spotlight com tracking",
+  "Analytics de verdade (CTR, geo, device)",
+  "Cores, fontes, efeitos e marcas parceiras",
+  "Impressiona marcas e abre portas",
 ];
 
 export default function Landing() {
@@ -56,127 +75,143 @@ export default function Landing() {
   };
 
   return (
-    <div className="min-h-screen bg-background text-foreground">
-      {/* ───── Navbar ───── */}
-      <nav className="fixed top-0 left-0 right-0 z-50 bg-background/80 backdrop-blur-xl border-b border-border/50">
-        <div className="max-w-[1200px] mx-auto flex items-center justify-between h-16 px-6">
+    <div className="min-h-screen bg-background text-foreground overflow-x-hidden">
+      {/* ───── NAV ───── */}
+      <nav className="fixed top-0 left-0 right-0 z-50">
+        <div className="absolute inset-0 bg-background/65 backdrop-blur-xl border-b border-border/30" />
+        <div className="max-w-[1200px] mx-auto flex items-center justify-between h-16 px-6 relative z-[1]">
           <Link to="/" className="flex items-center gap-2">
-            <img src={in1Logo} alt="in1.bio" className="h-7 object-contain invert dark:invert-0" />
+            <span className="text-lg font-extrabold tracking-tight text-foreground">
+              in1<span className="text-primary">.bio</span>
+            </span>
           </Link>
-          <div className="flex items-center gap-2">
-            <Link to="/login" className="px-4 py-2 text-sm font-medium text-muted-foreground hover:text-foreground transition-colors hidden sm:inline-flex">
-              Login
-            </Link>
-            <Link to="/login" className="px-5 py-2.5 bg-primary text-primary-foreground font-bold text-sm rounded-xl transition-all hover:opacity-90 active:scale-[0.97]">
-              Começar grátis
-            </Link>
+          <div className="hidden md:flex items-center gap-8 mr-8">
+            <a href="#features" className="text-sm text-muted-foreground hover:text-foreground transition-colors font-medium">Features</a>
+            <a href="#for-who" className="text-sm text-muted-foreground hover:text-foreground transition-colors font-medium">Para quem</a>
+            <a href="#pricing" className="text-sm text-muted-foreground hover:text-foreground transition-colors font-medium">Planos</a>
           </div>
+          <Link
+            to="/login"
+            className="px-5 py-2.5 bg-foreground text-background font-bold text-sm rounded-full transition-all hover:bg-primary hover:text-primary-foreground hover:shadow-[0_0_30px_hsl(var(--primary)/0.25)]"
+          >
+            Criar minha página
+          </Link>
         </div>
       </nav>
 
       {/* ───── HERO ───── */}
-      <section className="relative min-h-[100vh] flex items-center pt-16 px-6 overflow-hidden">
-        {/* Background effects */}
-        <div className="absolute w-[700px] h-[700px] -top-[25%] -right-[15%] rounded-full bg-primary/20 blur-[120px] animate-pulse" />
-        <div className="absolute w-[500px] h-[500px] -bottom-[15%] -left-[10%] rounded-full bg-primary/10 blur-[100px] animate-pulse" style={{ animationDelay: "3s" }} />
-        <div className="absolute inset-0 bg-[linear-gradient(hsl(var(--primary)/0.03)_1px,transparent_1px),linear-gradient(90deg,hsl(var(--primary)/0.03)_1px,transparent_1px)] bg-[size:60px_60px]" style={{ maskImage: "radial-gradient(ellipse 60% 50% at 50% 40%,#000,transparent)" }} />
+      <section className="relative min-h-screen flex items-center justify-center pt-16 px-6 overflow-hidden text-center">
+        {/* Glows */}
+        <div className="absolute w-[800px] h-[800px] -top-[20%] left-1/2 -translate-x-1/2 rounded-full bg-primary/8 blur-[60px] animate-pulse" />
+        <div className="absolute w-[500px] h-[500px] -bottom-[15%] -right-[10%] rounded-full bg-[hsl(190_80%_50%/0.06)] blur-[80px]" />
+        {/* Grid */}
+        <div
+          className="absolute inset-0 bg-[linear-gradient(hsl(var(--primary)/0.015)_1px,transparent_1px),linear-gradient(90deg,hsl(var(--primary)/0.015)_1px,transparent_1px)] bg-[size:80px_80px]"
+          style={{ maskImage: "radial-gradient(ellipse 50% 50% at 50% 50%,#000,transparent)" }}
+        />
 
-        <div className="max-w-[1200px] w-full mx-auto grid grid-cols-1 lg:grid-cols-2 gap-16 items-center relative z-[1]">
-          <motion.div className="lg:text-left text-center" initial="hidden" animate="visible">
-            <motion.div variants={fadeUp} custom={0} className="inline-flex items-center gap-2 px-4 py-1.5 border border-primary/20 rounded-full text-[0.7rem] font-bold text-primary tracking-widest uppercase bg-primary/5 mb-8">
-              <Sparkles className="w-3.5 h-3.5" />
-              Gratuito para sempre
+        <div className="relative z-[1] max-w-[800px]">
+          <motion.div
+            initial="hidden" animate="visible"
+            className="flex flex-col items-center"
+          >
+            <motion.div variants={fadeUp} custom={0} className="inline-flex items-center gap-2 px-4 py-1.5 border border-primary/20 rounded-full text-[0.72rem] font-bold text-primary tracking-widest uppercase bg-primary/5 mb-8">
+              <span className="w-[7px] h-[7px] rounded-full bg-primary shadow-[0_0_10px_hsl(var(--primary))] animate-pulse" />
+              Novo jeito de usar sua bio
             </motion.div>
 
-            <motion.h1 variants={fadeUp} custom={1} className="font-display text-[clamp(2.4rem,5.5vw,4.2rem)] font-extrabold leading-[1.04] tracking-tight mb-6">
-              Um link para
+            <motion.h1 variants={fadeUp} custom={1} className="font-display text-[clamp(2.8rem,6vw,5rem)] font-extrabold leading-[1.04] tracking-tight mb-6">
+              Sua bio pode fazer
               <br />
-              <span className="text-primary">tudo que você cria.</span>
+              <span className="text-primary drop-shadow-[0_0_40px_hsl(var(--primary)/0.3)]">muito mais.</span>
             </motion.h1>
 
-            <motion.p variants={fadeUp} custom={2} className="text-lg text-muted-foreground leading-relaxed max-w-[500px] mb-10 lg:mx-0 mx-auto">
-              Compartilhe seus links, vídeos, produtos e projetos em uma única página bonita e profissional. Grátis, para sempre.
+            <motion.p variants={fadeUp} custom={2} className="text-lg text-muted-foreground leading-relaxed max-w-[540px] mb-10">
+              Crie uma página onde seus links, vídeos e campanhas trabalham juntos para você. Tudo em um. Do jeito que realmente funciona.
             </motion.p>
 
-            {/* Claim username CTA */}
-            <motion.div variants={fadeUp} custom={3} className="flex flex-col sm:flex-row gap-3 max-w-[460px] lg:mx-0 mx-auto">
-              <div className="relative flex-1">
-                <span className="absolute left-4 top-1/2 -translate-y-1/2 text-sm font-bold text-muted-foreground/60 pointer-events-none select-none">
-                  in1.bio/
-                </span>
-                <input
-                  type="text"
-                  value={claimUser}
-                  onChange={(e) => setClaimUser(e.target.value.replace(/\s/g, ""))}
-                  onKeyDown={(e) => e.key === "Enter" && handleClaim()}
-                  placeholder="seuusuario"
-                  maxLength={30}
-                  className="w-full h-14 pl-[4.5rem] pr-4 rounded-2xl bg-card border-2 border-border text-foreground text-sm font-medium placeholder:text-muted-foreground/40 outline-none focus:border-primary transition-colors"
-                />
-              </div>
+            {/* Input CTA */}
+            <motion.div variants={fadeUp} custom={3} className="flex flex-col sm:flex-row items-center gap-0 max-w-[480px] w-full bg-card border border-border rounded-3xl p-1.5 pl-5 transition-all focus-within:border-primary focus-within:shadow-[0_0_0_4px_hsl(var(--primary)/0.12),0_0_40px_hsl(var(--primary)/0.08)]">
+              <span className="text-sm font-bold text-muted-foreground whitespace-nowrap hidden sm:inline">
+                <span className="text-foreground">in1.bio</span>/
+              </span>
+              <input
+                type="text"
+                value={claimUser}
+                onChange={(e) => setClaimUser(e.target.value.replace(/\s/g, ""))}
+                onKeyDown={(e) => e.key === "Enter" && handleClaim()}
+                placeholder="seunome"
+                maxLength={30}
+                className="bg-transparent border-none outline-none text-foreground text-sm font-medium px-2 py-3.5 flex-1 min-w-0 placeholder:text-muted-foreground/30"
+              />
               <button
                 onClick={handleClaim}
                 disabled={!claimUser.trim()}
-                className="h-14 px-7 bg-primary text-primary-foreground font-bold text-sm rounded-2xl transition-all hover:opacity-90 active:scale-[0.97] disabled:opacity-40 disabled:cursor-not-allowed flex items-center gap-2 justify-center whitespace-nowrap"
+                className="px-6 py-3 bg-primary text-primary-foreground font-extrabold text-sm rounded-[20px] transition-all hover:shadow-[0_0_30px_hsl(var(--primary)/0.3)] hover:scale-[1.03] active:scale-[0.98] disabled:opacity-40 whitespace-nowrap sm:w-auto w-full"
               >
-                Criar minha página
-                <ArrowRight className="w-4 h-4" />
+                Criar minha página grátis
               </button>
             </motion.div>
 
-            <motion.div variants={fadeUp} custom={4} className="flex items-center gap-3.5 mt-8 lg:justify-start justify-center">
-              <div className="flex -space-x-2.5">
-                {[1, 5, 9, 16, 32].map((n) => (
-                  <img key={n} src={`https://i.pravatar.cc/80?img=${n}`} alt="" className="w-8 h-8 rounded-full border-2 border-background object-cover" />
-                ))}
-              </div>
-              <p className="text-sm text-muted-foreground">
-                <span className="text-foreground font-bold">+10.000</span> páginas criadas
-              </p>
-            </motion.div>
+            <motion.p variants={fadeUp} custom={4} className="text-xs text-muted-foreground mt-5">
+              <span className="text-foreground/70 font-semibold">Grátis para começar</span> — sem cartão de crédito
+            </motion.p>
           </motion.div>
 
           {/* Phone mockup */}
           <motion.div
-            className="flex justify-center"
-            initial={{ opacity: 0, y: 60, rotateY: -12 }}
-            animate={{ opacity: 1, y: 0, rotateY: 0 }}
-            transition={{ duration: 1, delay: 0.35, ease: [0.22, 1, 0.36, 1] }}
-            style={{ perspective: "1200px" }}
+            className="mt-16 flex justify-center"
+            initial={{ opacity: 0, y: 60 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.8, delay: 0.5, ease: [0.16, 1, 0.3, 1] }}
+            style={{ perspective: "1000px" }}
           >
-            <div className="transition-transform duration-700 hover:rotate-0" style={{ transform: "rotateY(-6deg) rotateX(2deg)" }}>
-              <div className="w-[280px] sm:w-[310px] bg-card rounded-[48px] border border-border p-2 shadow-[0_40px_100px_-20px_hsl(var(--primary)/0.2)]">
-                <div className="bg-background rounded-[42px] overflow-hidden">
-                  <div className="w-[86px] h-[26px] bg-background rounded-b-2xl mx-auto relative z-[2]" />
-                  <div className="px-4 pb-6 text-center">
-                    <div className="w-20 h-20 rounded-full border-[2.5px] border-primary mx-auto mb-3 overflow-hidden shadow-[0_0_28px] shadow-primary/25">
-                      <img src="https://i.pravatar.cc/200?img=32" alt="" className="w-full h-full object-cover" />
-                    </div>
-                    <div className="font-bold text-sm text-foreground flex items-center justify-center gap-1">
-                      Marina Costa
-                      <svg className="w-3.5 h-3.5" viewBox="0 0 24 24" fill="none"><circle cx="12" cy="12" r="10" fill="hsl(var(--primary))" /><path d="M9 12l2 2 4-4" stroke="hsl(var(--primary-foreground))" strokeWidth="2.5" fill="none" /></svg>
-                    </div>
-                    <div className="text-[0.68rem] text-muted-foreground mb-4">@marinacosta</div>
-
-                    {/* Social icons */}
-                    <div className="flex items-center justify-center gap-2 mb-4">
-                      {["📸", "▶️", "🎵", "🐦"].map((e, i) => (
-                        <div key={i} className="w-8 h-8 rounded-full bg-card border border-border flex items-center justify-center text-xs">{e}</div>
-                      ))}
-                    </div>
-
+            <div className="w-[300px] sm:w-[320px] bg-card rounded-[48px] border border-border/60 p-2 shadow-[0_40px_100px_rgba(0,0,0,0.6),0_0_140px_hsl(var(--primary)/0.04)] transition-transform duration-700 hover:rotate-0" style={{ transform: "rotateX(4deg)" }}>
+              <div className="bg-background rounded-[42px] overflow-hidden">
+                <div className="w-20 h-[26px] bg-background rounded-b-2xl mx-auto" />
+                <div className="px-5 pb-6 text-center">
+                  <div className="w-20 h-20 rounded-full border-[2.5px] border-primary mx-auto mb-3 overflow-hidden shadow-[0_0_24px_hsl(var(--primary)/0.15)]">
+                    <img src="https://i.pravatar.cc/200?img=32" alt="" className="w-full h-full object-cover" />
+                  </div>
+                  <div className="font-bold text-sm text-foreground flex items-center justify-center gap-1">
+                    Marina Costa
+                    <span className="w-3.5 h-3.5 rounded-full bg-primary inline-flex items-center justify-center">
+                      <svg className="w-2 h-2" viewBox="0 0 24 24" fill="none" stroke="hsl(var(--primary-foreground))" strokeWidth="3"><path d="M9 12l2 2 4-4" /></svg>
+                    </span>
+                  </div>
+                  <div className="text-[0.7rem] text-muted-foreground mb-2">@marinacosta</div>
+                  <div className="flex justify-center gap-5 py-2.5 mb-2 border-t border-b border-border/30">
                     {[
-                      { title: "🔥 Meu novo projeto — GLOW", featured: true },
-                      { title: "▶ Canal no YouTube", featured: false },
-                      { title: "🎵 Playlist do momento", featured: false },
-                      { title: "🛍 Minha loja", featured: false },
-                    ].map((link, i) => (
-                      <div key={i} className={`flex items-center gap-2.5 p-3 rounded-xl mb-2 text-left transition-all ${link.featured ? "bg-primary/15 border border-primary/30" : "bg-card border border-border"}`}>
-                        <h4 className="text-[0.7rem] font-semibold flex-1 text-foreground">{link.title}</h4>
-                        <ChevronRight className="w-3.5 h-3.5 text-muted-foreground" />
+                      { v: "2.4M", l: "Seguidores" },
+                      { v: "480K", l: "YouTube" },
+                      { v: "12.8%", l: "Engajamento" },
+                    ].map((s, i) => (
+                      <div key={i} className="text-center">
+                        <div className="text-xs font-extrabold text-foreground">{s.v}</div>
+                        <div className="text-[0.5rem] text-muted-foreground uppercase tracking-widest font-semibold">{s.l}</div>
                       </div>
                     ))}
                   </div>
+                  <div className="text-[0.66rem] text-muted-foreground mb-3 leading-relaxed">Creator de lifestyle & beauty. Conectando marcas premium com autenticidade.</div>
+                  <div className="flex justify-center gap-1.5 mb-3">
+                    {["📸", "🎵", "▶️", "🐦"].map((e, i) => (
+                      <div key={i} className="w-[30px] h-[30px] rounded-lg bg-card border border-border flex items-center justify-center text-xs">{e}</div>
+                    ))}
+                  </div>
+                  {[
+                    { title: "Meu novo projeto — GLOW", sub: "Lançamento exclusivo", icon: "✦", featured: true },
+                    { title: "Canal no YouTube", sub: "+480k inscritos", icon: "▶", featured: false },
+                    { title: "Playlist do momento", sub: "Spotify", icon: "♫", featured: false },
+                    { title: "Media Kit 2026", sub: "Download PDF", icon: "📋", featured: false },
+                  ].map((lk, i) => (
+                    <div key={i} className={`flex items-center gap-2.5 p-2.5 rounded-xl mb-1.5 text-left transition-colors ${lk.featured ? "bg-primary/15 border border-primary/25" : "bg-card border border-border"}`}>
+                      <div className={`w-[30px] h-[30px] rounded-lg flex items-center justify-center text-xs flex-shrink-0 ${lk.featured ? "bg-primary/15" : "bg-background/50"}`}>{lk.icon}</div>
+                      <div className="flex-1 min-w-0">
+                        <h4 className="text-[0.7rem] font-semibold text-foreground">{lk.title}</h4>
+                        <span className="text-[0.56rem] text-muted-foreground">{lk.sub}</span>
+                      </div>
+                    </div>
+                  ))}
                 </div>
               </div>
             </div>
@@ -184,44 +219,64 @@ export default function Landing() {
         </div>
       </section>
 
-      {/* ───── Stats bar ───── */}
-      <motion.section
-        className="py-16 px-6 border-y border-border/50 bg-card/30"
-        initial="hidden" whileInView="visible" viewport={{ once: true, amount: 0.3 }}
-      >
-        <div className="max-w-[1000px] mx-auto grid grid-cols-2 md:grid-cols-4 gap-8">
-          {STATS.map((stat, i) => (
-            <motion.div key={i} variants={fadeUp} custom={i} className="text-center">
-              <div className="text-3xl sm:text-4xl font-extrabold text-primary mb-1">{stat.value}</div>
-              <div className="text-sm text-muted-foreground font-medium">{stat.label}</div>
-            </motion.div>
-          ))}
-        </div>
-      </motion.section>
-
-      {/* ───── Features ───── */}
+      {/* ───── PROBLEM ───── */}
       <motion.section
         className="py-24 px-6 max-w-[1200px] mx-auto"
         initial="hidden" whileInView="visible" viewport={{ once: true, amount: 0.1 }}
       >
-        <motion.div variants={fadeUp} custom={0} className="text-center mb-16">
-          <span className="inline-flex items-center gap-2 px-4 py-1.5 border border-primary/20 rounded-full text-[0.7rem] font-bold text-primary tracking-widest uppercase bg-primary/5 mb-6">
-            Funcionalidades
+        <motion.div variants={fadeUp} custom={0}>
+          <span className="inline-flex items-center gap-2 text-[0.66rem] font-bold text-primary tracking-[0.14em] uppercase mb-5">
+            <span className="w-4 h-px bg-primary" />
+            O problema
           </span>
-          <h2 className="font-display text-[clamp(1.8rem,3.5vw,3rem)] font-extrabold leading-[1.08] tracking-tight max-w-[700px] mx-auto mb-4">
-            Tudo que sua agência precisa, em <span className="text-primary">um só lugar</span>.
+          <h2 className="font-display text-[clamp(1.9rem,3.5vw,3rem)] font-extrabold leading-[1.1] tracking-tight mb-4">
+            Um link na bio
+            <br />
+            não deveria <span className="text-primary">limitar você.</span>
           </h2>
-          <p className="text-base text-muted-foreground max-w-[540px] mx-auto">
-            Gerencie creators, campanhas e métricas com a marca da sua agência.
+          <p className="text-base text-muted-foreground leading-relaxed max-w-[560px] mb-12">
+            Hoje sua bio é um gargalo. Você produz conteúdo, fecha parcerias, cria projetos — e tudo depende de um único link genérico que não faz jus ao seu trabalho.
           </p>
         </motion.div>
 
-        <motion.div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5" variants={stagger}>
+        <motion.div className="grid grid-cols-1 md:grid-cols-2 gap-5" variants={stagger}>
+          {PROBLEMS.map((p, i) => (
+            <motion.div key={i} variants={cardFade} className="group relative bg-card/80 border border-border rounded-3xl p-8 overflow-hidden transition-all duration-300 hover:border-border/80 hover:-translate-y-1">
+              <div className="absolute top-0 left-0 right-0 h-px bg-gradient-to-r from-transparent via-foreground/8 to-transparent" />
+              <span className="absolute top-4 right-5 text-5xl font-black text-foreground/[0.04] leading-none select-none">{p.num}</span>
+              <h3 className="text-base font-bold text-foreground mb-2">{p.title}</h3>
+              <p className="text-sm text-muted-foreground leading-relaxed">{p.desc}</p>
+            </motion.div>
+          ))}
+        </motion.div>
+      </motion.section>
+
+      {/* ───── FEATURES ───── */}
+      <motion.section
+        id="features"
+        className="py-24 px-6 max-w-[1200px] mx-auto text-center"
+        initial="hidden" whileInView="visible" viewport={{ once: true, amount: 0.1 }}
+      >
+        <motion.div variants={fadeUp} custom={0}>
+          <span className="inline-flex items-center gap-2 text-[0.66rem] font-bold text-primary tracking-[0.14em] uppercase mb-5">
+            <span className="w-4 h-px bg-primary" />
+            A solução
+          </span>
+          <h2 className="font-display text-[clamp(1.9rem,3.5vw,3rem)] font-extrabold leading-[1.1] tracking-tight mb-4">
+            Não é só um link.
+            <br />
+            É uma <span className="text-primary">experiência.</span>
+          </h2>
+          <p className="text-base text-muted-foreground leading-relaxed max-w-[560px] mx-auto mb-12">
+            O in1.bio transforma sua bio em uma página inteligente que centraliza, destaca e converte.
+          </p>
+        </motion.div>
+
+        <motion.div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4" variants={stagger}>
           {FEATURES.map((f, i) => (
-            <motion.div key={i} variants={cardFade} className="group bg-card border border-border rounded-2xl p-7 transition-all duration-300 hover:border-primary/30 hover:-translate-y-1 hover:shadow-[0_12px_40px_-12px_hsl(var(--primary)/0.15)]">
-              <div className="w-12 h-12 rounded-xl bg-primary/10 flex items-center justify-center mb-5 transition-colors group-hover:bg-primary/20">
-                <f.icon className="w-5 h-5 text-primary" />
-              </div>
+            <motion.div key={i} variants={cardFade} className="group relative bg-card/80 border border-border rounded-3xl p-8 text-left overflow-hidden transition-all duration-300 hover:border-primary/20 hover:-translate-y-1 hover:shadow-[0_20px_60px_rgba(0,0,0,0.4)]">
+              <div className="absolute top-0 left-0 right-0 h-[2px] bg-gradient-to-r from-primary to-[hsl(190_80%_50%)] opacity-0 group-hover:opacity-100 transition-opacity" />
+              <div className="w-12 h-12 rounded-xl bg-primary/10 border border-primary/20 flex items-center justify-center mb-5 text-xl">{f.emoji}</div>
               <h3 className="text-base font-bold text-foreground mb-2">{f.title}</h3>
               <p className="text-sm text-muted-foreground leading-relaxed">{f.desc}</p>
             </motion.div>
@@ -229,204 +284,329 @@ export default function Landing() {
         </motion.div>
       </motion.section>
 
-      {/* ───── How it works ───── */}
+      {/* ───── CREATOR IMAGE SECTION ───── */}
       <motion.section
-        className="py-24 px-6 bg-card/30 border-y border-border/50"
+        className="py-24 px-6 max-w-[1200px] mx-auto"
         initial="hidden" whileInView="visible" viewport={{ once: true, amount: 0.15 }}
       >
-        <div className="max-w-[900px] mx-auto">
-          <motion.div variants={fadeUp} custom={0} className="text-center mb-16">
-            <span className="inline-flex items-center gap-2 px-4 py-1.5 border border-primary/20 rounded-full text-[0.7rem] font-bold text-primary tracking-widest uppercase bg-primary/5 mb-6">
-              Como funciona
-            </span>
-            <h2 className="font-display text-[clamp(1.8rem,3.5vw,3rem)] font-extrabold leading-[1.08] tracking-tight mb-4">
-              3 passos para começar
-            </h2>
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-16 items-center">
+          <motion.div variants={fadeUp} custom={0}>
+            <img src={heroCreator} alt="Creator usando in1.bio" className="rounded-3xl w-full object-cover aspect-[4/5] shadow-[0_30px_80px_rgba(0,0,0,0.5)]" />
           </motion.div>
-
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
-            {[
-              { step: "01", title: "Crie sua conta", desc: "Registre-se gratuitamente e escolha seu username único." },
-              { step: "02", title: "Personalize sua página", desc: "Adicione seus links, vídeos, produtos e customize o visual." },
-              { step: "03", title: "Compartilhe", desc: "Use seu link in1.bio/ em todas as suas redes sociais." },
-            ].map((s, i) => (
-              <motion.div key={i} variants={fadeUp} custom={i + 1} className="text-center">
-                <div className="w-14 h-14 rounded-2xl bg-primary/10 border border-primary/20 flex items-center justify-center mx-auto mb-5">
-                  <span className="text-lg font-extrabold text-primary">{s.step}</span>
+          <motion.div variants={fadeUp} custom={1}>
+            <span className="inline-flex items-center gap-2 text-[0.66rem] font-bold text-primary tracking-[0.14em] uppercase mb-5">
+              <span className="w-4 h-px bg-primary" />
+              Feito para creators
+            </span>
+            <h2 className="font-display text-[clamp(1.6rem,3vw,2.6rem)] font-extrabold leading-[1.08] tracking-tight mb-5">
+              Sua presença digital merece ser <span className="text-primary">profissional.</span>
+            </h2>
+            <p className="text-base text-muted-foreground leading-relaxed mb-8">
+              Chega de páginas genéricas que não representam quem você é. Com o in1.bio, cada detalhe da sua página comunica autoridade e profissionalismo.
+            </p>
+            <div className="space-y-3">
+              {[
+                "Layouts que refletem sua identidade",
+                "Campanhas com destaque visual e tracking",
+                "Analytics para tomar decisões melhores",
+                "Compartilhamento otimizado para redes sociais",
+              ].map((item, i) => (
+                <div key={i} className="flex items-center gap-3">
+                  <span className="w-5 h-5 rounded-full bg-primary/15 flex items-center justify-center flex-shrink-0">
+                    <Check className="w-3 h-3 text-primary" />
+                  </span>
+                  <span className="text-sm text-foreground font-medium">{item}</span>
                 </div>
-                <h3 className="text-base font-bold text-foreground mb-2">{s.title}</h3>
-                <p className="text-sm text-muted-foreground leading-relaxed">{s.desc}</p>
-              </motion.div>
-            ))}
-          </div>
+              ))}
+            </div>
+          </motion.div>
         </div>
       </motion.section>
 
-      {/* ───── Testimonials ───── */}
+      {/* ───── AUDIENCE ───── */}
       <motion.section
-        className="py-24 px-6 max-w-[1200px] mx-auto"
+        id="for-who"
+        className="py-24 px-6 max-w-[1200px] mx-auto text-center"
         initial="hidden" whileInView="visible" viewport={{ once: true, amount: 0.1 }}
       >
-        <motion.div variants={fadeUp} custom={0} className="text-center mb-16">
-          <span className="inline-flex items-center gap-2 px-4 py-1.5 border border-primary/20 rounded-full text-[0.7rem] font-bold text-primary tracking-widest uppercase bg-primary/5 mb-6">
-            Depoimentos
+        <motion.div variants={fadeUp} custom={0}>
+          <span className="inline-flex items-center gap-2 text-[0.66rem] font-bold text-primary tracking-[0.14em] uppercase mb-5">
+            <span className="w-4 h-px bg-primary" />
+            Para quem
           </span>
-          <h2 className="font-display text-[clamp(1.8rem,3.5vw,3rem)] font-extrabold leading-[1.08] tracking-tight mb-4">
-            Quem usa, <span className="text-primary">recomenda</span>.
+          <h2 className="font-display text-[clamp(1.9rem,3.5vw,3rem)] font-extrabold leading-[1.1] tracking-tight mb-4">
+            Feito para quem leva
+            <br />
+            <span className="text-primary">presença digital</span> a sério.
           </h2>
+          <p className="text-base text-muted-foreground max-w-[560px] mx-auto mb-12">
+            Se você cria, produz, vende ou se apresenta online — o in1.bio foi feito para você.
+          </p>
         </motion.div>
 
-        <motion.div className="grid grid-cols-1 md:grid-cols-3 gap-5" variants={stagger}>
-          {TESTIMONIALS.map((t, i) => (
-            <motion.div key={i} variants={cardFade} className="bg-card border border-border rounded-2xl p-7">
-              <p className="text-sm text-muted-foreground leading-relaxed mb-6 italic">"{t.text}"</p>
-              <div className="flex items-center gap-3">
-                <img src={t.avatar} alt="" className="w-10 h-10 rounded-full object-cover" />
-                <div>
-                  <div className="text-sm font-bold text-foreground">{t.name}</div>
-                  <div className="text-xs text-muted-foreground">{t.role}</div>
-                </div>
-              </div>
+        <motion.div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-3" variants={stagger}>
+          {AUDIENCE.map((a, i) => (
+            <motion.div key={i} variants={cardFade} className="bg-card/80 border border-border rounded-2xl py-6 px-4 text-center transition-all duration-300 hover:border-primary/20 hover:-translate-y-1">
+              <div className="text-3xl mb-2.5">{a.emoji}</div>
+              <h4 className="text-sm font-bold text-foreground">{a.label}</h4>
             </motion.div>
           ))}
         </motion.div>
       </motion.section>
 
-      {/* ───── For agencies section ───── */}
+      {/* ───── DIFF ───── */}
       <motion.section
-        className="py-24 px-6 bg-card/30 border-y border-border/50"
-        initial="hidden" whileInView="visible" viewport={{ once: true, amount: 0.2 }}
+        className="py-24 px-6 max-w-[1200px] mx-auto text-center"
+        initial="hidden" whileInView="visible" viewport={{ once: true, amount: 0.1 }}
       >
-        <div className="max-w-[1000px] mx-auto grid grid-cols-1 lg:grid-cols-2 gap-16 items-center">
+        <motion.div variants={fadeUp} custom={0}>
+          <span className="inline-flex items-center gap-2 text-[0.66rem] font-bold text-primary tracking-[0.14em] uppercase mb-5">
+            <span className="w-4 h-px bg-primary" />
+            Diferencial
+          </span>
+          <h2 className="font-display text-[clamp(1.9rem,3.5vw,3rem)] font-extrabold leading-[1.1] tracking-tight mb-4">
+            Por que <span className="text-primary">in1.bio</span> é diferente?
+          </h2>
+          <p className="text-base text-muted-foreground max-w-[560px] mx-auto mb-12">
+            Não é mais um Linktree. É uma nova categoria.
+          </p>
+        </motion.div>
+
+        <motion.div className="grid grid-cols-1 md:grid-cols-2 gap-6 max-w-[900px] mx-auto" variants={stagger}>
+          <motion.div variants={cardFade} className="bg-card/30 border border-border rounded-3xl p-8 text-left">
+            <h3 className="text-base font-bold text-muted-foreground mb-5 flex items-center gap-2">
+              <span className="text-xl">😐</span> Link-in-bio genérico
+            </h3>
+            <div className="space-y-0">
+              {DIFF_OLD.map((item, i) => (
+                <div key={i} className="flex items-start gap-2.5 py-2.5 border-b border-border/30 last:border-b-0 text-sm text-muted-foreground">
+                  <X className="w-4 h-4 text-muted-foreground/40 flex-shrink-0 mt-0.5" />
+                  {item}
+                </div>
+              ))}
+            </div>
+          </motion.div>
+
+          <motion.div variants={cardFade} className="bg-primary/5 border border-primary/20 rounded-3xl p-8 text-left">
+            <h3 className="text-base font-bold text-primary mb-5 flex items-center gap-2">
+              <span className="text-xl">⚡</span> in1.bio
+            </h3>
+            <div className="space-y-0">
+              {DIFF_NEW.map((item, i) => (
+                <div key={i} className="flex items-start gap-2.5 py-2.5 border-b border-border/20 last:border-b-0 text-sm text-muted-foreground">
+                  <Check className="w-4 h-4 text-primary flex-shrink-0 mt-0.5" />
+                  {item}
+                </div>
+              ))}
+            </div>
+          </motion.div>
+        </motion.div>
+      </motion.section>
+
+      {/* ───── SOCIAL PROOF QUOTE ───── */}
+      <motion.section
+        className="py-20 px-6 text-center"
+        initial="hidden" whileInView="visible" viewport={{ once: true, amount: 0.3 }}
+      >
+        <motion.div variants={fadeUp} custom={0}>
+          <div className="text-4xl mb-6 opacity-30">✦</div>
+          <p className="text-xl font-medium text-muted-foreground italic max-w-[600px] mx-auto leading-relaxed mb-4">
+            "Criadores estão migrando para uma nova forma de usar a bio. Quem se apresenta melhor, <span className="text-primary font-bold not-italic">fecha mais.</span>"
+          </p>
+          <p className="text-sm text-muted-foreground/60">Feito para quem leva presença digital a sério.</p>
+        </motion.div>
+      </motion.section>
+
+      {/* ───── AGENCY SECTION WITH IMAGE ───── */}
+      <motion.section
+        className="py-24 px-6 max-w-[1200px] mx-auto"
+        initial="hidden" whileInView="visible" viewport={{ once: true, amount: 0.15 }}
+      >
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-16 items-center">
           <motion.div variants={fadeUp} custom={0}>
-            <span className="inline-flex items-center gap-2 px-4 py-1.5 border border-primary/20 rounded-full text-[0.7rem] font-bold text-primary tracking-widest uppercase bg-primary/5 mb-6">
+            <span className="inline-flex items-center gap-2 text-[0.66rem] font-bold text-primary tracking-[0.14em] uppercase mb-5">
+              <span className="w-4 h-px bg-primary" />
               Para agências
             </span>
             <h2 className="font-display text-[clamp(1.6rem,3vw,2.6rem)] font-extrabold leading-[1.08] tracking-tight mb-5">
-              Gerencie todos os seus creators em <span className="text-primary">um painel</span>.
+              Gerencie todos os seus creators em <span className="text-primary">um painel.</span>
             </h2>
             <p className="text-base text-muted-foreground leading-relaxed mb-8">
               Painel white-label completo com gestão de membros, permissões por role, analytics detalhado e campanhas automatizadas. Tudo com a marca da sua agência.
             </p>
-            <div className="space-y-4">
+            <div className="space-y-3 mb-8">
               {[
                 "Dashboard com métricas em tempo real",
                 "Controle de permissões (Owner, Admin, Editor, Viewer)",
                 "Campanhas com spotlight e contagem regressiva",
                 "Domínio e branding customizados",
               ].map((item, i) => (
-                <div key={i} className="flex items-start gap-3">
-                  <div className="w-5 h-5 rounded-full bg-primary/15 flex items-center justify-center flex-shrink-0 mt-0.5">
-                    <svg className="w-3 h-3 text-primary" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3"><path d="M5 12l5 5L20 7" /></svg>
-                  </div>
+                <div key={i} className="flex items-center gap-3">
+                  <span className="w-5 h-5 rounded-full bg-primary/15 flex items-center justify-center flex-shrink-0">
+                    <Check className="w-3 h-3 text-primary" />
+                  </span>
                   <span className="text-sm text-foreground font-medium">{item}</span>
                 </div>
               ))}
             </div>
           </motion.div>
-
-          <motion.div variants={fadeUp} custom={1} className="relative">
-            <div className="bg-card border border-border rounded-2xl p-6 shadow-[0_20px_60px_-15px_hsl(var(--primary)/0.1)]">
-              {/* Fake dashboard preview */}
-              <div className="flex items-center gap-2 mb-5">
-                <div className="w-8 h-8 rounded-lg bg-primary/15 flex items-center justify-center">
-                  <img src={in1Icon} alt="" className="w-4 h-4 object-contain invert dark:invert-0" />
-                </div>
-                <div>
-                  <div className="text-xs font-bold text-foreground">Minha Agência</div>
-                  <div className="text-[0.6rem] text-muted-foreground">3 creators · 12 campanhas</div>
-                </div>
-              </div>
-              <div className="grid grid-cols-3 gap-3 mb-4">
-                {[
-                  { label: "Views", value: "24.5K" },
-                  { label: "Cliques", value: "8.2K" },
-                  { label: "CTR", value: "33.4%" },
-                ].map((s, i) => (
-                  <div key={i} className="bg-background border border-border/50 rounded-xl p-3 text-center">
-                    <div className="text-lg font-extrabold text-primary">{s.value}</div>
-                    <div className="text-[0.6rem] text-muted-foreground font-medium">{s.label}</div>
-                  </div>
-                ))}
-              </div>
-              <div className="space-y-2">
-                {[
-                  { name: "Marina Costa", views: "12.3K" },
-                  { name: "João Silva", views: "8.1K" },
-                  { name: "Ana Beatriz", views: "4.1K" },
-                ].map((c, i) => (
-                  <div key={i} className="flex items-center gap-3 p-2.5 rounded-xl bg-background border border-border/50">
-                    <img src={`https://i.pravatar.cc/40?img=${[32, 12, 5][i]}`} alt="" className="w-8 h-8 rounded-full object-cover" />
-                    <div className="flex-1 min-w-0">
-                      <div className="text-xs font-bold text-foreground truncate">{c.name}</div>
-                      <div className="text-[0.6rem] text-muted-foreground">{c.views} views</div>
-                    </div>
-                    <ChevronRight className="w-3.5 h-3.5 text-muted-foreground" />
-                  </div>
-                ))}
-              </div>
-            </div>
+          <motion.div variants={fadeUp} custom={1}>
+            <img src={teamImg} alt="Time de agência" className="rounded-3xl w-full object-cover aspect-[3/2] shadow-[0_30px_80px_rgba(0,0,0,0.5)]" />
           </motion.div>
         </div>
       </motion.section>
 
-      {/* ───── Final CTA ───── */}
+      {/* ───── PRICING ───── */}
+      <motion.section
+        id="pricing"
+        className="py-24 px-6 max-w-[1200px] mx-auto text-center"
+        initial="hidden" whileInView="visible" viewport={{ once: true, amount: 0.1 }}
+      >
+        <motion.div variants={fadeUp} custom={0}>
+          <span className="inline-flex items-center gap-2 text-[0.66rem] font-bold text-primary tracking-[0.14em] uppercase mb-5">
+            <span className="w-4 h-px bg-primary" />
+            Planos
+          </span>
+          <h2 className="font-display text-[clamp(1.9rem,3.5vw,3rem)] font-extrabold leading-[1.1] tracking-tight mb-4">
+            Simples, transparente,
+            <br />
+            <span className="text-primary">sem surpresas.</span>
+          </h2>
+          <p className="text-base text-muted-foreground max-w-[560px] mx-auto mb-12">
+            Comece grátis. Evolua quando quiser.
+          </p>
+        </motion.div>
+
+        <motion.div className="grid grid-cols-1 md:grid-cols-3 gap-5 max-w-[1000px] mx-auto" variants={stagger}>
+          {/* Free */}
+          <motion.div variants={cardFade} className="bg-card/80 border border-border rounded-3xl p-8 text-left transition-all duration-300 hover:border-border/80 hover:-translate-y-1">
+            <div className="text-xs font-bold text-muted-foreground uppercase tracking-widest mb-2">Free</div>
+            <div className="text-4xl font-extrabold text-foreground tracking-tight mb-1">R$0 <span className="text-base font-medium text-muted-foreground">/mês</span></div>
+            <p className="text-sm text-muted-foreground mb-6">Para começar e sentir o poder.</p>
+            <ul className="space-y-0 mb-7">
+              {[
+                { ok: true, text: "Até 5 links" },
+                { ok: true, text: "1 layout básico" },
+                { ok: true, text: "Redes sociais" },
+                { ok: true, text: "Analytics básico" },
+                { ok: false, text: "Campanhas spotlight" },
+                { ok: false, text: "Remover branding" },
+                { ok: false, text: "Personalização avançada" },
+              ].map((item, i) => (
+                <li key={i} className="flex items-center gap-2.5 py-2 border-b border-border/30 last:border-b-0 text-sm text-muted-foreground">
+                  {item.ok ? <Check className="w-4 h-4 text-primary flex-shrink-0" /> : <span className="text-muted-foreground/30 flex-shrink-0">—</span>}
+                  <span className={item.ok ? "" : "text-muted-foreground/40"}>{item.text}</span>
+                </li>
+              ))}
+            </ul>
+            <Link to="/login" className="block w-full py-3.5 text-center rounded-2xl bg-card border border-border text-foreground font-bold text-sm transition-all hover:bg-secondary">
+              Começar grátis
+            </Link>
+          </motion.div>
+
+          {/* Pro */}
+          <motion.div variants={cardFade} className="relative bg-primary/5 border border-primary/20 rounded-3xl p-8 text-left transition-all duration-300 hover:-translate-y-1">
+            <div className="absolute -top-3 left-1/2 -translate-x-1/2 bg-primary text-primary-foreground text-[0.62rem] font-extrabold px-4 py-1 rounded-full tracking-widest uppercase">
+              Mais popular
+            </div>
+            <div className="text-xs font-bold text-muted-foreground uppercase tracking-widest mb-2">Pro</div>
+            <div className="text-4xl font-extrabold text-foreground tracking-tight mb-1">R$29 <span className="text-base font-medium text-muted-foreground">/mês</span></div>
+            <p className="text-sm text-muted-foreground mb-6">Tudo liberado. Sem limites.</p>
+            <ul className="space-y-0 mb-7">
+              {[
+                "Links ilimitados",
+                "Todos os layouts",
+                "Campanhas spotlight",
+                "Produtos e vídeos",
+                "Analytics completo",
+                "Personalização total",
+                "Remover branding in1.bio",
+              ].map((text, i) => (
+                <li key={i} className="flex items-center gap-2.5 py-2 border-b border-border/20 last:border-b-0 text-sm text-muted-foreground">
+                  <Check className="w-4 h-4 text-primary flex-shrink-0" />
+                  {text}
+                </li>
+              ))}
+            </ul>
+            <Link to="/login" className="block w-full py-3.5 text-center rounded-2xl bg-primary text-primary-foreground font-bold text-sm transition-all hover:shadow-[0_0_30px_hsl(var(--primary)/0.25)]">
+              Assinar Pro
+            </Link>
+          </motion.div>
+
+          {/* Scale */}
+          <motion.div variants={cardFade} className="bg-card/80 border border-border rounded-3xl p-8 text-left transition-all duration-300 hover:border-border/80 hover:-translate-y-1">
+            <div className="text-xs font-bold text-muted-foreground uppercase tracking-widest mb-2">Scale</div>
+            <div className="text-4xl font-extrabold text-foreground tracking-tight mb-1">
+              <span className="text-lg font-semibold text-muted-foreground">a partir de</span>
+              <br />
+              R$97 <span className="text-base font-medium text-muted-foreground">/mês</span>
+            </div>
+            <p className="text-sm text-muted-foreground mb-6">Para agências e equipes.</p>
+            <ul className="space-y-0 mb-4">
+              {[
+                "Tudo do Pro",
+                "A partir de 5 creators",
+                "Dashboard multi-creator",
+                "White-label (sua marca)",
+                "Membros de equipe",
+                "Domínio customizado",
+                "Suporte prioritário",
+              ].map((text, i) => (
+                <li key={i} className="flex items-center gap-2.5 py-2 border-b border-border/30 last:border-b-0 text-sm text-muted-foreground">
+                  <Check className="w-4 h-4 text-primary flex-shrink-0" />
+                  {text}
+                </li>
+              ))}
+            </ul>
+            <p className="text-[0.68rem] text-muted-foreground/60 mb-4 leading-relaxed">
+              * O white-label possui um custo de implementação à parte. Entre em contato para mais detalhes.
+            </p>
+            <a href="mailto:contato@in1.bio" className="block w-full py-3.5 text-center rounded-2xl bg-card border border-border text-foreground font-bold text-sm transition-all hover:bg-secondary">
+              Falar com vendas
+            </a>
+          </motion.div>
+        </motion.div>
+      </motion.section>
+
+      {/* ───── FINAL CTA ───── */}
       <motion.section
         className="relative py-32 px-6 text-center overflow-hidden"
         initial="hidden" whileInView="visible" viewport={{ once: true, amount: 0.3 }}
       >
-        <div className="absolute inset-0 bg-[radial-gradient(ellipse_50%_40%_at_50%_50%,hsl(var(--primary)/0.12),transparent)]" />
+        <div className="absolute inset-0 bg-[radial-gradient(ellipse_50%_40%_at_50%_60%,hsl(var(--primary)/0.06),transparent)]" />
         <div className="relative z-[1] max-w-[600px] mx-auto">
-          <motion.div variants={fadeUp} custom={0}>
-            <img src={in1Icon} alt="" className="w-12 h-12 mx-auto mb-8 object-contain invert dark:invert-0" />
-          </motion.div>
-          <motion.h2 variants={fadeUp} custom={1} className="font-display text-[clamp(2rem,4vw,3.2rem)] font-extrabold leading-[1.06] tracking-tight mb-5">
-            Crie sua página agora.
+          <motion.h2 variants={fadeUp} custom={0} className="font-display text-[clamp(2rem,4vw,3.2rem)] font-extrabold leading-[1.06] tracking-tight mb-5">
+            Pronto para uma bio que
             <br />
-            <span className="text-primary">É grátis.</span>
+            <span className="text-primary">realmente funciona?</span>
           </motion.h2>
-          <motion.p variants={fadeUp} custom={2} className="text-base text-muted-foreground max-w-[440px] mx-auto mb-10">
-            Junte-se a milhares de creators e agências que já usam o in1.bio para compartilhar tudo em um só link.
+          <motion.p variants={fadeUp} custom={1} className="text-base text-muted-foreground max-w-[440px] mx-auto mb-10">
+            Crie sua página em menos de 2 minutos. Grátis.
           </motion.p>
-          <motion.div variants={fadeUp} custom={3} className="flex flex-col sm:flex-row gap-3 max-w-[420px] mx-auto">
-            <div className="relative flex-1">
-              <span className="absolute left-4 top-1/2 -translate-y-1/2 text-sm font-bold text-muted-foreground/60 pointer-events-none select-none">
-                in1.bio/
-              </span>
-              <input
-                type="text"
-                value={claimUser}
-                onChange={(e) => setClaimUser(e.target.value.replace(/\s/g, ""))}
-                onKeyDown={(e) => e.key === "Enter" && handleClaim()}
-                placeholder="seuusuario"
-                maxLength={30}
-                className="w-full h-14 pl-[4.5rem] pr-4 rounded-2xl bg-card border-2 border-border text-foreground text-sm font-medium placeholder:text-muted-foreground/40 outline-none focus:border-primary transition-colors"
-              />
-            </div>
-            <button
-              onClick={handleClaim}
-              disabled={!claimUser.trim()}
-              className="h-14 px-7 bg-primary text-primary-foreground font-bold text-sm rounded-2xl transition-all hover:opacity-90 active:scale-[0.97] disabled:opacity-40 flex items-center gap-2 justify-center whitespace-nowrap"
+          <motion.div variants={fadeUp} custom={2}>
+            <Link
+              to="/login"
+              className="inline-flex items-center gap-2 px-9 py-4 bg-primary text-primary-foreground font-extrabold text-base rounded-2xl transition-all hover:shadow-[0_0_40px_hsl(var(--primary)/0.3)] hover:scale-[1.03] active:scale-[0.98]"
             >
-              Começar
-              <ArrowRight className="w-4 h-4" />
-            </button>
+              Criar minha página grátis
+              <ArrowRight className="w-5 h-5" />
+            </Link>
           </motion.div>
         </div>
       </motion.section>
 
-      {/* ───── Footer ───── */}
-      <footer className="border-t border-border py-8 px-6">
+      {/* ───── FOOTER ───── */}
+      <footer className="border-t border-border py-10 px-6">
         <div className="max-w-[1200px] mx-auto flex flex-col sm:flex-row items-center justify-between gap-4">
-          <div className="flex items-center gap-2">
-            <img src={in1Logo} alt="in1.bio" className="h-5 object-contain invert dark:invert-0" />
-          </div>
+          <span className="text-base font-extrabold text-muted-foreground">
+            <span className="text-foreground">in1</span>.bio
+          </span>
           <div className="flex items-center gap-6">
             <Link to="/login" className="text-xs text-muted-foreground hover:text-foreground transition-colors">Login</Link>
             <a href="mailto:contato@in1.bio" className="text-xs text-muted-foreground hover:text-foreground transition-colors">Contato</a>
           </div>
-          <span className="text-[0.7rem] text-muted-foreground">
-            © {new Date().getFullYear()} All in 1 · in1.bio
+          <span className="text-[0.72rem] text-muted-foreground/50">
+            © {new Date().getFullYear()} in1.bio — Todos os direitos reservados.
           </span>
         </div>
       </footer>
