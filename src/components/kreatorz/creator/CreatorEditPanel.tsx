@@ -1,6 +1,7 @@
 import { forwardRef, useEffect, useImperativeHandle, useRef, useState, useCallback, useMemo, type CSSProperties } from "react";
 import { toast } from "sonner";
 import type { CreatorProfile, CreatorLink, SocialLink, CreatorProduct, CreatorCampaign } from "@/hooks/useCreatorData";
+import type { Testimonial } from "./TestimonialsSection";
 import type { HeroReelData } from "./HeroReel";
 import ImageCropper from "./ImageCropper";
 import HeroReelEditor from "./HeroReelEditor";
@@ -97,6 +98,7 @@ interface Props {
   products: CreatorProduct[];
   campaigns: CreatorCampaign[];
   heroReels: HeroReelData[];
+  testimonials: Testimonial[];
   activeLayout?: string;
   onSaveProfile: (updates: Partial<CreatorProfile>) => Promise<void>;
   onSaveLinks: (links: CreatorLink[]) => Promise<void>;
@@ -104,6 +106,7 @@ interface Props {
   onSaveProducts: (products: CreatorProduct[]) => Promise<void>;
   onSaveCampaigns: (campaigns: CreatorCampaign[]) => Promise<void>;
   onSaveHeroReels: (reels: HeroReelData[]) => Promise<void>;
+  onSaveTestimonials: (testimonials: Testimonial[]) => Promise<void>;
   onUploadImage: (file: File, type: "avatar" | "cover" | "avatar_layout2" | "cover_layout2") => Promise<string | null>;
   onUploadContentImage: (file: File, folder: string) => Promise<string | null>;
   onDone: () => void;
@@ -129,6 +132,7 @@ const CreatorEditPanel = forwardRef<CreatorEditPanelHandle, Props>(function Crea
     products: initialProducts,
     campaigns: initialCampaigns,
     heroReels: initialHeroReels,
+    testimonials: initialTestimonials,
     activeLayout,
     onSaveProfile,
     onSaveLinks,
@@ -136,6 +140,7 @@ const CreatorEditPanel = forwardRef<CreatorEditPanelHandle, Props>(function Crea
     onSaveProducts,
     onSaveCampaigns,
     onSaveHeroReels,
+    onSaveTestimonials,
     onUploadImage,
     onUploadContentImage,
     onDone,
@@ -178,6 +183,8 @@ const CreatorEditPanel = forwardRef<CreatorEditPanelHandle, Props>(function Crea
   const [camps, setCamps] = useState(initialCampaigns);
   const [heroReels, setHeroReels] = useState(initialHeroReels);
   const [sectionOrder, setSectionOrder] = useState<string[]>(profile.section_order || ["spotlight", "links", "products", "past_campaigns", "hero_reel"]);
+  const [testimonialsList, setTestimonialsList] = useState<Testimonial[]>(initialTestimonials || []);
+  const [spotifyUrl, setSpotifyUrl] = useState(profile.spotify_url || "");
   const [dragSectionIdx, setDragSectionIdx] = useState<number | null>(null);
   const [saving, setSaving] = useState(false);
   const [uploadingImage, setUploadingImage] = useState<"avatar" | "cover" | null>(null);
@@ -387,7 +394,7 @@ const CreatorEditPanel = forwardRef<CreatorEditPanelHandle, Props>(function Crea
           }))
           .filter((camp) => !isEmptyCampaignEntry(camp));
 
-      const baseProfile = { name, slug: handle, bio, avatar_url: avatarUrl, cover_url: coverUrl, avatar_url_layout2: avatarUrlL2, cover_url_layout2: coverUrlL2, verified, tags, stats, brands, brands_display_mode: brandsDisplayMode, image_shape: shapeProducts, image_shape_products: shapeProducts, image_shape_campaigns: shapeCampaigns, image_shape_links: shapeLinks, page_effects: { effects: pageEffects, color: effectColor, emojis: effectEmojis, intensity: effectIntensity }, font_family: fontFamily, font_size: fontSize, color_name: colorName || null, color_bio: colorBio || null, color_section_titles: colorSectionTitles || null, section_order: sectionOrder };
+      const baseProfile = { name, slug: handle, bio, avatar_url: avatarUrl, cover_url: coverUrl, avatar_url_layout2: avatarUrlL2, cover_url_layout2: coverUrlL2, verified, tags, stats, brands, brands_display_mode: brandsDisplayMode, image_shape: shapeProducts, image_shape_products: shapeProducts, image_shape_campaigns: shapeCampaigns, image_shape_links: shapeLinks, page_effects: { effects: pageEffects, color: effectColor, emojis: effectEmojis, intensity: effectIntensity }, font_family: fontFamily, font_size: fontSize, color_name: colorName || null, color_bio: colorBio || null, color_section_titles: colorSectionTitles || null, section_order: sectionOrder, spotify_url: spotifyUrl };
 
       if (cropImage) {
         const { file, type } = cropImage;
@@ -411,6 +418,7 @@ const CreatorEditPanel = forwardRef<CreatorEditPanelHandle, Props>(function Crea
         await onSaveProducts(sanitizedProducts);
         await onSaveCampaigns(sanitizedCampaigns);
       await onSaveHeroReels(heroReels.filter(r => r.video_url?.trim()));
+      await onSaveTestimonials(testimonialsList.filter(t => t.content?.trim()));
       toast.success("Tudo salvo! 🎉");
       if (closeAfterSave) onDone();
       return true;
@@ -1648,6 +1656,57 @@ const CreatorEditPanel = forwardRef<CreatorEditPanelHandle, Props>(function Crea
         <button onClick={() => setCamps([...camps, { id: crypto.randomUUID(), creator_id: profile.id, title: "", description: "", image_url: "", url: "", live: false, is_active: true, sort_order: camps.length, expires_at: null, bg_color: null, text_color: null, border_color: null }])}
           className="flex items-center justify-center gap-2 w-full p-3 border border-dashed border-k-glow rounded-xl text-k-4 text-sm font-medium mt-2 transition-all hover:border-k-400 hover:text-k-300 hover:bg-k-glow active:scale-[0.98]">
           + Adicionar campanha
+        </button>
+      </div>
+
+      {/* 🎙 Spotify Embed */}
+      <div className="mb-8" data-editor-section="spotify">
+        <div className={sectionTitle}>🎙 Spotify / Podcast</div>
+        <p className="text-[0.68rem] text-k-4 mb-3">Cole o link do seu podcast ou perfil no Spotify para exibir o player embutido.</p>
+        <input
+          value={spotifyUrl}
+          onChange={e => setSpotifyUrl(e.target.value)}
+          placeholder="https://open.spotify.com/show/..."
+          className={inputClass}
+        />
+      </div>
+
+      {/* ⭐ Depoimentos */}
+      <div className="mb-8" data-editor-section="testimonials">
+        <div className={sectionTitle}>⭐ Depoimentos <span className="text-k-3 normal-case tracking-normal font-normal">({testimonialsList.length})</span></div>
+        <p className="text-[0.68rem] text-k-4 mb-3">Adicione depoimentos de clientes para aumentar sua credibilidade.</p>
+        {testimonialsList.map((t, i) => (
+          <div key={t.id} className="bg-k-800 border border-primary/10 rounded-2xl p-4 mb-3 space-y-2">
+            <div className="flex items-center justify-between">
+              <span className="text-xs font-semibold text-k-2">Depoimento {i + 1}</span>
+              <div className="flex items-center gap-2">
+                <button onClick={() => setTestimonialsList(testimonialsList.map((x, j) => j === i ? { ...x, is_active: !x.is_active } : x))}
+                  className={`text-[0.65rem] px-2 py-0.5 rounded-full border ${t.is_active ? "border-green-500/30 text-green-400 bg-green-500/10" : "border-border text-k-4"}`}>
+                  {t.is_active ? "ativo" : "inativo"}
+                </button>
+                <button onClick={() => setTestimonialsList(testimonialsList.filter((_, j) => j !== i))} className="text-k-4 hover:text-red-400 text-xs">✕</button>
+              </div>
+            </div>
+            <textarea value={t.content} onChange={e => setTestimonialsList(testimonialsList.map((x, j) => j === i ? { ...x, content: e.target.value } : x))}
+              placeholder="O que o cliente disse..." className={`${inputClass} min-h-[60px] resize-none`} />
+            <div className="grid grid-cols-2 gap-2">
+              <input value={t.author_name} onChange={e => setTestimonialsList(testimonialsList.map((x, j) => j === i ? { ...x, author_name: e.target.value } : x))}
+                placeholder="Nome do autor" className={inputClass} />
+              <input value={t.author_role} onChange={e => setTestimonialsList(testimonialsList.map((x, j) => j === i ? { ...x, author_role: e.target.value } : x))}
+                placeholder="Cargo / Empresa" className={inputClass} />
+            </div>
+            <div className="flex items-center gap-2">
+              <span className="text-xs text-k-4">Nota:</span>
+              {[1,2,3,4,5].map(star => (
+                <button key={star} onClick={() => setTestimonialsList(testimonialsList.map((x, j) => j === i ? { ...x, rating: star } : x))}
+                  className={`text-sm ${star <= t.rating ? "text-primary" : "text-muted"}`}>★</button>
+              ))}
+            </div>
+          </div>
+        ))}
+        <button onClick={() => setTestimonialsList([...testimonialsList, { id: crypto.randomUUID(), creator_id: profile.id, author_name: "", author_role: "", author_avatar_url: "", content: "", rating: 5, is_active: true, sort_order: testimonialsList.length }])}
+          className="flex items-center justify-center gap-2 w-full p-3 border border-dashed border-k-glow rounded-xl text-k-4 text-sm font-medium mt-2 transition-all hover:border-k-400 hover:text-k-300 hover:bg-k-glow active:scale-[0.98]">
+          + Adicionar depoimento
         </button>
       </div>
 

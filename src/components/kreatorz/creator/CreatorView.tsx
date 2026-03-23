@@ -1,6 +1,7 @@
 import { toast } from "sonner";
 import type { CreatorProfile, CreatorLink, SocialLink, CreatorProduct, CreatorCampaign } from "@/hooks/useCreatorData";
 import type { HeroReelData } from "./HeroReel";
+import type { Testimonial } from "./TestimonialsSection";
 import { useState, useEffect, useRef, useCallback } from "react";
 import SocialIcon, { LinkIcon } from "./SocialIcon";
 import VerifiedBadge from "./VerifiedBadge";
@@ -8,6 +9,8 @@ import SpotlightCampaign from "./SpotlightCampaign";
 import HeroReel from "./HeroReel";
 import PageEffects from "./PageEffects";
 import BrandsSection from "./BrandsSection";
+import SpotifyEmbed from "./SpotifyEmbed";
+import TestimonialsSection from "./TestimonialsSection";
 import type { PageEffect } from "./PageEffects";
 import { getFontFamily, getFontSizeScale, loadGoogleFont } from "@/lib/fontUtils";
 
@@ -28,6 +31,7 @@ interface Props {
   products: CreatorProduct[];
   campaigns: CreatorCampaign[];
   heroReels?: HeroReelData[];
+  testimonials?: Testimonial[];
   agencyName?: string;
   agencyLogoUrl?: string;
   agencyFooterText?: string;
@@ -38,7 +42,7 @@ interface Props {
   onCampaignClick?: (campaign: CreatorCampaign) => void;
 }
 
-export default function CreatorView({ profile, links: rawLinks, socialLinks: rawSocial, products: rawProducts, campaigns: rawCampaigns, heroReels: rawReels, agencyName, agencyLogoUrl, agencyFooterText, agencyFooterVisible = true, agencyFooterLink, embedded, onLinkClick, onCampaignClick }: Props) {
+export default function CreatorView({ profile, links: rawLinks, socialLinks: rawSocial, products: rawProducts, campaigns: rawCampaigns, heroReels: rawReels, testimonials: rawTestimonials, agencyName, agencyLogoUrl, agencyFooterText, agencyFooterVisible = true, agencyFooterLink, embedded, onLinkClick, onCampaignClick }: Props) {
   const [contactOpen, setContactOpen] = useState(false);
   const [clickedLink, setClickedLink] = useState<number | null>(null);
   const [parallaxY, setParallaxY] = useState(0);
@@ -353,6 +357,20 @@ export default function CreatorView({ profile, links: rawLinks, socialLinks: raw
                   {activeReels.slice(0, 3).map((reel) => (
                     <HeroReel key={reel.id} reel={reel} embedded={embedded} agencyId={profile.agency_id} />
                   ))}
+                </div>
+              ) : null;
+
+            case "spotify":
+              return profile.spotify_url ? (
+                <div key="spotify" data-preview-section="spotify">
+                  <SpotifyEmbed spotifyUrl={profile.spotify_url} />
+                </div>
+              ) : null;
+
+            case "testimonials":
+              return (rawTestimonials || []).filter(t => t.is_active && t.content?.trim()).length > 0 ? (
+                <div key="testimonials" data-preview-section="testimonials">
+                  <TestimonialsSection testimonials={rawTestimonials || []} sectionTitleColor={profile.color_section_titles} />
                 </div>
               ) : null;
 

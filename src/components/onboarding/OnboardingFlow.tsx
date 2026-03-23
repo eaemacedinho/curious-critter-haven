@@ -18,7 +18,7 @@ const STYLE_MAP: Record<VisualStyle, { primary: string; accent: string; layout: 
   neon: { primary: "#00f0ff", accent: "#ff00e5", layout: "layout2" },
 };
 
-export const TEMPLATE_PRESETS: Record<string, { bio: string; layout: string; style: VisualStyle; links: { title: string; url: string; icon: string; sort_order: number }[]; campaign?: { title: string; description: string; url: string } }> = {
+export const TEMPLATE_PRESETS: Record<string, { bio: string; layout: string; style: VisualStyle; links: { title: string; url: string; icon: string; sort_order: number }[]; campaign?: { title: string; description: string; url: string }; testimonials?: { author_name: string; author_role: string; content: string; rating: number }[] }> = {
   portfolio: {
     bio: "Confira meu portfólio e trabalhos recentes. 📸",
     layout: "layout1",
@@ -105,6 +105,10 @@ export const TEMPLATE_PRESETS: Record<string, { bio: string; layout: string; sty
       { title: "Depoimentos", url: "https://exemplo.com/depoimentos", icon: "⭐", sort_order: 2 },
     ],
     campaign: { title: "🚀 Mentoria aberta", description: "Vagas limitadas para o próximo grupo", url: "https://exemplo.com/mentoria" },
+    testimonials: [
+      { author_name: "Maria Silva", author_role: "Empreendedora", content: "A mentoria mudou minha forma de pensar. Resultados incríveis em poucas semanas!", rating: 5 },
+      { author_name: "João Santos", author_role: "Designer", content: "Profissional excepcional. Recomendo para quem busca crescimento real.", rating: 5 },
+    ],
   },
   ecommerce: {
     bio: "Confira nossos produtos e ofertas exclusivas. 🛒",
@@ -116,6 +120,10 @@ export const TEMPLATE_PRESETS: Record<string, { bio: string; layout: string; sty
       { title: "WhatsApp", url: "https://wa.me/5511999999999", icon: "💬", sort_order: 2 },
     ],
     campaign: { title: "🛒 Oferta relâmpago", description: "Frete grátis em compras acima de R$99", url: "https://exemplo.com/oferta" },
+    testimonials: [
+      { author_name: "Ana Costa", author_role: "Cliente", content: "Entrega rápida e produtos de qualidade! Já comprei 3 vezes.", rating: 5 },
+      { author_name: "Pedro Lima", author_role: "Cliente fiel", content: "Melhor loja online que já encontrei. Atendimento nota 10!", rating: 5 },
+    ],
   },
 };
 
@@ -212,12 +220,25 @@ export default function OnboardingFlow({ onComplete }: { onComplete: () => void 
         ? { ...templatePreset.campaign, creator_id: creatorId, live: true, sort_order: 0 }
         : { creator_id: creatorId, title: "🔥 Conteúdo Exclusivo", description: "Confira meu novo material especial", url: "https://exemplo.com/exclusivo", live: true, sort_order: 0 };
 
-      await Promise.all([
+      const promises: Promise<any>[] = [
         supabase.from("creator_links").insert(
           linksToCreate.map(l => ({ ...l, creator_id: creatorId }))
         ),
         supabase.from("campaigns").insert(campaignData),
-      ]);
+      ];
+
+      if (templatePreset?.testimonials?.length) {
+        promises.push(
+          supabase.from("creator_testimonials").insert(
+            templatePreset.testimonials.map((t, i) => ({
+              creator_id: creatorId, author_name: t.author_name, author_role: t.author_role,
+              content: t.content, rating: t.rating, is_active: true, sort_order: i,
+            }))
+          )
+        );
+      }
+
+      await Promise.all(promises);
 
       await supabase
         .from("agency_settings")

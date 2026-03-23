@@ -2,6 +2,7 @@ import { useState, useEffect, useCallback } from "react";
 import { supabase } from "@/integrations/supabase/client";
 import { toast } from "sonner";
 import type { HeroReelData } from "@/components/kreatorz/creator/HeroReel";
+import type { Testimonial } from "@/components/kreatorz/creator/TestimonialsSection";
 
 export type ImageShapeValue = "rounded" | "circular" | "pill" | "shadow" | "polaroid";
 
@@ -33,6 +34,7 @@ export interface CreatorProfile {
   color_bio: string | null;
   color_section_titles: string | null;
   section_order: string[];
+  spotify_url: string;
 }
 
 export interface CreatorLink {
@@ -125,6 +127,7 @@ const normalizeProfile = (creator: any): CreatorProfile => ({
     if (typeof pe === "object" && Array.isArray((pe as any).effects)) return { effects: (pe as any).effects, color: (pe as any).color, emojis: (pe as any).emojis, intensity: (pe as any).intensity };
     return { effects: [], color: undefined, emojis: undefined, intensity: undefined };
   })(),
+  spotify_url: creator.spotify_url || "",
 });
 
 export function useCreatorData(agencyId: string | undefined, creatorId?: string) {
@@ -134,6 +137,7 @@ export function useCreatorData(agencyId: string | undefined, creatorId?: string)
   const [products, setProducts] = useState<CreatorProduct[]>([]);
   const [campaigns, setCampaigns] = useState<CreatorCampaign[]>([]);
   const [heroReels, setHeroReels] = useState<HeroReelData[]>([]);
+  const [testimonials, setTestimonials] = useState<Testimonial[]>([]);
   const [loading, setLoading] = useState(true);
 
   const fetchData = useCallback(async () => {
@@ -175,12 +179,13 @@ export function useCreatorData(agencyId: string | undefined, creatorId?: string)
 
     setProfile(normalizeProfile(creator));
 
-    const [linksRes, socialRes, productsRes, campaignsRes, reelsRes] = await Promise.all([
+    const [linksRes, socialRes, productsRes, campaignsRes, reelsRes, testimonialsRes] = await Promise.all([
       supabase.from("creator_links").select("*").eq("creator_id", creator.id).order("sort_order"),
       supabase.from("creator_social_links").select("*").eq("creator_id", creator.id).order("sort_order"),
       supabase.from("creator_products").select("*").eq("creator_id", creator.id).order("sort_order"),
       supabase.from("campaigns").select("*").eq("creator_id", creator.id).order("sort_order"),
       supabase.from("creator_hero_reels").select("*").eq("creator_id", creator.id).order("sort_order"),
+      supabase.from("creator_testimonials").select("*").eq("creator_id", creator.id).order("sort_order"),
     ]);
 
     setLinks((linksRes.data as CreatorLink[]) || []);
@@ -188,6 +193,7 @@ export function useCreatorData(agencyId: string | undefined, creatorId?: string)
     setProducts((productsRes.data as CreatorProduct[]) || []);
     setCampaigns((campaignsRes.data as CreatorCampaign[]) || []);
     setHeroReels((reelsRes.data as HeroReelData[]) || []);
+    setTestimonials((testimonialsRes.data as Testimonial[]) || []);
     setLoading(false);
   }, [agencyId, creatorId]);
 
@@ -305,6 +311,25 @@ export function useCreatorData(agencyId: string | undefined, creatorId?: string)
     setHeroReels(normalized);
   };
 
+  const saveTestimonials = async (newTestimonials: Testimonial[]) => {
+    if (!profile) return;
+    const normalized = newTestimonials.map((t, i) => ({ ...t, creator_id: profile.id, sort_order: i }));
+    const { error: deleteError } = await supabase.from("creator_testimonials").delete().eq("creator_id", profile.id);
+    if (deleteError) throw deleteError;
+    if (normalized.length > 0) {
+      const { error } = await supabase.from("creator_testimonials").insert(
+        normalized.map((t) => ({
+          id: t.id, creator_id: t.creator_id, author_name: t.author_name || "",
+          author_role: t.author_role || "", author_avatar_url: t.author_avatar_url || "",
+          content: t.content || "", rating: t.rating ?? 5,
+          is_active: t.is_active !== false, sort_order: t.sort_order,
+        }))
+      );
+      if (error) throw error;
+    }
+    setTestimonials(normalized);
+  };
+
   const uploadImage = async (file: File, type: "avatar" | "cover" | "avatar_layout2" | "cover_layout2"): Promise<string | null> => {
     if (!agencyId || !profile) return null;
     const bucket = type.startsWith("avatar") ? "avatars" : "covers";
@@ -332,8 +357,8 @@ export function useCreatorData(agencyId: string | undefined, creatorId?: string)
   };
 
   return {
-    profile, links, socialLinks, products, campaigns, heroReels, loading,
-    saveProfile, saveLinks, saveSocialLinks, saveProducts, saveCampaigns, saveHeroReels,
+    profile, links, socialLinks, products, campaigns, heroReels, testimonials, loading,
+    saveProfile, saveLinks, saveSocialLinks, saveProducts, saveCampaigns, saveHeroReels, saveTestimonials,
     uploadImage, uploadContentImage, refetch: fetchData,
   };
 }
