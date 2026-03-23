@@ -230,7 +230,7 @@ export default function Templates() {
                     {template.objective}
                   </div>
                   <button
-                    onClick={() => setSelectedTemplate(template)}
+                    onClick={() => handleUseTemplate(template.id)}
                     className="mt-4 flex w-full items-center justify-center gap-2 rounded-xl border border-border bg-card py-2.5 text-sm font-semibold text-foreground transition-all hover:border-primary/40 hover:bg-primary/5"
                   >
                     Usar este modelo
