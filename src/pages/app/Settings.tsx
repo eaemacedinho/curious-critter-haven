@@ -28,6 +28,7 @@ export default function Settings() {
   const [saving, setSaving] = useState(false);
   const [extracting, setExtracting] = useState(false);
   const [canceling, setCanceling] = useState(false);
+  const [exporting, setExporting] = useState(false);
 
   const handleCancelSubscription = async () => {
     if (!confirm("Tem certeza que deseja cancelar sua assinatura Pro? Você perderá acesso aos recursos premium.")) return;
