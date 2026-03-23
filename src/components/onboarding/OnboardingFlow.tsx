@@ -105,6 +105,10 @@ export const TEMPLATE_PRESETS: Record<string, { bio: string; layout: string; sty
       { title: "Depoimentos", url: "https://exemplo.com/depoimentos", icon: "⭐", sort_order: 2 },
     ],
     campaign: { title: "🚀 Mentoria aberta", description: "Vagas limitadas para o próximo grupo", url: "https://exemplo.com/mentoria" },
+    testimonials: [
+      { author_name: "Maria Silva", author_role: "Empreendedora", content: "A mentoria mudou minha forma de pensar. Resultados incríveis em poucas semanas!", rating: 5 },
+      { author_name: "João Santos", author_role: "Designer", content: "Profissional excepcional. Recomendo para quem busca crescimento real.", rating: 5 },
+    ],
   },
   ecommerce: {
     bio: "Confira nossos produtos e ofertas exclusivas. 🛒",
