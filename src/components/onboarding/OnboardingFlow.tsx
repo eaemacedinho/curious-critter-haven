@@ -220,7 +220,7 @@ export default function OnboardingFlow({ onComplete }: { onComplete: () => void 
         ? { ...templatePreset.campaign, creator_id: creatorId, live: true, sort_order: 0 }
         : { creator_id: creatorId, title: "🔥 Conteúdo Exclusivo", description: "Confira meu novo material especial", url: "https://exemplo.com/exclusivo", live: true, sort_order: 0 };
 
-      const promises: Promise<any>[] = [
+      const promises: PromiseLike<any>[] = [
         supabase.from("creator_links").insert(
           linksToCreate.map(l => ({ ...l, creator_id: creatorId }))
         ).then(),
