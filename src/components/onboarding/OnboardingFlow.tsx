@@ -120,6 +120,10 @@ export const TEMPLATE_PRESETS: Record<string, { bio: string; layout: string; sty
       { title: "WhatsApp", url: "https://wa.me/5511999999999", icon: "💬", sort_order: 2 },
     ],
     campaign: { title: "🛒 Oferta relâmpago", description: "Frete grátis em compras acima de R$99", url: "https://exemplo.com/oferta" },
+    testimonials: [
+      { author_name: "Ana Costa", author_role: "Cliente", content: "Entrega rápida e produtos de qualidade! Já comprei 3 vezes.", rating: 5 },
+      { author_name: "Pedro Lima", author_role: "Cliente fiel", content: "Melhor loja online que já encontrei. Atendimento nota 10!", rating: 5 },
+    ],
   },
 };
 
