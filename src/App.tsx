@@ -7,6 +7,7 @@ import { AuthProvider } from "@/hooks/useAuth";
 import { TenantProvider } from "@/hooks/useTenant";
 import ProtectedRoute from "@/components/ProtectedRoute";
 import AppLayout from "@/components/app/AppLayout";
+import CookieConsent from "@/components/CookieConsent";
 
 import Landing from "@/pages/Landing";
 import Login from "@/pages/Login";
