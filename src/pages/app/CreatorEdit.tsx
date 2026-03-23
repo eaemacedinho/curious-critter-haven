@@ -51,12 +51,18 @@ export default function CreatorEdit() {
     );
   }
 
+  const { canUse } = useSubscription();
+
   const layoutOptions = [
     { id: "layout1", label: "Padrão" },
-    { id: "layout2", label: "Imersivo" },
+    { id: "layout2", label: "Imersivo", pro: true },
   ];
 
   const handleSetPublicLayout = async (layout: string) => {
+    if (layout === "layout2" && !canUse("allow_layout_immersive")) {
+      toast.error("Layout Imersivo é exclusivo do plano Pro. Faça upgrade!");
+      return;
+    }
     try {
       await saveProfile({ layout_type: layout } as any);
       const name = layoutOptions.find(l => l.id === layout)?.label || layout;
