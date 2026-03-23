@@ -135,6 +135,7 @@ export default function CreatorEdit() {
         products={products}
         campaigns={campaigns}
         heroReels={heroReels}
+        testimonials={testimonials}
         activeLayout={profile.layout_type}
         onSaveProfile={saveProfile}
         onSaveLinks={saveLinks}
@@ -142,6 +143,7 @@ export default function CreatorEdit() {
         onSaveProducts={saveProducts}
         onSaveCampaigns={saveCampaigns}
         onSaveHeroReels={saveHeroReels}
+        onSaveTestimonials={saveTestimonials}
         onUploadImage={uploadImage}
         onUploadContentImage={uploadContentImage}
         onDone={() => void refetch()}
