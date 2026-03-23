@@ -418,6 +418,7 @@ const CreatorEditPanel = forwardRef<CreatorEditPanelHandle, Props>(function Crea
         await onSaveProducts(sanitizedProducts);
         await onSaveCampaigns(sanitizedCampaigns);
       await onSaveHeroReels(heroReels.filter(r => r.video_url?.trim()));
+      await onSaveTestimonials(testimonialsList.filter(t => t.content?.trim()));
       toast.success("Tudo salvo! 🎉");
       if (closeAfterSave) onDone();
       return true;
