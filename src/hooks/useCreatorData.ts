@@ -34,6 +34,7 @@ export interface CreatorProfile {
   color_bio: string | null;
   color_section_titles: string | null;
   section_order: string[];
+  spotify_url: string;
 }
 
 export interface CreatorLink {
