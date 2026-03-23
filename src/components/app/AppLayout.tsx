@@ -13,6 +13,7 @@ const navItems = [
   { icon: "▦", label: "Dashboard", path: "/app", tour: "dashboard" },
   { icon: "👥", label: "Creators", path: "/app/creators", tour: "creators" },
   { icon: "📢", label: "Campanhas", path: "/app/campaigns", tour: "campaigns" },
+  { icon: "🎨", label: "Templates", path: "/app/templates", tour: "templates" },
   { icon: "📊", label: "Analytics", path: "/app/analytics", tour: "analytics", pro: true },
 ];
 

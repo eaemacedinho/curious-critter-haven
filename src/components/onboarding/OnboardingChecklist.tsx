@@ -17,7 +17,10 @@ const TASKS = [
 const CONFETTI_KEY = "in1_confetti_shown";
 
 export default function OnboardingChecklist({ state }: { state: OnboardingState }) {
+  const { agency } = useTenant();
   const [expanded, setExpanded] = useState(true);
+  const [showConfetti, setShowConfetti] = useState(false);
+  const [publishing, setPublishing] = useState(false);
   const [showConfetti, setShowConfetti] = useState(false);
 
   useEffect(() => {
