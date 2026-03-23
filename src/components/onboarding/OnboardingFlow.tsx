@@ -4,7 +4,7 @@ import { useAuth } from "@/hooks/useAuth";
 import { useTenant } from "@/hooks/useTenant";
 import { supabase } from "@/integrations/supabase/client";
 import { markOnboardingDone } from "@/hooks/useOnboarding";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useSearchParams } from "react-router-dom";
 
 type Step = "purpose" | "name" | "style" | "creating" | "done";
 type Purpose = "agency" | "creators" | "myself";
@@ -14,6 +14,74 @@ const STYLE_MAP: Record<VisualStyle, { primary: string; accent: string; layout: 
   dark: { primary: "#1a1a2e", accent: "#e94560", layout: "layout1" },
   clean: { primary: "#6B2BD4", accent: "#A855F7", layout: "layout1" },
   neon: { primary: "#00f0ff", accent: "#ff00e5", layout: "layout2" },
+};
+
+const TEMPLATE_PRESETS: Record<string, { bio: string; layout: string; style: VisualStyle; links: { title: string; url: string; icon: string; sort_order: number }[]; campaign?: { title: string; description: string; url: string } }> = {
+  portfolio: {
+    bio: "Confira meu portfólio e trabalhos recentes. 📸",
+    layout: "layout1",
+    style: "dark",
+    links: [
+      { title: "Portfólio completo", url: "https://exemplo.com/portfolio", icon: "📸", sort_order: 0 },
+      { title: "Behance", url: "https://behance.net", icon: "🎨", sort_order: 1 },
+      { title: "Instagram", url: "https://instagram.com", icon: "📷", sort_order: 2 },
+    ],
+    campaign: { title: "🔥 Novo Projeto", description: "Confira meu trabalho mais recente", url: "https://exemplo.com/projeto" },
+  },
+  sales: {
+    bio: "Transformo ideias em resultados. Conheça meus serviços. 🚀",
+    layout: "layout1",
+    style: "clean",
+    links: [
+      { title: "Meus serviços", url: "https://exemplo.com/servicos", icon: "💼", sort_order: 0 },
+      { title: "Depoimentos", url: "https://exemplo.com/depoimentos", icon: "⭐", sort_order: 1 },
+      { title: "Agendar reunião", url: "https://exemplo.com/agendar", icon: "📅", sort_order: 2 },
+    ],
+    campaign: { title: "🎯 Oferta Especial", description: "Pacote com desconto por tempo limitado", url: "https://exemplo.com/oferta" },
+  },
+  influencer: {
+    bio: "Creator de conteúdo | Parcerias & collabs ✨",
+    layout: "layout1",
+    style: "neon",
+    links: [
+      { title: "YouTube", url: "https://youtube.com", icon: "🎬", sort_order: 0 },
+      { title: "TikTok", url: "https://tiktok.com", icon: "🎵", sort_order: 1 },
+      { title: "Media Kit", url: "https://exemplo.com/mediakit", icon: "📋", sort_order: 2 },
+    ],
+    campaign: { title: "✨ Collab aberta", description: "Estou aberto para parcerias com marcas", url: "https://exemplo.com/collab" },
+  },
+  professional: {
+    bio: "Profissional especializado. Entre em contato. 💼",
+    layout: "layout1",
+    style: "clean",
+    links: [
+      { title: "LinkedIn", url: "https://linkedin.com", icon: "💼", sort_order: 0 },
+      { title: "Currículo", url: "https://exemplo.com/cv", icon: "📄", sort_order: 1 },
+      { title: "Contato", url: "mailto:contato@exemplo.com", icon: "✉️", sort_order: 2 },
+    ],
+  },
+  local: {
+    bio: "Visite-nos! Horários, cardápio e localização. 📍",
+    layout: "layout1",
+    style: "clean",
+    links: [
+      { title: "Cardápio", url: "https://exemplo.com/cardapio", icon: "🍽️", sort_order: 0 },
+      { title: "Google Maps", url: "https://maps.google.com", icon: "📍", sort_order: 1 },
+      { title: "WhatsApp", url: "https://wa.me/5511999999999", icon: "💬", sort_order: 2 },
+    ],
+    campaign: { title: "🎉 Promoção da semana", description: "Desconto especial para novos clientes", url: "https://exemplo.com/promo" },
+  },
+  artist: {
+    bio: "Arte, exposições e processo criativo. 🎨",
+    layout: "layout2",
+    style: "dark",
+    links: [
+      { title: "Galeria", url: "https://exemplo.com/galeria", icon: "🖼️", sort_order: 0 },
+      { title: "Loja de prints", url: "https://exemplo.com/prints", icon: "🛍️", sort_order: 1 },
+      { title: "Instagram", url: "https://instagram.com", icon: "📸", sort_order: 2 },
+    ],
+    campaign: { title: "🎨 Nova exposição", description: "Visite minha exposição virtual", url: "https://exemplo.com/exposicao" },
+  },
 };
 
 const LOADING_MSGS = [
@@ -33,10 +101,13 @@ export default function OnboardingFlow({ onComplete }: { onComplete: () => void 
   const { user } = useAuth();
   const { agency, updateAgency, refetch } = useTenant();
   const navigate = useNavigate();
+  const [searchParams] = useSearchParams();
+  const templateId = searchParams.get("template") || "";
+  const templatePreset = templateId ? TEMPLATE_PRESETS[templateId] : null;
   const [step, setStep] = useState<Step>("purpose");
   const [purpose, setPurpose] = useState<Purpose | null>(null);
   const [agencyName, setAgencyName] = useState("");
-  const [style, setStyle] = useState<VisualStyle | null>(null);
+  const [style, setStyle] = useState<VisualStyle | null>(templatePreset?.style || null);
   const [loadingMsgIdx, setLoadingMsgIdx] = useState(0);
   const [createdHandle, setCreatedHandle] = useState("");
 
@@ -78,6 +149,8 @@ export default function OnboardingFlow({ onComplete }: { onComplete: () => void 
       // Create demo creator for this agency (creator is a business entity, created here on purpose)
       const creatorName = purpose === "myself" ? (user.user_metadata?.full_name || name) : "Creator Demo";
       const handle = slug + "-" + Date.now().toString(36);
+      const creatorBio = templatePreset?.bio || "Olá! Esta é minha página de links. Explore meus conteúdos e redes sociais. 🚀";
+      const creatorLayout = templatePreset?.layout || colors.layout;
 
       const { data: newCreator, error: creatorError } = await supabase
         .from("creators")
@@ -86,8 +159,8 @@ export default function OnboardingFlow({ onComplete }: { onComplete: () => void 
           agency_id: agency.id,
           name: creatorName,
           slug: handle,
-          bio: "Olá! Esta é minha página de links. Explore meus conteúdos e redes sociais. 🚀",
-          layout_type: colors.layout,
+          bio: creatorBio,
+          layout_type: creatorLayout,
         } as any)
         .select("id, slug")
         .single();
@@ -100,19 +173,17 @@ export default function OnboardingFlow({ onComplete }: { onComplete: () => void 
       const creatorId = (newCreator as any).id;
       setCreatedHandle((newCreator as any).slug);
 
-      // Create demo links + campaign in parallel
+      // Create links + campaign in parallel (use template preset if available)
+      const linksToCreate = templatePreset?.links || DEMO_LINKS;
+      const campaignData = templatePreset?.campaign
+        ? { ...templatePreset.campaign, creator_id: creatorId, live: true, sort_order: 0 }
+        : { creator_id: creatorId, title: "🔥 Conteúdo Exclusivo", description: "Confira meu novo material especial", url: "https://exemplo.com/exclusivo", live: true, sort_order: 0 };
+
       await Promise.all([
         supabase.from("creator_links").insert(
-          DEMO_LINKS.map(l => ({ ...l, creator_id: creatorId }))
+          linksToCreate.map(l => ({ ...l, creator_id: creatorId }))
         ),
-        supabase.from("campaigns").insert({
-          creator_id: creatorId,
-          title: "🔥 Conteúdo Exclusivo",
-          description: "Confira meu novo material especial",
-          url: "https://exemplo.com/exclusivo",
-          live: true,
-          sort_order: 0,
-        }),
+        supabase.from("campaigns").insert(campaignData),
       ]);
 
       // Mark onboarding as done in agency_settings

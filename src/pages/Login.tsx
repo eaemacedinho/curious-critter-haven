@@ -10,6 +10,7 @@ export default function Login() {
   const navigate = useNavigate();
   const [searchParams] = useSearchParams();
   const claimedUsername = searchParams.get("claim") || "";
+  const templateParam = searchParams.get("template") || "";
   const { user, loading: authLoading } = useAuth();
   const [isSignUp, setIsSignUp] = useState(!!claimedUsername);
   const [email, setEmail] = useState("");
@@ -60,7 +61,8 @@ export default function Login() {
           }
         }
         toast.success("Conta criada!");
-        navigate("/app");
+        const dest = templateParam ? `/app?template=${templateParam}` : "/app";
+        navigate(dest);
       }
     } else {
       const { error } = await supabase.auth.signInWithPassword({ email, password });
@@ -68,7 +70,8 @@ export default function Login() {
         toast.error(error.message);
       } else {
         toast.success("Login realizado!");
-        navigate("/app");
+        const dest = templateParam ? `/app?template=${templateParam}` : "/app";
+        navigate(dest);
       }
     }
     setLoading(false);
@@ -77,7 +80,7 @@ export default function Login() {
   const handleGoogle = async () => {
     const { error } = await supabase.auth.signInWithOAuth({
       provider: "google",
-      options: { redirectTo: `${window.location.origin}/app` },
+      options: { redirectTo: templateParam ? `${window.location.origin}/app?template=${templateParam}` : `${window.location.origin}/app` },
     });
     if (error) toast.error(error.message);
   };

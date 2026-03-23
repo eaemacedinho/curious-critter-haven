@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { ArrowRight, X, Eye, Sparkles } from "lucide-react";
 import in1Logo from "@/assets/in1-logo.png";
 
@@ -98,6 +98,11 @@ const fadeUp = {
 export default function Templates() {
   const [activeNiche, setActiveNiche] = useState("all");
   const [selectedTemplate, setSelectedTemplate] = useState<Template | null>(null);
+  const navigate = useNavigate();
+
+  const handleUseTemplate = (templateId: string) => {
+    navigate(`/login?template=${templateId}`);
+  };
 
   const filtered =
     activeNiche === "all"
@@ -225,7 +230,7 @@ export default function Templates() {
                     {template.objective}
                   </div>
                   <button
-                    onClick={() => setSelectedTemplate(template)}
+                    onClick={() => handleUseTemplate(template.id)}
                     className="mt-4 flex w-full items-center justify-center gap-2 rounded-xl border border-border bg-card py-2.5 text-sm font-semibold text-foreground transition-all hover:border-primary/40 hover:bg-primary/5"
                   >
                     Usar este modelo
@@ -325,13 +330,13 @@ export default function Templates() {
                     ) : null;
                   })}
                 </div>
-                <Link
-                  to="/login"
-                  className="mt-8 flex items-center justify-center gap-2 rounded-xl bg-primary px-6 py-3 text-sm font-bold text-primary-foreground transition-all hover:opacity-90 active:scale-[0.97] shadow-[0_0_20px_hsl(var(--primary)/0.2)]"
+                <button
+                  onClick={() => { setSelectedTemplate(null); handleUseTemplate(selectedTemplate.id); }}
+                  className="mt-8 flex w-full items-center justify-center gap-2 rounded-xl bg-primary px-6 py-3 text-sm font-bold text-primary-foreground transition-all hover:opacity-90 active:scale-[0.97] shadow-[0_0_20px_hsl(var(--primary)/0.2)]"
                 >
                   Usar este modelo
                   <ArrowRight className="h-4 w-4" />
-                </Link>
+                </button>
                 <p className="mt-3 text-center text-xs text-muted-foreground">
                   Grátis para começar · Personalize tudo
                 </p>
