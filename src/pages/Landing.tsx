@@ -514,16 +514,18 @@ export default function Landing() {
               Mais popular
             </div>
             <div className="text-xs font-bold text-muted-foreground uppercase tracking-widest mb-2">Pro</div>
-            <div className="text-4xl font-extrabold text-foreground tracking-tight mb-1">R$29 <span className="text-base font-medium text-muted-foreground">/mês</span></div>
+            <div className="text-4xl font-extrabold text-foreground tracking-tight mb-1">R$17,90 <span className="text-base font-medium text-muted-foreground">/mês</span></div>
             <p className="text-sm text-muted-foreground mb-6">Tudo liberado. Sem limites.</p>
             <ul className="space-y-0 mb-7">
               {[
-                "Links ilimitados",
-                "Todos os layouts",
-                "Campanhas spotlight",
-                "Produtos e vídeos",
+                "Creators ilimitados",
+                "Links & produtos ilimitados",
+                "Todos os layouts (incl. Imersivo)",
+                "Campanhas Spotlight",
+                "Hero Reels",
                 "Analytics completo",
-                "Personalização total",
+                "Cores e efeitos personalizados",
+                "Selo verificado",
                 "Remover branding in1.bio",
               ].map((text, i) => (
                 <li key={i} className="flex items-center gap-2.5 py-2 border-b border-border/20 last:border-b-0 text-sm text-muted-foreground">
