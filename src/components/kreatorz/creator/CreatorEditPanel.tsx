@@ -98,6 +98,7 @@ interface Props {
   products: CreatorProduct[];
   campaigns: CreatorCampaign[];
   heroReels: HeroReelData[];
+  testimonials: Testimonial[];
   activeLayout?: string;
   onSaveProfile: (updates: Partial<CreatorProfile>) => Promise<void>;
   onSaveLinks: (links: CreatorLink[]) => Promise<void>;
@@ -105,6 +106,7 @@ interface Props {
   onSaveProducts: (products: CreatorProduct[]) => Promise<void>;
   onSaveCampaigns: (campaigns: CreatorCampaign[]) => Promise<void>;
   onSaveHeroReels: (reels: HeroReelData[]) => Promise<void>;
+  onSaveTestimonials: (testimonials: Testimonial[]) => Promise<void>;
   onUploadImage: (file: File, type: "avatar" | "cover" | "avatar_layout2" | "cover_layout2") => Promise<string | null>;
   onUploadContentImage: (file: File, folder: string) => Promise<string | null>;
   onDone: () => void;
