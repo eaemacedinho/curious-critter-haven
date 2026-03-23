@@ -240,6 +240,7 @@ export default function AppLayout() {
             ☰
           </button>
           <div className="flex-1" />
+          <DashboardThemeToggle />
           <span className="text-[0.65rem] font-semibold text-muted-foreground">
             {agency?.name || ""}
           </span>
