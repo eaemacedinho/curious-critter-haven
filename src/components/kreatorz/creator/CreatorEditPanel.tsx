@@ -1,6 +1,7 @@
 import { forwardRef, useEffect, useImperativeHandle, useRef, useState, useCallback, useMemo, type CSSProperties } from "react";
 import { toast } from "sonner";
 import type { CreatorProfile, CreatorLink, SocialLink, CreatorProduct, CreatorCampaign } from "@/hooks/useCreatorData";
+import type { Testimonial } from "./TestimonialsSection";
 import type { HeroReelData } from "./HeroReel";
 import ImageCropper from "./ImageCropper";
 import HeroReelEditor from "./HeroReelEditor";
