@@ -5,6 +5,8 @@ import { useTenant } from "@/hooks/useTenant";
 import { supabase } from "@/integrations/supabase/client";
 import { markOnboardingDone } from "@/hooks/useOnboarding";
 import { useNavigate, useSearchParams } from "react-router-dom";
+import { Eye } from "lucide-react";
+import TemplatePreview from "./TemplatePreview";
 
 type Step = "purpose" | "name" | "style" | "creating" | "done";
 type Purpose = "agency" | "creators" | "myself";
@@ -16,7 +18,7 @@ const STYLE_MAP: Record<VisualStyle, { primary: string; accent: string; layout: 
   neon: { primary: "#00f0ff", accent: "#ff00e5", layout: "layout2" },
 };
 
-const TEMPLATE_PRESETS: Record<string, { bio: string; layout: string; style: VisualStyle; links: { title: string; url: string; icon: string; sort_order: number }[]; campaign?: { title: string; description: string; url: string } }> = {
+export const TEMPLATE_PRESETS: Record<string, { bio: string; layout: string; style: VisualStyle; links: { title: string; url: string; icon: string; sort_order: number }[]; campaign?: { title: string; description: string; url: string } }> = {
   portfolio: {
     bio: "Confira meu portfólio e trabalhos recentes. 📸",
     layout: "layout1",
@@ -82,6 +84,39 @@ const TEMPLATE_PRESETS: Record<string, { bio: string; layout: string; style: Vis
     ],
     campaign: { title: "🎨 Nova exposição", description: "Visite minha exposição virtual", url: "https://exemplo.com/exposicao" },
   },
+  podcast: {
+    bio: "Ouça meu podcast e acompanhe as novidades. 🎙️",
+    layout: "layout1",
+    style: "dark",
+    links: [
+      { title: "Spotify", url: "https://spotify.com", icon: "🎧", sort_order: 0 },
+      { title: "Apple Podcasts", url: "https://podcasts.apple.com", icon: "🍎", sort_order: 1 },
+      { title: "YouTube", url: "https://youtube.com", icon: "🎬", sort_order: 2 },
+    ],
+    campaign: { title: "🎙️ Novo episódio", description: "Confira o episódio mais recente", url: "https://exemplo.com/episodio" },
+  },
+  coach: {
+    bio: "Mentoria e desenvolvimento pessoal. Agende sua sessão. 🧠",
+    layout: "layout1",
+    style: "clean",
+    links: [
+      { title: "Agendar sessão", url: "https://exemplo.com/agendar", icon: "📅", sort_order: 0 },
+      { title: "Curso online", url: "https://exemplo.com/curso", icon: "🎓", sort_order: 1 },
+      { title: "Depoimentos", url: "https://exemplo.com/depoimentos", icon: "⭐", sort_order: 2 },
+    ],
+    campaign: { title: "🚀 Mentoria aberta", description: "Vagas limitadas para o próximo grupo", url: "https://exemplo.com/mentoria" },
+  },
+  ecommerce: {
+    bio: "Confira nossos produtos e ofertas exclusivas. 🛒",
+    layout: "layout1",
+    style: "neon",
+    links: [
+      { title: "Loja online", url: "https://exemplo.com/loja", icon: "🛍️", sort_order: 0 },
+      { title: "Promoções", url: "https://exemplo.com/promos", icon: "🔥", sort_order: 1 },
+      { title: "WhatsApp", url: "https://wa.me/5511999999999", icon: "💬", sort_order: 2 },
+    ],
+    campaign: { title: "🛒 Oferta relâmpago", description: "Frete grátis em compras acima de R$99", url: "https://exemplo.com/oferta" },
+  },
 };
 
 const LOADING_MSGS = [
@@ -110,6 +145,7 @@ export default function OnboardingFlow({ onComplete }: { onComplete: () => void 
   const [style, setStyle] = useState<VisualStyle | null>(templatePreset?.style || null);
   const [loadingMsgIdx, setLoadingMsgIdx] = useState(0);
   const [createdHandle, setCreatedHandle] = useState("");
+  const [showPreview, setShowPreview] = useState(false);
 
   const handleSkip = async () => {
     if (!user || !agency) return;
@@ -138,7 +174,6 @@ export default function OnboardingFlow({ onComplete }: { onComplete: () => void 
       const name = agencyName.trim() || agency.name || "Minha Agência";
       const slug = name.toLowerCase().replace(/[^a-z0-9]/g, "-").replace(/-+/g, "-");
 
-      // Update agency branding
       await updateAgency({
         name,
         slug,
@@ -146,7 +181,6 @@ export default function OnboardingFlow({ onComplete }: { onComplete: () => void 
         accent_color: colors.accent,
       });
 
-      // Create demo creator for this agency (creator is a business entity, created here on purpose)
       const creatorName = purpose === "myself" ? (user.user_metadata?.full_name || name) : "Creator Demo";
       const handle = slug + "-" + Date.now().toString(36);
       const creatorBio = templatePreset?.bio || "Olá! Esta é minha página de links. Explore meus conteúdos e redes sociais. 🚀";
@@ -173,7 +207,6 @@ export default function OnboardingFlow({ onComplete }: { onComplete: () => void 
       const creatorId = (newCreator as any).id;
       setCreatedHandle((newCreator as any).slug);
 
-      // Create links + campaign in parallel (use template preset if available)
       const linksToCreate = templatePreset?.links || DEMO_LINKS;
       const campaignData = templatePreset?.campaign
         ? { ...templatePreset.campaign, creator_id: creatorId, live: true, sort_order: 0 }
@@ -186,7 +219,6 @@ export default function OnboardingFlow({ onComplete }: { onComplete: () => void 
         supabase.from("campaigns").insert(campaignData),
       ]);
 
-      // Mark onboarding as done in agency_settings
       await supabase
         .from("agency_settings")
         .update({ onboarding_completed: true })
@@ -210,6 +242,14 @@ export default function OnboardingFlow({ onComplete }: { onComplete: () => void 
       navigate(`/app/creators`);
     }
   };
+
+  // Build preview data for the selected template
+  const currentPresetForPreview = templatePreset || (style ? {
+    bio: "Olá! Esta é minha página de links. 🚀",
+    layout: STYLE_MAP[style]?.layout || "layout1",
+    style: style,
+    links: DEMO_LINKS,
+  } : null);
 
   return (
     <motion.div
@@ -240,6 +280,22 @@ export default function OnboardingFlow({ onComplete }: { onComplete: () => void 
               <p className="text-muted-foreground mb-8 text-sm">
                 Para quem você está criando páginas?
               </p>
+
+              {/* Template preview badge */}
+              {templatePreset && (
+                <div className="mb-6 p-3 rounded-xl border border-primary/30 bg-primary/5">
+                  <p className="text-xs text-muted-foreground mb-1">Template selecionado</p>
+                  <p className="text-sm font-semibold text-foreground capitalize">{templateId}</p>
+                  <button
+                    onClick={() => setShowPreview(true)}
+                    className="mt-2 inline-flex items-center gap-1.5 text-xs font-medium text-primary hover:text-primary/80 transition-colors"
+                  >
+                    <Eye className="h-3 w-3" />
+                    Ver como vai ficar
+                  </button>
+                </div>
+              )}
+
               <div className="flex flex-col gap-3">
                 {([
                   { id: "agency" as Purpose, icon: "🏢", label: "Minha agência", desc: "Gerencio creators para clientes" },
@@ -366,6 +422,18 @@ export default function OnboardingFlow({ onComplete }: { onComplete: () => void 
                   </button>
                 ))}
               </div>
+
+              {/* Live Preview Button */}
+              {(templatePreset || style) && (
+                <button
+                  onClick={() => setShowPreview(true)}
+                  className="mb-6 inline-flex items-center gap-2 text-sm font-medium text-primary hover:text-primary/80 transition-colors"
+                >
+                  <Eye className="h-4 w-4" />
+                  Ver preview da sua página
+                </button>
+              )}
+
               <div className="flex gap-3 justify-center">
                 <button
                   onClick={() => setStep("name")}
@@ -482,6 +550,17 @@ export default function OnboardingFlow({ onComplete }: { onComplete: () => void 
           )}
         </AnimatePresence>
       </div>
+
+      {/* Template Preview Modal */}
+      <AnimatePresence>
+        {showPreview && currentPresetForPreview && (
+          <TemplatePreview
+            preset={currentPresetForPreview}
+            name={agencyName || "Seu Nome"}
+            onClose={() => setShowPreview(false)}
+          />
+        )}
+      </AnimatePresence>
     </motion.div>
   );
 }

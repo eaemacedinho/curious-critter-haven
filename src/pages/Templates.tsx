@@ -10,6 +10,9 @@ import templateInfluencer from "@/assets/templates/template-influencer.jpg";
 import templateProfessional from "@/assets/templates/template-professional.jpg";
 import templateLocal from "@/assets/templates/template-local.jpg";
 import templateArtist from "@/assets/templates/template-artist.jpg";
+import templatePodcast from "@/assets/templates/template-podcast.jpg";
+import templateCoach from "@/assets/templates/template-coach.jpg";
+import templateEcommerce from "@/assets/templates/template-ecommerce.jpg";
 
 const NICHES = [
   { id: "all", label: "Todos", emoji: "✨" },
@@ -21,6 +24,9 @@ const NICHES = [
   { id: "local", label: "Negócio local", emoji: "🏪" },
   { id: "artista", label: "Artista", emoji: "🎨" },
   { id: "agencia", label: "Agência", emoji: "🏢" },
+  { id: "podcast", label: "Podcast", emoji: "🎙️" },
+  { id: "coach", label: "Coach", emoji: "🧠" },
+  { id: "ecommerce", label: "E-commerce", emoji: "🛒" },
 ];
 
 interface Template {
@@ -49,7 +55,7 @@ const TEMPLATES: Template[] = [
     description: "Converta seguidores em clientes com CTA poderosos e vitrine de produtos.",
     objective: "Vender produtos e serviços",
     image: templateSales,
-    niches: ["freelancer", "social", "agencia"],
+    niches: ["freelancer", "social", "agencia", "ecommerce"],
   },
   {
     id: "influencer",
@@ -66,7 +72,7 @@ const TEMPLATES: Template[] = [
     description: "Cartão de visita digital com serviços, contato e credibilidade.",
     objective: "Gerar autoridade e leads",
     image: templateProfessional,
-    niches: ["freelancer", "agencia", "social"],
+    niches: ["freelancer", "agencia", "social", "coach"],
   },
   {
     id: "local",
@@ -83,6 +89,31 @@ const TEMPLATES: Template[] = [
     objective: "Criar presença artística impactante",
     image: templateArtist,
     niches: ["artista", "fotografo", "videomaker"],
+  },
+  {
+    id: "podcast",
+    name: "Podcast",
+    description: "Centralize seus episódios, plataformas de áudio e links para ouvintes.",
+    objective: "Crescer audiência e facilitar acesso",
+    image: templatePodcast,
+    niches: ["podcast", "creator"],
+    popular: true,
+  },
+  {
+    id: "coach",
+    name: "Coach & Mentor",
+    description: "Apresente seus serviços, depoimentos e agenda de sessões em um só lugar.",
+    objective: "Atrair alunos e gerar autoridade",
+    image: templateCoach,
+    niches: ["coach", "freelancer"],
+  },
+  {
+    id: "ecommerce",
+    name: "Loja Online",
+    description: "Vitrine de produtos com links diretos para compra e promoções em destaque.",
+    objective: "Vender produtos e aumentar conversão",
+    image: templateEcommerce,
+    niches: ["ecommerce", "local"],
   },
 ];
 
@@ -136,7 +167,6 @@ export default function Templates() {
 
       {/* Hero */}
       <section className="relative overflow-hidden pt-20 pb-16 text-center">
-        {/* Glow orbs */}
         <div className="pointer-events-none absolute -top-40 left-1/2 -translate-x-1/2 h-[500px] w-[800px] rounded-full bg-primary/[0.06] blur-[120px]" />
         <motion.div
           initial="hidden"
@@ -200,7 +230,6 @@ export default function Templates() {
                     Popular
                   </div>
                 )}
-                {/* Image */}
                 <div className="relative aspect-[3/4] overflow-hidden">
                   <img
                     src={template.image}
@@ -210,7 +239,6 @@ export default function Templates() {
                     height={960}
                     className="h-full w-full object-cover transition-transform duration-500 group-hover:scale-105"
                   />
-                  {/* Overlay on hover */}
                   <div className="absolute inset-0 flex items-center justify-center bg-background/60 opacity-0 backdrop-blur-sm transition-opacity duration-300 group-hover:opacity-100">
                     <button
                       onClick={() => setSelectedTemplate(template)}
@@ -221,7 +249,6 @@ export default function Templates() {
                     </button>
                   </div>
                 </div>
-                {/* Info */}
                 <div className="p-5">
                   <h3 className="font-display text-lg font-bold text-foreground">{template.name}</h3>
                   <p className="mt-1 text-sm text-muted-foreground leading-relaxed">{template.description}</p>
@@ -287,15 +314,12 @@ export default function Templates() {
               className="relative flex max-h-[90vh] w-full max-w-4xl overflow-hidden rounded-3xl border border-border bg-card shadow-2xl"
               onClick={(e) => e.stopPropagation()}
             >
-              {/* Close */}
               <button
                 onClick={() => setSelectedTemplate(null)}
                 className="absolute right-4 top-4 z-10 rounded-full bg-background/80 p-2 text-muted-foreground backdrop-blur-sm transition-colors hover:text-foreground"
               >
                 <X className="h-5 w-5" />
               </button>
-
-              {/* Image side */}
               <div className="hidden w-1/2 overflow-hidden md:block">
                 <img
                   src={selectedTemplate.image}
@@ -303,8 +327,6 @@ export default function Templates() {
                   className="h-full w-full object-cover"
                 />
               </div>
-
-              {/* Info side */}
               <div className="flex w-full flex-col justify-center p-8 md:w-1/2 md:p-10">
                 <div className="mb-4 inline-flex w-fit items-center gap-1.5 rounded-full border border-primary/30 bg-primary/10 px-3 py-1 text-xs font-semibold text-primary">
                   <Sparkles className="h-3 w-3" />
