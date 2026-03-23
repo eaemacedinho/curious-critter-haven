@@ -27,6 +27,32 @@ export default function Settings() {
   const [uploadingLogo, setUploadingLogo] = useState(false);
   const [saving, setSaving] = useState(false);
   const [extracting, setExtracting] = useState(false);
+  const [canceling, setCanceling] = useState(false);
+
+  const handleCancelSubscription = async () => {
+    if (!confirm("Tem certeza que deseja cancelar sua assinatura Pro? Você perderá acesso aos recursos premium.")) return;
+    setCanceling(true);
+    try {
+      const { data: { session } } = await supabase.auth.getSession();
+      if (!session) throw new Error("Não autenticado");
+      const projectId = import.meta.env.VITE_SUPABASE_PROJECT_ID;
+      const res = await fetch(`https://${projectId}.supabase.co/functions/v1/pagarme-cancel`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${session.access_token}`,
+        },
+      });
+      const data = await res.json();
+      if (!res.ok) throw new Error(data.error || "Erro ao cancelar");
+      toast.success("Assinatura cancelada com sucesso.");
+      refetchSub();
+    } catch (err: any) {
+      toast.error(err.message || "Erro ao cancelar assinatura");
+    } finally {
+      setCanceling(false);
+    }
+  };
 
   const handleExtractColors = async () => {
     if (!logoUrl) {
