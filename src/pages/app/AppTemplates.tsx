@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useMemo } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { useNavigate } from "react-router-dom";
 import { ArrowRight, Eye, Sparkles, X, Save, Crown } from "lucide-react";
@@ -6,16 +6,8 @@ import { useTenant } from "@/hooks/useTenant";
 import { useSubscription } from "@/hooks/useSubscription";
 import { supabase } from "@/integrations/supabase/client";
 import { toast } from "sonner";
-
-import templatePortfolio from "@/assets/templates/template-portfolio.jpg";
-import templateSales from "@/assets/templates/template-sales.jpg";
-import templateInfluencer from "@/assets/templates/template-influencer.jpg";
-import templateProfessional from "@/assets/templates/template-professional.jpg";
-import templateLocal from "@/assets/templates/template-local.jpg";
-import templateArtist from "@/assets/templates/template-artist.jpg";
-import templatePodcast from "@/assets/templates/template-podcast.jpg";
-import templateCoach from "@/assets/templates/template-coach.jpg";
-import templateEcommerce from "@/assets/templates/template-ecommerce.jpg";
+import { TEMPLATE_DATA, type FullTemplateData } from "@/lib/templateData";
+import TemplatePreviewCard from "@/components/kreatorz/creator/TemplatePreviewCard";
 
 const NICHES = [
   { id: "all", label: "Todos", emoji: "✨" },
@@ -32,99 +24,11 @@ const NICHES = [
   { id: "ecommerce", label: "E-commerce", emoji: "🛒" },
 ];
 
-export interface TemplateItem {
-  id: string;
-  name: string;
-  description: string;
-  objective: string;
-  image: string;
-  niches: string[];
-  popular?: boolean;
-}
-
-export const TEMPLATES: TemplateItem[] = [
-  {
-    id: "portfolio",
-    name: "Portfólio Visual",
-    description: "Mostre seu trabalho com impacto. Grid de imagens, vídeos e links organizados.",
-    objective: "Exibir trabalhos e atrair clientes",
-    image: templatePortfolio,
-    niches: ["creator", "fotografo", "videomaker", "artista"],
-    popular: true,
-  },
-  {
-    id: "sales",
-    name: "Página de Vendas",
-    description: "Converta seguidores em clientes com CTA poderosos e vitrine de produtos.",
-    objective: "Vender produtos e serviços",
-    image: templateSales,
-    niches: ["freelancer", "social", "agencia", "ecommerce"],
-  },
-  {
-    id: "influencer",
-    name: "Influencer Bio",
-    description: "Bio completa com stats, parcerias de marcas e links para todas as redes.",
-    objective: "Centralizar presença digital",
-    image: templateInfluencer,
-    niches: ["creator", "social"],
-    popular: true,
-  },
-  {
-    id: "professional",
-    name: "Profissional",
-    description: "Cartão de visita digital com serviços, contato e credibilidade.",
-    objective: "Gerar autoridade e leads",
-    image: templateProfessional,
-    niches: ["freelancer", "agencia", "social", "coach"],
-  },
-  {
-    id: "local",
-    name: "Negócio Local",
-    description: "Horários, localização, cardápio e avaliações. Tudo em um link.",
-    objective: "Facilitar acesso do cliente local",
-    image: templateLocal,
-    niches: ["local"],
-  },
-  {
-    id: "artist",
-    name: "Artista",
-    description: "Galeria visual imersiva para exibir portfólio artístico e exposições.",
-    objective: "Criar presença artística impactante",
-    image: templateArtist,
-    niches: ["artista", "fotografo", "videomaker"],
-  },
-  {
-    id: "podcast",
-    name: "Podcast",
-    description: "Centralize seus episódios, plataformas de áudio e links para ouvintes.",
-    objective: "Crescer audiência e facilitar acesso",
-    image: templatePodcast,
-    niches: ["podcast", "creator"],
-    popular: true,
-  },
-  {
-    id: "coach",
-    name: "Coach & Mentor",
-    description: "Apresente seus serviços, depoimentos e agenda de sessões em um só lugar.",
-    objective: "Atrair alunos e gerar autoridade",
-    image: templateCoach,
-    niches: ["coach", "freelancer"],
-  },
-  {
-    id: "ecommerce",
-    name: "Loja Online",
-    description: "Vitrine de produtos com links diretos para compra e promoções em destaque.",
-    objective: "Vender produtos e aumentar conversão",
-    image: templateEcommerce,
-    niches: ["ecommerce", "local"],
-  },
-];
-
 const SAVED_TEMPLATES_KEY = "in1_saved_templates";
 
 export default function AppTemplates() {
   const [activeNiche, setActiveNiche] = useState("all");
-  const [selectedTemplate, setSelectedTemplate] = useState<TemplateItem | null>(null);
+  const [selectedTemplate, setSelectedTemplate] = useState<FullTemplateData | null>(null);
   const { agency } = useTenant();
   const { isPro } = useSubscription();
   const navigate = useNavigate();
@@ -143,31 +47,95 @@ export default function AppTemplates() {
     if (stored) setSavedTemplates(JSON.parse(stored));
   }, [agency]);
 
-  const handleApplyTemplate = async (templateId: string, creatorId: string) => {
+  const handleApplyTemplate = async (template: FullTemplateData, creatorId: string) => {
     setApplyingTo(creatorId);
     try {
-      // Template configs mapping
-      const templateConfigs: Record<string, any> = {
-        portfolio: { bio: "Confira meu portfólio completo ✨", category: "Fotógrafo", font_family: "default" },
-        sales: { bio: "Produtos e serviços exclusivos 🛍️", category: "E-commerce", font_family: "default" },
-        influencer: { bio: "Criador de conteúdo digital 🎬", category: "Influencer", font_family: "default" },
-        professional: { bio: "Profissional qualificado 💼", category: "Profissional", font_family: "default" },
-        local: { bio: "Venha nos visitar! 📍", category: "Negócio Local", font_family: "default" },
-        artist: { bio: "Arte é minha linguagem 🎨", category: "Artista", font_family: "default" },
-        podcast: { bio: "Ouça nossos episódios 🎙️", category: "Podcaster", font_family: "default" },
-        coach: { bio: "Transformando vidas através do conhecimento 🧠", category: "Coach", font_family: "default" },
-        ecommerce: { bio: "Loja online com os melhores produtos 🛒", category: "E-commerce", font_family: "default" },
-      };
+      const { profile, links, socialLinks, products, testimonials } = template;
 
-      const config = templateConfigs[templateId] || {};
+      // 1. Update creator profile with all template fields
       await supabase.from("creators").update({
-        bio: config.bio || "",
-        category: config.category || "",
+        bio: profile.bio,
+        category: profile.category,
+        font_family: profile.font_family,
+        font_size: profile.font_size,
+        image_shape: profile.image_shape,
+        image_shape_links: profile.image_shape_links,
+        image_shape_products: profile.image_shape_products,
+        tags: profile.tags as any,
+        stats: profile.stats as any,
+        brands: profile.brands as any,
+        brands_display_mode: profile.brands_display_mode,
+        section_order: profile.section_order as any,
       }).eq("id", creatorId);
 
-      toast.success("Template aplicado! Edite seu creator para personalizar.");
+      // 2. Replace links
+      await supabase.from("creator_links").delete().eq("creator_id", creatorId);
+      if (links.length > 0) {
+        await supabase.from("creator_links").insert(
+          links.map((l, i) => ({
+            creator_id: creatorId,
+            title: l.title,
+            url: l.url,
+            subtitle: l.subtitle,
+            icon: l.icon,
+            is_featured: l.is_featured,
+            is_active: l.is_active,
+            sort_order: i,
+            display_mode: l.display_mode,
+          }))
+        );
+      }
+
+      // 3. Replace social links
+      await supabase.from("creator_social_links").delete().eq("creator_id", creatorId);
+      if (socialLinks.length > 0) {
+        await supabase.from("creator_social_links").insert(
+          socialLinks.map((s, i) => ({
+            creator_id: creatorId,
+            platform: s.platform,
+            label: s.label,
+            url: s.url,
+            sort_order: i,
+          }))
+        );
+      }
+
+      // 4. Replace products
+      await supabase.from("creator_products").delete().eq("creator_id", creatorId);
+      if (products.length > 0) {
+        await supabase.from("creator_products").insert(
+          products.map((p, i) => ({
+            creator_id: creatorId,
+            title: p.title,
+            price: p.price,
+            icon: p.icon,
+            url: p.url,
+            is_active: p.is_active,
+            sort_order: i,
+          }))
+        );
+      }
+
+      // 5. Replace testimonials
+      await supabase.from("creator_testimonials").delete().eq("creator_id", creatorId);
+      if (testimonials.length > 0) {
+        await supabase.from("creator_testimonials").insert(
+          testimonials.map((t, i) => ({
+            creator_id: creatorId,
+            author_name: t.author_name,
+            author_role: t.author_role,
+            content: t.content,
+            rating: t.rating,
+            is_active: t.is_active,
+            sort_order: i,
+          }))
+        );
+      }
+
+      toast.success("Template aplicado com sucesso! Todos os dados foram configurados.");
       navigate(`/app/creators/${creatorId}/edit`);
-    } catch {
+    } catch (err) {
+      console.error("Error applying template:", err);
       toast.error("Erro ao aplicar template");
     } finally {
       setApplyingTo(null);
@@ -193,14 +161,17 @@ export default function AppTemplates() {
     toast.success("Template salvo!");
   };
 
-  const filtered = activeNiche === "all" ? TEMPLATES : TEMPLATES.filter(t => t.niches.includes(activeNiche));
+  const filtered = useMemo(
+    () => activeNiche === "all" ? TEMPLATE_DATA : TEMPLATE_DATA.filter(t => t.niches.includes(activeNiche)),
+    [activeNiche]
+  );
 
   return (
     <div className="max-w-[1200px] mx-auto">
       <div className="mb-6">
         <h1 className="font-display text-2xl font-normal text-foreground">Templates</h1>
         <p className="text-sm text-muted-foreground mt-0.5">
-          Escolha um modelo e aplique a qualquer creator. Salve seus favoritos para usar depois.
+          Escolha um modelo e aplique a qualquer creator. O resultado será idêntico ao preview.
         </p>
         <div className="mt-2 flex items-center gap-2 text-xs text-muted-foreground">
           <Save className="w-3.5 h-3.5" />
@@ -256,7 +227,7 @@ export default function AppTemplates() {
                   </div>
                 )}
                 <div className="relative aspect-[3/4] overflow-hidden">
-                  <img src={template.image} alt={template.name} loading="lazy" className="h-full w-full object-cover transition-transform duration-500 group-hover:scale-105" />
+                  <TemplatePreviewCard template={template} />
                   <div className="absolute inset-0 flex flex-col items-center justify-center gap-2 bg-background/60 opacity-0 backdrop-blur-sm transition-opacity duration-300 group-hover:opacity-100">
                     <button
                       onClick={() => setSelectedTemplate(template)}
@@ -308,8 +279,9 @@ export default function AppTemplates() {
               >
                 <X className="h-5 w-5" />
               </button>
-              <div className="hidden w-1/2 overflow-hidden md:block">
-                <img src={selectedTemplate.image} alt={selectedTemplate.name} className="h-full w-full object-cover" />
+              {/* Live preview in modal */}
+              <div className="hidden w-1/2 overflow-y-auto md:block bg-background">
+                <TemplatePreviewCard template={selectedTemplate} fullHeight />
               </div>
               <div className="flex w-full flex-col justify-center p-8 md:w-1/2 md:p-10 overflow-y-auto">
                 <div className="mb-4 inline-flex w-fit items-center gap-1.5 rounded-full border border-primary/30 bg-primary/10 px-3 py-1 text-xs font-semibold text-primary">
@@ -323,6 +295,18 @@ export default function AppTemplates() {
                   <p className="text-sm font-medium text-foreground">{selectedTemplate.objective}</p>
                 </div>
 
+                <div className="mt-4 rounded-xl border border-border bg-background/50 p-4">
+                  <p className="text-xs font-semibold text-muted-foreground uppercase tracking-wider mb-2">Incluso neste template</p>
+                  <div className="flex flex-wrap gap-2 text-xs">
+                    <span className="px-2 py-1 rounded-lg bg-primary/10 text-primary font-medium">{selectedTemplate.links.length} links</span>
+                    <span className="px-2 py-1 rounded-lg bg-primary/10 text-primary font-medium">{selectedTemplate.socialLinks.length} redes sociais</span>
+                    <span className="px-2 py-1 rounded-lg bg-primary/10 text-primary font-medium">{selectedTemplate.products.length} produtos</span>
+                    {selectedTemplate.testimonials.length > 0 && (
+                      <span className="px-2 py-1 rounded-lg bg-primary/10 text-primary font-medium">{selectedTemplate.testimonials.length} depoimentos</span>
+                    )}
+                  </div>
+                </div>
+
                 {creators.length > 0 ? (
                   <div className="mt-6">
                     <p className="text-xs font-semibold text-muted-foreground uppercase tracking-wider mb-3">Aplicar a um Creator</p>
@@ -330,7 +314,7 @@ export default function AppTemplates() {
                       {creators.map((c) => (
                         <button
                           key={c.id}
-                          onClick={() => handleApplyTemplate(selectedTemplate.id, c.id)}
+                          onClick={() => handleApplyTemplate(selectedTemplate, c.id)}
                           disabled={applyingTo === c.id}
                           className="w-full flex items-center justify-between gap-2 px-4 py-3 rounded-xl border border-border bg-background hover:border-primary/30 transition-all text-sm"
                         >
