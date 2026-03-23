@@ -8,6 +8,7 @@ import { useSubscription } from "@/hooks/useSubscription";
 import CreatorEditPanel, { type CreatorEditPanelHandle } from "@/components/kreatorz/creator/CreatorEditPanel";
 
 export default function CreatorEdit() {
+  const navigate = useNavigate();
   const { agency } = useTenant();
   const { creatorId } = useParams<{ creatorId: string }>();
   const {
