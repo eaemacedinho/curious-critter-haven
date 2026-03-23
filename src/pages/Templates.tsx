@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { ArrowRight, X, Eye, Sparkles } from "lucide-react";
 import in1Logo from "@/assets/in1-logo.png";
 
