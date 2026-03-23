@@ -28,6 +28,7 @@ import Analytics from "@/pages/app/Analytics";
 import Settings from "@/pages/app/Settings";
 import Members from "@/pages/app/Members";
 import Referrals from "@/pages/app/Referrals";
+import AppTemplates from "@/pages/app/AppTemplates";
 
 const queryClient = new QueryClient();
 
