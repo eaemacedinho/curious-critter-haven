@@ -360,6 +360,20 @@ export default function CreatorView({ profile, links: rawLinks, socialLinks: raw
                 </div>
               ) : null;
 
+            case "spotify":
+              return profile.spotify_url ? (
+                <div key="spotify" data-preview-section="spotify">
+                  <SpotifyEmbed spotifyUrl={profile.spotify_url} />
+                </div>
+              ) : null;
+
+            case "testimonials":
+              return (rawTestimonials || []).filter(t => t.is_active && t.content?.trim()).length > 0 ? (
+                <div key="testimonials" data-preview-section="testimonials">
+                  <TestimonialsSection testimonials={rawTestimonials || []} sectionTitleColor={profile.color_section_titles} />
+                </div>
+              ) : null;
+
             default:
               return null;
           }
