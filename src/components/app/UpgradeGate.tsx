@@ -69,6 +69,7 @@ export default function UpgradeGate({
 }
 
 function UpgradeModal({ featureLabel, onClose }: { featureLabel: string; onClose: () => void }) {
+  const navigate = useNavigate();
   return (
     <motion.div
       className="fixed inset-0 z-[9999] flex items-center justify-center p-4"
