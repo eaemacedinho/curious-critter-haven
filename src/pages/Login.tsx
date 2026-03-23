@@ -80,7 +80,7 @@ export default function Login() {
   const handleGoogle = async () => {
     const { error } = await supabase.auth.signInWithOAuth({
       provider: "google",
-      options: { redirectTo: `${window.location.origin}/app` },
+      options: { redirectTo: templateParam ? `${window.location.origin}/app?template=${templateParam}` : `${window.location.origin}/app` },
     });
     if (error) toast.error(error.message);
   };

@@ -330,13 +330,13 @@ export default function Templates() {
                     ) : null;
                   })}
                 </div>
-                <Link
-                  to="/login"
-                  className="mt-8 flex items-center justify-center gap-2 rounded-xl bg-primary px-6 py-3 text-sm font-bold text-primary-foreground transition-all hover:opacity-90 active:scale-[0.97] shadow-[0_0_20px_hsl(var(--primary)/0.2)]"
+                <button
+                  onClick={() => { setSelectedTemplate(null); handleUseTemplate(selectedTemplate.id); }}
+                  className="mt-8 flex w-full items-center justify-center gap-2 rounded-xl bg-primary px-6 py-3 text-sm font-bold text-primary-foreground transition-all hover:opacity-90 active:scale-[0.97] shadow-[0_0_20px_hsl(var(--primary)/0.2)]"
                 >
                   Usar este modelo
                   <ArrowRight className="h-4 w-4" />
-                </Link>
+                </button>
                 <p className="mt-3 text-center text-xs text-muted-foreground">
                   Grátis para começar · Personalize tudo
                 </p>
