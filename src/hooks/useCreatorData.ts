@@ -127,6 +127,7 @@ const normalizeProfile = (creator: any): CreatorProfile => ({
     if (typeof pe === "object" && Array.isArray((pe as any).effects)) return { effects: (pe as any).effects, color: (pe as any).color, emojis: (pe as any).emojis, intensity: (pe as any).intensity };
     return { effects: [], color: undefined, emojis: undefined, intensity: undefined };
   })(),
+  spotify_url: creator.spotify_url || "",
 });
 
 export function useCreatorData(agencyId: string | undefined, creatorId?: string) {
@@ -136,6 +137,7 @@ export function useCreatorData(agencyId: string | undefined, creatorId?: string)
   const [products, setProducts] = useState<CreatorProduct[]>([]);
   const [campaigns, setCampaigns] = useState<CreatorCampaign[]>([]);
   const [heroReels, setHeroReels] = useState<HeroReelData[]>([]);
+  const [testimonials, setTestimonials] = useState<Testimonial[]>([]);
   const [loading, setLoading] = useState(true);
 
   const fetchData = useCallback(async () => {
