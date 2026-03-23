@@ -4,6 +4,8 @@ import { toast } from "sonner";
 import type { HeroReelData } from "@/components/kreatorz/creator/HeroReel";
 import type { Testimonial } from "@/components/kreatorz/creator/TestimonialsSection";
 
+export type ImageShapeValue = "rounded" | "circular" | "pill" | "shadow" | "polaroid";
+
 export interface CreatorProfile {
   id: string;
   user_id: string | null;
