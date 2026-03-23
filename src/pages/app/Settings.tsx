@@ -74,6 +74,7 @@ export default function Settings() {
 
   const sections = [
     { id: "branding", icon: "🎨", label: "Branding" },
+    { id: "subscription", icon: "💎", label: "Assinatura" },
     { id: "domain", icon: "🌐", label: "Domínios" },
     { id: "account", icon: "⚙", label: "Conta" },
   ];
