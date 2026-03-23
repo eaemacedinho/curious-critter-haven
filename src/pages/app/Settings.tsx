@@ -380,6 +380,7 @@ export default function Settings() {
             </div>
           )}
 
+          {activeSection === "domain" && (
             <div className="space-y-6">
               <div>
                 <h2 className="text-lg font-bold text-foreground mb-1">Domínios</h2>
