@@ -173,8 +173,13 @@ function EmbedPlayer({ embed, autoplay, aspectClass, maxHeightClass, analyticsCt
       style={{ boxShadow: "0 8px 40px -8px hsl(var(--primary) / 0.2), 0 4px 20px -4px hsl(0 0% 0% / 0.3)" }}
     >
       {!loaded && (
-        <div className="absolute inset-0 bg-card animate-pulse z-[1] flex items-center justify-center">
-          <div className="w-12 h-12 rounded-full border-2 border-primary/30 border-t-primary animate-spin" />
+        <div className="absolute inset-0 z-[1] flex items-center justify-center overflow-hidden bg-card">
+          <div className="absolute inset-0 bg-gradient-to-r from-transparent via-primary/10 to-transparent animate-[shimmer_2s_ease-in-out_infinite]" style={{ backgroundSize: '200% 100%' }} />
+          <div className="absolute inset-0 bg-gradient-to-br from-primary/5 via-transparent to-accent/5 animate-pulse" />
+          <div className="relative z-[2] flex flex-col items-center gap-3">
+            <div className="w-14 h-14 rounded-full border-2 border-primary/20 border-t-primary animate-spin shadow-[0_0_20px_hsl(var(--primary)/0.3)]" />
+            <span className="text-[0.65rem] text-muted-foreground font-medium tracking-wider uppercase animate-pulse">Carregando...</span>
+          </div>
         </div>
       )}
       <iframe
@@ -268,8 +273,13 @@ function NativePlayer({ reel, aspectClass, maxHeightClass, embedded, analyticsCt
         <img src={reel.thumbnail_url} alt={reel.title || "Video preview"} className="absolute inset-0 w-full h-full object-cover z-[1]" />
       )}
       {!isLoaded && !reel.thumbnail_url && (
-        <div className="absolute inset-0 bg-card animate-pulse z-[1] flex items-center justify-center">
-          <div className="w-12 h-12 rounded-full border-2 border-primary/30 border-t-primary animate-spin" />
+        <div className="absolute inset-0 z-[1] flex items-center justify-center overflow-hidden bg-card">
+          <div className="absolute inset-0 bg-gradient-to-r from-transparent via-primary/10 to-transparent animate-[shimmer_2s_ease-in-out_infinite]" style={{ backgroundSize: '200% 100%' }} />
+          <div className="absolute inset-0 bg-gradient-to-br from-primary/5 via-transparent to-accent/5 animate-pulse" />
+          <div className="relative z-[2] flex flex-col items-center gap-3">
+            <div className="w-14 h-14 rounded-full border-2 border-primary/20 border-t-primary animate-spin shadow-[0_0_20px_hsl(var(--primary)/0.3)]" />
+            <span className="text-[0.65rem] text-muted-foreground font-medium tracking-wider uppercase animate-pulse">Carregando...</span>
+          </div>
         </div>
       )}
       {isVisible && reel.video_url && (
