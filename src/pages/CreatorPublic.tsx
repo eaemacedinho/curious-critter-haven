@@ -3,6 +3,7 @@ import { useParams } from "react-router-dom";
 import { supabase } from "@/integrations/supabase/client";
 import { trackEvent } from "@/lib/analytics";
 import type { CreatorProfile, CreatorLink, SocialLink, CreatorProduct, CreatorCampaign, HeroReelData } from "@/hooks/useCreatorData";
+import type { Testimonial } from "@/components/kreatorz/creator/TestimonialsSection";
 import CreatorView from "@/components/kreatorz/creator/CreatorView";
 import CreatorViewLinkme from "@/components/kreatorz/creator/CreatorViewLinkme";
 import ThemeToggle, { usePageTheme } from "@/components/kreatorz/creator/ThemeToggle";
