@@ -5,6 +5,7 @@ import { useSubscription } from "@/hooks/useSubscription";
 import { supabase } from "@/integrations/supabase/client";
 import CampaignAnalytics from "@/components/kreatorz/CampaignAnalytics";
 import ReelAnalytics from "@/components/kreatorz/ReelAnalytics";
+import CookieMetrics from "@/components/kreatorz/CookieMetrics";
 import UpgradeGate from "@/components/app/UpgradeGate";
 
 export default function Analytics() {
