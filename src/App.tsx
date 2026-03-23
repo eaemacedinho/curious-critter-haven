@@ -64,6 +64,7 @@ const App = () => (
                 <Route path="creators" element={<Creators />} />
                 <Route path="creators/:creatorId/edit" element={<CreatorEdit />} />
                 <Route path="campaigns" element={<Campaigns />} />
+                <Route path="templates" element={<AppTemplates />} />
                 <Route path="analytics" element={<Analytics />} />
                 <Route path="settings" element={<Settings />} />
                 <Route path="members" element={<Members />} />

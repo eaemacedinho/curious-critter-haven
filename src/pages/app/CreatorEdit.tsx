@@ -107,6 +107,14 @@ export default function CreatorEdit() {
               </button>
             ))}
           </div>
+          {/* Template picker */}
+          <button
+            onClick={() => navigate("/app/templates")}
+            className="px-3 py-2 text-xs font-semibold bg-card border border-border rounded-xl text-muted-foreground hover:text-foreground hover:border-primary/30 transition-all flex items-center gap-1.5"
+          >
+            <Sparkles className="w-3.5 h-3.5 text-primary" />
+            Templates
+          </button>
           {/* Preview */}
           <button
             onClick={() => {
