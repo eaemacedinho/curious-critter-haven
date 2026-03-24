@@ -303,7 +303,7 @@ export default function Settings() {
               {/* Preview */}
               <div className="bg-card border border-border rounded-2xl p-5 flex items-center gap-4">
                 <div
-                  className="w-12 h-12 rounded-xl flex items-center justify-center text-primary-foreground font-extrabold text-lg"
+                  className="w-12 h-12 rounded-xl flex items-center justify-center text-white font-extrabold text-lg"
                   style={{ background: `linear-gradient(135deg, ${primaryColor}, ${accentColor})` }}
                 >
                   {agencyName?.[0] || "A"}

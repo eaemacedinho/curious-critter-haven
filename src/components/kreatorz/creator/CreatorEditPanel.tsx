@@ -499,7 +499,7 @@ const CreatorEditPanel = forwardRef<CreatorEditPanelHandle, Props>(function Crea
                 <div className="w-full h-full bg-k-800 flex items-center justify-center text-k-4 text-sm">Clique para adicionar capa</div>
               )}
               <div className="absolute inset-0 bg-background/60 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center">
-                <span className="text-sm text-primary-foreground font-semibold bg-primary/80 backdrop-blur-sm px-4 py-2 rounded-xl">
+                <span className="text-sm text-background font-semibold bg-primary px-4 py-2 rounded-xl shadow-lg">
                   {uploadingImage === "cover" ? "Enviando capa..." : "📷 Alterar capa"}
                 </span>
               </div>
@@ -549,7 +549,7 @@ const CreatorEditPanel = forwardRef<CreatorEditPanelHandle, Props>(function Crea
                 <div className="w-full h-full bg-k-800 flex items-center justify-center text-k-4 text-sm">Clique para adicionar foto hero</div>
               )}
               <div className="absolute inset-0 bg-background/60 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center">
-                <span className="text-sm text-primary-foreground font-semibold bg-primary/80 backdrop-blur-sm px-4 py-2 rounded-xl">📷 Alterar hero</span>
+                <span className="text-sm text-background font-semibold bg-primary px-4 py-2 rounded-xl shadow-lg">📷 Alterar hero</span>
               </div>
             </div>
             <p className={sizeHint}>📐 Tamanho ideal: <strong>1080×1350px</strong> (proporção 4:5, retrato)</p>
@@ -603,7 +603,7 @@ const CreatorEditPanel = forwardRef<CreatorEditPanelHandle, Props>(function Crea
           {/* Verified badge toggle */}
           <div className="flex items-center justify-between mt-4 p-3 bg-k-800/50 border border-primary/10 rounded-xl">
             <div>
-              <span className="text-sm font-semibold text-primary-foreground flex items-center gap-1.5">
+              <span className="text-sm font-semibold text-foreground flex items-center gap-1.5">
                 <VerifiedBadge size={18} />
                 Badge de Verificado
               </span>
@@ -1639,7 +1639,7 @@ const CreatorEditPanel = forwardRef<CreatorEditPanelHandle, Props>(function Crea
                       if (url) { const arr = [...camps]; arr[i] = { ...arr[i], image_url: url }; setCamps(arr); toast.success("Imagem da campanha atualizada!"); }
                     });
                   }} />
-                  <span className="text-sm text-primary-foreground font-semibold bg-primary/80 backdrop-blur-sm px-4 py-2 rounded-xl">📷 Trocar imagem</span>
+                  <span className="text-sm text-background font-semibold bg-primary px-4 py-2 rounded-xl shadow-lg">📷 Trocar imagem</span>
                 </label>
               </div>
             ) : (

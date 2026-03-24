@@ -98,7 +98,7 @@ export default function AppLayout() {
           <img src={agency.logo_url} alt="" className="w-8 h-8 rounded-lg object-contain" />
         ) : (
           <div
-            className="w-8 h-8 rounded-lg flex items-center justify-center text-sm font-extrabold text-primary-foreground"
+            className="w-8 h-8 rounded-lg flex items-center justify-center text-sm font-extrabold text-white"
             style={{
               background: `linear-gradient(135deg, ${agency?.primary_color || "hsl(268,69%,50%)"}, ${agency?.accent_color || "hsl(268,85%,61%)"})`,
             }}
