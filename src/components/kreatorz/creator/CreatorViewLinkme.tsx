@@ -6,6 +6,8 @@ import SpotlightCampaign from "./SpotlightCampaign";
 import HeroReel from "./HeroReel";
 import type { CreatorProfile, CreatorLink, SocialLink, CreatorProduct, CreatorCampaign } from "@/hooks/useCreatorData";
 import type { HeroReelData } from "./HeroReel";
+import type { Testimonial } from "./TestimonialsSection";
+import TestimonialsSection from "./TestimonialsSection";
 import PageEffects from "./PageEffects";
 import BrandsSection from "./BrandsSection";
 import type { PageEffect } from "./PageEffects";
@@ -28,6 +30,7 @@ interface Props {
   products: CreatorProduct[];
   campaigns: CreatorCampaign[];
   heroReels?: HeroReelData[];
+  testimonials?: Testimonial[];
   agencyName?: string;
   agencyLogoUrl?: string;
   agencyFooterText?: string;
@@ -38,7 +41,7 @@ interface Props {
   onCampaignClick?: (campaign: CreatorCampaign) => void;
 }
 
-export default function CreatorViewLinkme({ profile, links: rawLinks, socialLinks: rawSocial, products: rawProducts, campaigns: rawCampaigns, heroReels: rawReels, agencyName, agencyLogoUrl, agencyFooterText, agencyFooterVisible = true, agencyFooterLink, embedded, onLinkClick, onCampaignClick }: Props) {
+export default function CreatorViewLinkme({ profile, links: rawLinks, socialLinks: rawSocial, products: rawProducts, campaigns: rawCampaigns, heroReels: rawReels, testimonials: rawTestimonials, agencyName, agencyLogoUrl, agencyFooterText, agencyFooterVisible = true, agencyFooterLink, embedded, onLinkClick, onCampaignClick }: Props) {
   const [contactOpen, setContactOpen] = useState(false);
   const [overlayOpacity, setOverlayOpacity] = useState(0);
   const [headerVisible, setHeaderVisible] = useState(false);
@@ -225,7 +228,9 @@ export default function CreatorViewLinkme({ profile, links: rawLinks, socialLink
             {/* Dynamic sections based on section_order */}
             {(() => {
               const order = profile.section_order || ["spotlight", "links", "products", "past_campaigns"];
-              return order.includes("hero_reel") ? order : [...order, "hero_reel"];
+              let final = order.includes("hero_reel") ? order : [...order, "hero_reel"];
+              final = final.includes("testimonials") ? final : [...final, "testimonials"];
+              return final;
             })().map((sectionKey) => {
               const now = new Date();
               const liveCamps = campaigns.filter(c => c.live && (!c.expires_at || new Date(c.expires_at) > now));
@@ -342,6 +347,13 @@ export default function CreatorViewLinkme({ profile, links: rawLinks, socialLink
                       {activeReels.slice(0, 3).map((reel) => (
                         <HeroReel key={reel.id} reel={reel} embedded={embedded} agencyId={profile.agency_id} />
                       ))}
+                    </div>
+                  ) : null;
+
+                case "testimonials":
+                  return (rawTestimonials || []).filter(t => t.is_active && t.content?.trim()).length > 0 ? (
+                    <div key="testimonials" data-preview-section="testimonials" className="mt-6 px-4">
+                      <TestimonialsSection testimonials={rawTestimonials || []} sectionTitleColor={profile.color_section_titles} />
                     </div>
                   ) : null;
 

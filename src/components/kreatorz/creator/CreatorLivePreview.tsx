@@ -1,6 +1,7 @@
 import { useCallback, useEffect, useMemo, useRef, useState, type CSSProperties, type RefObject } from "react";
 import type { CreatorCampaign, CreatorLink, CreatorProduct, CreatorProfile, SocialLink } from "@/hooks/useCreatorData";
 import type { HeroReelData } from "./HeroReel";
+import type { Testimonial } from "./TestimonialsSection";
 import { useTenant } from "@/hooks/useTenant";
 import CreatorView from "./CreatorView";
 import CreatorViewLinkme from "./CreatorViewLinkme";
@@ -14,6 +15,7 @@ interface Props {
   products: CreatorProduct[];
   campaigns: CreatorCampaign[];
   heroReels?: HeroReelData[];
+  testimonials?: Testimonial[];
   activeLayout?: string;
   focusSection?: string | null;
 }
@@ -59,6 +61,7 @@ export default function CreatorLivePreview({
   products,
   campaigns,
   heroReels,
+  testimonials,
   activeLayout = "layout1",
   focusSection,
 }: Props) {
@@ -176,14 +179,14 @@ export default function CreatorLivePreview({
             <div ref={previewContentRef} className="relative h-full w-full overflow-hidden" style={previewTheme} onWheel={(e) => e.stopPropagation()}>
               {activeLayout === "layout2" ? (
                 <PreviewComponent
-                  profile={profile} links={links} socialLinks={socialLinks} products={products} campaigns={campaigns} heroReels={heroReels}
+                  profile={profile} links={links} socialLinks={socialLinks} products={products} campaigns={campaigns} heroReels={heroReels} testimonials={testimonials}
                   agencyName={agency?.name} agencyLogoUrl={agency?.logo_url} agencyFooterText={agency?.footer_text}
                   agencyFooterVisible={agency?.footer_visible} agencyFooterLink={agency?.footer_link} embedded
                 />
               ) : (
                 <div className="h-full overflow-y-auto overflow-x-hidden" data-preview-scroll>
                   <PreviewComponent
-                    profile={profile} links={links} socialLinks={socialLinks} products={products} campaigns={campaigns} heroReels={heroReels}
+                    profile={profile} links={links} socialLinks={socialLinks} products={products} campaigns={campaigns} heroReels={heroReels} testimonials={testimonials}
                     agencyName={agency?.name} agencyLogoUrl={agency?.logo_url} agencyFooterText={agency?.footer_text}
                     agencyFooterVisible={agency?.footer_visible} agencyFooterLink={agency?.footer_link} embedded
                   />
