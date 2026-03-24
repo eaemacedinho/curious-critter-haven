@@ -184,7 +184,7 @@ export default function AppTemplates() {
       await supabase.from("creator_links").delete().eq("creator_id", creatorId);
       if (links.length > 0) {
         await supabase.from("creator_links").insert(
-          links.map(({ id: _id, created_at: _ca, ...rest }) => rest)
+          links.map(({ id: _id, created_at: _ca, ...rest }: any) => ({ ...rest, creator_id: creatorId }))
         );
       }
 
@@ -192,7 +192,7 @@ export default function AppTemplates() {
       await supabase.from("creator_social_links").delete().eq("creator_id", creatorId);
       if (socialLinks.length > 0) {
         await supabase.from("creator_social_links").insert(
-          socialLinks.map(({ id: _id, ...rest }) => rest)
+          socialLinks.map(({ id: _id, ...rest }: any) => ({ ...rest, creator_id: creatorId }))
         );
       }
 
@@ -200,7 +200,7 @@ export default function AppTemplates() {
       await supabase.from("creator_products").delete().eq("creator_id", creatorId);
       if (products.length > 0) {
         await supabase.from("creator_products").insert(
-          products.map(({ id: _id, ...rest }) => rest)
+          products.map(({ id: _id, ...rest }: any) => ({ ...rest, creator_id: creatorId }))
         );
       }
 
@@ -208,7 +208,7 @@ export default function AppTemplates() {
       await supabase.from("creator_testimonials").delete().eq("creator_id", creatorId);
       if (testimonials.length > 0) {
         await supabase.from("creator_testimonials").insert(
-          testimonials.map(({ id: _id, created_at: _ca, ...rest }) => rest)
+          testimonials.map(({ id: _id, created_at: _ca, ...rest }: any) => ({ ...rest, creator_id: creatorId }))
         );
       }
 
