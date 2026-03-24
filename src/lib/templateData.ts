@@ -67,6 +67,26 @@ export interface FullTemplateData {
   testimonials: TemplateTestimonialData[];
 }
 
+// Image imports
+import avatarPortfolio from "@/assets/templates/avatar-portfolio.jpg";
+import avatarSales from "@/assets/templates/avatar-sales.jpg";
+import avatarInfluencer from "@/assets/templates/avatar-influencer.jpg";
+import avatarProfessional from "@/assets/templates/avatar-professional.jpg";
+import avatarLocal from "@/assets/templates/avatar-local.jpg";
+import avatarArtist from "@/assets/templates/avatar-artist.jpg";
+import avatarPodcast from "@/assets/templates/avatar-podcast.jpg";
+import avatarCoach from "@/assets/templates/avatar-coach.jpg";
+import avatarEcommerce from "@/assets/templates/avatar-ecommerce.jpg";
+import coverPortfolio from "@/assets/templates/cover-portfolio.jpg";
+import coverSales from "@/assets/templates/cover-sales.jpg";
+import coverInfluencer from "@/assets/templates/cover-influencer.jpg";
+import coverProfessional from "@/assets/templates/cover-professional.jpg";
+import coverLocal from "@/assets/templates/cover-local.jpg";
+import coverArtist from "@/assets/templates/cover-artist.jpg";
+import coverPodcast from "@/assets/templates/cover-podcast.jpg";
+import coverCoach from "@/assets/templates/cover-coach.jpg";
+import coverEcommerce from "@/assets/templates/cover-ecommerce.jpg";
+
 export const TEMPLATE_DATA: FullTemplateData[] = [
   {
     id: "portfolio",
