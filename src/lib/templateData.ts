@@ -461,6 +461,7 @@ export const TEMPLATE_DATA: FullTemplateData[] = [
       category: "Coach",
       avatar_url: avatarCoach,
       cover_url: coverCoach,
+      font_family: "inter",
       font_size: "medium",
       image_shape: "rounded",
       image_shape_links: "pill",
