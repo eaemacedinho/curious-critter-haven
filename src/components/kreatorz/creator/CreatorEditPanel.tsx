@@ -202,6 +202,7 @@ const CreatorEditPanel = forwardRef<CreatorEditPanelHandle, Props>(function Crea
   const [dragLinkIdx, setDragLinkIdx] = useState<number | null>(null);
   const [dragProdIdx, setDragProdIdx] = useState<number | null>(null);
   const [dragCampIdx, setDragCampIdx] = useState<number | null>(null);
+  const [dragTestimonialIdx, setDragTestimonialIdx] = useState<number | null>(null);
   const [focusSection, setFocusSection] = useState<string | null>(null);
 
   // IntersectionObserver to detect which editor section is most visible
