@@ -327,8 +327,8 @@ export const TEMPLATE_DATA: FullTemplateData[] = [
       { platform: "github", label: "GitHub", url: "https://github.com/exemplo" },
     ],
     products: [
-      { title: "Consultoria de Design", price: "R$ 350/h", icon: "💡", url: "https://exemplo.com/consultoria", is_active: true },
-      { title: "Template UI Kit", price: "R$ 89", icon: "🧩", url: "https://exemplo.com/uikit", is_active: true },
+      { title: "Consultoria de Design", price: "R$ 350/h", icon: "💡", url: "https://exemplo.com/consultoria", is_active: true, image_url: productMentoria },
+      { title: "Template UI Kit", price: "R$ 89", icon: "🧩", url: "https://exemplo.com/uikit", is_active: true, image_url: productTemplates },
     ],
     testimonials: [
       { author_name: "Pedro Souza", author_role: "CEO, TechStart", content: "Profissional excepcional! Entregou o projeto no prazo com qualidade impressionante.", rating: 5, is_active: true },
