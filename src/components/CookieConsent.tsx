@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import { Link } from "react-router-dom";
+import { Link, useLocation } from "react-router-dom";
 import { supabase } from "@/integrations/supabase/client";
 
 const COOKIE_CONSENT_KEY = "in1bio_cookie_consent";
@@ -18,11 +18,14 @@ export default function CookieConsent() {
     analytics: true,
     marketing: false,
   });
+  const location = useLocation();
+  const isPublicCreatorPage = location.pathname.startsWith("/c/");
 
   useEffect(() => {
+    if (isPublicCreatorPage) return;
     const stored = localStorage.getItem(COOKIE_CONSENT_KEY);
     if (!stored) setVisible(true);
-  }, []);
+  }, [isPublicCreatorPage]);
 
   const accept = (all?: boolean) => {
     const final = all ? { essential: true, analytics: true, marketing: true } : prefs;
@@ -34,7 +37,7 @@ export default function CookieConsent() {
     }).then();
   };
 
-  if (!visible) return null;
+  if (!visible || isPublicCreatorPage) return null;
 
   return (
     <div className="fixed bottom-0 inset-x-0 z-[9999] p-4 animate-in slide-in-from-bottom-4 duration-500">
