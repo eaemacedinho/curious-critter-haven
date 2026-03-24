@@ -23,6 +23,13 @@ const NICHES = [
   { id: "podcast", label: "Podcast", emoji: "🎙️" },
   { id: "coach", label: "Coach", emoji: "🧠" },
   { id: "ecommerce", label: "E-commerce", emoji: "🛒" },
+  { id: "fitness", label: "Fitness", emoji: "💪" },
+  { id: "musica", label: "Música", emoji: "🎵" },
+  { id: "gamer", label: "Gamer", emoji: "🎮" },
+  { id: "saude", label: "Saúde", emoji: "🩺" },
+  { id: "tech", label: "Tecnologia", emoji: "💻" },
+  { id: "moda", label: "Moda", emoji: "👗" },
+  { id: "educacao", label: "Educação", emoji: "📚" },
 ];
 
 const SAVED_TEMPLATES_KEY = "in1_saved_templates";

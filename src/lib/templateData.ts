@@ -77,6 +77,13 @@ import avatarArtist from "@/assets/templates/avatar-artist.jpg";
 import avatarPodcast from "@/assets/templates/avatar-podcast.jpg";
 import avatarCoach from "@/assets/templates/avatar-coach.jpg";
 import avatarEcommerce from "@/assets/templates/avatar-ecommerce.jpg";
+import avatarFitness from "@/assets/templates/avatar-fitness.jpg";
+import avatarMusician from "@/assets/templates/avatar-musician.jpg";
+import avatarGamer from "@/assets/templates/avatar-gamer.jpg";
+import avatarHealth from "@/assets/templates/avatar-health.jpg";
+import avatarTech from "@/assets/templates/avatar-tech.jpg";
+import avatarFashion from "@/assets/templates/avatar-fashion.jpg";
+import avatarEducator from "@/assets/templates/avatar-educator.jpg";
 import coverPortfolio from "@/assets/templates/cover-portfolio.jpg";
 import coverSales from "@/assets/templates/cover-sales.jpg";
 import coverInfluencer from "@/assets/templates/cover-influencer.jpg";
@@ -86,6 +93,13 @@ import coverArtist from "@/assets/templates/cover-artist.jpg";
 import coverPodcast from "@/assets/templates/cover-podcast.jpg";
 import coverCoach from "@/assets/templates/cover-coach.jpg";
 import coverEcommerce from "@/assets/templates/cover-ecommerce.jpg";
+import coverFitness from "@/assets/templates/cover-fitness.jpg";
+import coverMusician from "@/assets/templates/cover-musician.jpg";
+import coverGamer from "@/assets/templates/cover-gamer.jpg";
+import coverHealth from "@/assets/templates/cover-health.jpg";
+import coverTech from "@/assets/templates/cover-tech.jpg";
+import coverFashion from "@/assets/templates/cover-fashion.jpg";
+import coverEducator from "@/assets/templates/cover-educator.jpg";
 
 export const TEMPLATE_DATA: FullTemplateData[] = [
   {
