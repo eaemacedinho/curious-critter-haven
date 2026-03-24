@@ -170,9 +170,9 @@ export const TEMPLATE_DATA: FullTemplateData[] = [
       { platform: "tiktok", label: "TikTok", url: "https://tiktok.com/@exemplo" },
     ],
     products: [
-      { title: "Pack 20 Presets Pro", price: "R$ 97", icon: "🎨", url: "https://exemplo.com/presets", is_active: true },
-      { title: "E-book Fotografia", price: "R$ 49", icon: "📖", url: "https://exemplo.com/ebook", is_active: true },
-      { title: "Mentoria Individual", price: "R$ 297", icon: "🧠", url: "https://exemplo.com/mentoria", is_active: true },
+      { title: "Pack 20 Presets Pro", price: "R$ 97", icon: "🎨", url: "https://exemplo.com/presets", is_active: true, image_url: productPresets },
+      { title: "E-book Fotografia", price: "R$ 49", icon: "📖", url: "https://exemplo.com/ebook", is_active: true, image_url: productEbook },
+      { title: "Mentoria Individual", price: "R$ 297", icon: "🧠", url: "https://exemplo.com/mentoria", is_active: true, image_url: productMentoria },
     ],
     testimonials: [],
   },
