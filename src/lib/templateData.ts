@@ -791,9 +791,9 @@ export const TEMPLATE_DATA: FullTemplateData[] = [
       { platform: "twitter", label: "Twitter", url: "https://twitter.com/exemplo" },
     ],
     products: [
-      { title: "Template SaaS Starter", price: "R$ 149", icon: "🧩", url: "https://exemplo.com/template", is_active: true },
-      { title: "Curso React Avançado", price: "R$ 247", icon: "📚", url: "https://exemplo.com/curso", is_active: true },
-      { title: "Mentoria 1:1", price: "R$ 300/h", icon: "🧠", url: "https://exemplo.com/mentoria", is_active: true },
+      { title: "Template SaaS Starter", price: "R$ 149", icon: "🧩", url: "https://exemplo.com/template", is_active: true, image_url: productTech },
+      { title: "Curso React Avançado", price: "R$ 247", icon: "📚", url: "https://exemplo.com/curso", is_active: true, image_url: productCodeCourse },
+      { title: "Mentoria 1:1", price: "R$ 300/h", icon: "🧠", url: "https://exemplo.com/mentoria", is_active: true, image_url: productMentoria },
     ],
     testimonials: [
       { author_name: "Ricardo Almeida", author_role: "CTO, StartupXYZ", content: "Entregou o MVP em 3 semanas. Código limpo e documentado.", rating: 5, is_active: true },
