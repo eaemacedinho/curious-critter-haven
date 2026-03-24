@@ -153,6 +153,7 @@ export const TEMPLATE_DATA: FullTemplateData[] = [
       category: "Marketing Digital",
       avatar_url: avatarSales,
       cover_url: coverSales,
+      font_family: "inter",
       font_size: "medium",
       image_shape: "rounded",
       image_shape_links: "pill",
