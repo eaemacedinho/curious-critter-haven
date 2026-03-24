@@ -526,9 +526,9 @@ export const TEMPLATE_DATA: FullTemplateData[] = [
       { platform: "youtube", label: "YouTube", url: "https://youtube.com/@exemplo" },
     ],
     products: [
-      { title: "Mentoria Premium", price: "R$ 997", icon: "💎", url: "https://exemplo.com/premium", is_active: true },
-      { title: "Curso de Liderança", price: "R$ 297", icon: "📚", url: "https://exemplo.com/lideranca", is_active: true },
-      { title: "E-book Gratuito", price: "Grátis", icon: "📖", url: "https://exemplo.com/ebook", is_active: true },
+      { title: "Mentoria Premium", price: "R$ 997", icon: "💎", url: "https://exemplo.com/premium", is_active: true, image_url: productMentoria },
+      { title: "Curso de Liderança", price: "R$ 297", icon: "📚", url: "https://exemplo.com/lideranca", is_active: true, image_url: productCurso },
+      { title: "E-book Gratuito", price: "Grátis", icon: "📖", url: "https://exemplo.com/ebook", is_active: true, image_url: productEbook },
     ],
     testimonials: [
       { author_name: "Fernanda Rocha", author_role: "Gerente de Projetos", content: "A mentoria mudou minha carreira! Fui promovida em 3 meses.", rating: 5, is_active: true },
