@@ -876,10 +876,10 @@ export const TEMPLATE_DATA: FullTemplateData[] = [
       { platform: "tiktok", label: "TikTok", url: "https://tiktok.com/@exemplo" },
     ],
     products: [
-      { title: "Curso Completo A1-B2", price: "R$ 297", icon: "📚", url: "https://exemplo.com/curso", is_active: true },
-      { title: "Pack de Flashcards", price: "R$ 29", icon: "🃏", url: "https://exemplo.com/flashcards", is_active: true },
-      { title: "Aulas Particulares", price: "R$ 80/h", icon: "👩‍🏫", url: "https://exemplo.com/particular", is_active: true },
-      { title: "Grupo de Conversação", price: "R$ 49/mês", icon: "💬", url: "https://exemplo.com/grupo", is_active: true },
+      { title: "Curso Completo A1-B2", price: "R$ 297", icon: "📚", url: "https://exemplo.com/curso", is_active: true, image_url: productCurso },
+      { title: "Pack de Flashcards", price: "R$ 29", icon: "🃏", url: "https://exemplo.com/flashcards", is_active: true, image_url: productEbook },
+      { title: "Aulas Particulares", price: "R$ 80/h", icon: "👩‍🏫", url: "https://exemplo.com/particular", is_active: true, image_url: productMentoria },
+      { title: "Grupo de Conversação", price: "R$ 49/mês", icon: "💬", url: "https://exemplo.com/grupo", is_active: true, image_url: productCodeCourse },
     ],
     testimonials: [
       { author_name: "Thiago Santos", author_role: "Aluno B2", content: "Em 6 meses já consigo conversar fluente! Método incrível.", rating: 5, is_active: true },
