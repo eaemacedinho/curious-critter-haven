@@ -452,7 +452,8 @@ export const TEMPLATE_DATA: FullTemplateData[] = [
     profile: {
       bio: "Coach de carreira & liderança 🧠 +500 vidas transformadas. Agende sua sessão!",
       category: "Coach",
-      font_family: "inter",
+      avatar_url: avatarCoach,
+      cover_url: coverCoach,
       font_size: "medium",
       image_shape: "rounded",
       image_shape_links: "pill",
