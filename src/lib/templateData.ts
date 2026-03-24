@@ -312,6 +312,7 @@ export const TEMPLATE_DATA: FullTemplateData[] = [
       category: "Cafeteria",
       avatar_url: avatarLocal,
       cover_url: coverLocal,
+      font_family: "default",
       font_size: "medium",
       image_shape: "rounded",
       image_shape_links: "rounded",
