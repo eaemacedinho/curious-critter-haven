@@ -834,9 +834,9 @@ export const TEMPLATE_DATA: FullTemplateData[] = [
       { platform: "pinterest", label: "Pinterest", url: "https://pinterest.com/exemplo" },
     ],
     products: [
-      { title: "Guia de Estilo Pessoal", price: "R$ 67", icon: "📖", url: "https://exemplo.com/guia", is_active: true },
-      { title: "Closet Cápsula PDF", price: "R$ 39", icon: "👚", url: "https://exemplo.com/capsula", is_active: true },
-      { title: "Consultoria Online", price: "R$ 197", icon: "💎", url: "https://exemplo.com/online", is_active: true },
+      { title: "Guia de Estilo Pessoal", price: "R$ 67", icon: "📖", url: "https://exemplo.com/guia", is_active: true, image_url: productEbook },
+      { title: "Closet Cápsula PDF", price: "R$ 39", icon: "👚", url: "https://exemplo.com/capsula", is_active: true, image_url: productMerch },
+      { title: "Consultoria Online", price: "R$ 197", icon: "💎", url: "https://exemplo.com/online", is_active: true, image_url: productMentoria },
     ],
     testimonials: [
       { author_name: "Larissa Nunes", author_role: "Cliente", content: "Nunca mais comprei peça errada! A consultoria vale cada centavo.", rating: 5, is_active: true },
