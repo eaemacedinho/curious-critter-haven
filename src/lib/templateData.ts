@@ -376,9 +376,9 @@ export const TEMPLATE_DATA: FullTemplateData[] = [
       { platform: "whatsapp", label: "WhatsApp", url: "https://wa.me/5511999999999" },
     ],
     products: [
-      { title: "Café Especial 250g", price: "R$ 35", icon: "☕", url: "https://exemplo.com/cafe", is_active: true },
-      { title: "Kit Brunch em Casa", price: "R$ 89", icon: "🥐", url: "https://exemplo.com/brunch", is_active: true },
-      { title: "Vale-Presente", price: "R$ 50", icon: "🎁", url: "https://exemplo.com/gift", is_active: true },
+      { title: "Café Especial 250g", price: "R$ 35", icon: "☕", url: "https://exemplo.com/cafe", is_active: true, image_url: productCafe },
+      { title: "Kit Brunch em Casa", price: "R$ 89", icon: "🥐", url: "https://exemplo.com/brunch", is_active: true, image_url: productDieta },
+      { title: "Vale-Presente", price: "R$ 50", icon: "🎁", url: "https://exemplo.com/gift", is_active: true, image_url: productCafe },
     ],
     testimonials: [
       { author_name: "Juliana Lima", author_role: "Cliente frequente", content: "Melhor café da cidade! Ambiente acolhedor e atendimento nota 10.", rating: 5, is_active: true },
