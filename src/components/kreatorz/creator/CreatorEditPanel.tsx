@@ -1696,11 +1696,12 @@ const CreatorEditPanel = forwardRef<CreatorEditPanelHandle, Props>(function Crea
                 placeholder="Cargo / Empresa" className={inputClass} />
             </div>
             <div className="flex items-center gap-2">
-              <span className="text-xs text-k-4">Nota:</span>
+              <span className="text-xs text-muted-foreground">Nota:</span>
               {[1,2,3,4,5].map(star => (
                 <button key={star} onClick={() => setTestimonialsList(testimonialsList.map((x, j) => j === i ? { ...x, rating: star } : x))}
-                  className={`text-sm ${star <= t.rating ? "text-primary" : "text-muted"}`}>★</button>
+                  className={`text-lg cursor-pointer transition-transform hover:scale-125 ${star <= (t.rating || 0) ? "text-yellow-400" : "text-muted-foreground/30"}`}>★</button>
               ))}
+              <span className="text-xs text-muted-foreground ml-1">{t.rating || 0}/5</span>
             </div>
           </div>
         ))}
