@@ -1,13 +1,14 @@
 import { useState, useEffect, useMemo } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { useNavigate } from "react-router-dom";
-import { ArrowRight, Eye, Sparkles, X, Save, Crown } from "lucide-react";
+import { ArrowRight, Eye, Sparkles, X, Save, Crown, Undo2 } from "lucide-react";
 import { useTenant } from "@/hooks/useTenant";
 import { useSubscription } from "@/hooks/useSubscription";
 import { supabase } from "@/integrations/supabase/client";
 import { toast } from "sonner";
 import { TEMPLATE_DATA, type FullTemplateData } from "@/lib/templateData";
 import TemplatePreviewCard from "@/components/kreatorz/creator/TemplatePreviewCard";
+import { ConfirmDialog } from "@/components/ui/confirm-dialog";
 
 const NICHES = [
   { id: "all", label: "Todos", emoji: "✨" },
@@ -25,6 +26,19 @@ const NICHES = [
 ];
 
 const SAVED_TEMPLATES_KEY = "in1_saved_templates";
+const BACKUP_KEY = "in1_template_backup";
+
+interface CreatorBackup {
+  creatorId: string;
+  creatorName: string;
+  templateName: string;
+  timestamp: number;
+  profile: Record<string, any>;
+  links: Record<string, any>[];
+  socialLinks: Record<string, any>[];
+  products: Record<string, any>[];
+  testimonials: Record<string, any>[];
+}
 
 export default function AppTemplates() {
   const [activeNiche, setActiveNiche] = useState("all");
@@ -35,6 +49,9 @@ export default function AppTemplates() {
   const [creators, setCreators] = useState<{ id: string; name: string }[]>([]);
   const [applyingTo, setApplyingTo] = useState<string | null>(null);
   const [savedTemplates, setSavedTemplates] = useState<string[]>([]);
+  const [backups, setBackups] = useState<CreatorBackup[]>([]);
+  const [undoConfirm, setUndoConfirm] = useState<CreatorBackup | null>(null);
+  const [undoing, setUndoing] = useState(false);
 
   const maxSaved = isPro ? 5 : 1;
 
@@ -45,14 +62,49 @@ export default function AppTemplates() {
     });
     const stored = localStorage.getItem(`${SAVED_TEMPLATES_KEY}_${agency.id}`);
     if (stored) setSavedTemplates(JSON.parse(stored));
+    const backupStored = localStorage.getItem(`${BACKUP_KEY}_${agency.id}`);
+    if (backupStored) setBackups(JSON.parse(backupStored));
   }, [agency]);
+
+  const saveBackup = (backup: CreatorBackup) => {
+    if (!agency) return;
+    // Keep max 5 backups, replace if same creator
+    const updated = backups.filter(b => b.creatorId !== backup.creatorId);
+    updated.unshift(backup);
+    const trimmed = updated.slice(0, 5);
+    setBackups(trimmed);
+    localStorage.setItem(`${BACKUP_KEY}_${agency.id}`, JSON.stringify(trimmed));
+  };
 
   const handleApplyTemplate = async (template: FullTemplateData, creatorId: string) => {
     setApplyingTo(creatorId);
     try {
+      // --- BACKUP current data before applying ---
+      const [profileRes, linksRes, socialRes, productsRes, testimonialsRes] = await Promise.all([
+        supabase.from("creators").select("*").eq("id", creatorId).single(),
+        supabase.from("creator_links").select("*").eq("creator_id", creatorId).order("sort_order"),
+        supabase.from("creator_social_links").select("*").eq("creator_id", creatorId).order("sort_order"),
+        supabase.from("creator_products").select("*").eq("creator_id", creatorId).order("sort_order"),
+        supabase.from("creator_testimonials").select("*").eq("creator_id", creatorId).order("sort_order"),
+      ]);
+
+      const creatorName = creators.find(c => c.id === creatorId)?.name || "Creator";
+
+      saveBackup({
+        creatorId,
+        creatorName,
+        templateName: template.name,
+        timestamp: Date.now(),
+        profile: profileRes.data || {},
+        links: linksRes.data || [],
+        socialLinks: socialRes.data || [],
+        products: productsRes.data || [],
+        testimonials: testimonialsRes.data || [],
+      });
+
+      // --- Apply template ---
       const { profile, links, socialLinks, products, testimonials } = template;
 
-      // 1. Update creator profile with all template fields
       await supabase.from("creators").update({
         bio: profile.bio,
         category: profile.category,
@@ -68,77 +120,110 @@ export default function AppTemplates() {
         section_order: profile.section_order as any,
       }).eq("id", creatorId);
 
-      // 2. Replace links
       await supabase.from("creator_links").delete().eq("creator_id", creatorId);
       if (links.length > 0) {
         await supabase.from("creator_links").insert(
           links.map((l, i) => ({
             creator_id: creatorId,
-            title: l.title,
-            url: l.url,
-            subtitle: l.subtitle,
-            icon: l.icon,
-            is_featured: l.is_featured,
-            is_active: l.is_active,
-            sort_order: i,
+            title: l.title, url: l.url, subtitle: l.subtitle, icon: l.icon,
+            is_featured: l.is_featured, is_active: l.is_active, sort_order: i,
             display_mode: l.display_mode,
           }))
         );
       }
 
-      // 3. Replace social links
       await supabase.from("creator_social_links").delete().eq("creator_id", creatorId);
       if (socialLinks.length > 0) {
         await supabase.from("creator_social_links").insert(
           socialLinks.map((s, i) => ({
-            creator_id: creatorId,
-            platform: s.platform,
-            label: s.label,
-            url: s.url,
-            sort_order: i,
+            creator_id: creatorId, platform: s.platform, label: s.label, url: s.url, sort_order: i,
           }))
         );
       }
 
-      // 4. Replace products
       await supabase.from("creator_products").delete().eq("creator_id", creatorId);
       if (products.length > 0) {
         await supabase.from("creator_products").insert(
           products.map((p, i) => ({
-            creator_id: creatorId,
-            title: p.title,
-            price: p.price,
-            icon: p.icon,
-            url: p.url,
-            is_active: p.is_active,
-            sort_order: i,
+            creator_id: creatorId, title: p.title, price: p.price, icon: p.icon,
+            url: p.url, is_active: p.is_active, sort_order: i,
           }))
         );
       }
 
-      // 5. Replace testimonials
       await supabase.from("creator_testimonials").delete().eq("creator_id", creatorId);
       if (testimonials.length > 0) {
         await supabase.from("creator_testimonials").insert(
           testimonials.map((t, i) => ({
-            creator_id: creatorId,
-            author_name: t.author_name,
-            author_role: t.author_role,
-            content: t.content,
-            rating: t.rating,
-            is_active: t.is_active,
-            sort_order: i,
+            creator_id: creatorId, author_name: t.author_name, author_role: t.author_role,
+            content: t.content, rating: t.rating, is_active: t.is_active, sort_order: i,
           }))
         );
       }
 
-      toast.success("Template aplicado com sucesso! Todos os dados foram configurados.");
+      toast.success("Template aplicado! Você pode desfazer a qualquer momento.", { duration: 5000 });
       navigate(`/app/creators/${creatorId}/edit`);
     } catch (err) {
       console.error("Error applying template:", err);
       toast.error("Erro ao aplicar template");
     } finally {
       setApplyingTo(null);
+    }
+  };
+
+  const handleUndoTemplate = async (backup: CreatorBackup) => {
+    setUndoing(true);
+    try {
+      const { creatorId, profile, links, socialLinks, products, testimonials } = backup;
+
+      // Restore profile (only the fields we changed)
+      const { id, created_at, updated_at, slug, name, agency_id, user_id, avatar_url, cover_url, avatar_url_layout2, cover_url_layout2, layout_type, is_published, ...restoreFields } = profile;
+      await supabase.from("creators").update(restoreFields).eq("id", creatorId);
+
+      // Restore links
+      await supabase.from("creator_links").delete().eq("creator_id", creatorId);
+      if (links.length > 0) {
+        await supabase.from("creator_links").insert(
+          links.map(({ id: _id, created_at: _ca, ...rest }) => rest)
+        );
+      }
+
+      // Restore social links
+      await supabase.from("creator_social_links").delete().eq("creator_id", creatorId);
+      if (socialLinks.length > 0) {
+        await supabase.from("creator_social_links").insert(
+          socialLinks.map(({ id: _id, ...rest }) => rest)
+        );
+      }
+
+      // Restore products
+      await supabase.from("creator_products").delete().eq("creator_id", creatorId);
+      if (products.length > 0) {
+        await supabase.from("creator_products").insert(
+          products.map(({ id: _id, ...rest }) => rest)
+        );
+      }
+
+      // Restore testimonials
+      await supabase.from("creator_testimonials").delete().eq("creator_id", creatorId);
+      if (testimonials.length > 0) {
+        await supabase.from("creator_testimonials").insert(
+          testimonials.map(({ id: _id, created_at: _ca, ...rest }) => rest)
+        );
+      }
+
+      // Remove this backup
+      const updated = backups.filter(b => b.creatorId !== creatorId);
+      setBackups(updated);
+      if (agency) localStorage.setItem(`${BACKUP_KEY}_${agency.id}`, JSON.stringify(updated));
+
+      toast.success("Template desfeito! Dados anteriores restaurados.");
+      setUndoConfirm(null);
+    } catch (err) {
+      console.error("Error undoing template:", err);
+      toast.error("Erro ao desfazer template");
+    } finally {
+      setUndoing(false);
     }
   };
 
@@ -183,6 +268,33 @@ export default function AppTemplates() {
           )}
         </div>
       </div>
+
+      {/* Undo backups banner */}
+      {backups.length > 0 && (
+        <div className="mb-6 space-y-2">
+          {backups.map((backup) => (
+            <div
+              key={backup.creatorId}
+              className="flex items-center justify-between gap-3 px-4 py-3 rounded-xl border border-accent/30 bg-accent/5"
+            >
+              <div className="flex items-center gap-2 text-sm">
+                <Undo2 className="w-4 h-4 text-accent-foreground" />
+                <span className="text-foreground font-medium">{backup.creatorName}</span>
+                <span className="text-muted-foreground">
+                  — template "{backup.templateName}" aplicado em{" "}
+                  {new Date(backup.timestamp).toLocaleDateString("pt-BR", { day: "2-digit", month: "short", hour: "2-digit", minute: "2-digit" })}
+                </span>
+              </div>
+              <button
+                onClick={() => setUndoConfirm(backup)}
+                className="shrink-0 flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-destructive/10 border border-destructive/20 text-destructive text-xs font-semibold hover:bg-destructive/20 transition-all"
+              >
+                <Undo2 className="w-3 h-3" /> Desfazer
+              </button>
+            </div>
+          ))}
+        </div>
+      )}
 
       {/* Filters */}
       <div className="flex gap-2 overflow-x-auto pb-3 mb-6 scrollbar-none">
@@ -279,7 +391,6 @@ export default function AppTemplates() {
               >
                 <X className="h-5 w-5" />
               </button>
-              {/* Live preview in modal */}
               <div className="hidden w-1/2 overflow-y-auto md:block bg-background">
                 <TemplatePreviewCard template={selectedTemplate} fullHeight />
               </div>
@@ -336,6 +447,18 @@ export default function AppTemplates() {
           </motion.div>
         )}
       </AnimatePresence>
+
+      {/* Undo confirmation dialog */}
+      <ConfirmDialog
+        open={!!undoConfirm}
+        onOpenChange={(open) => !open && setUndoConfirm(null)}
+        title="Desfazer template?"
+        description={`Isso vai restaurar todos os dados anteriores de "${undoConfirm?.creatorName}" (antes do template "${undoConfirm?.templateName}" ser aplicado). Esta ação não pode ser desfeita.`}
+        confirmLabel="Desfazer e restaurar"
+        variant="destructive"
+        onConfirm={() => undoConfirm && handleUndoTemplate(undoConfirm)}
+        loading={undoing}
+      />
     </div>
   );
 }
