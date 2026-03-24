@@ -201,7 +201,8 @@ export const TEMPLATE_DATA: FullTemplateData[] = [
     profile: {
       bio: "Criadora de conteúdo 🎬 Lifestyle, viagens e dicas do dia a dia ✈️",
       category: "Influencer",
-      font_family: "poppins",
+      avatar_url: avatarInfluencer,
+      cover_url: coverInfluencer,
       font_size: "medium",
       image_shape: "circular",
       image_shape_links: "pill",
