@@ -11,19 +11,21 @@ export default function TemplatePreviewCard({ template, fullHeight }: Props) {
   return (
     <div className={`w-full ${fullHeight ? "min-h-full" : "h-full"} overflow-hidden bg-background text-foreground`}>
       {/* Cover area with real image */}
-      <div className="relative h-28 overflow-hidden">
-        {profile.cover_url ? (
-          <img
-            src={profile.cover_url}
-            alt=""
-            className="w-full h-full object-cover"
-            loading="lazy"
-          />
-        ) : (
-          <div className="w-full h-full bg-gradient-to-br from-primary/30 via-primary/10 to-accent/20" />
-        )}
-        <div className="absolute inset-0 bg-gradient-to-t from-background/60 to-transparent" />
-        <div className="absolute -bottom-8 left-1/2 -translate-x-1/2">
+      <div className="relative h-28">
+        <div className="absolute inset-0 overflow-hidden">
+          {profile.cover_url ? (
+            <img
+              src={profile.cover_url}
+              alt=""
+              className="w-full h-full object-cover"
+              loading="lazy"
+            />
+          ) : (
+            <div className="w-full h-full bg-gradient-to-br from-primary/30 via-primary/10 to-accent/20" />
+          )}
+          <div className="absolute inset-0 bg-gradient-to-t from-background/60 to-transparent" />
+        </div>
+        <div className="absolute -bottom-8 left-1/2 -translate-x-1/2 z-10">
           {profile.avatar_url ? (
             <img
               src={profile.avatar_url}
