@@ -748,9 +748,9 @@ export const TEMPLATE_DATA: FullTemplateData[] = [
       { platform: "whatsapp", label: "WhatsApp", url: "https://wa.me/5511999999999" },
     ],
     products: [
-      { title: "Plano Alimentar 30 dias", price: "R$ 197", icon: "🥗", url: "https://exemplo.com/plano30", is_active: true },
-      { title: "E-book 50 Receitas Fit", price: "R$ 39", icon: "📚", url: "https://exemplo.com/ebook", is_active: true },
-      { title: "Consultoria Express", price: "R$ 97", icon: "⚡", url: "https://exemplo.com/express", is_active: true },
+      { title: "Plano Alimentar 30 dias", price: "R$ 197", icon: "🥗", url: "https://exemplo.com/plano30", is_active: true, image_url: productDieta },
+      { title: "E-book 50 Receitas Fit", price: "R$ 39", icon: "📚", url: "https://exemplo.com/ebook", is_active: true, image_url: productEbook },
+      { title: "Consultoria Express", price: "R$ 97", icon: "⚡", url: "https://exemplo.com/express", is_active: true, image_url: productMentoria },
     ],
     testimonials: [
       { author_name: "Amanda Reis", author_role: "Paciente", content: "Mudou minha relação com a comida! Me sinto muito melhor.", rating: 5, is_active: true },
