@@ -217,10 +217,10 @@ export const TEMPLATE_DATA: FullTemplateData[] = [
       { platform: "whatsapp", label: "WhatsApp", url: "https://wa.me/5511999999999" },
     ],
     products: [
-      { title: "Mentoria de Vendas", price: "R$ 497", icon: "🚀", url: "https://exemplo.com/mentoria", is_active: true },
-      { title: "Pack de Templates", price: "R$ 127", icon: "📋", url: "https://exemplo.com/templates", is_active: true },
-      { title: "Curso de Copywriting", price: "R$ 197", icon: "✍️", url: "https://exemplo.com/copy", is_active: true },
-      { title: "Planilha de Gestão", price: "R$ 47", icon: "📊", url: "https://exemplo.com/planilha", is_active: true },
+      { title: "Mentoria de Vendas", price: "R$ 497", icon: "🚀", url: "https://exemplo.com/mentoria", is_active: true, image_url: productMentoria },
+      { title: "Pack de Templates", price: "R$ 127", icon: "📋", url: "https://exemplo.com/templates", is_active: true, image_url: productTemplates },
+      { title: "Curso de Copywriting", price: "R$ 197", icon: "✍️", url: "https://exemplo.com/copy", is_active: true, image_url: productCurso },
+      { title: "Planilha de Gestão", price: "R$ 47", icon: "📊", url: "https://exemplo.com/planilha", is_active: true, image_url: productEbook },
     ],
     testimonials: [
       { author_name: "Carlos Silva", author_role: "Empreendedor", content: "Triplicou minhas vendas em 3 meses! Metodologia incrível.", rating: 5, is_active: true },
