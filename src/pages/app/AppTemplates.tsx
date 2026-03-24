@@ -120,6 +120,7 @@ export default function AppTemplates() {
         image_shape: profile.image_shape,
         image_shape_links: profile.image_shape_links,
         image_shape_products: profile.image_shape_products,
+        image_shape_campaigns: profile.image_shape || "rounded",
         tags: profile.tags as any,
         stats: profile.stats as any,
         brands: profile.brands as any,
@@ -128,11 +129,17 @@ export default function AppTemplates() {
       };
       if (profile.avatar_url) updateData.avatar_url = profile.avatar_url;
       if (profile.cover_url) updateData.cover_url = profile.cover_url;
-      await supabase.from("creators").update(updateData).eq("id", creatorId);
 
-      await supabase.from("creator_links").delete().eq("creator_id", creatorId);
+      const { error: profileError } = await supabase.from("creators").update(updateData).eq("id", creatorId);
+      if (profileError) {
+        console.error("Error updating creator profile:", profileError);
+        throw profileError;
+      }
+
+      const { error: delLinksErr } = await supabase.from("creator_links").delete().eq("creator_id", creatorId);
+      if (delLinksErr) console.error("Error deleting links:", delLinksErr);
       if (links.length > 0) {
-        await supabase.from("creator_links").insert(
+        const { error: insLinksErr } = await supabase.from("creator_links").insert(
           links.map((l, i) => ({
             creator_id: creatorId,
             title: l.title, url: l.url, subtitle: l.subtitle, icon: l.icon,
@@ -140,36 +147,43 @@ export default function AppTemplates() {
             display_mode: l.display_mode,
           }))
         );
+        if (insLinksErr) console.error("Error inserting links:", insLinksErr);
       }
 
-      await supabase.from("creator_social_links").delete().eq("creator_id", creatorId);
+      const { error: delSocialErr } = await supabase.from("creator_social_links").delete().eq("creator_id", creatorId);
+      if (delSocialErr) console.error("Error deleting social links:", delSocialErr);
       if (socialLinks.length > 0) {
-        await supabase.from("creator_social_links").insert(
+        const { error: insSocialErr } = await supabase.from("creator_social_links").insert(
           socialLinks.map((s, i) => ({
             creator_id: creatorId, platform: s.platform, label: s.label, url: s.url, sort_order: i,
           }))
         );
+        if (insSocialErr) console.error("Error inserting social links:", insSocialErr);
       }
 
-      await supabase.from("creator_products").delete().eq("creator_id", creatorId);
+      const { error: delProdErr } = await supabase.from("creator_products").delete().eq("creator_id", creatorId);
+      if (delProdErr) console.error("Error deleting products:", delProdErr);
       if (products.length > 0) {
-        await supabase.from("creator_products").insert(
+        const { error: insProdErr } = await supabase.from("creator_products").insert(
           products.map((p, i) => ({
             creator_id: creatorId, title: p.title, price: p.price, icon: p.icon,
             url: p.url, is_active: p.is_active, sort_order: i,
             image_url: p.image_url || null,
           }))
         );
+        if (insProdErr) console.error("Error inserting products:", insProdErr);
       }
 
-      await supabase.from("creator_testimonials").delete().eq("creator_id", creatorId);
+      const { error: delTestErr } = await supabase.from("creator_testimonials").delete().eq("creator_id", creatorId);
+      if (delTestErr) console.error("Error deleting testimonials:", delTestErr);
       if (testimonials.length > 0) {
-        await supabase.from("creator_testimonials").insert(
+        const { error: insTestErr } = await supabase.from("creator_testimonials").insert(
           testimonials.map((t, i) => ({
             creator_id: creatorId, author_name: t.author_name, author_role: t.author_role,
             content: t.content, rating: t.rating, is_active: t.is_active, sort_order: i,
           }))
         );
+        if (insTestErr) console.error("Error inserting testimonials:", insTestErr);
       }
 
       toast.success("Template aplicado! Você pode desfazer a qualquer momento.", { duration: 5000 });

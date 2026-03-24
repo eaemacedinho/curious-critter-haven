@@ -480,7 +480,7 @@ const CreatorEditPanel = forwardRef<CreatorEditPanelHandle, Props>(function Crea
         </button>
       </div>
 
-      <div className={showPreview ? "lg:mr-[440px]" : ""}>
+      <div className={showPreview ? "md:mr-[440px]" : ""}>
         {/* Editor column */}
         <div>
     <div data-editor-root className={`${showPreview ? "" : "max-w-[560px]"} mx-auto px-6 py-8 pt-4 animate-k-fade-up`}>
@@ -1775,7 +1775,7 @@ const CreatorEditPanel = forwardRef<CreatorEditPanelHandle, Props>(function Crea
 
         {/* Preview column — fixed phone mockup on the right */}
         {showPreview && (
-          <div className="hidden lg:block fixed right-0 w-[440px] bottom-0 p-4 overflow-hidden z-30" style={{ top: previewTopOffset }}>
+          <div className="hidden md:block fixed right-0 w-[440px] bottom-0 p-4 overflow-hidden z-30" style={{ top: previewTopOffset }}>
             <CreatorLivePreview
               profile={liveProfile}
               links={links}
