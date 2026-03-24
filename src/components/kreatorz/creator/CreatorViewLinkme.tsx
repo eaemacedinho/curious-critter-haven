@@ -348,6 +348,13 @@ export default function CreatorViewLinkme({ profile, links: rawLinks, socialLink
                     </div>
                   ) : null;
 
+                case "testimonials":
+                  return (rawTestimonials || []).filter(t => t.is_active && t.content?.trim()).length > 0 ? (
+                    <div key="testimonials" data-preview-section="testimonials" className="mt-6 px-4">
+                      <TestimonialsSection testimonials={rawTestimonials || []} sectionTitleColor={profile.color_section_titles} />
+                    </div>
+                  ) : null;
+
                 default:
                   return null;
               }
