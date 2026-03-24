@@ -708,9 +708,9 @@ export const TEMPLATE_DATA: FullTemplateData[] = [
       { platform: "twitter", label: "Twitter", url: "https://twitter.com/exemplo" },
     ],
     products: [
-      { title: "Camiseta Gamer", price: "R$ 79", icon: "👕", url: "https://exemplo.com/camiseta", is_active: true },
-      { title: "Mousepad Custom", price: "R$ 49", icon: "🖱️", url: "https://exemplo.com/mousepad", is_active: true },
-      { title: "Sub Twitch Tier 1", price: "R$ 7,90/mês", icon: "⭐", url: "https://twitch.tv/subs/exemplo", is_active: true },
+      { title: "Camiseta Gamer", price: "R$ 79", icon: "👕", url: "https://exemplo.com/camiseta", is_active: true, image_url: productMerch },
+      { title: "Mousepad Custom", price: "R$ 49", icon: "🖱️", url: "https://exemplo.com/mousepad", is_active: true, image_url: productGaming },
+      { title: "Sub Twitch Tier 1", price: "R$ 7,90/mês", icon: "⭐", url: "https://twitch.tv/subs/exemplo", is_active: true, image_url: productGaming },
     ],
     testimonials: [],
   },
