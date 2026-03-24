@@ -667,8 +667,8 @@ export const TEMPLATE_DATA: FullTemplateData[] = [
       { platform: "tiktok", label: "TikTok", url: "https://tiktok.com/@exemplo" },
     ],
     products: [
-      { title: "Sample Pack Vol. 1", price: "R$ 59", icon: "🎹", url: "https://exemplo.com/samples", is_active: true },
-      { title: "Curso de Produção", price: "R$ 297", icon: "🎓", url: "https://exemplo.com/curso", is_active: true },
+      { title: "Sample Pack Vol. 1", price: "R$ 59", icon: "🎹", url: "https://exemplo.com/samples", is_active: true, image_url: productAlbum },
+      { title: "Curso de Produção", price: "R$ 297", icon: "🎓", url: "https://exemplo.com/curso", is_active: true, image_url: productCurso },
     ],
     testimonials: [],
   },
