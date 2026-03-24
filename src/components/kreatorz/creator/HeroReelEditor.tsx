@@ -284,7 +284,7 @@ export default function HeroReelEditor({ reels, onChange, creatorId, agencyId, o
                       if (file) handleThumbnailUpload(file, i);
                     }}
                   />
-                  <span className="text-[0.68rem] text-primary-foreground font-semibold bg-primary/80 px-2 py-1 rounded-lg">📷</span>
+                  <span className="text-[0.68rem] text-background font-semibold bg-primary px-2 py-1 rounded-lg shadow-lg">📷</span>
                 </label>
               </div>
             ) : (
