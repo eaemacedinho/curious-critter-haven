@@ -623,9 +623,9 @@ export const TEMPLATE_DATA: FullTemplateData[] = [
       { platform: "whatsapp", label: "WhatsApp", url: "https://wa.me/5511999999999" },
     ],
     products: [
-      { title: "Plano Mensal Online", price: "R$ 149/mês", icon: "📱", url: "https://exemplo.com/mensal", is_active: true },
-      { title: "Consultoria Nutricional", price: "R$ 197", icon: "🥗", url: "https://exemplo.com/nutri", is_active: true },
-      { title: "Pack 12 Semanas", price: "R$ 397", icon: "🔥", url: "https://exemplo.com/pack12", is_active: true },
+      { title: "Plano Mensal Online", price: "R$ 149/mês", icon: "📱", url: "https://exemplo.com/mensal", is_active: true, image_url: productWorkout },
+      { title: "Consultoria Nutricional", price: "R$ 197", icon: "🥗", url: "https://exemplo.com/nutri", is_active: true, image_url: productDieta },
+      { title: "Pack 12 Semanas", price: "R$ 397", icon: "🔥", url: "https://exemplo.com/pack12", is_active: true, image_url: productSuplemento },
     ],
     testimonials: [
       { author_name: "Marcos Silva", author_role: "Aluno há 1 ano", content: "Perdi 15kg em 6 meses! Melhor decisão que tomei.", rating: 5, is_active: true },
