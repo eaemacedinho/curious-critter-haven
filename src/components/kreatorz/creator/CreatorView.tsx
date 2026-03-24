@@ -192,7 +192,9 @@ export default function CreatorView({ profile, links: rawLinks, socialLinks: raw
         {/* Dynamic sections based on section_order */}
         {(() => {
           const order = profile.section_order || ["spotlight", "links", "products", "past_campaigns"];
-          return order.includes("hero_reel") ? order : [...order, "hero_reel"];
+          let final = order.includes("hero_reel") ? order : [...order, "hero_reel"];
+          final = final.includes("testimonials") ? final : [...final, "testimonials"];
+          return final;
         })().map((sectionKey) => {
           switch (sectionKey) {
             case "spotlight":
