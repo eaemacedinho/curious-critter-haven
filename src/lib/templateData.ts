@@ -355,7 +355,8 @@ export const TEMPLATE_DATA: FullTemplateData[] = [
     profile: {
       bio: "Artista Visual 🎨 Pintura, ilustração e arte digital. Exposições pelo Brasil",
       category: "Artista Visual",
-      font_family: "playfair",
+      avatar_url: avatarArtist,
+      cover_url: coverArtist,
       font_size: "large",
       image_shape: "rounded",
       image_shape_links: "shadow",
