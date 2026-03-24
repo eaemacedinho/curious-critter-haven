@@ -1075,19 +1075,26 @@ const CreatorEditPanel = forwardRef<CreatorEditPanelHandle, Props>(function Crea
       <div className="mb-8">
         <div className={sectionTitle}>📱 Redes Sociais</div>
         <p className="text-[0.68rem] text-k-4 mb-2">Escolha um ícone, nome da rede e link do seu perfil.</p>
-        {social.map((s, i) => (
-          <div key={i} className="bg-k-800 border border-primary/10 rounded-xl p-3 mb-2.5 space-y-2">
+        {social.map((s, i) => {
+          const displayEmoji = (() => {
+            if (s.label && /^\p{Emoji}/u.test(s.label) && s.label.length <= 4) return s.label;
+            const opt = getSocialOption(s.platform);
+            if (opt) return opt.emoji;
+            return "➕";
+          })();
+          return (
+          <div key={i} className="bg-card/60 border border-border rounded-xl p-3 mb-2.5 space-y-2">
             <div className="flex gap-2 items-center">
-              <div className="relative">
+              <div className="relative flex-shrink-0">
                 <button
                   onClick={() => setShowIconPicker(showIconPicker === `social-${i}` ? null : `social-${i}`)}
-                  className="w-10 h-10 bg-k-850 border border-primary/10 rounded-xl flex items-center justify-center text-lg hover:border-k-400 hover:scale-110 transition-all"
+                  className="w-10 h-10 bg-background border border-border rounded-xl flex items-center justify-center text-lg hover:border-primary/40 hover:scale-110 transition-all"
                   title="Escolher ícone"
                 >
-                  {s.label || "➕"}
+                  {displayEmoji}
                 </button>
                 {showIconPicker === `social-${i}` && (
-                  <div className="absolute top-11 left-0 z-50 bg-k-850 border border-primary/10 rounded-xl p-2.5 shadow-k w-[220px] max-h-[240px] overflow-y-auto">
+                  <div className="absolute top-11 left-0 z-50 bg-popover border border-border rounded-xl p-2.5 shadow-lg w-[220px] max-h-[240px] overflow-y-auto">
                     <div className="grid grid-cols-4 gap-1">
                       {socialEmojiOptions.map((opt) => (
                         <button
@@ -1103,22 +1110,27 @@ const CreatorEditPanel = forwardRef<CreatorEditPanelHandle, Props>(function Crea
                             setSocial(arr);
                             setShowIconPicker(null);
                           }}
-                          className="flex flex-col items-center gap-0.5 p-1.5 rounded-lg hover:bg-k-glow transition-colors"
+                          className="flex flex-col items-center gap-0.5 p-1.5 rounded-lg hover:bg-accent/20 transition-colors"
                           title={opt.label}
                         >
                           <span className="text-lg">{opt.emoji}</span>
-                          <span className="text-[0.58rem] text-k-4 leading-tight">{opt.label}</span>
+                          <span className="text-[0.58rem] text-muted-foreground leading-tight">{opt.label}</span>
                         </button>
                       ))}
                     </div>
                   </div>
                 )}
               </div>
-              <input value={s.platform} onChange={(e) => { const arr = [...social]; arr[i] = { ...arr[i], platform: e.target.value }; setSocial(arr); }} placeholder="Ex: Instagram" className={`${inputClass} flex-1`} />
-              <button onClick={() => setSocial(social.filter((_, j) => j !== i))} className="text-k-4 hover:text-k-err px-2 text-lg">×</button>
+              <div className="flex-1 min-w-0">
+                <div className="flex items-center gap-1.5">
+                  <span className="text-sm font-semibold text-foreground truncate">{s.platform || "Rede social"}</span>
+                  <span className="text-xs text-muted-foreground">{s.platform?.toLowerCase() || ""}</span>
+                </div>
+              </div>
+              <button onClick={() => setSocial(social.filter((_, j) => j !== i))} className="text-muted-foreground hover:text-destructive px-2 text-lg flex-shrink-0">×</button>
             </div>
             <div>
-              <label className="block text-[0.65rem] text-k-4 mb-1">Link do perfil</label>
+              <label className="block text-[0.65rem] text-muted-foreground mb-1">Link do perfil</label>
               <input
                 value={s.url}
                 onChange={(e) => {
@@ -1139,8 +1151,9 @@ const CreatorEditPanel = forwardRef<CreatorEditPanelHandle, Props>(function Crea
               />
             </div>
           </div>
-        ))}
-        <button onClick={() => setSocial([...social, { id: crypto.randomUUID(), creator_id: profile.id, platform: "", label: "", url: "", sort_order: social.length }])} className="text-sm text-k-300 font-medium hover:text-k-200 transition-colors">+ Adicionar rede social</button>
+          );
+        })}
+        <button onClick={() => setSocial([...social, { id: crypto.randomUUID(), creator_id: profile.id, platform: "", label: "", url: "", sort_order: social.length }])} className="text-sm text-foreground/70 font-medium hover:text-foreground transition-colors">+ Adicionar rede social</button>
       </div>
 
       {/* Section order */}
@@ -1696,11 +1709,12 @@ const CreatorEditPanel = forwardRef<CreatorEditPanelHandle, Props>(function Crea
                 placeholder="Cargo / Empresa" className={inputClass} />
             </div>
             <div className="flex items-center gap-2">
-              <span className="text-xs text-k-4">Nota:</span>
+              <span className="text-xs text-muted-foreground">Nota:</span>
               {[1,2,3,4,5].map(star => (
                 <button key={star} onClick={() => setTestimonialsList(testimonialsList.map((x, j) => j === i ? { ...x, rating: star } : x))}
-                  className={`text-sm ${star <= t.rating ? "text-primary" : "text-muted"}`}>★</button>
+                  className={`text-lg cursor-pointer transition-transform hover:scale-125 ${star <= (t.rating || 0) ? "text-yellow-400" : "text-muted-foreground/30"}`}>★</button>
               ))}
+              <span className="text-xs text-muted-foreground ml-1">{t.rating || 0}/5</span>
             </div>
           </div>
         ))}
