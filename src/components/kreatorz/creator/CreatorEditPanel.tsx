@@ -1694,9 +1694,13 @@ const CreatorEditPanel = forwardRef<CreatorEditPanelHandle, Props>(function Crea
               <span className="text-xs font-semibold text-k-2">Depoimento {i + 1}</span>
               <div className="flex items-center gap-2">
                 <button onClick={() => setTestimonialsList(testimonialsList.map((x, j) => j === i ? { ...x, is_active: !x.is_active } : x))}
-                  className={`text-[0.65rem] px-2 py-0.5 rounded-full border ${t.is_active ? "border-green-500/30 text-green-400 bg-green-500/10" : "border-border text-k-4"}`}>
-                  {t.is_active ? "ativo" : "inativo"}
+                  className={`w-9 h-5 rounded-full relative cursor-pointer transition-all duration-300 flex-shrink-0 ${t.is_active ? "bg-emerald-500" : "bg-k-900 border border-primary/10"}`}
+                  title={t.is_active ? "Visível na página" : "Oculto da página"}>
+                  <span className={`absolute w-3.5 h-3.5 rounded-full bg-white top-[3px] transition-all duration-300 shadow-sm ${t.is_active ? "left-[18px]" : "left-[3px]"}`} />
                 </button>
+                <span className={`text-[0.6rem] font-semibold px-1.5 py-0.5 rounded ${t.is_active ? "bg-emerald-500/15 text-emerald-400" : "bg-muted text-muted-foreground"}`}>
+                  {t.is_active ? "ativo" : "inativo"}
+                </span>
                 <button onClick={() => setTestimonialsList(testimonialsList.filter((_, j) => j !== i))} className="text-k-4 hover:text-red-400 text-xs">✕</button>
               </div>
             </div>
