@@ -10,9 +10,9 @@ interface PreviewPreset {
 }
 
 const STYLE_THEMES: Record<string, { bg: string; card: string; text: string; accent: string; border: string }> = {
-  dark: { bg: "#0f0f1a", card: "#1a1a2e", text: "#f0f0f0", accent: "#e94560", border: "#2a2a3e" },
-  clean: { bg: "#faf9ff", card: "#ffffff", text: "#1a1a2e", accent: "#6B2BD4", border: "#e8e5f0" },
-  neon: { bg: "#0a0a14", card: "#111128", text: "#e0e0ff", accent: "#00f0ff", border: "#1a1a3a" },
+  dark: { bg: "#0f0f1a", card: "#1a1a2e", text: "#f0f0f0", accent: "#e94560", border: "#3a3a52" },
+  clean: { bg: "#faf9ff", card: "#ffffff", text: "#1a1a2e", accent: "#6B2BD4", border: "#d8d5e0" },
+  neon: { bg: "#0a0a14", card: "#151530", text: "#e0e0ff", accent: "#00f0ff", border: "#2a2a4a" },
 };
 
 export default function TemplatePreview({

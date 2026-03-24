@@ -267,14 +267,22 @@ function detectPlatform(platform: string, url?: string): string {
   // check email first (before generic loop)
   if (p.includes("mail") || p.includes("email") || p.includes("e-mail") || u.includes("mailto")) return "email";
 
-  for (const key of Object.keys(icons)) {
-    if (p.includes(key) || u.includes(key)) return key;
-  }
-  // aliases
-  if (p.includes("x.com") || u.includes("x.com")) return "x";
+  // aliases — check before generic loop to avoid false positives
+  if (p === "x" || p.includes("x.com") || u.includes("x.com") || u.includes("twitter.com")) return "x";
   if (p.includes("t.me") || u.includes("t.me")) return "telegram";
   if (p.includes("wa.me") || u.includes("wa.me")) return "whatsapp";
   if (p.includes("music.apple") || u.includes("music.apple")) return "apple";
+
+  // Skip short/ambiguous keys to avoid false positives (e.g. "x" matching "exemplo")
+  const skipKeys = new Set(["x"]);
+
+  for (const key of Object.keys(icons)) {
+    if (skipKeys.has(key)) continue;
+    // For URL matching, require the key to appear as a domain segment (not just substring)
+    const pMatch = p.includes(key);
+    const uMatch = u.includes(key + ".com") || u.includes(key + ".") || u.includes("/" + key);
+    if (pMatch || uMatch) return key;
+  }
   return "";
 }
 
@@ -310,7 +318,7 @@ export { detectPlatform, icons as socialIconEntries };
 /** Available social platform keys for icon picker */
 export const socialPlatformKeys = Object.keys(icons);
 
-/** Render a link icon: if it matches a known platform, show the real SVG with bg circle; otherwise show emoji */
+/** Render a link icon: if it matches a known platform, show the real SVG with bg circle; otherwise show a globe icon for URLs or emoji fallback */
 export function LinkIcon({ icon, url, size = 18, className = "" }: { icon?: string; url?: string; size?: number; className?: string }) {
   // Direct match first (e.g. "instagram-dark", "youtube-dark")
   const directEntry = icon ? icons[icon] : null;
@@ -344,6 +352,20 @@ export function LinkIcon({ icon, url, size = 18, className = "" }: { icon?: stri
     );
   }
 
-  // Fallback: render as emoji text
-  return <span className={className} style={{ fontSize: size }}>{icon || "🔗"}</span>;
+  // If icon is an emoji (starts with non-ASCII), render it directly
+  if (icon && /^[^\x00-\x7F]/.test(icon)) {
+    return <span className={className} style={{ fontSize: size }}>{icon}</span>;
+  }
+
+  // Fallback: globe icon for generic URLs (website link)
+  const websiteEntry = icons["website"];
+  const containerSize = Math.round(size * 1.8);
+  return (
+    <span
+      className={`inline-flex items-center justify-center rounded-full ${websiteEntry.bg} ${className}`}
+      style={{ width: containerSize, height: containerSize }}
+    >
+      {websiteEntry.render(size)}
+    </span>
+  );
 }
