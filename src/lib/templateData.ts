@@ -401,7 +401,8 @@ export const TEMPLATE_DATA: FullTemplateData[] = [
     profile: {
       bio: "Podcast sobre empreendedorismo e tecnologia 🎙️ Novos episódios toda segunda",
       category: "Podcaster",
-      font_family: "poppins",
+      avatar_url: avatarPodcast,
+      cover_url: coverPodcast,
       font_size: "medium",
       image_shape: "circular",
       image_shape_links: "pill",
