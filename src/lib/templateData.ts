@@ -479,8 +479,8 @@ export const TEMPLATE_DATA: FullTemplateData[] = [
       { platform: "spotify", label: "Spotify", url: "https://open.spotify.com/show/exemplo" },
     ],
     products: [
-      { title: "Caneca do Podcast", price: "R$ 45", icon: "☕", url: "https://exemplo.com/caneca", is_active: true },
-      { title: "Camiseta Oficial", price: "R$ 69", icon: "👕", url: "https://exemplo.com/camiseta", is_active: true },
+      { title: "Caneca do Podcast", price: "R$ 45", icon: "☕", url: "https://exemplo.com/caneca", is_active: true, image_url: productPodcast },
+      { title: "Camiseta Oficial", price: "R$ 69", icon: "👕", url: "https://exemplo.com/camiseta", is_active: true, image_url: productMerch },
     ],
     testimonials: [],
   },
