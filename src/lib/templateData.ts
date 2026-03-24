@@ -306,7 +306,8 @@ export const TEMPLATE_DATA: FullTemplateData[] = [
     profile: {
       bio: "Café & Bistrô ☕ O melhor café artesanal da cidade. De segunda a sábado, 7h às 20h",
       category: "Cafeteria",
-      font_family: "default",
+      avatar_url: avatarLocal,
+      cover_url: coverLocal,
       font_size: "medium",
       image_shape: "rounded",
       image_shape_links: "rounded",
