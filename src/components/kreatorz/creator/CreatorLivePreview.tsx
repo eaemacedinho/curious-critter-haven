@@ -61,6 +61,7 @@ export default function CreatorLivePreview({
   products,
   campaigns,
   heroReels,
+  testimonials,
   activeLayout = "layout1",
   focusSection,
 }: Props) {
