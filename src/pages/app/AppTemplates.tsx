@@ -105,7 +105,7 @@ export default function AppTemplates() {
       // --- Apply template ---
       const { profile, links, socialLinks, products, testimonials } = template;
 
-      await supabase.from("creators").update({
+      const updateData: Record<string, any> = {
         bio: profile.bio,
         category: profile.category,
         font_family: profile.font_family,
@@ -118,7 +118,10 @@ export default function AppTemplates() {
         brands: profile.brands as any,
         brands_display_mode: profile.brands_display_mode,
         section_order: profile.section_order as any,
-      }).eq("id", creatorId);
+      };
+      if (profile.avatar_url) updateData.avatar_url = profile.avatar_url;
+      if (profile.cover_url) updateData.cover_url = profile.cover_url;
+      await supabase.from("creators").update(updateData).eq("id", creatorId);
 
       await supabase.from("creator_links").delete().eq("creator_id", creatorId);
       if (links.length > 0) {
