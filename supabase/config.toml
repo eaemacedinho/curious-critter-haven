@@ -1,9 +1,1 @@
 project_id = "cwjvabcduyfwguxjyzmb"
-
-[auth]
-enabled = true
-site_url = "https://id-preview--2682de3e-b823-4fa9-85c1-144d0c2dd995.lovable.app"
-
-[auth.email]
-enable_confirmations = false
-enable_signup = true
