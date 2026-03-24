@@ -43,6 +43,7 @@ export interface TemplateProductData {
   icon: string;
   url: string;
   is_active: boolean;
+  image_url?: string;
 }
 
 export interface TemplateTestimonialData {
