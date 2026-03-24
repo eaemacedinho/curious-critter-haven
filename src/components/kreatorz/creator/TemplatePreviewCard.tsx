@@ -1,12 +1,5 @@
 import type { FullTemplateData } from "@/lib/templateData";
-import type { CreatorProfile, CreatorLink, SocialLink, CreatorProduct } from "@/hooks/useCreatorData";
-import type { Testimonial } from "./TestimonialsSection";
-import SocialIcon, { LinkIcon } from "./SocialIcon";
 
-/**
- * Renders a mini live preview of a template using the actual app components/styling.
- * This ensures what users see in the gallery matches what they get when applying.
- */
 interface Props {
   template: FullTemplateData;
   fullHeight?: boolean;
@@ -17,12 +10,34 @@ export default function TemplatePreviewCard({ template, fullHeight }: Props) {
 
   return (
     <div className={`w-full ${fullHeight ? "min-h-full" : "h-full"} overflow-hidden bg-background text-foreground`}>
-      {/* Cover area */}
-      <div className="relative h-28 bg-gradient-to-br from-primary/30 via-primary/10 to-accent/20">
+      {/* Cover area with real image */}
+      <div className="relative h-28 overflow-hidden">
+        {profile.cover_url ? (
+          <img
+            src={profile.cover_url}
+            alt=""
+            className="w-full h-full object-cover"
+            loading="lazy"
+          />
+        ) : (
+          <div className="w-full h-full bg-gradient-to-br from-primary/30 via-primary/10 to-accent/20" />
+        )}
+        <div className="absolute inset-0 bg-gradient-to-t from-background/60 to-transparent" />
         <div className="absolute -bottom-8 left-1/2 -translate-x-1/2">
-          <div className={`w-16 h-16 bg-gradient-to-br from-primary/40 to-primary/20 border-2 border-background flex items-center justify-center text-2xl ${profile.image_shape === "circular" ? "rounded-full" : "rounded-2xl"}`}>
-            {profile.category.charAt(0)}
-          </div>
+          {profile.avatar_url ? (
+            <img
+              src={profile.avatar_url}
+              alt={profile.category}
+              className={`w-16 h-16 object-cover border-2 border-background shadow-lg ${
+                profile.image_shape === "circular" ? "rounded-full" : "rounded-2xl"
+              }`}
+              loading="lazy"
+            />
+          ) : (
+            <div className={`w-16 h-16 bg-gradient-to-br from-primary/40 to-primary/20 border-2 border-background flex items-center justify-center text-2xl ${profile.image_shape === "circular" ? "rounded-full" : "rounded-2xl"}`}>
+              {profile.category.charAt(0)}
+            </div>
+          )}
         </div>
       </div>
 
@@ -31,7 +46,6 @@ export default function TemplatePreviewCard({ template, fullHeight }: Props) {
         <p className="text-xs font-bold text-foreground">{profile.category}</p>
         <p className="text-[0.6rem] text-muted-foreground mt-0.5 line-clamp-2 leading-relaxed px-2">{profile.bio}</p>
 
-        {/* Tags */}
         {profile.tags.length > 0 && (
           <div className="flex flex-wrap justify-center gap-1 mt-2">
             {profile.tags.map((tag, i) => (
@@ -42,7 +56,6 @@ export default function TemplatePreviewCard({ template, fullHeight }: Props) {
           </div>
         )}
 
-        {/* Stats */}
         {profile.stats.length > 0 && (
           <div className="flex justify-center gap-3 mt-2">
             {profile.stats.map((stat, i) => (
@@ -54,7 +67,6 @@ export default function TemplatePreviewCard({ template, fullHeight }: Props) {
           </div>
         )}
 
-        {/* Social icons */}
         {socialLinks.length > 0 && (
           <div className="flex justify-center gap-2 mt-2">
             {socialLinks.map((s, i) => (
