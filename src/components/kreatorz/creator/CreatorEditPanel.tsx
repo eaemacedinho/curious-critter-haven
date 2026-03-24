@@ -265,7 +265,8 @@ const CreatorEditPanel = forwardRef<CreatorEditPanelHandle, Props>(function Crea
     color_bio: colorBio || null,
     color_section_titles: colorSectionTitles || null,
     section_order: sectionOrder,
-  }), [profile, name, handle, bio, avatarUrl, coverUrl, avatarUrlL2, coverUrlL2, verified, tags, stats, brands, brandsDisplayMode, shapeProducts, shapeCampaigns, shapeLinks, pageEffects, effectColor, effectEmojis, effectIntensity, fontFamily, fontSize, colorName, colorBio, colorSectionTitles, sectionOrder]);
+    spotify_url: spotifyUrl,
+  }), [profile, name, handle, bio, avatarUrl, coverUrl, avatarUrlL2, coverUrlL2, verified, tags, stats, brands, brandsDisplayMode, shapeProducts, shapeCampaigns, shapeLinks, pageEffects, effectColor, effectEmojis, effectIntensity, fontFamily, fontSize, colorName, colorBio, colorSectionTitles, sectionOrder, spotifyUrl]);
 
   const isValidUrl = (url: string) => {
     if (!url) return true;
@@ -1722,21 +1723,44 @@ const CreatorEditPanel = forwardRef<CreatorEditPanelHandle, Props>(function Crea
                 <button onClick={() => setTestimonialsList(testimonialsList.filter((_, j) => j !== i))} className="text-k-4 hover:text-red-400 text-xs">✕</button>
               </div>
             </div>
-            <textarea value={t.content} onChange={e => setTestimonialsList(testimonialsList.map((x, j) => j === i ? { ...x, content: e.target.value } : x))}
-              placeholder="O que o cliente disse..." className={`${inputClass} min-h-[60px] resize-none`} />
-            <div className="grid grid-cols-2 gap-2">
-              <input value={t.author_name} onChange={e => setTestimonialsList(testimonialsList.map((x, j) => j === i ? { ...x, author_name: e.target.value } : x))}
-                placeholder="Nome do autor" className={inputClass} />
-              <input value={t.author_role} onChange={e => setTestimonialsList(testimonialsList.map((x, j) => j === i ? { ...x, author_role: e.target.value } : x))}
-                placeholder="Cargo / Empresa" className={inputClass} />
-            </div>
-            <div className="flex items-center gap-2">
-              <span className="text-xs text-muted-foreground">Nota:</span>
-              {[1,2,3,4,5].map(star => (
-                <button key={star} onClick={() => setTestimonialsList(testimonialsList.map((x, j) => j === i ? { ...x, rating: star } : x))}
-                  className={`text-lg cursor-pointer transition-transform hover:scale-125 ${star <= (t.rating || 0) ? "text-yellow-400" : "text-muted-foreground/30"}`}>★</button>
-              ))}
-              <span className="text-xs text-muted-foreground ml-1">{t.rating || 0}/5</span>
+            {/* Avatar upload */}
+            <div className="flex items-start gap-3">
+              <div className="relative group flex-shrink-0">
+                {t.author_avatar_url ? (
+                  <img src={t.author_avatar_url} alt="" className="w-12 h-12 rounded-full object-cover border border-border" />
+                ) : (
+                  <div className="w-12 h-12 rounded-full bg-primary/10 flex items-center justify-center text-lg font-bold text-primary border border-border">
+                    {t.author_name?.[0]?.toUpperCase() || "?"}
+                  </div>
+                )}
+                <label className="absolute inset-0 flex items-center justify-center bg-background/60 rounded-full opacity-0 group-hover:opacity-100 transition-opacity cursor-pointer">
+                  <input type="file" accept="image/*" className="hidden" onChange={async (e) => {
+                    const file = e.target.files?.[0];
+                    if (!file) return;
+                    const url = await onUploadContentImage(file, "testimonials");
+                    if (url) setTestimonialsList(testimonialsList.map((x, j) => j === i ? { ...x, author_avatar_url: url } : x));
+                  }} />
+                  <span className="text-xs font-semibold text-foreground">📷</span>
+                </label>
+              </div>
+              <div className="flex-1 space-y-2">
+                <textarea value={t.content} onChange={e => setTestimonialsList(testimonialsList.map((x, j) => j === i ? { ...x, content: e.target.value } : x))}
+                  placeholder="O que o cliente disse..." className={`${inputClass} min-h-[60px] resize-none`} />
+                <div className="grid grid-cols-2 gap-2">
+                  <input value={t.author_name} onChange={e => setTestimonialsList(testimonialsList.map((x, j) => j === i ? { ...x, author_name: e.target.value } : x))}
+                    placeholder="Nome do autor" className={inputClass} />
+                  <input value={t.author_role} onChange={e => setTestimonialsList(testimonialsList.map((x, j) => j === i ? { ...x, author_role: e.target.value } : x))}
+                    placeholder="Cargo / Empresa" className={inputClass} />
+                </div>
+                <div className="flex items-center gap-2">
+                  <span className="text-xs text-muted-foreground">Nota:</span>
+                  {[1,2,3,4,5].map(star => (
+                    <button key={star} type="button" onClick={(e) => { e.preventDefault(); e.stopPropagation(); setTestimonialsList(prev => prev.map((x, j) => j === i ? { ...x, rating: star } : x)); }}
+                      className={`text-lg cursor-pointer transition-transform hover:scale-125 ${star <= (t.rating || 0) ? "text-yellow-400" : "text-muted-foreground/30"}`}>★</button>
+                  ))}
+                  <span className="text-xs text-muted-foreground ml-1">{t.rating || 0}/5</span>
+                </div>
+              </div>
             </div>
           </div>
         ))}
