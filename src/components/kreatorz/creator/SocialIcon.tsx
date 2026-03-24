@@ -267,14 +267,22 @@ function detectPlatform(platform: string, url?: string): string {
   // check email first (before generic loop)
   if (p.includes("mail") || p.includes("email") || p.includes("e-mail") || u.includes("mailto")) return "email";
 
-  for (const key of Object.keys(icons)) {
-    if (p.includes(key) || u.includes(key)) return key;
-  }
-  // aliases
-  if (p.includes("x.com") || u.includes("x.com")) return "x";
+  // aliases — check before generic loop to avoid false positives
+  if (p === "x" || p.includes("x.com") || u.includes("x.com") || u.includes("twitter.com")) return "x";
   if (p.includes("t.me") || u.includes("t.me")) return "telegram";
   if (p.includes("wa.me") || u.includes("wa.me")) return "whatsapp";
   if (p.includes("music.apple") || u.includes("music.apple")) return "apple";
+
+  // Skip short/ambiguous keys to avoid false positives (e.g. "x" matching "exemplo")
+  const skipKeys = new Set(["x"]);
+
+  for (const key of Object.keys(icons)) {
+    if (skipKeys.has(key)) continue;
+    // For URL matching, require the key to appear as a domain segment (not just substring)
+    const pMatch = p.includes(key);
+    const uMatch = u.includes(key + ".com") || u.includes(key + ".") || u.includes("/" + key);
+    if (pMatch || uMatch) return key;
+  }
   return "";
 }
 
