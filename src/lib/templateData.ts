@@ -17,6 +17,8 @@ export interface TemplateProfileData {
   brands: { name: string }[];
   brands_display_mode: string;
   section_order: string[];
+  avatar_url?: string;
+  cover_url?: string;
 }
 
 export interface TemplateLinkData {
@@ -65,6 +67,26 @@ export interface FullTemplateData {
   testimonials: TemplateTestimonialData[];
 }
 
+// Image imports
+import avatarPortfolio from "@/assets/templates/avatar-portfolio.jpg";
+import avatarSales from "@/assets/templates/avatar-sales.jpg";
+import avatarInfluencer from "@/assets/templates/avatar-influencer.jpg";
+import avatarProfessional from "@/assets/templates/avatar-professional.jpg";
+import avatarLocal from "@/assets/templates/avatar-local.jpg";
+import avatarArtist from "@/assets/templates/avatar-artist.jpg";
+import avatarPodcast from "@/assets/templates/avatar-podcast.jpg";
+import avatarCoach from "@/assets/templates/avatar-coach.jpg";
+import avatarEcommerce from "@/assets/templates/avatar-ecommerce.jpg";
+import coverPortfolio from "@/assets/templates/cover-portfolio.jpg";
+import coverSales from "@/assets/templates/cover-sales.jpg";
+import coverInfluencer from "@/assets/templates/cover-influencer.jpg";
+import coverProfessional from "@/assets/templates/cover-professional.jpg";
+import coverLocal from "@/assets/templates/cover-local.jpg";
+import coverArtist from "@/assets/templates/cover-artist.jpg";
+import coverPodcast from "@/assets/templates/cover-podcast.jpg";
+import coverCoach from "@/assets/templates/cover-coach.jpg";
+import coverEcommerce from "@/assets/templates/cover-ecommerce.jpg";
+
 export const TEMPLATE_DATA: FullTemplateData[] = [
   {
     id: "portfolio",
@@ -76,6 +98,8 @@ export const TEMPLATE_DATA: FullTemplateData[] = [
     profile: {
       bio: "Fotógrafa & Diretora Criativa ✨ Transformando momentos em arte visual",
       category: "Fotógrafa",
+      avatar_url: avatarPortfolio,
+      cover_url: coverPortfolio,
       font_family: "playfair",
       font_size: "medium",
       image_shape: "rounded",
@@ -126,6 +150,8 @@ export const TEMPLATE_DATA: FullTemplateData[] = [
     profile: {
       bio: "Especialista em Marketing Digital 🚀 Ajudando negócios a crescer online",
       category: "Marketing Digital",
+      avatar_url: avatarSales,
+      cover_url: coverSales,
       font_family: "inter",
       font_size: "medium",
       image_shape: "rounded",
@@ -176,6 +202,8 @@ export const TEMPLATE_DATA: FullTemplateData[] = [
     profile: {
       bio: "Criadora de conteúdo 🎬 Lifestyle, viagens e dicas do dia a dia ✈️",
       category: "Influencer",
+      avatar_url: avatarInfluencer,
+      cover_url: coverInfluencer,
       font_family: "poppins",
       font_size: "medium",
       image_shape: "circular",
@@ -227,6 +255,8 @@ export const TEMPLATE_DATA: FullTemplateData[] = [
     profile: {
       bio: "Designer UX/UI 💼 Criando experiências digitais memoráveis há 10 anos",
       category: "Designer",
+      avatar_url: avatarProfessional,
+      cover_url: coverProfessional,
       font_family: "inter",
       font_size: "medium",
       image_shape: "rounded",
@@ -279,6 +309,8 @@ export const TEMPLATE_DATA: FullTemplateData[] = [
     profile: {
       bio: "Café & Bistrô ☕ O melhor café artesanal da cidade. De segunda a sábado, 7h às 20h",
       category: "Cafeteria",
+      avatar_url: avatarLocal,
+      cover_url: coverLocal,
       font_family: "default",
       font_size: "medium",
       image_shape: "rounded",
@@ -327,6 +359,8 @@ export const TEMPLATE_DATA: FullTemplateData[] = [
     profile: {
       bio: "Artista Visual 🎨 Pintura, ilustração e arte digital. Exposições pelo Brasil",
       category: "Artista Visual",
+      avatar_url: avatarArtist,
+      cover_url: coverArtist,
       font_family: "playfair",
       font_size: "large",
       image_shape: "rounded",
@@ -372,6 +406,8 @@ export const TEMPLATE_DATA: FullTemplateData[] = [
     profile: {
       bio: "Podcast sobre empreendedorismo e tecnologia 🎙️ Novos episódios toda segunda",
       category: "Podcaster",
+      avatar_url: avatarPodcast,
+      cover_url: coverPodcast,
       font_family: "poppins",
       font_size: "medium",
       image_shape: "circular",
@@ -422,6 +458,8 @@ export const TEMPLATE_DATA: FullTemplateData[] = [
     profile: {
       bio: "Coach de carreira & liderança 🧠 +500 vidas transformadas. Agende sua sessão!",
       category: "Coach",
+      avatar_url: avatarCoach,
+      cover_url: coverCoach,
       font_family: "inter",
       font_size: "medium",
       image_shape: "rounded",
@@ -472,6 +510,8 @@ export const TEMPLATE_DATA: FullTemplateData[] = [
     profile: {
       bio: "Loja de acessórios artesanais 🛍️ Peças únicas feitas à mão. Envio para todo Brasil",
       category: "Loja Online",
+      avatar_url: avatarEcommerce,
+      cover_url: coverEcommerce,
       font_family: "default",
       font_size: "medium",
       image_shape: "rounded",
