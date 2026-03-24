@@ -578,10 +578,10 @@ export const TEMPLATE_DATA: FullTemplateData[] = [
       { platform: "tiktok", label: "TikTok", url: "https://tiktok.com/@exemplo" },
     ],
     products: [
-      { title: "Colar Lua Dourada", price: "R$ 89", icon: "🌙", url: "https://exemplo.com/colar", is_active: true },
-      { title: "Brinco Estrela", price: "R$ 59", icon: "⭐", url: "https://exemplo.com/brinco", is_active: true },
-      { title: "Pulseira Cristal", price: "R$ 69", icon: "💎", url: "https://exemplo.com/pulseira", is_active: true },
-      { title: "Kit Presente", price: "R$ 149", icon: "🎁", url: "https://exemplo.com/kit", is_active: true },
+      { title: "Colar Lua Dourada", price: "R$ 89", icon: "🌙", url: "https://exemplo.com/colar", is_active: true, image_url: productSkincare },
+      { title: "Brinco Estrela", price: "R$ 59", icon: "⭐", url: "https://exemplo.com/brinco", is_active: true, image_url: productSkincare },
+      { title: "Pulseira Cristal", price: "R$ 69", icon: "💎", url: "https://exemplo.com/pulseira", is_active: true, image_url: productSkincare },
+      { title: "Kit Presente", price: "R$ 149", icon: "🎁", url: "https://exemplo.com/kit", is_active: true, image_url: productSkincare },
     ],
     testimonials: [
       { author_name: "Camila Torres", author_role: "Cliente", content: "Peças lindas e embalagem impecável! Chegou super rápido.", rating: 5, is_active: true },
