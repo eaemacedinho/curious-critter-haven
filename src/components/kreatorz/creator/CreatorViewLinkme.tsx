@@ -6,6 +6,8 @@ import SpotlightCampaign from "./SpotlightCampaign";
 import HeroReel from "./HeroReel";
 import type { CreatorProfile, CreatorLink, SocialLink, CreatorProduct, CreatorCampaign } from "@/hooks/useCreatorData";
 import type { HeroReelData } from "./HeroReel";
+import type { Testimonial } from "./TestimonialsSection";
+import TestimonialsSection from "./TestimonialsSection";
 import PageEffects from "./PageEffects";
 import BrandsSection from "./BrandsSection";
 import type { PageEffect } from "./PageEffects";
