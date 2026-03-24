@@ -503,7 +503,8 @@ export const TEMPLATE_DATA: FullTemplateData[] = [
     profile: {
       bio: "Loja de acessórios artesanais 🛍️ Peças únicas feitas à mão. Envio para todo Brasil",
       category: "Loja Online",
-      font_family: "default",
+      avatar_url: avatarEcommerce,
+      cover_url: coverEcommerce,
       font_size: "medium",
       image_shape: "rounded",
       image_shape_links: "rounded",
