@@ -1797,6 +1797,7 @@ const CreatorEditPanel = forwardRef<CreatorEditPanelHandle, Props>(function Crea
               products={prods}
               campaigns={camps}
               heroReels={heroReels}
+              testimonials={testimonialsList}
               activeLayout={activeLayout}
               focusSection={focusSection}
             />
