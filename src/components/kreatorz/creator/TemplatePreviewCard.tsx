@@ -113,7 +113,16 @@ export default function TemplatePreviewCard({ template, fullHeight }: Props) {
                 }`}
               >
                 <div className="flex items-center gap-1.5">
-                  <span className="text-xs">{product.icon}</span>
+                  {product.image_url ? (
+                    <img
+                      src={product.image_url}
+                      alt={product.title}
+                      className="w-7 h-7 rounded-md object-cover flex-shrink-0"
+                      loading="lazy"
+                    />
+                  ) : (
+                    <span className="text-xs">{product.icon}</span>
+                  )}
                   <div className="min-w-0 flex-1">
                     <p className="text-[0.5rem] font-semibold text-foreground truncate">{product.title}</p>
                     <p className="text-[0.45rem] font-bold text-primary">{product.price}</p>
