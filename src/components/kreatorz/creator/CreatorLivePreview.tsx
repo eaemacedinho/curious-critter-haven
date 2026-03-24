@@ -1,6 +1,7 @@
 import { useCallback, useEffect, useMemo, useRef, useState, type CSSProperties, type RefObject } from "react";
 import type { CreatorCampaign, CreatorLink, CreatorProduct, CreatorProfile, SocialLink } from "@/hooks/useCreatorData";
 import type { HeroReelData } from "./HeroReel";
+import type { Testimonial } from "./TestimonialsSection";
 import { useTenant } from "@/hooks/useTenant";
 import CreatorView from "./CreatorView";
 import CreatorViewLinkme from "./CreatorViewLinkme";
@@ -14,6 +15,7 @@ interface Props {
   products: CreatorProduct[];
   campaigns: CreatorCampaign[];
   heroReels?: HeroReelData[];
+  testimonials?: Testimonial[];
   activeLayout?: string;
   focusSection?: string | null;
 }
