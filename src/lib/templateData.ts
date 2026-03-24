@@ -205,6 +205,7 @@ export const TEMPLATE_DATA: FullTemplateData[] = [
       category: "Influencer",
       avatar_url: avatarInfluencer,
       cover_url: coverInfluencer,
+      font_family: "poppins",
       font_size: "medium",
       image_shape: "circular",
       image_shape_links: "pill",
