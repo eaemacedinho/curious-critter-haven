@@ -253,7 +253,8 @@ export const TEMPLATE_DATA: FullTemplateData[] = [
     profile: {
       bio: "Designer UX/UI 💼 Criando experiências digitais memoráveis há 10 anos",
       category: "Designer",
-      font_family: "inter",
+      avatar_url: avatarProfessional,
+      cover_url: coverProfessional,
       font_size: "medium",
       image_shape: "rounded",
       image_shape_links: "rounded",
