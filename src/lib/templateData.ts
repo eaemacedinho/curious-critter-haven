@@ -102,6 +102,26 @@ import coverTech from "@/assets/templates/cover-tech.jpg";
 import coverFashion from "@/assets/templates/cover-fashion.jpg";
 import coverEducator from "@/assets/templates/cover-educator.jpg";
 
+// Product images
+import productPresets from "@/assets/templates/product-presets.jpg";
+import productEbook from "@/assets/templates/product-ebook.jpg";
+import productMentoria from "@/assets/templates/product-mentoria.jpg";
+import productCurso from "@/assets/templates/product-curso.jpg";
+import productTemplates from "@/assets/templates/product-templates.jpg";
+import productWorkout from "@/assets/templates/product-workout.jpg";
+import productDieta from "@/assets/templates/product-dieta.jpg";
+import productAlbum from "@/assets/templates/product-album.jpg";
+import productGaming from "@/assets/templates/product-gaming.jpg";
+import productSkincare from "@/assets/templates/product-skincare.jpg";
+import productPodcast from "@/assets/templates/product-podcast.jpg";
+import productArtprint from "@/assets/templates/product-artprint.jpg";
+import productMerch from "@/assets/templates/product-merch.jpg";
+import productCv from "@/assets/templates/product-cv.jpg";
+import productCafe from "@/assets/templates/product-cafe.jpg";
+import productSuplemento from "@/assets/templates/product-suplemento.jpg";
+import productTech from "@/assets/templates/product-tech.jpg";
+import productCodeCourse from "@/assets/templates/product-code-course.jpg";
+
 export const TEMPLATE_DATA: FullTemplateData[] = [
   {
     id: "portfolio",
