@@ -318,7 +318,7 @@ export { detectPlatform, icons as socialIconEntries };
 /** Available social platform keys for icon picker */
 export const socialPlatformKeys = Object.keys(icons);
 
-/** Render a link icon: if it matches a known platform, show the real SVG with bg circle; otherwise show emoji */
+/** Render a link icon: if it matches a known platform, show the real SVG with bg circle; otherwise show a globe icon for URLs or emoji fallback */
 export function LinkIcon({ icon, url, size = 18, className = "" }: { icon?: string; url?: string; size?: number; className?: string }) {
   // Direct match first (e.g. "instagram-dark", "youtube-dark")
   const directEntry = icon ? icons[icon] : null;
@@ -352,6 +352,20 @@ export function LinkIcon({ icon, url, size = 18, className = "" }: { icon?: stri
     );
   }
 
-  // Fallback: render as emoji text
-  return <span className={className} style={{ fontSize: size }}>{icon || "🔗"}</span>;
+  // If icon is an emoji (starts with non-ASCII), render it directly
+  if (icon && /^[^\x00-\x7F]/.test(icon)) {
+    return <span className={className} style={{ fontSize: size }}>{icon}</span>;
+  }
+
+  // Fallback: globe icon for generic URLs (website link)
+  const websiteEntry = icons["website"];
+  const containerSize = Math.round(size * 1.8);
+  return (
+    <span
+      className={`inline-flex items-center justify-center rounded-full ${websiteEntry.bg} ${className}`}
+      style={{ width: containerSize, height: containerSize }}
+    >
+      {websiteEntry.render(size)}
+    </span>
+  );
 }
