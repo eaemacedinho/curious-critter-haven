@@ -17,6 +17,8 @@ export interface TemplateProfileData {
   brands: { name: string }[];
   brands_display_mode: string;
   section_order: string[];
+  avatar_url?: string;
+  cover_url?: string;
 }
 
 export interface TemplateLinkData {
