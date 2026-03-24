@@ -1690,9 +1690,26 @@ const CreatorEditPanel = forwardRef<CreatorEditPanelHandle, Props>(function Crea
         <div className={sectionTitle}>⭐ Depoimentos <span className="text-k-3 normal-case tracking-normal font-normal">({testimonialsList.length})</span></div>
         <p className="text-[0.68rem] text-k-4 mb-3">Adicione depoimentos de clientes para aumentar sua credibilidade.</p>
         {testimonialsList.map((t, i) => (
-          <div key={t.id} className="bg-k-800 border border-primary/10 rounded-2xl p-4 mb-3 space-y-2">
+          <div key={t.id}
+            draggable
+            onDragStart={() => setDragTestimonialIdx(i)}
+            onDragEnd={() => setDragTestimonialIdx(null)}
+            onDragOver={(e) => { e.preventDefault(); e.dataTransfer.dropEffect = "move"; }}
+            onDrop={(e) => {
+              e.preventDefault();
+              if (dragTestimonialIdx === null || dragTestimonialIdx === i) return;
+              const arr = [...testimonialsList];
+              const [moved] = arr.splice(dragTestimonialIdx, 1);
+              arr.splice(i, 0, moved);
+              setTestimonialsList(arr);
+              setDragTestimonialIdx(null);
+            }}
+            className={`bg-k-800 border rounded-2xl p-4 mb-3 space-y-2 transition-all cursor-grab active:cursor-grabbing ${dragTestimonialIdx === i ? "border-primary/50 opacity-50 scale-[0.97]" : "border-primary/10"}`}>
             <div className="flex items-center justify-between">
-              <span className="text-xs font-semibold text-k-2">Depoimento {i + 1}</span>
+              <span className="text-xs font-semibold text-k-2 flex items-center gap-1.5">
+                <span className="text-muted-foreground cursor-grab">⠿</span>
+                Depoimento {i + 1}
+              </span>
               <div className="flex items-center gap-2">
                 <button onClick={() => setTestimonialsList(testimonialsList.map((x, j) => j === i ? { ...x, is_active: !x.is_active } : x))}
                   className={`w-9 h-5 rounded-full relative cursor-pointer transition-all duration-300 flex-shrink-0 ${t.is_active ? "bg-emerald-500" : "bg-k-900 border border-primary/10"}`}
