@@ -150,7 +150,8 @@ export const TEMPLATE_DATA: FullTemplateData[] = [
     profile: {
       bio: "Especialista em Marketing Digital 🚀 Ajudando negócios a crescer online",
       category: "Marketing Digital",
-      font_family: "inter",
+      avatar_url: avatarSales,
+      cover_url: coverSales,
       font_size: "medium",
       image_shape: "rounded",
       image_shape_links: "pill",
