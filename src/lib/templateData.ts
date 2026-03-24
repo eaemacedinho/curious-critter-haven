@@ -409,6 +409,7 @@ export const TEMPLATE_DATA: FullTemplateData[] = [
       category: "Podcaster",
       avatar_url: avatarPodcast,
       cover_url: coverPodcast,
+      font_family: "poppins",
       font_size: "medium",
       image_shape: "circular",
       image_shape_links: "pill",
