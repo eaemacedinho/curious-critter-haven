@@ -101,6 +101,7 @@ export const TEMPLATE_DATA: FullTemplateData[] = [
       avatar_url: avatarPortfolio,
       cover_url: coverPortfolio,
       font_family: "playfair",
+      font_family: "playfair",
       font_size: "medium",
       image_shape: "rounded",
       image_shape_links: "rounded",
