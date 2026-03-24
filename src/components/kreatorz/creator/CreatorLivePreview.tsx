@@ -179,14 +179,14 @@ export default function CreatorLivePreview({
             <div ref={previewContentRef} className="relative h-full w-full overflow-hidden" style={previewTheme} onWheel={(e) => e.stopPropagation()}>
               {activeLayout === "layout2" ? (
                 <PreviewComponent
-                  profile={profile} links={links} socialLinks={socialLinks} products={products} campaigns={campaigns} heroReels={heroReels}
+                  profile={profile} links={links} socialLinks={socialLinks} products={products} campaigns={campaigns} heroReels={heroReels} testimonials={testimonials}
                   agencyName={agency?.name} agencyLogoUrl={agency?.logo_url} agencyFooterText={agency?.footer_text}
                   agencyFooterVisible={agency?.footer_visible} agencyFooterLink={agency?.footer_link} embedded
                 />
               ) : (
                 <div className="h-full overflow-y-auto overflow-x-hidden" data-preview-scroll>
                   <PreviewComponent
-                    profile={profile} links={links} socialLinks={socialLinks} products={products} campaigns={campaigns} heroReels={heroReels}
+                    profile={profile} links={links} socialLinks={socialLinks} products={products} campaigns={campaigns} heroReels={heroReels} testimonials={testimonials}
                     agencyName={agency?.name} agencyLogoUrl={agency?.logo_url} agencyFooterText={agency?.footer_text}
                     agencyFooterVisible={agency?.footer_visible} agencyFooterLink={agency?.footer_link} embedded
                   />
