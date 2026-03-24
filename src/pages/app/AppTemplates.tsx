@@ -157,6 +157,7 @@ export default function AppTemplates() {
           products.map((p, i) => ({
             creator_id: creatorId, title: p.title, price: p.price, icon: p.icon,
             url: p.url, is_active: p.is_active, sort_order: i,
+            image_url: p.image_url || null,
           }))
         );
       }
