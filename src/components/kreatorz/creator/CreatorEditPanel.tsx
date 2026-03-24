@@ -499,7 +499,7 @@ const CreatorEditPanel = forwardRef<CreatorEditPanelHandle, Props>(function Crea
                 <div className="w-full h-full bg-k-800 flex items-center justify-center text-k-4 text-sm">Clique para adicionar capa</div>
               )}
               <div className="absolute inset-0 bg-background/60 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center">
-                <span className="text-sm text-primary-foreground font-semibold bg-primary/80 backdrop-blur-sm px-4 py-2 rounded-xl">
+                <span className="text-sm text-background font-semibold bg-primary px-4 py-2 rounded-xl shadow-lg">
                   {uploadingImage === "cover" ? "Enviando capa..." : "📷 Alterar capa"}
                 </span>
               </div>
