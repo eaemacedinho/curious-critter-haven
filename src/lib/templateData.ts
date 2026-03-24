@@ -513,6 +513,7 @@ export const TEMPLATE_DATA: FullTemplateData[] = [
       category: "Loja Online",
       avatar_url: avatarEcommerce,
       cover_url: coverEcommerce,
+      font_family: "default",
       font_size: "medium",
       image_shape: "rounded",
       image_shape_links: "rounded",
