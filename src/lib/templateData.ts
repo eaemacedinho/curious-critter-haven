@@ -425,9 +425,9 @@ export const TEMPLATE_DATA: FullTemplateData[] = [
       { platform: "website", label: "Site", url: "https://exemplo.com" },
     ],
     products: [
-      { title: "Print A3 - Série Cosmos", price: "R$ 120", icon: "🌌", url: "https://exemplo.com/cosmos", is_active: true },
-      { title: "Print A4 - Natureza", price: "R$ 75", icon: "🌿", url: "https://exemplo.com/natureza", is_active: true },
-      { title: "Arte Digital Custom", price: "Sob consulta", icon: "💎", url: "https://exemplo.com/custom", is_active: true },
+      { title: "Print A3 - Série Cosmos", price: "R$ 120", icon: "🌌", url: "https://exemplo.com/cosmos", is_active: true, image_url: productArtprint },
+      { title: "Print A4 - Natureza", price: "R$ 75", icon: "🌿", url: "https://exemplo.com/natureza", is_active: true, image_url: productArtprint },
+      { title: "Arte Digital Custom", price: "Sob consulta", icon: "💎", url: "https://exemplo.com/custom", is_active: true, image_url: productMentoria },
     ],
     testimonials: [],
   },
