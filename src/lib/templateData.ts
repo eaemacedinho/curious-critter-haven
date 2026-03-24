@@ -98,6 +98,8 @@ export const TEMPLATE_DATA: FullTemplateData[] = [
     profile: {
       bio: "Fotógrafa & Diretora Criativa ✨ Transformando momentos em arte visual",
       category: "Fotógrafa",
+      avatar_url: avatarPortfolio,
+      cover_url: coverPortfolio,
       font_family: "playfair",
       font_size: "medium",
       image_shape: "rounded",
