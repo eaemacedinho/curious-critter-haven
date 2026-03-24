@@ -77,6 +77,13 @@ import avatarArtist from "@/assets/templates/avatar-artist.jpg";
 import avatarPodcast from "@/assets/templates/avatar-podcast.jpg";
 import avatarCoach from "@/assets/templates/avatar-coach.jpg";
 import avatarEcommerce from "@/assets/templates/avatar-ecommerce.jpg";
+import avatarFitness from "@/assets/templates/avatar-fitness.jpg";
+import avatarMusician from "@/assets/templates/avatar-musician.jpg";
+import avatarGamer from "@/assets/templates/avatar-gamer.jpg";
+import avatarHealth from "@/assets/templates/avatar-health.jpg";
+import avatarTech from "@/assets/templates/avatar-tech.jpg";
+import avatarFashion from "@/assets/templates/avatar-fashion.jpg";
+import avatarEducator from "@/assets/templates/avatar-educator.jpg";
 import coverPortfolio from "@/assets/templates/cover-portfolio.jpg";
 import coverSales from "@/assets/templates/cover-sales.jpg";
 import coverInfluencer from "@/assets/templates/cover-influencer.jpg";
@@ -86,6 +93,13 @@ import coverArtist from "@/assets/templates/cover-artist.jpg";
 import coverPodcast from "@/assets/templates/cover-podcast.jpg";
 import coverCoach from "@/assets/templates/cover-coach.jpg";
 import coverEcommerce from "@/assets/templates/cover-ecommerce.jpg";
+import coverFitness from "@/assets/templates/cover-fitness.jpg";
+import coverMusician from "@/assets/templates/cover-musician.jpg";
+import coverGamer from "@/assets/templates/cover-gamer.jpg";
+import coverHealth from "@/assets/templates/cover-health.jpg";
+import coverTech from "@/assets/templates/cover-tech.jpg";
+import coverFashion from "@/assets/templates/cover-fashion.jpg";
+import coverEducator from "@/assets/templates/cover-educator.jpg";
 
 export const TEMPLATE_DATA: FullTemplateData[] = [
   {
@@ -551,6 +565,304 @@ export const TEMPLATE_DATA: FullTemplateData[] = [
     testimonials: [
       { author_name: "Camila Torres", author_role: "Cliente", content: "Peças lindas e embalagem impecável! Chegou super rápido.", rating: 5, is_active: true },
       { author_name: "Isabela Ferreira", author_role: "Cliente", content: "Qualidade incrível, já comprei 4 vezes. Super recomendo!", rating: 5, is_active: true },
+    ],
+  },
+  {
+    id: "fitness",
+    name: "Personal Trainer",
+    description: "Treinos, planos alimentares e links para agendar aulas. Estilo motivacional.",
+    objective: "Atrair alunos e vender planos",
+    niches: ["fitness", "coach", "saude"],
+    popular: true,
+    profile: {
+      bio: "Personal Trainer 💪 Transformação corporal e bem-estar. Treinos online e presencial",
+      category: "Personal Trainer",
+      avatar_url: avatarFitness,
+      cover_url: coverFitness,
+      font_family: "space-grotesk",
+      font_size: "large",
+      image_shape: "circular",
+      image_shape_links: "rounded",
+      image_shape_products: "rounded",
+      tags: [{ label: "Musculação" }, { label: "Funcional" }, { label: "Emagrecimento" }],
+      stats: [{ value: "800+", label: "Alunos" }, { value: "5 anos", label: "Experiência" }, { value: "4.9⭐", label: "Avaliação" }],
+      brands: [{ name: "Growth" }, { name: "Nike Training" }],
+      brands_display_mode: "static",
+      section_order: ["links", "products", "spotlight", "past_campaigns"],
+    },
+    links: [
+      { title: "Agende sua Avaliação", url: "https://exemplo.com/avaliacao", subtitle: "Primeira aula grátis", icon: "📋", is_featured: true, is_active: true, display_mode: "full" },
+      { title: "Treino da Semana", url: "https://exemplo.com/treino", subtitle: "Vídeo novo toda segunda", icon: "🏋️", is_featured: false, is_active: true, display_mode: "full" },
+      { title: "Plano Online", url: "https://exemplo.com/plano", subtitle: "Treino + dieta personalizados", icon: "📱", is_featured: true, is_active: true, display_mode: "full" },
+      { title: "Resultados dos Alunos", url: "https://exemplo.com/resultados", subtitle: "Antes e depois", icon: "📸", is_featured: false, is_active: true, display_mode: "half" },
+    ],
+    socialLinks: [
+      { platform: "instagram", label: "Instagram", url: "https://instagram.com/exemplo" },
+      { platform: "youtube", label: "YouTube", url: "https://youtube.com/@exemplo" },
+      { platform: "whatsapp", label: "WhatsApp", url: "https://wa.me/5511999999999" },
+    ],
+    products: [
+      { title: "Plano Mensal Online", price: "R$ 149/mês", icon: "📱", url: "https://exemplo.com/mensal", is_active: true },
+      { title: "Consultoria Nutricional", price: "R$ 197", icon: "🥗", url: "https://exemplo.com/nutri", is_active: true },
+      { title: "Pack 12 Semanas", price: "R$ 397", icon: "🔥", url: "https://exemplo.com/pack12", is_active: true },
+    ],
+    testimonials: [
+      { author_name: "Marcos Silva", author_role: "Aluno há 1 ano", content: "Perdi 15kg em 6 meses! Melhor decisão que tomei.", rating: 5, is_active: true },
+      { author_name: "Patrícia Lopes", author_role: "Aluna online", content: "Treinos incríveis e acompanhamento top. Super recomendo!", rating: 5, is_active: true },
+    ],
+  },
+  {
+    id: "musician",
+    name: "Músico & DJ",
+    description: "Shows, plataformas de streaming e contato para eventos. Estilo neon vibrante.",
+    objective: "Divulgar música e agendar shows",
+    niches: ["musica", "artista", "creator"],
+    profile: {
+      bio: "DJ & Produtora Musical 🎧 Sets eletrônicos e remixes. Booking aberto para eventos",
+      category: "DJ / Produtora",
+      avatar_url: avatarMusician,
+      cover_url: coverMusician,
+      font_family: "bebas",
+      font_size: "xlarge",
+      image_shape: "circular",
+      image_shape_links: "pill",
+      image_shape_products: "rounded",
+      tags: [{ label: "Eletrônica" }, { label: "House" }, { label: "Remix" }],
+      stats: [{ value: "1M+", label: "Plays" }, { value: "50+", label: "Shows" }, { value: "10K", label: "Ouvintes" }],
+      brands: [{ name: "Spotify" }, { name: "SoundCloud" }, { name: "Beatport" }],
+      brands_display_mode: "marquee",
+      section_order: ["links", "products", "spotlight", "past_campaigns"],
+    },
+    links: [
+      { title: "Ouça no Spotify", url: "https://open.spotify.com/exemplo", subtitle: "Todos os singles e EPs", icon: "🎵", is_featured: true, is_active: true, display_mode: "full" },
+      { title: "SoundCloud", url: "https://soundcloud.com/exemplo", subtitle: "Sets e mixes exclusivos", icon: "☁️", is_featured: false, is_active: true, display_mode: "full" },
+      { title: "Booking", url: "https://exemplo.com/booking", subtitle: "Contrate para seu evento", icon: "🎤", is_featured: true, is_active: true, display_mode: "full" },
+      { title: "Próximo Show", url: "https://exemplo.com/show", subtitle: "São Paulo - 15/03", icon: "🎉", is_featured: false, is_active: true, display_mode: "half" },
+    ],
+    socialLinks: [
+      { platform: "instagram", label: "Instagram", url: "https://instagram.com/exemplo" },
+      { platform: "spotify", label: "Spotify", url: "https://open.spotify.com/exemplo" },
+      { platform: "youtube", label: "YouTube", url: "https://youtube.com/@exemplo" },
+      { platform: "tiktok", label: "TikTok", url: "https://tiktok.com/@exemplo" },
+    ],
+    products: [
+      { title: "Sample Pack Vol. 1", price: "R$ 59", icon: "🎹", url: "https://exemplo.com/samples", is_active: true },
+      { title: "Curso de Produção", price: "R$ 297", icon: "🎓", url: "https://exemplo.com/curso", is_active: true },
+    ],
+    testimonials: [],
+  },
+  {
+    id: "gamer",
+    name: "Gamer & Streamer",
+    description: "Lives, clips, loja de merch e comunidade. Visual gamer com neon RGB.",
+    objective: "Crescer audiência e monetizar conteúdo",
+    niches: ["gamer", "creator"],
+    popular: true,
+    profile: {
+      bio: "Streamer & Content Creator 🎮 Lives diárias de FPS e RPG. Vem jogar comigo!",
+      category: "Streamer",
+      avatar_url: avatarGamer,
+      cover_url: coverGamer,
+      font_family: "space-grotesk",
+      font_size: "medium",
+      image_shape: "rounded",
+      image_shape_links: "rounded",
+      image_shape_products: "rounded",
+      tags: [{ label: "FPS" }, { label: "RPG" }, { label: "Valorant" }],
+      stats: [{ value: "25K", label: "Seguidores" }, { value: "500h+", label: "Live" }, { value: "Top 100", label: "Ranking" }],
+      brands: [{ name: "Twitch" }, { name: "Discord" }, { name: "Razer" }],
+      brands_display_mode: "marquee",
+      section_order: ["links", "products", "spotlight", "past_campaigns"],
+    },
+    links: [
+      { title: "Twitch - Ao Vivo", url: "https://twitch.tv/exemplo", subtitle: "Lives todos os dias 20h", icon: "🔴", is_featured: true, is_active: true, display_mode: "full" },
+      { title: "Discord da Comunidade", url: "https://discord.gg/exemplo", subtitle: "Entre no server", icon: "💬", is_featured: true, is_active: true, display_mode: "full" },
+      { title: "Melhores Clips", url: "https://youtube.com/@exemplo/clips", subtitle: "Compilação semanal", icon: "🎬", is_featured: false, is_active: true, display_mode: "full" },
+      { title: "Setup Tour", url: "https://exemplo.com/setup", subtitle: "Meu equipamento", icon: "🖥️", is_featured: false, is_active: true, display_mode: "half" },
+    ],
+    socialLinks: [
+      { platform: "twitch", label: "Twitch", url: "https://twitch.tv/exemplo" },
+      { platform: "youtube", label: "YouTube", url: "https://youtube.com/@exemplo" },
+      { platform: "tiktok", label: "TikTok", url: "https://tiktok.com/@exemplo" },
+      { platform: "twitter", label: "Twitter", url: "https://twitter.com/exemplo" },
+    ],
+    products: [
+      { title: "Camiseta Gamer", price: "R$ 79", icon: "👕", url: "https://exemplo.com/camiseta", is_active: true },
+      { title: "Mousepad Custom", price: "R$ 49", icon: "🖱️", url: "https://exemplo.com/mousepad", is_active: true },
+      { title: "Sub Twitch Tier 1", price: "R$ 7,90/mês", icon: "⭐", url: "https://twitch.tv/subs/exemplo", is_active: true },
+    ],
+    testimonials: [],
+  },
+  {
+    id: "health",
+    name: "Saúde & Nutrição",
+    description: "Consultas, dicas de alimentação e conteúdo educativo. Estilo clean e profissional.",
+    objective: "Atrair pacientes e educar",
+    niches: ["saude", "coach", "educacao"],
+    profile: {
+      bio: "Nutricionista Clínica 🥗 Alimentação saudável sem neura. Consultas online e presencial",
+      category: "Nutricionista",
+      avatar_url: avatarHealth,
+      cover_url: coverHealth,
+      font_family: "outfit",
+      font_size: "medium",
+      image_shape: "circular",
+      image_shape_links: "pill",
+      image_shape_products: "rounded",
+      tags: [{ label: "Nutrição" }, { label: "Saúde" }, { label: "Bem-estar" }],
+      stats: [{ value: "1.200+", label: "Pacientes" }, { value: "8 anos", label: "CRN Ativo" }, { value: "4.9⭐", label: "Avaliação" }],
+      brands: [],
+      brands_display_mode: "static",
+      section_order: ["links", "products", "spotlight", "past_campaigns"],
+    },
+    links: [
+      { title: "Agendar Consulta", url: "https://exemplo.com/consulta", subtitle: "Online ou presencial", icon: "📅", is_featured: true, is_active: true, display_mode: "full" },
+      { title: "Receitas Saudáveis", url: "https://exemplo.com/receitas", subtitle: "Blog com 100+ receitas", icon: "🍳", is_featured: false, is_active: true, display_mode: "full" },
+      { title: "Guia Alimentar Grátis", url: "https://exemplo.com/guia", subtitle: "PDF com dicas essenciais", icon: "📖", is_featured: true, is_active: true, display_mode: "full" },
+      { title: "Depoimentos", url: "https://exemplo.com/depoimentos", subtitle: "Resultados reais", icon: "💚", is_featured: false, is_active: true, display_mode: "half" },
+    ],
+    socialLinks: [
+      { platform: "instagram", label: "Instagram", url: "https://instagram.com/exemplo" },
+      { platform: "youtube", label: "YouTube", url: "https://youtube.com/@exemplo" },
+      { platform: "whatsapp", label: "WhatsApp", url: "https://wa.me/5511999999999" },
+    ],
+    products: [
+      { title: "Plano Alimentar 30 dias", price: "R$ 197", icon: "🥗", url: "https://exemplo.com/plano30", is_active: true },
+      { title: "E-book 50 Receitas Fit", price: "R$ 39", icon: "📚", url: "https://exemplo.com/ebook", is_active: true },
+      { title: "Consultoria Express", price: "R$ 97", icon: "⚡", url: "https://exemplo.com/express", is_active: true },
+    ],
+    testimonials: [
+      { author_name: "Amanda Reis", author_role: "Paciente", content: "Mudou minha relação com a comida! Me sinto muito melhor.", rating: 5, is_active: true },
+      { author_name: "João Pedro", author_role: "Paciente", content: "Perdi peso sem passar fome. Acompanhamento incrível!", rating: 5, is_active: true },
+    ],
+  },
+  {
+    id: "tech",
+    name: "Dev & Tech",
+    description: "Portfólio de projetos, GitHub, blog técnico e serviços. Estilo código/dark.",
+    objective: "Mostrar habilidades e atrair clientes",
+    niches: ["tech", "freelancer"],
+    profile: {
+      bio: "Desenvolvedor Full Stack 🚀 React, Node.js e Cloud. Open source enthusiast",
+      category: "Desenvolvedor",
+      avatar_url: avatarTech,
+      cover_url: coverTech,
+      font_family: "space-grotesk",
+      font_size: "medium",
+      image_shape: "rounded",
+      image_shape_links: "rounded",
+      image_shape_products: "rounded",
+      tags: [{ label: "React" }, { label: "Node.js" }, { label: "TypeScript" }],
+      stats: [{ value: "50+", label: "Projetos" }, { value: "2K+", label: "Commits" }, { value: "6 anos", label: "Experiência" }],
+      brands: [{ name: "AWS" }, { name: "Vercel" }, { name: "GitHub" }],
+      brands_display_mode: "static",
+      section_order: ["links", "products", "spotlight", "past_campaigns"],
+    },
+    links: [
+      { title: "GitHub", url: "https://github.com/exemplo", subtitle: "Projetos open source", icon: "🐙", is_featured: true, is_active: true, display_mode: "full" },
+      { title: "Portfólio", url: "https://exemplo.dev", subtitle: "Cases e projetos entregues", icon: "💻", is_featured: true, is_active: true, display_mode: "full" },
+      { title: "Blog Técnico", url: "https://exemplo.com/blog", subtitle: "Artigos sobre React e Cloud", icon: "✍️", is_featured: false, is_active: true, display_mode: "full" },
+      { title: "Contratar Freelance", url: "https://exemplo.com/hire", subtitle: "Disponível para projetos", icon: "🤝", is_featured: false, is_active: true, display_mode: "half" },
+    ],
+    socialLinks: [
+      { platform: "github", label: "GitHub", url: "https://github.com/exemplo" },
+      { platform: "linkedin", label: "LinkedIn", url: "https://linkedin.com/in/exemplo" },
+      { platform: "twitter", label: "Twitter", url: "https://twitter.com/exemplo" },
+    ],
+    products: [
+      { title: "Template SaaS Starter", price: "R$ 149", icon: "🧩", url: "https://exemplo.com/template", is_active: true },
+      { title: "Curso React Avançado", price: "R$ 247", icon: "📚", url: "https://exemplo.com/curso", is_active: true },
+      { title: "Mentoria 1:1", price: "R$ 300/h", icon: "🧠", url: "https://exemplo.com/mentoria", is_active: true },
+    ],
+    testimonials: [
+      { author_name: "Ricardo Almeida", author_role: "CTO, StartupXYZ", content: "Entregou o MVP em 3 semanas. Código limpo e documentado.", rating: 5, is_active: true },
+    ],
+  },
+  {
+    id: "fashion",
+    name: "Moda & Estilo",
+    description: "Looks, collabs com marcas, loja de peças e dicas de estilo. Visual editorial.",
+    objective: "Influenciar e vender moda",
+    niches: ["moda", "creator", "social", "ecommerce"],
+    popular: true,
+    profile: {
+      bio: "Consultora de Imagem & Estilo 👗 Moda acessível, tendências e looks do dia",
+      category: "Fashion Creator",
+      avatar_url: avatarFashion,
+      cover_url: coverFashion,
+      font_family: "playfair",
+      font_size: "medium",
+      image_shape: "circular",
+      image_shape_links: "pill",
+      image_shape_products: "pill",
+      tags: [{ label: "Moda" }, { label: "Estilo" }, { label: "Tendências" }],
+      stats: [{ value: "80K", label: "Seguidores" }, { value: "200+", label: "Looks" }, { value: "30+", label: "Marcas" }],
+      brands: [{ name: "Zara" }, { name: "Shein" }, { name: "Farm" }, { name: "Arezzo" }],
+      brands_display_mode: "marquee",
+      section_order: ["links", "products", "spotlight", "past_campaigns"],
+    },
+    links: [
+      { title: "Looks da Semana", url: "https://exemplo.com/looks", subtitle: "Inspiração todo dia", icon: "👗", is_featured: true, is_active: true, display_mode: "full" },
+      { title: "Shopee Favoritos", url: "https://shopee.com.br/exemplo", subtitle: "Achados até R$50", icon: "🛍️", is_featured: true, is_active: true, display_mode: "full" },
+      { title: "Consultoria de Imagem", url: "https://exemplo.com/consultoria", subtitle: "Descubra seu estilo", icon: "✨", is_featured: false, is_active: true, display_mode: "full" },
+      { title: "Mídia Kit", url: "https://exemplo.com/midiakit", subtitle: "Parcerias & collabs", icon: "📩", is_featured: false, is_active: true, display_mode: "half" },
+    ],
+    socialLinks: [
+      { platform: "instagram", label: "Instagram", url: "https://instagram.com/exemplo" },
+      { platform: "tiktok", label: "TikTok", url: "https://tiktok.com/@exemplo" },
+      { platform: "pinterest", label: "Pinterest", url: "https://pinterest.com/exemplo" },
+    ],
+    products: [
+      { title: "Guia de Estilo Pessoal", price: "R$ 67", icon: "📖", url: "https://exemplo.com/guia", is_active: true },
+      { title: "Closet Cápsula PDF", price: "R$ 39", icon: "👚", url: "https://exemplo.com/capsula", is_active: true },
+      { title: "Consultoria Online", price: "R$ 197", icon: "💎", url: "https://exemplo.com/online", is_active: true },
+    ],
+    testimonials: [
+      { author_name: "Larissa Nunes", author_role: "Cliente", content: "Nunca mais comprei peça errada! A consultoria vale cada centavo.", rating: 5, is_active: true },
+    ],
+  },
+  {
+    id: "educator",
+    name: "Educador & Professor",
+    description: "Cursos, materiais didáticos e links para aulas. Estilo acadêmico acolhedor.",
+    objective: "Compartilhar conhecimento e vender cursos",
+    niches: ["educacao", "coach", "freelancer"],
+    profile: {
+      bio: "Professora de Inglês 📚 Aulas online para todos os níveis. Método imersivo e divertido",
+      category: "Professora",
+      avatar_url: avatarEducator,
+      cover_url: coverEducator,
+      font_family: "crimson",
+      font_size: "medium",
+      image_shape: "circular",
+      image_shape_links: "rounded",
+      image_shape_products: "rounded",
+      tags: [{ label: "Inglês" }, { label: "Aulas Online" }, { label: "Conversação" }],
+      stats: [{ value: "3.000+", label: "Alunos" }, { value: "10 anos", label: "Experiência" }, { value: "CELTA", label: "Certificação" }],
+      brands: [],
+      brands_display_mode: "static",
+      section_order: ["links", "products", "spotlight", "past_campaigns"],
+    },
+    links: [
+      { title: "Aula Experimental Grátis", url: "https://exemplo.com/experimental", subtitle: "Teste o método sem compromisso", icon: "🎁", is_featured: true, is_active: true, display_mode: "full" },
+      { title: "Plataforma de Aulas", url: "https://exemplo.com/plataforma", subtitle: "Acesse seu curso", icon: "🎓", is_featured: true, is_active: true, display_mode: "full" },
+      { title: "Canal no YouTube", url: "https://youtube.com/@exemplo", subtitle: "Dicas gratuitas de inglês", icon: "▶️", is_featured: false, is_active: true, display_mode: "full" },
+      { title: "Material de Apoio", url: "https://exemplo.com/materiais", subtitle: "PDFs e exercícios", icon: "📝", is_featured: false, is_active: true, display_mode: "half" },
+    ],
+    socialLinks: [
+      { platform: "instagram", label: "Instagram", url: "https://instagram.com/exemplo" },
+      { platform: "youtube", label: "YouTube", url: "https://youtube.com/@exemplo" },
+      { platform: "tiktok", label: "TikTok", url: "https://tiktok.com/@exemplo" },
+    ],
+    products: [
+      { title: "Curso Completo A1-B2", price: "R$ 297", icon: "📚", url: "https://exemplo.com/curso", is_active: true },
+      { title: "Pack de Flashcards", price: "R$ 29", icon: "🃏", url: "https://exemplo.com/flashcards", is_active: true },
+      { title: "Aulas Particulares", price: "R$ 80/h", icon: "👩‍🏫", url: "https://exemplo.com/particular", is_active: true },
+      { title: "Grupo de Conversação", price: "R$ 49/mês", icon: "💬", url: "https://exemplo.com/grupo", is_active: true },
+    ],
+    testimonials: [
+      { author_name: "Thiago Santos", author_role: "Aluno B2", content: "Em 6 meses já consigo conversar fluente! Método incrível.", rating: 5, is_active: true },
+      { author_name: "Marina Costa", author_role: "Aluna A2", content: "Aulas dinâmicas e divertidas. Melhor professora que já tive!", rating: 5, is_active: true },
     ],
   },
 ];
