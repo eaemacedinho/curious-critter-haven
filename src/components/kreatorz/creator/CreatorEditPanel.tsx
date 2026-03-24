@@ -603,7 +603,7 @@ const CreatorEditPanel = forwardRef<CreatorEditPanelHandle, Props>(function Crea
           {/* Verified badge toggle */}
           <div className="flex items-center justify-between mt-4 p-3 bg-k-800/50 border border-primary/10 rounded-xl">
             <div>
-              <span className="text-sm font-semibold text-primary-foreground flex items-center gap-1.5">
+              <span className="text-sm font-semibold text-foreground flex items-center gap-1.5">
                 <VerifiedBadge size={18} />
                 Badge de Verificado
               </span>
