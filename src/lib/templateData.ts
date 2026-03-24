@@ -362,6 +362,7 @@ export const TEMPLATE_DATA: FullTemplateData[] = [
       category: "Artista Visual",
       avatar_url: avatarArtist,
       cover_url: coverArtist,
+      font_family: "playfair",
       font_size: "large",
       image_shape: "rounded",
       image_shape_links: "shadow",
