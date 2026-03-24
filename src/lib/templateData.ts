@@ -258,6 +258,7 @@ export const TEMPLATE_DATA: FullTemplateData[] = [
       category: "Designer",
       avatar_url: avatarProfessional,
       cover_url: coverProfessional,
+      font_family: "inter",
       font_size: "medium",
       image_shape: "rounded",
       image_shape_links: "rounded",
