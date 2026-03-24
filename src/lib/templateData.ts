@@ -276,8 +276,8 @@ export const TEMPLATE_DATA: FullTemplateData[] = [
       { platform: "twitter", label: "Twitter", url: "https://twitter.com/exemplo" },
     ],
     products: [
-      { title: "Guia de Viagem Bali", price: "R$ 39", icon: "🗺️", url: "https://exemplo.com/guia", is_active: true },
-      { title: "Filtros Exclusivos", price: "R$ 29", icon: "📱", url: "https://exemplo.com/filtros", is_active: true },
+      { title: "Guia de Viagem Bali", price: "R$ 39", icon: "🗺️", url: "https://exemplo.com/guia", is_active: true, image_url: productEbook },
+      { title: "Filtros Exclusivos", price: "R$ 29", icon: "📱", url: "https://exemplo.com/filtros", is_active: true, image_url: productPresets },
     ],
     testimonials: [],
   },
