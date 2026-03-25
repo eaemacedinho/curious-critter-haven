@@ -331,7 +331,7 @@ export default function CreatorEdit() {
       </div>
 
       {/* Toolbar — scrollable on mobile */}
-      <div className="flex items-center gap-2 mb-4 sm:mb-6 overflow-x-auto pb-2 -mx-1 px-1 scrollbar-none">
+      <div className="flex items-center gap-2 mb-4 sm:mb-6 overflow-x-auto overflow-y-visible pb-2 -mx-1 px-1 scrollbar-none">
           {/* Template selector */}
           <div className="relative flex-shrink-0">
             <button
@@ -351,7 +351,7 @@ export default function CreatorEdit() {
             {showTemplateDropdown && (
               <>
                 <div className="fixed inset-0 z-40" onClick={() => setShowTemplateDropdown(false)} />
-                <div className="absolute left-0 sm:right-0 sm:left-auto top-full mt-1 z-50 bg-card border border-border rounded-xl shadow-lg w-[280px] sm:w-[300px] py-1 overflow-hidden max-h-[60vh] overflow-y-auto">
+                <div className="absolute left-0 sm:right-0 sm:left-auto top-full mt-1 z-[60] bg-card border border-border rounded-xl shadow-lg w-[280px] sm:w-[300px] py-1 overflow-hidden max-h-[60vh] overflow-y-auto">
                   {/* Custom / Personalizado */}
                   <button
                     onClick={() => { handleSwitchTemplate(null); setShowTemplateDropdown(false); }}
