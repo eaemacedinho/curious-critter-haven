@@ -379,6 +379,29 @@ export default function CreatorEdit() {
     }
   };
 
+  const handleResetTemplate = async () => {
+    if (!originalTemplateSnapshot) return;
+    setResetting(true);
+    try {
+      const data = originalTemplateSnapshot;
+      if (data.profile) await saveProfile(data.profile as any);
+      if (data.links) await saveLinks(data.links);
+      if (data.socialLinks) await saveSocialLinks(data.socialLinks);
+      if (data.products) await saveProducts(data.products);
+      if (data.campaigns) await saveCampaigns(data.campaigns);
+      if (data.heroReels) await saveHeroReels(data.heroReels);
+      if (data.testimonials) await saveTestimonials(data.testimonials);
+      await refetch();
+      toast.success("Template resetado para as configurações originais!");
+    } catch {
+      toast.error("Erro ao resetar template");
+    } finally {
+      setResetting(false);
+      setShowResetConfirm(false);
+      setResetConfirmInput("");
+    }
+  };
+
   const activeTemplate = templates.find(t => t.id === activeTemplateId);
   const currentLabel = usingDefault ? "⭐ Meu Padrão" : activeTemplate ? activeTemplate.name : "Personalizado";
   const totalSavedTemplateCount = templates.length + savedGalleryTemplates.length;
