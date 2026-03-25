@@ -59,6 +59,7 @@ export default function AppTemplates() {
   const [backups, setBackups] = useState<CreatorBackup[]>([]);
   const [undoConfirm, setUndoConfirm] = useState<CreatorBackup | null>(null);
   const [undoing, setUndoing] = useState(false);
+  const [replaceDialog, setReplaceDialog] = useState<{ templateToSave: string } | null>(null);
 
   const maxSaved = isPro ? 5 : 1;
 
