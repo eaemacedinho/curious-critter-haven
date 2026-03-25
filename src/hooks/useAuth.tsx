@@ -31,6 +31,18 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       // Link referral on new signup
       if (event === "SIGNED_IN" && session?.user) {
         linkReferralOnSignup(session.user.id);
+
+        // Send welcome email on first signup (not on subsequent logins)
+        const createdAt = new Date(session.user.created_at).getTime();
+        const now = Date.now();
+        if (now - createdAt < 60000) {
+          supabase.functions.invoke("send-welcome-email", {
+            body: {
+              email: session.user.email,
+              name: session.user.user_metadata?.full_name || "",
+            },
+          }).catch(console.error);
+        }
       }
     });
 
