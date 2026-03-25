@@ -321,7 +321,7 @@ export default function CreatorViewLinkme({ profile, links: rawLinks, socialLink
                               className={`backdrop-blur-xl ${shapeClass(profile.image_shape_products)} overflow-hidden cursor-pointer transition-all duration-300 group hover:-translate-y-1 active:scale-[0.97] ${!prod.bg_color ? "bg-card/70 border border-border hover:border-primary/30" : ""}`}
                               style={{
                                 ...(prod.bg_color ? { backgroundColor: prod.bg_color } : {}),
-                                ...(prod.text_color ? { color: prod.text_color } : {}),
+                                color: autoTextColor(prod.bg_color, prod.text_color),
                                 ...(prod.border_color ? { borderColor: prod.border_color, borderWidth: "1px", borderStyle: "solid" } : {}),
                               }}>
                               {prod.image_url ? (
