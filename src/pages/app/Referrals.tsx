@@ -60,7 +60,7 @@ export default function Referrals() {
         {/* Header */}
         <div className="mb-8">
           <h1 className="font-display text-2xl font-bold text-foreground flex items-center gap-2">
-            <Gift className="w-6 h-6 text-primary" />
+            <Gift className="w-6 h-6 text-primary-readable" />
             Programa de Indicações
           </h1>
           <p className="text-sm text-muted-foreground mt-1">
