@@ -171,7 +171,7 @@ export default function Referrals() {
                       <motion.span
                         initial={{ scale: 0 }}
                         animate={{ scale: 1 }}
-                        className="px-2 py-0.5 bg-primary/15 text-primary text-[0.6rem] font-bold rounded-full"
+                        className="px-2 py-0.5 bg-primary/15 text-primary-readable text-[0.6rem] font-bold rounded-full"
                       >
                         DESBLOQUEADO
                       </motion.span>
