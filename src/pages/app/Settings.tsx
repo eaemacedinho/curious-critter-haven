@@ -364,7 +364,7 @@ export default function Settings() {
                   </div>
                   <span className={`px-3 py-1.5 rounded-full text-xs font-semibold flex items-center gap-1.5 ${
                     currentPlan !== "free"
-                      ? "bg-primary/10 text-primary"
+                      ? "bg-primary/10 text-primary-readable"
                       : "bg-muted text-muted-foreground"
                   }`}>
                     <span className="w-1.5 h-1.5 rounded-full bg-current" />
