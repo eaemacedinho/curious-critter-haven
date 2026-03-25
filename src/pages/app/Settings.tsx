@@ -396,7 +396,7 @@ export default function Settings() {
                       className="flex flex-col items-center gap-1 p-4 bg-primary/5 border border-primary/20 rounded-xl hover:bg-primary/10 transition-all"
                     >
                       <span className="text-sm font-bold text-foreground">Scale</span>
-                      <span className="text-lg font-extrabold text-primary">R$87,90<span className="text-xs font-normal text-muted-foreground">/mês</span></span>
+                      <span className="text-lg font-extrabold text-primary-readable">R$87,90<span className="text-xs font-normal text-muted-foreground">/mês</span></span>
                       <span className="text-[0.65rem] text-muted-foreground">Até 10 perfis · Equipe · Lote</span>
                     </button>
                   </div>
