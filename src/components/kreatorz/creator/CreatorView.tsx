@@ -11,6 +11,7 @@ import PageEffects from "./PageEffects";
 import BrandsSection from "./BrandsSection";
 import SpotifyEmbed from "./SpotifyEmbed";
 import TestimonialsSection from "./TestimonialsSection";
+import SectionCarousel from "./SectionCarousel";
 import type { PageEffect } from "./PageEffects";
 import { getFontFamily, getFontSizeScale, loadGoogleFont } from "@/lib/fontUtils";
 
