@@ -43,6 +43,27 @@ function hexToHsl(hex: string): string | null {
   return `${Math.round(h * 360)} ${Math.round(s * 100)}% ${Math.round(l * 100)}%`;
 }
 
+/** Ensure a color is light enough to be readable as text on dark backgrounds */
+function ensureReadableHsl(hslStr: string): string {
+  const parts = hslStr.match(/(\d+)\s+(\d+)%\s+(\d+)%/);
+  if (!parts) return hslStr;
+  const h = parseInt(parts[1]);
+  const s = parseInt(parts[2]);
+  let l = parseInt(parts[3]);
+  // For dark theme text usage, ensure lightness is at least 55%
+  if (l < 55) l = Math.max(55, l + 20);
+  return `${h} ${s}% ${l}%`;
+}
+
+/** Compute the best foreground for a given HSL background */
+function computeForeground(hslStr: string): string {
+  const parts = hslStr.match(/(\d+)\s+(\d+)%\s+(\d+)%/);
+  if (!parts) return "0 0% 100%";
+  const l = parseInt(parts[3]);
+  // If background is light (>55%), use dark text; otherwise use white
+  return l > 55 ? "240 23% 2%" : "0 0% 100%";
+}
+
 export default function AppLayout() {
   const { user, signOut } = useAuth();
   const { agency } = useTenant();
