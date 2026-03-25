@@ -9,7 +9,30 @@ import { Eye } from "lucide-react";
 import TemplatePreview from "./TemplatePreview";
 
 type Step = "purpose" | "name" | "style" | "creating" | "done";
-type Purpose = "agency" | "creators" | "myself";
+type Purpose = "agency" | "myself";
+
+const OB_PROGRESS_KEY = "in1_onboarding_progress";
+
+function loadProgress(): { step?: Step; purpose?: Purpose; agencyName?: string; style?: VisualStyle } {
+  try {
+    const raw = localStorage.getItem(OB_PROGRESS_KEY);
+    if (!raw) return {};
+    return JSON.parse(raw);
+  } catch {
+    return {};
+  }
+}
+
+function saveProgress(data: { step?: Step; purpose?: Purpose; agencyName?: string; style?: VisualStyle }) {
+  try {
+    const existing = loadProgress();
+    localStorage.setItem(OB_PROGRESS_KEY, JSON.stringify({ ...existing, ...data }));
+  } catch {}
+}
+
+function clearProgress() {
+  localStorage.removeItem(OB_PROGRESS_KEY);
+}
 type VisualStyle = "dark" | "clean" | "neon";
 
 const STYLE_MAP: Record<VisualStyle, { primary: string; accent: string; layout: string }> = {
