@@ -287,7 +287,7 @@ export default function AppTemplates() {
           <Save className="w-3.5 h-3.5" />
           {savedTemplates.length}/{maxSaved} salvos
           {!isPro && (
-            <span className="inline-flex items-center gap-1 ml-2 px-2 py-0.5 bg-primary/10 text-primary rounded-md text-[0.6rem] font-bold">
+            <span className="inline-flex items-center gap-1 ml-2 px-2 py-0.5 bg-primary/10 text-primary-readable rounded-md text-[0.6rem] font-bold">
               <Crown className="w-2.5 h-2.5" /> Pro: até 5
             </span>
           )}
