@@ -486,16 +486,17 @@ export default function Landing() {
             <p className="text-sm text-muted-foreground mb-6">Para começar e sentir o poder.</p>
             <ul className="space-y-0 mb-7">
               {[
-                { ok: true, text: "1 creator" },
+                { ok: true, text: "1 perfil de creator" },
                 { ok: true, text: "Até 5 links" },
                 { ok: true, text: "Até 3 produtos" },
                 { ok: true, text: "1 layout básico" },
                 { ok: true, text: "Redes sociais" },
                 { ok: false, text: "Analytics" },
-                { ok: false, text: "Campanhas spotlight" },
-                { ok: false, text: "Layout imersivo" },
-                { ok: false, text: "Personalização avançada" },
+                { ok: false, text: "Campanhas Spotlight" },
+                { ok: false, text: "Layout Imersivo" },
+                { ok: false, text: "Cores e efeitos personalizados" },
                 { ok: false, text: "Hero Reels" },
+                { ok: false, text: "Selo verificado" },
                 { ok: false, text: "Remover branding" },
               ].map((item, i) => (
                 <li key={i} className="flex items-center gap-2.5 py-2 border-b border-border/30 last:border-b-0 text-sm text-muted-foreground">
@@ -516,10 +517,10 @@ export default function Landing() {
             </div>
             <div className="text-xs font-bold text-muted-foreground uppercase tracking-widest mb-2">Pro</div>
             <div className="text-4xl font-extrabold text-foreground tracking-tight mb-1">R$17,90 <span className="text-base font-medium text-muted-foreground">/mês</span></div>
-            <p className="text-sm text-muted-foreground mb-6">Tudo liberado. Sem limites.</p>
+            <p className="text-sm text-muted-foreground mb-6">Para creators que querem se destacar.</p>
             <ul className="space-y-0 mb-7">
               {[
-                "Creators ilimitados",
+                "Até 2 perfis de creator",
                 "Links & produtos ilimitados",
                 "Todos os layouts (incl. Imersivo)",
                 "Campanhas Spotlight",
@@ -540,22 +541,19 @@ export default function Landing() {
             </Link>
           </motion.div>
 
-          {/* Scale */}
+          {/* Enterprise */}
           <motion.div variants={cardFade} className="bg-card/80 border border-border rounded-3xl p-8 text-left transition-all duration-300 hover:border-border/80 hover:-translate-y-1">
-            <div className="text-xs font-bold text-muted-foreground uppercase tracking-widest mb-2">Scale</div>
-            <div className="text-4xl font-extrabold text-foreground tracking-tight mb-1">
-              <span className="text-lg font-semibold text-muted-foreground">a partir de</span>
-              <br />
-              R$97 <span className="text-base font-medium text-muted-foreground">/mês</span>
-            </div>
-            <p className="text-sm text-muted-foreground mb-6">Para agências e equipes.</p>
-            <ul className="space-y-0 mb-4">
+            <div className="text-xs font-bold text-muted-foreground uppercase tracking-widest mb-2">Enterprise</div>
+            <div className="text-4xl font-extrabold text-foreground tracking-tight mb-1">R$87,90 <span className="text-base font-medium text-muted-foreground">/mês</span></div>
+            <p className="text-sm text-muted-foreground mb-6">Para agências e equipes maiores.</p>
+            <ul className="space-y-0 mb-7">
               {[
-                "Tudo do Pro",
-                "A partir de 5 creators",
+                "Até 10 perfis de creator",
+                "Tudo do plano Pro",
+                "Criação em lote de perfis",
                 "Dashboard multi-creator",
-                "White-label (sua marca)",
-                "Membros de equipe",
+                "Membros de equipe ilimitados",
+                "Templates salvos ilimitados",
                 "Domínio customizado",
                 "Suporte prioritário",
               ].map((text, i) => (
@@ -565,12 +563,9 @@ export default function Landing() {
                 </li>
               ))}
             </ul>
-            <p className="text-[0.68rem] text-muted-foreground/60 mb-4 leading-relaxed">
-              * O white-label possui um custo de implementação à parte. Entre em contato para mais detalhes.
-            </p>
-            <a href="mailto:contato@in1.bio" className="block w-full py-3.5 text-center rounded-2xl bg-card border border-border text-foreground font-bold text-sm transition-all hover:bg-secondary">
-              Falar com vendas
-            </a>
+            <Link to="/login" className="block w-full py-3.5 text-center rounded-2xl bg-card border border-border text-foreground font-bold text-sm transition-all hover:bg-secondary">
+              Assinar Enterprise
+            </Link>
           </motion.div>
         </motion.div>
       </motion.section>
