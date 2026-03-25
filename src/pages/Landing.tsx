@@ -157,9 +157,18 @@ export default function Landing() {
               </button>
             </motion.div>
 
-            <motion.p variants={fadeUp} custom={4} className="text-xs text-muted-foreground mt-5">
-              <span className="text-foreground/70 font-semibold">Grátis para começar</span> — sem cartão de crédito
-            </motion.p>
+            <motion.div variants={fadeUp} custom={4} className="flex items-center gap-3 mt-5">
+              <span className="text-xs text-muted-foreground">
+                <span className="text-foreground/70 font-semibold">Grátis para começar</span> — sem cartão de crédito
+              </span>
+              <span className="text-muted-foreground/30">|</span>
+              <Link
+                to="/login"
+                className="text-xs font-semibold text-primary-readable hover:underline transition-colors"
+              >
+                Já tenho conta →
+              </Link>
+            </motion.div>
           </motion.div>
 
           {/* Phone mockup */}
