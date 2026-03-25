@@ -37,12 +37,12 @@ export default function TestimonialsSection({ testimonials, sectionTitleColor }:
             className="bg-card/65 backdrop-blur-xl border border-border rounded-2xl p-4 transition-all hover:border-primary/20"
           >
             {/* Stars */}
-            {t.rating > 0 && (
+            {(t.rating ?? 0) > 0 && (
               <div className="flex gap-0.5 mb-2">
                 {Array.from({ length: 5 }).map((_, i) => (
                   <Star
                     key={i}
-                    className={`w-3.5 h-3.5 ${i < t.rating ? "fill-primary text-primary" : "fill-muted text-muted"}`}
+                    className={`w-3.5 h-3.5 ${i < (t.rating ?? 0) ? "fill-yellow-400 text-yellow-400" : "text-muted-foreground/30"}`}
                   />
                 ))}
               </div>
