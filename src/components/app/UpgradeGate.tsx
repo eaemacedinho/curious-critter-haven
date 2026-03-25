@@ -1,6 +1,6 @@
 import { ReactNode, useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import { Crown, X, Sparkles, ArrowRight } from "lucide-react";
+import { Crown, X, Sparkles, ArrowRight, Rocket } from "lucide-react";
 import { useSubscription } from "@/hooks/useSubscription";
 import { useNavigate } from "react-router-dom";
 
@@ -70,6 +70,8 @@ export default function UpgradeGate({
 
 function UpgradeModal({ featureLabel, onClose }: { featureLabel: string; onClose: () => void }) {
   const navigate = useNavigate();
+  const { isPro } = useSubscription();
+
   return (
     <motion.div
       className="fixed inset-0 z-[9999] flex items-center justify-center p-4"
@@ -79,7 +81,7 @@ function UpgradeModal({ featureLabel, onClose }: { featureLabel: string; onClose
     >
       <div className="absolute inset-0 bg-background/80 backdrop-blur-md" onClick={onClose} />
       <motion.div
-        className="relative w-full max-w-md bg-card border border-border rounded-3xl p-8 shadow-2xl"
+        className="relative w-full max-w-md bg-card border border-border rounded-3xl p-6 sm:p-8 shadow-2xl max-h-[90vh] overflow-y-auto"
         initial={{ scale: 0.9, opacity: 0, y: 20 }}
         animate={{ scale: 1, opacity: 1, y: 0 }}
         exit={{ scale: 0.95, opacity: 0, y: 10 }}
@@ -94,7 +96,7 @@ function UpgradeModal({ featureLabel, onClose }: { featureLabel: string; onClose
             <Sparkles className="w-8 h-8 text-primary" />
           </div>
 
-          <h3 className="font-display text-xl font-extrabold text-foreground mb-2">
+          <h3 className="font-display text-lg sm:text-xl font-extrabold text-foreground mb-2">
             Desbloqueie o {featureLabel}
           </h3>
           <p className="text-sm text-muted-foreground mb-6 max-w-[320px]">
@@ -126,6 +128,27 @@ function UpgradeModal({ featureLabel, onClose }: { featureLabel: string; onClose
             Fazer upgrade — R$17,90/mês
             <ArrowRight className="w-4 h-4" />
           </button>
+
+          {/* Scale CTA for Pro users */}
+          {isPro && (
+            <div className="w-full mt-4 p-4 bg-muted/30 border border-border rounded-2xl">
+              <div className="flex items-center gap-2 mb-2">
+                <Rocket className="w-4 h-4 text-primary" />
+                <span className="text-sm font-bold text-foreground">Precisa de mais?</span>
+              </div>
+              <p className="text-xs text-muted-foreground mb-3">
+                O plano <span className="text-primary font-bold">Scale</span> inclui até 10 perfis, white-label completo, domínio customizado e membros de equipe.
+              </p>
+              <a
+                href="mailto:contato@in1.bio?subject=Plano%20Scale"
+                onClick={onClose}
+                className="w-full py-2.5 bg-card border border-border text-foreground font-bold text-sm rounded-xl transition-all hover:bg-secondary flex items-center justify-center gap-2"
+              >
+                Fale conosco sobre o Scale
+                <ArrowRight className="w-3.5 h-3.5" />
+              </a>
+            </div>
+          )}
 
           <p className="text-[0.65rem] text-muted-foreground/50 mt-3">
             Cancele quando quiser. Sem compromisso.
