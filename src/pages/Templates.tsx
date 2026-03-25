@@ -68,7 +68,7 @@ export default function Templates() {
         <div className="pointer-events-none absolute -top-40 left-1/2 -translate-x-1/2 h-[500px] w-[800px] rounded-full bg-primary/[0.06] blur-[120px]" />
         <motion.div initial="hidden" animate="visible" className="relative mx-auto max-w-3xl px-6">
           <motion.div variants={fadeUp} custom={0} className="mb-4 inline-flex items-center gap-2 rounded-full border border-border bg-card/60 px-4 py-1.5 text-xs font-semibold text-muted-foreground backdrop-blur-sm">
-            <Sparkles className="h-3.5 w-3.5 text-primary" />
+            <Sparkles className="h-3.5 w-3.5 text-primary-readable" />
             Templates prontos para usar
           </motion.div>
           <motion.h1 variants={fadeUp} custom={1} className="font-display text-4xl font-extrabold tracking-tight sm:text-5xl lg:text-6xl">
