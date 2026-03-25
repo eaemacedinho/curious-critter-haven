@@ -618,6 +618,12 @@ export default function Landing() {
           </span>
         </div>
       </footer>
+
+      <ClaimSignupModal
+        username={claimUser}
+        open={showSignup}
+        onClose={() => setShowSignup(false)}
+      />
     </div>
   );
 }
