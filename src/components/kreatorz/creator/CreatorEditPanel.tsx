@@ -546,6 +546,23 @@ const CreatorEditPanel = forwardRef<CreatorEditPanelHandle, Props>(function Crea
         </button>
       </div>
 
+      {/* Mobile preview — shown inline on small screens */}
+      {showPreview && (
+        <div className="md:hidden mb-6 rounded-2xl border border-border bg-muted/20 overflow-hidden" style={{ height: "min(70vh, 600px)" }}>
+          <CreatorLivePreview
+            profile={liveProfile}
+            links={links}
+            socialLinks={social}
+            products={prods}
+            campaigns={camps}
+            heroReels={heroReels}
+            testimonials={testimonialsList}
+            activeLayout={activeLayout}
+            focusSection={focusSection}
+          />
+        </div>
+      )}
+
       <div className={showPreview ? "md:mr-[440px]" : ""}>
         {/* Editor column */}
         <div>
