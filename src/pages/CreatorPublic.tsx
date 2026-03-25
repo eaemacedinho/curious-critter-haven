@@ -232,7 +232,7 @@ export default function CreatorPublic() {
         <span className="text-6xl">🔍</span>
         <h1 className="text-2xl font-bold text-foreground">Creator não encontrado</h1>
         <p className="text-muted-foreground text-sm max-w-[320px]">
-          O handle <span className="font-semibold text-primary">@{handle?.replace(/^@+/, "")}</span> não está associado a nenhum perfil.
+          O handle <span className="font-semibold text-primary-readable">@{handle?.replace(/^@+/, "")}</span> não está associado a nenhum perfil.
         </p>
       </div>
     );
