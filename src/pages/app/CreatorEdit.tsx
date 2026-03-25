@@ -38,6 +38,75 @@ export default function CreatorEdit() {
 
   const maxTemplates = currentPlan === "free" ? 1 : currentPlan === "pro" ? 5 : 10;
 
+  // Gallery saved templates (from AppTemplates page localStorage)
+  const SAVED_TEMPLATES_KEY = "in1_saved_templates";
+  const [savedGalleryIds, setSavedGalleryIds] = useState<string[]>([]);
+
+  useEffect(() => {
+    if (!agency) return;
+    const stored = localStorage.getItem(`${SAVED_TEMPLATES_KEY}_${agency.id}`);
+    if (stored) setSavedGalleryIds(JSON.parse(stored));
+  }, [agency]);
+
+  const savedGalleryTemplates = useMemo(() =>
+    savedGalleryIds.map(id => TEMPLATE_DATA.find(t => t.id === id)).filter(Boolean) as FullTemplateData[],
+  [savedGalleryIds]);
+
+  const [applyingGallery, setApplyingGallery] = useState(false);
+
+  const handleApplyGalleryTemplate = async (template: FullTemplateData) => {
+    if (!creatorId) return;
+    setApplyingGallery(true);
+    try {
+      const { profile: tp, links: tl, socialLinks: ts, products: tpr, testimonials: tt } = template;
+      await saveProfile({
+        bio: tp.bio,
+        font_family: tp.font_family,
+        font_size: tp.font_size,
+        image_shape: tp.image_shape,
+        image_shape_links: tp.image_shape_links,
+        image_shape_products: tp.image_shape_products,
+        image_shape_campaigns: tp.image_shape || "rounded",
+        tags: tp.tags as any,
+        stats: tp.stats as any,
+        brands: tp.brands as any,
+        brands_display_mode: tp.brands_display_mode,
+        section_order: tp.section_order as any,
+        ...(tp.avatar_url ? { avatar_url: tp.avatar_url } : {}),
+        ...(tp.cover_url ? { cover_url: tp.cover_url } : {}),
+      } as any);
+
+      await saveLinks(tl.map((l, i) => ({
+        creator_id: creatorId, title: l.title, url: l.url, subtitle: l.subtitle, icon: l.icon,
+        is_featured: l.is_featured, is_active: l.is_active, sort_order: i, display_mode: l.display_mode,
+      })) as any);
+
+      await saveSocialLinks(ts.map((s, i) => ({
+        creator_id: creatorId, platform: s.platform, label: s.label, url: s.url, sort_order: i,
+      })) as any);
+
+      await saveProducts(tpr.map((p, i) => ({
+        creator_id: creatorId, title: p.title, price: p.price, icon: p.icon,
+        url: p.url, is_active: p.is_active, sort_order: i, image_url: p.image_url || null,
+      })) as any);
+
+      await saveTestimonials(tt.map((t, i) => ({
+        creator_id: creatorId, author_name: t.author_name, author_role: t.author_role,
+        content: t.content, rating: t.rating, is_active: t.is_active, sort_order: i,
+      })) as any);
+
+      await refetch();
+      setActiveTemplateId(null);
+      setUsingDefault(false);
+      toast.success(`Template "${template.name}" aplicado!`);
+    } catch (err) {
+      console.error(err);
+      toast.error("Erro ao aplicar template");
+    } finally {
+      setApplyingGallery(false);
+    }
+  };
+
   const getCurrentData = (): TemplateData => ({
     profile: profile ? {
       name: profile.name, slug: profile.slug, bio: profile.bio,
