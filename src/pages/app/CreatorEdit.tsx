@@ -398,7 +398,7 @@ export default function CreatorEdit() {
   };
 
   const activeTemplate = templates.find(t => t.id === activeTemplateId);
-  const currentLabel = usingDefault ? "⭐ Meu Padrão" : activeTemplate ? activeTemplate.name : "Personalizado";
+  const currentLabel = usingDefault ? "⭐ Meu Padrão" : activeTemplate ? activeTemplate.name : activeGalleryTemplateName ? `✨ ${activeGalleryTemplateName}` : "⭐ Meu Padrão";
   const totalSavedTemplateCount = templates.length + savedGalleryTemplates.length;
 
   return (
