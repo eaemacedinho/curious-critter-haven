@@ -1,16 +1,53 @@
 import { useState } from "react";
 import { motion } from "framer-motion";
-import { CreditCard, Shield, ArrowLeft, CheckCircle2, Loader2, Sparkles } from "lucide-react";
+import { CreditCard, Shield, ArrowLeft, CheckCircle2, Loader2, Sparkles, Rocket } from "lucide-react";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Button } from "@/components/ui/button";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useSearchParams } from "react-router-dom";
 import { supabase } from "@/integrations/supabase/client";
-import { useSubscription } from "@/hooks/useSubscription";
+import { useSubscription, PlanType } from "@/hooks/useSubscription";
 import { toast } from "sonner";
+
+const PLAN_INFO: Record<string, { label: string; price: string; priceValue: number; features: string[] }> = {
+  pro: {
+    label: "Pro",
+    price: "R$17,90/mês",
+    priceValue: 1790,
+    features: [
+      "Até 2 perfis",
+      "Layout Imersivo",
+      "Links & produtos ilimitados",
+      "Analytics completo",
+      "Campanhas Spotlight",
+      "Hero Reels",
+      "Cores e efeitos personalizados",
+      "Selo verificado",
+    ],
+  },
+  scale: {
+    label: "Scale",
+    price: "R$87,90/mês",
+    priceValue: 8790,
+    features: [
+      "Até 10 perfis",
+      "Tudo do Pro incluído",
+      "Criação em lote",
+      "Membros de equipe",
+      "Selo verificado",
+      "Remover branding",
+      "Suporte prioritário",
+    ],
+  },
+};
 
 export default function Checkout() {
   const navigate = useNavigate();
+  const [searchParams] = useSearchParams();
+  const targetPlan = (searchParams.get("plan") as string) || "pro";
+  const plan = PLAN_INFO[targetPlan] || PLAN_INFO.pro;
+  const planKey = PLAN_INFO[targetPlan] ? targetPlan : "pro";
+
   const { currentPlan, refetch } = useSubscription();
   const [loading, setLoading] = useState(false);
   const [success, setSuccess] = useState(false);
@@ -32,7 +69,11 @@ export default function Checkout() {
     zip_code: "",
   });
 
-  if (currentPlan === "pro" || currentPlan === "scale") {
+  // Already on this plan or higher
+  const planOrder: Record<string, number> = { free: 0, pro: 1, scale: 2 };
+  const alreadyOnPlan = (planOrder[currentPlan] || 0) >= (planOrder[planKey] || 0);
+
+  if (alreadyOnPlan && currentPlan !== "free") {
     return (
       <div className="min-h-[80vh] flex items-center justify-center">
         <motion.div
@@ -41,7 +82,7 @@ export default function Checkout() {
           className="text-center space-y-4"
         >
           <CheckCircle2 className="w-16 h-16 text-primary mx-auto" />
-          <h2 className="text-2xl font-bold text-foreground">Você já é Pro!</h2>
+          <h2 className="text-2xl font-bold text-foreground">Você já é {currentPlan === "scale" ? "Scale" : "Pro"}!</h2>
           <p className="text-muted-foreground">Aproveite todos os recursos premium.</p>
           <Button onClick={() => navigate("/app")} variant="outline">
             <ArrowLeft className="w-4 h-4 mr-2" />
@@ -62,7 +103,7 @@ export default function Checkout() {
         >
           <CheckCircle2 className="w-16 h-16 text-primary mx-auto" />
           <h2 className="text-2xl font-bold text-foreground">Pagamento confirmado!</h2>
-          <p className="text-muted-foreground">Bem-vindo ao plano Pro. Aproveite todos os recursos.</p>
+          <p className="text-muted-foreground">Bem-vindo ao plano {plan.label}. Aproveite todos os recursos.</p>
           <Button onClick={() => navigate("/app")}>
             Ir para o painel
           </Button>
@@ -107,7 +148,7 @@ export default function Checkout() {
             "Content-Type": "application/json",
             Authorization: `Bearer ${accessToken}`,
           },
-          body: JSON.stringify({ card, customer }),
+          body: JSON.stringify({ card, customer, plan: planKey }),
         }
       );
 
@@ -119,7 +160,7 @@ export default function Checkout() {
 
       await refetch();
       setSuccess(true);
-      toast.success("Assinatura Pro ativada com sucesso!");
+      toast.success(`Assinatura ${plan.label} ativada com sucesso!`);
     } catch (err: unknown) {
       const msg = err instanceof Error ? err.message : "Erro desconhecido";
       toast.error(msg);
@@ -148,33 +189,46 @@ export default function Checkout() {
         {/* Header */}
         <div className="text-center space-y-2">
           <div className="w-14 h-14 rounded-2xl bg-primary/10 flex items-center justify-center mx-auto">
-            <Sparkles className="w-7 h-7 text-primary" />
+            {planKey === "scale" ? (
+              <Rocket className="w-7 h-7 text-primary" />
+            ) : (
+              <Sparkles className="w-7 h-7 text-primary" />
+            )}
           </div>
-          <h1 className="text-2xl font-extrabold text-foreground">Upgrade para o Pro</h1>
+          <h1 className="text-2xl font-extrabold text-foreground">Upgrade para o {plan.label}</h1>
           <p className="text-muted-foreground">
             Desbloqueie todos os recursos por{" "}
-            <span className="text-foreground font-bold">R$17,90/mês</span>
+            <span className="text-foreground font-bold">{plan.price}</span>
           </p>
         </div>
 
         {/* Features */}
         <div className="grid grid-cols-2 gap-2 p-4 bg-muted/30 rounded-2xl border border-border">
-          {[
-            "Até 2 perfis",
-            "Layout Imersivo",
-            "Links & produtos ilimitados",
-            "Analytics completo",
-            "Campanhas Spotlight",
-            "Hero Reels",
-            "Cores e efeitos personalizados",
-            "Selo verificado",
-          ].map((f) => (
+          {plan.features.map((f) => (
             <div key={f} className="flex items-center gap-2 text-sm text-muted-foreground">
               <CheckCircle2 className="w-3.5 h-3.5 text-primary flex-shrink-0" />
               {f}
             </div>
           ))}
         </div>
+
+        {/* Plan switcher for users who might want the other plan */}
+        {currentPlan === "free" && (
+          <div className="flex items-center justify-center gap-2">
+            <button
+              onClick={() => navigate("/app/checkout?plan=pro")}
+              className={`px-4 py-2 rounded-xl text-xs font-bold transition-all ${planKey === "pro" ? "bg-primary text-primary-foreground" : "bg-muted text-muted-foreground hover:text-foreground"}`}
+            >
+              Pro — R$17,90
+            </button>
+            <button
+              onClick={() => navigate("/app/checkout?plan=scale")}
+              className={`px-4 py-2 rounded-xl text-xs font-bold transition-all ${planKey === "scale" ? "bg-primary text-primary-foreground" : "bg-muted text-muted-foreground hover:text-foreground"}`}
+            >
+              Scale — R$87,90
+            </button>
+          </div>
+        )}
 
         {/* Form */}
         <form onSubmit={handleSubmit} className="space-y-6">
@@ -315,7 +369,7 @@ export default function Checkout() {
                 Processando...
               </>
             ) : (
-              "Assinar Pro — R$17,90/mês"
+              `Assinar ${plan.label} — ${plan.price}`
             )}
           </Button>
 

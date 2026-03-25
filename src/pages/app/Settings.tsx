@@ -34,8 +34,9 @@ export default function Settings() {
   const [confirmDelete, setConfirmDelete] = useState(false);
   const navigate = useNavigate();
 
-  const handleCancelSubscription = async () => {
-    if (!confirm("Tem certeza que deseja cancelar sua assinatura Pro? Você perderá acesso aos recursos premium.")) return;
+  const [showCancelModal, setShowCancelModal] = useState(false);
+
+  const executeCancelSubscription = async () => {
     setCanceling(true);
     try {
       const { data: { session } } = await supabase.auth.getSession();
@@ -51,12 +52,30 @@ export default function Settings() {
       const data = await res.json();
       if (!res.ok) throw new Error(data.error || "Erro ao cancelar");
       toast.success("Assinatura cancelada com sucesso.");
+      setShowCancelModal(false);
       refetchSub();
     } catch (err: any) {
       toast.error(err.message || "Erro ao cancelar assinatura");
     } finally {
       setCanceling(false);
     }
+  };
+
+  const getNextRenewalDate = () => {
+    if (!subscription?.started_at) return null;
+    const started = new Date(subscription.started_at);
+    const now = new Date();
+    const next = new Date(started);
+    while (next <= now) {
+      next.setMonth(next.getMonth() + 1);
+    }
+    return next.toLocaleDateString("pt-BR", { day: "2-digit", month: "long", year: "numeric" });
+  };
+
+  const getPlanPrice = (plan: string) => {
+    if (plan === "pro") return "R$17,90";
+    if (plan === "scale") return "R$87,90";
+    return "R$0";
   };
 
   const handleExtractColors = async () => {
