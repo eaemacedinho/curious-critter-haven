@@ -1,11 +1,13 @@
 import { useRef, useState } from "react";
 import { Link, useParams, useNavigate } from "react-router-dom";
 import { toast } from "sonner";
-import { Sparkles } from "lucide-react";
+import { Sparkles, Save, ChevronDown, Trash2, Pencil, RotateCcw } from "lucide-react";
 import { useTenant } from "@/hooks/useTenant";
 import { useCreatorData } from "@/hooks/useCreatorData";
 import { useSubscription } from "@/hooks/useSubscription";
+import { useCreatorTemplates, type TemplateData } from "@/hooks/useCreatorTemplates";
 import CreatorEditPanel, { type CreatorEditPanelHandle } from "@/components/kreatorz/creator/CreatorEditPanel";
+import { ConfirmDialog } from "@/components/ui/confirm-dialog";
 
 export default function CreatorEdit() {
   const navigate = useNavigate();
@@ -16,9 +18,46 @@ export default function CreatorEdit() {
     saveProfile, saveLinks, saveSocialLinks, saveProducts, saveCampaigns, saveHeroReels, saveTestimonials,
     uploadImage, uploadContentImage, refetch,
   } = useCreatorData(agency?.id, creatorId);
-  const { canUse } = useSubscription();
+  const { canUse, currentPlan } = useSubscription();
+  const { templates, saveTemplate, updateTemplate, deleteTemplate, renameTemplate } = useCreatorTemplates(agency?.id, creatorId);
   const editorRef = useRef<CreatorEditPanelHandle>(null);
   const [saving, setSaving] = useState(false);
+
+  // Template state
+  const [activeTemplateId, setActiveTemplateId] = useState<string | null>(null);
+  const [showTemplateDropdown, setShowTemplateDropdown] = useState(false);
+  const [showSaveConfirm, setShowSaveConfirm] = useState(false);
+  const [showSwitchConfirm, setShowSwitchConfirm] = useState<{ templateId: string | null } | null>(null);
+  const [showDeleteConfirm, setShowDeleteConfirm] = useState<string | null>(null);
+  const [renamingId, setRenamingId] = useState<string | null>(null);
+  const [renameValue, setRenameValue] = useState("");
+  const [templateNameInput, setTemplateNameInput] = useState("");
+  const [showNewTemplateDialog, setShowNewTemplateDialog] = useState(false);
+
+  const maxTemplates = currentPlan === "free" ? 1 : currentPlan === "pro" ? 5 : 10;
+
+  const getCurrentData = (): TemplateData => ({
+    profile: profile ? {
+      name: profile.name, slug: profile.slug, bio: profile.bio,
+      avatar_url: profile.avatar_url, cover_url: profile.cover_url,
+      avatar_url_layout2: profile.avatar_url_layout2, cover_url_layout2: profile.cover_url_layout2,
+      verified: profile.verified, layout_type: profile.layout_type,
+      image_shape: profile.image_shape, image_shape_products: profile.image_shape_products,
+      image_shape_campaigns: profile.image_shape_campaigns, image_shape_links: profile.image_shape_links,
+      tags: profile.tags, stats: profile.stats, brands: profile.brands,
+      brands_display_mode: profile.brands_display_mode, page_effects: profile.page_effects,
+      font_family: profile.font_family, font_size: profile.font_size,
+      color_name: profile.color_name, color_bio: profile.color_bio,
+      color_section_titles: profile.color_section_titles, section_order: profile.section_order,
+      spotify_url: profile.spotify_url,
+    } : {},
+    links: links || [],
+    socialLinks: socialLinks || [],
+    products: products || [],
+    campaigns: campaigns || [],
+    heroReels: heroReels || [],
+    testimonials: testimonials || [],
+  });
 
   const handleSave = async () => {
     if (!editorRef.current) return;
@@ -28,6 +67,89 @@ export default function CreatorEdit() {
     if (!saved) return;
     await refetch();
     toast.success("Alterações salvas com sucesso!");
+
+    // If using a template, auto-update it
+    if (activeTemplateId) {
+      const tpl = templates.find(t => t.id === activeTemplateId);
+      if (tpl) {
+        await updateTemplate(activeTemplateId, getCurrentData());
+        toast.success(`Template "${tpl.name}" atualizado`);
+      }
+    } else if (templates.length === 0) {
+      // First time saving — suggest saving as template
+      setShowSaveConfirm(true);
+    }
+  };
+
+  const handleSaveAsTemplate = async () => {
+    if (!templateNameInput.trim()) {
+      toast.error("Digite um nome para o template");
+      return;
+    }
+    if (templates.length >= maxTemplates) {
+      toast.error(`Limite de ${maxTemplates} template(s) atingido. ${currentPlan === "free" ? "Faça upgrade para o Pro!" : ""}`);
+      return;
+    }
+    const result = await saveTemplate(templateNameInput.trim(), getCurrentData());
+    if (result) {
+      setActiveTemplateId(result.id);
+      toast.success(`Template "${templateNameInput.trim()}" salvo!`);
+    } else {
+      toast.error("Erro ao salvar template");
+    }
+    setShowNewTemplateDialog(false);
+    setTemplateNameInput("");
+  };
+
+  const handleSwitchTemplate = async (templateId: string | null) => {
+    if (templateId === activeTemplateId) return;
+    setShowSwitchConfirm({ templateId });
+  };
+
+  const confirmSwitch = async () => {
+    if (!showSwitchConfirm) return;
+    const templateId = showSwitchConfirm.templateId;
+
+    if (templateId === null) {
+      // Switch to custom
+      setActiveTemplateId(null);
+      setShowSwitchConfirm(null);
+      toast.success("Modo personalizado ativado");
+      return;
+    }
+
+    const tpl = templates.find(t => t.id === templateId);
+    if (!tpl) return;
+
+    // Apply template data
+    const data = tpl.template_data;
+    if (data.profile) await saveProfile(data.profile as any);
+    if (data.links) await saveLinks(data.links);
+    if (data.socialLinks) await saveSocialLinks(data.socialLinks);
+    if (data.products) await saveProducts(data.products);
+    if (data.campaigns) await saveCampaigns(data.campaigns);
+    if (data.heroReels) await saveHeroReels(data.heroReels);
+    if (data.testimonials) await saveTestimonials(data.testimonials);
+    await refetch();
+    setActiveTemplateId(templateId);
+    setShowSwitchConfirm(null);
+    toast.success(`Template "${tpl.name}" aplicado!`);
+  };
+
+  const handleDeleteTemplate = async () => {
+    if (!showDeleteConfirm) return;
+    const tpl = templates.find(t => t.id === showDeleteConfirm);
+    await deleteTemplate(showDeleteConfirm);
+    if (activeTemplateId === showDeleteConfirm) setActiveTemplateId(null);
+    toast.success(`Template "${tpl?.name}" removido`);
+    setShowDeleteConfirm(null);
+  };
+
+  const handleRename = async (id: string) => {
+    if (!renameValue.trim()) return;
+    await renameTemplate(id, renameValue.trim());
+    toast.success("Nome atualizado");
+    setRenamingId(null);
   };
 
   if (loading) {
@@ -73,6 +195,8 @@ export default function CreatorEdit() {
     }
   };
 
+  const activeTemplate = templates.find(t => t.id === activeTemplateId);
+
   return (
     <div className="max-w-[1400px] mx-auto">
       {/* Header */}
@@ -91,6 +215,109 @@ export default function CreatorEdit() {
           </p>
         </div>
         <div className="flex items-center gap-2.5 flex-wrap">
+          {/* Template selector */}
+          <div className="relative">
+            <button
+              onClick={() => setShowTemplateDropdown(!showTemplateDropdown)}
+              className={`px-3 py-2 text-xs font-semibold rounded-xl border transition-all flex items-center gap-1.5 ${
+                activeTemplateId
+                  ? "bg-primary/15 border-primary/40 text-primary"
+                  : "bg-card border-border text-muted-foreground hover:text-foreground hover:border-primary/30"
+              }`}
+            >
+              <Save className="w-3.5 h-3.5" />
+              {activeTemplate ? activeTemplate.name : "Personalizado"}
+              <ChevronDown className="w-3 h-3" />
+            </button>
+
+            {showTemplateDropdown && (
+              <>
+                <div className="fixed inset-0 z-40" onClick={() => setShowTemplateDropdown(false)} />
+                <div className="absolute right-0 top-full mt-1 z-50 bg-card border border-border rounded-xl shadow-lg w-[260px] py-1 overflow-hidden">
+                  {/* Custom option */}
+                  <button
+                    onClick={() => { handleSwitchTemplate(null); setShowTemplateDropdown(false); }}
+                    className={`w-full text-left px-3 py-2.5 text-sm transition-colors flex items-center gap-2 ${
+                      !activeTemplateId ? "bg-primary/10 text-primary font-semibold" : "text-foreground hover:bg-muted"
+                    }`}
+                  >
+                    <RotateCcw className="w-3.5 h-3.5 flex-shrink-0" />
+                    <span className="flex-1">Personalizado</span>
+                    {!activeTemplateId && <span className="text-[0.6rem] bg-primary/20 text-primary px-1.5 py-0.5 rounded-md font-bold">ATIVO</span>}
+                  </button>
+
+                  <div className="border-t border-border my-1" />
+
+                  {/* Saved templates */}
+                  {templates.length === 0 ? (
+                    <p className="px-3 py-2 text-xs text-muted-foreground">Nenhum template salvo ainda</p>
+                  ) : (
+                    templates.map((tpl) => (
+                      <div key={tpl.id} className={`flex items-center gap-1 px-3 py-2 transition-colors ${
+                        activeTemplateId === tpl.id ? "bg-primary/10" : "hover:bg-muted"
+                      }`}>
+                        {renamingId === tpl.id ? (
+                          <input
+                            autoFocus
+                            value={renameValue}
+                            onChange={(e) => setRenameValue(e.target.value)}
+                            onBlur={() => handleRename(tpl.id)}
+                            onKeyDown={(e) => { if (e.key === "Enter") handleRename(tpl.id); if (e.key === "Escape") setRenamingId(null); }}
+                            className="flex-1 bg-transparent text-sm text-foreground outline-none border-b border-primary/40"
+                          />
+                        ) : (
+                          <button
+                            onClick={() => { handleSwitchTemplate(tpl.id); setShowTemplateDropdown(false); }}
+                            className="flex-1 text-left text-sm text-foreground truncate"
+                          >
+                            {tpl.name}
+                          </button>
+                        )}
+                        {activeTemplateId === tpl.id && (
+                          <span className="text-[0.6rem] bg-primary/20 text-primary px-1.5 py-0.5 rounded-md font-bold flex-shrink-0">ATIVO</span>
+                        )}
+                        <button
+                          onClick={(e) => { e.stopPropagation(); setRenamingId(tpl.id); setRenameValue(tpl.name); }}
+                          className="p-1 text-muted-foreground hover:text-foreground transition-colors flex-shrink-0"
+                          title="Renomear"
+                        >
+                          <Pencil className="w-3 h-3" />
+                        </button>
+                        <button
+                          onClick={(e) => { e.stopPropagation(); setShowDeleteConfirm(tpl.id); setShowTemplateDropdown(false); }}
+                          className="p-1 text-muted-foreground hover:text-destructive transition-colors flex-shrink-0"
+                          title="Excluir"
+                        >
+                          <Trash2 className="w-3 h-3" />
+                        </button>
+                      </div>
+                    ))
+                  )}
+
+                  <div className="border-t border-border my-1" />
+
+                  {/* Save current as new template */}
+                  <button
+                    onClick={() => {
+                      setShowTemplateDropdown(false);
+                      if (templates.length >= maxTemplates) {
+                        toast.error(`Limite de ${maxTemplates} template(s) atingido. ${currentPlan === "free" ? "Faça upgrade para o Pro!" : ""}`);
+                        return;
+                      }
+                      setTemplateNameInput("");
+                      setShowNewTemplateDialog(true);
+                    }}
+                    className="w-full text-left px-3 py-2.5 text-sm text-primary font-semibold hover:bg-primary/10 transition-colors flex items-center gap-2"
+                  >
+                    <Save className="w-3.5 h-3.5" />
+                    Salvar como template
+                    <span className="ml-auto text-[0.6rem] text-muted-foreground font-normal">{templates.length}/{maxTemplates}</span>
+                  </button>
+                </div>
+              </>
+            )}
+          </div>
+
           {/* Layout toggle */}
           <div className="flex bg-card border border-border rounded-xl overflow-hidden">
             {layoutOptions.map((opt) => (
@@ -157,6 +384,70 @@ export default function CreatorEdit() {
         onUploadImage={uploadImage}
         onUploadContentImage={uploadContentImage}
         onDone={() => void refetch()}
+      />
+
+      {/* First-time save suggestion */}
+      <ConfirmDialog
+        open={showSaveConfirm}
+        onOpenChange={setShowSaveConfirm}
+        title="Salvar como template?"
+        description="Deseja salvar esta configuração como um template? Assim você pode reutilizá-la rapidamente no futuro."
+        confirmLabel="Salvar template"
+        cancelLabel="Não, obrigado"
+        onConfirm={() => {
+          setShowSaveConfirm(false);
+          setTemplateNameInput("");
+          setShowNewTemplateDialog(true);
+        }}
+      />
+
+      {/* Switch confirmation */}
+      <ConfirmDialog
+        open={!!showSwitchConfirm}
+        onOpenChange={(open) => !open && setShowSwitchConfirm(null)}
+        title="Trocar de template?"
+        description={
+          showSwitchConfirm?.templateId
+            ? "Os dados atuais serão substituídos pelos dados do template selecionado. Deseja continuar?"
+            : "Deseja voltar ao modo personalizado? Os dados atuais serão mantidos."
+        }
+        confirmLabel="Confirmar"
+        cancelLabel="Cancelar"
+        onConfirm={confirmSwitch}
+      />
+
+      {/* Delete confirmation */}
+      <ConfirmDialog
+        open={!!showDeleteConfirm}
+        onOpenChange={(open) => !open && setShowDeleteConfirm(null)}
+        title="Excluir template?"
+        description="Esta ação não pode ser desfeita. O template será removido permanentemente."
+        confirmLabel="Excluir"
+        cancelLabel="Cancelar"
+        variant="destructive"
+        onConfirm={handleDeleteTemplate}
+      />
+
+      {/* New template name dialog */}
+      <ConfirmDialog
+        open={showNewTemplateDialog}
+        onOpenChange={setShowNewTemplateDialog}
+        title="Nome do template"
+        description={
+          <div className="mt-2">
+            <input
+              autoFocus
+              value={templateNameInput}
+              onChange={(e) => setTemplateNameInput(e.target.value)}
+              onKeyDown={(e) => { if (e.key === "Enter") handleSaveAsTemplate(); }}
+              placeholder="Ex: Meu estilo dark, Layout minimalista..."
+              className="w-full px-3 py-2 bg-card border border-border rounded-xl text-foreground text-sm outline-none focus:border-primary transition-all"
+            />
+          </div>
+        }
+        confirmLabel="Salvar"
+        cancelLabel="Cancelar"
+        onConfirm={handleSaveAsTemplate}
       />
     </div>
   );
