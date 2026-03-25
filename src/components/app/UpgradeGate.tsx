@@ -100,7 +100,7 @@ function UpgradeModal({ featureLabel, onClose }: { featureLabel: string; onClose
             Desbloqueie o {featureLabel}
           </h3>
           <p className="text-sm text-muted-foreground mb-6 max-w-[320px]">
-            Faça upgrade para o plano <span className="text-primary font-bold">Pro</span> e tenha acesso a todos os recursos premium por apenas <span className="text-foreground font-bold">R$17,90/mês</span>.
+            Faça upgrade para o plano <span className="text-primary-readable font-bold">Pro</span> e tenha acesso a todos os recursos premium por apenas <span className="text-foreground font-bold">R$17,90/mês</span>.
           </p>
 
           <div className="w-full space-y-2.5 mb-6 text-left">
