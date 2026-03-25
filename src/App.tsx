@@ -18,6 +18,7 @@ import Terms from "@/pages/Terms";
 import CreatorPublic from "@/pages/CreatorPublic";
 import NotFound from "@/pages/NotFound";
 import ResetPassword from "@/pages/ResetPassword";
+import ExampleLink from "@/pages/ExampleLink";
 
 import Dashboard from "@/pages/app/Dashboard";
 import Creators from "@/pages/app/Creators";
@@ -50,6 +51,7 @@ const App = () => (
               <Route path="/termos" element={<Terms />} />
               <Route path="/reset-password" element={<ResetPassword />} />
               <Route path="/c/:handle" element={<CreatorPublic />} />
+              <Route path="/exemplo" element={<ExampleLink />} />
 
               {/* Protected app routes */}
               <Route
