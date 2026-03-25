@@ -82,7 +82,7 @@ export default function Referrals() {
               transition={{ delay: 0.1 * i }}
               className="bg-card border border-border rounded-2xl p-4 text-center"
             >
-              <div className="flex justify-center text-primary mb-2">{stat.icon}</div>
+              <div className="flex justify-center text-primary-readable mb-2">{stat.icon}</div>
               <div className="text-xl font-bold text-foreground">{stat.value}</div>
               <div className="text-[0.66rem] text-muted-foreground">{stat.label}</div>
             </motion.div>
