@@ -1443,7 +1443,8 @@ const CreatorEditPanel = forwardRef<CreatorEditPanelHandle, Props>(function Crea
           {prods.length > 1 && (
             <div className="flex bg-card border border-border rounded-lg overflow-hidden">
               <button onClick={() => setDisplayModes(d => ({ ...d, products: "list" }))} className={`px-2 py-1 text-[0.6rem] font-semibold transition-all ${displayModes.products === "list" ? "bg-primary text-primary-foreground" : "text-muted-foreground hover:text-foreground"}`}>Grade</button>
-              <button onClick={() => setDisplayModes(d => ({ ...d, products: "carousel" }))} className={`px-2 py-1 text-[0.6rem] font-semibold transition-all ${displayModes.products === "carousel" ? "bg-primary text-primary-foreground" : "text-muted-foreground hover:text-foreground"}`}>Carrossel</button>
+              <button onClick={() => setDisplayModes(d => ({ ...d, products: "carousel" }))} className={`px-2 py-1 text-[0.6rem] font-semibold transition-all ${displayModes.products === "carousel" ? "bg-primary text-primary-foreground" : "text-muted-foreground hover:text-foreground"}`}>Deslizar</button>
+              <button onClick={() => setDisplayModes(d => ({ ...d, products: "marquee" }))} className={`px-2 py-1 text-[0.6rem] font-semibold transition-all ${displayModes.products === "marquee" ? "bg-primary text-primary-foreground" : "text-muted-foreground hover:text-foreground"}`}>Automático</button>
             </div>
           )}
         </div>
