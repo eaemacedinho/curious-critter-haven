@@ -94,12 +94,20 @@ export default function Landing() {
             <a href="#pricing" className="text-sm text-muted-foreground hover:text-foreground transition-colors font-medium">Planos</a>
             <Link to="/templates" className="text-sm text-muted-foreground hover:text-foreground transition-colors font-medium">Templates</Link>
           </div>
-          <Link
-            to="/login"
-            className="px-5 py-2.5 bg-foreground text-background font-bold text-sm rounded-full transition-all hover:bg-primary hover:text-primary-foreground hover:shadow-[0_0_30px_hsl(var(--primary)/0.25)]"
-          >
-            Criar minha página
-          </Link>
+          <div className="flex items-center gap-3">
+            <Link
+              to="/login"
+              className="px-4 py-2.5 text-sm font-semibold text-muted-foreground hover:text-foreground transition-colors"
+            >
+              Entrar
+            </Link>
+            <Link
+              to="/login"
+              className="px-5 py-2.5 bg-foreground text-background font-bold text-sm rounded-full transition-all hover:bg-primary hover:text-primary-foreground hover:shadow-[0_0_30px_hsl(var(--primary)/0.25)]"
+            >
+              Criar minha página
+            </Link>
+          </div>
         </div>
       </nav>
 
