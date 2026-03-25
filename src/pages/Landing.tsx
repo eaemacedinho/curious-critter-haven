@@ -6,6 +6,7 @@ import in1Logo from "@/assets/in1-logo.png";
 import in1Icon from "@/assets/in1-icon.png";
 import heroCreator from "@/assets/landing-hero-creator.jpg";
 import teamImg from "@/assets/landing-team.jpg";
+import ClaimSignupModal from "@/components/landing/ClaimSignupModal";
 
 const fadeUp = {
   hidden: { opacity: 0, y: 32 },
@@ -66,12 +67,14 @@ const DIFF_NEW = [
 
 export default function Landing() {
   const [claimUser, setClaimUser] = useState("");
+  const [showSignup, setShowSignup] = useState(false);
   const navigate = useNavigate();
 
   const handleClaim = () => {
     if (!claimUser.trim()) return;
     const clean = claimUser.trim().replace(/[^a-zA-Z0-9._-]/g, "").toLowerCase();
-    navigate(`/login?claim=${encodeURIComponent(clean)}`);
+    setClaimUser(clean);
+    setShowSignup(true);
   };
 
   return (
@@ -486,7 +489,7 @@ export default function Landing() {
             <p className="text-sm text-muted-foreground mb-6">Para começar e sentir o poder.</p>
             <ul className="space-y-0 mb-7">
               {[
-                { ok: true, text: "1 perfil de creator" },
+                { ok: true, text: "1 perfil" },
                 { ok: true, text: "Até 5 links" },
                 { ok: true, text: "Até 3 produtos" },
                 { ok: true, text: "1 layout básico" },
@@ -520,7 +523,7 @@ export default function Landing() {
             <p className="text-sm text-muted-foreground mb-6">Para creators que querem se destacar.</p>
             <ul className="space-y-0 mb-7">
               {[
-                "Até 2 perfis de creator",
+                "Até 2 perfis",
                 "Links & produtos ilimitados",
                 "Todos os layouts (incl. Imersivo)",
                 "Campanhas Spotlight",
@@ -548,7 +551,7 @@ export default function Landing() {
             <p className="text-sm text-muted-foreground mb-6">Para agências e equipes maiores.</p>
             <ul className="space-y-0 mb-7">
               {[
-                "Até 10 perfis de creator",
+                "Até 10 perfis",
                 "Tudo do plano Pro",
                 "Criação em lote de perfis",
                 "Dashboard multi-creator",
@@ -615,6 +618,12 @@ export default function Landing() {
           </span>
         </div>
       </footer>
+
+      <ClaimSignupModal
+        username={claimUser}
+        open={showSignup}
+        onClose={() => setShowSignup(false)}
+      />
     </div>
   );
 }
