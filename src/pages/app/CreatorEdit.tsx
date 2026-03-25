@@ -206,7 +206,7 @@ export default function CreatorEdit() {
       toast.error("Digite um nome para o template");
       return;
     }
-    if (templates.length >= maxTemplates) {
+    if (totalSavedTemplateCount >= maxTemplates) {
       toast.error(`Limite de ${maxTemplates} template(s) atingido. ${currentPlan === "free" ? "Faça upgrade para o Pro!" : ""}`);
       return;
     }
