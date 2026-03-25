@@ -277,17 +277,20 @@ export default function OnboardingFlow({ onComplete }: { onComplete: () => void 
 
       await refetch();
       markOnboardingDone(user.id);
+      clearProgress();
 
       await new Promise(r => setTimeout(r, 1500));
       setStep("done");
     } catch (err) {
       console.error("Onboarding error:", err);
       markOnboardingDone(user.id);
+      clearProgress();
       onComplete();
     }
   };
 
   const handleFinish = () => {
+    clearProgress();
     onComplete();
     if (createdHandle) {
       navigate(`/app/creators`);
