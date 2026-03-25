@@ -543,7 +543,7 @@ export default function OnboardingFlow({ onComplete }: { onComplete: () => void 
               {createdHandle && (
                  <div className="mb-6 p-3 bg-card border border-border rounded-xl">
                    <p className="text-xs text-muted-foreground mb-1">Sua página pública</p>
-                   <p className="text-sm font-mono text-primary">in1.bio/{createdHandle}</p>
+                   <p className="text-sm font-mono text-primary-readable">in1.bio/{createdHandle}</p>
                 </div>
               )}
               <div className="flex flex-col gap-3">

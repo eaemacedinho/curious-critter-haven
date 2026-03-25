@@ -850,7 +850,7 @@ const CreatorEditPanel = forwardRef<CreatorEditPanelHandle, Props>(function Crea
                 <span className="text-xl flex-shrink-0 mt-0.5">{effect.emoji}</span>
                 <div className="min-w-0">
                   <div className="flex items-center gap-2">
-                    <span className={`text-[0.78rem] font-semibold ${isActive ? "text-primary" : "text-foreground/80"}`}>
+                    <span className={`text-[0.78rem] font-semibold ${isActive ? "text-primary-readable" : "text-foreground/80"}`}>
                       {effect.label}
                     </span>
                     {isActive && (

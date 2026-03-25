@@ -125,7 +125,7 @@ export default function TemplatePreviewCard({ template, fullHeight }: Props) {
                   )}
                   <div className="min-w-0 flex-1">
                     <p className="text-[0.5rem] font-semibold text-foreground truncate">{product.title}</p>
-                    <p className="text-[0.45rem] font-bold text-primary">{product.price}</p>
+                    <p className="text-[0.45rem] font-bold text-primary-readable">{product.price}</p>
                   </div>
                 </div>
               </div>

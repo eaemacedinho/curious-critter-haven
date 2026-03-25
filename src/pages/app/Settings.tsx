@@ -388,7 +388,7 @@ export default function Settings() {
                       className="flex flex-col items-center gap-1 p-4 bg-primary/5 border border-primary/20 rounded-xl hover:bg-primary/10 transition-all"
                     >
                       <span className="text-sm font-bold text-foreground">Pro</span>
-                      <span className="text-lg font-extrabold text-primary">R$17,90<span className="text-xs font-normal text-muted-foreground">/mês</span></span>
+                      <span className="text-lg font-extrabold text-primary-readable">R$17,90<span className="text-xs font-normal text-muted-foreground">/mês</span></span>
                       <span className="text-[0.65rem] text-muted-foreground">Até 2 perfis · Analytics · Reels</span>
                     </button>
                     <button
@@ -396,7 +396,7 @@ export default function Settings() {
                       className="flex flex-col items-center gap-1 p-4 bg-primary/5 border border-primary/20 rounded-xl hover:bg-primary/10 transition-all"
                     >
                       <span className="text-sm font-bold text-foreground">Scale</span>
-                      <span className="text-lg font-extrabold text-primary">R$87,90<span className="text-xs font-normal text-muted-foreground">/mês</span></span>
+                      <span className="text-lg font-extrabold text-primary-readable">R$87,90<span className="text-xs font-normal text-muted-foreground">/mês</span></span>
                       <span className="text-[0.65rem] text-muted-foreground">Até 10 perfis · Equipe · Lote</span>
                     </button>
                   </div>
@@ -417,7 +417,7 @@ export default function Settings() {
                       <span className="text-sm font-bold text-foreground">Upgrade para Scale</span>
                       <p className="text-[0.65rem] text-muted-foreground">10 perfis · membros de equipe · criação em lote</p>
                     </div>
-                    <span className="text-sm font-bold text-primary">R$87,90/mês</span>
+                    <span className="text-sm font-bold text-primary-readable">R$87,90/mês</span>
                   </button>
                   <p className="text-[0.6rem] text-muted-foreground/60 text-center">
                     Ou conheça o <a href="mailto:contato@in1.bio?subject=Plano%20Enterprise" className="underline hover:text-foreground">Enterprise</a> com white-label completo.
@@ -452,13 +452,13 @@ export default function Settings() {
                       <div className="text-3xl mb-2">😢</div>
                       <h3 className="text-lg font-extrabold text-foreground">Que pena que quer sair!</h3>
                       <p className="text-sm text-muted-foreground mt-1">
-                        Antes de cancelar, que tal <span className="text-primary font-bold">30% de desconto</span> no próximo mês?
+                        Antes de cancelar, que tal <span className="text-primary-readable font-bold">30% de desconto</span> no próximo mês?
                       </p>
                     </div>
 
-                    <div className="bg-primary/5 border border-primary/20 rounded-2xl p-4 text-center">
+                    <div className="bg-primary/10 border border-primary/20 rounded-2xl p-4 text-center">
                       <div className="text-xs text-muted-foreground mb-1">Sua próxima fatura com desconto:</div>
-                      <div className="text-2xl font-extrabold text-primary">
+                      <div className="text-2xl font-extrabold text-primary-readable">
                         {currentPlan === "pro" ? "R$12,53" : "R$61,53"}
                         <span className="text-xs font-normal text-muted-foreground line-through ml-2">
                           {getPlanPrice(currentPlan)}
@@ -480,7 +480,7 @@ export default function Settings() {
                       <button
                         onClick={executeCancelSubscription}
                         disabled={canceling}
-                        className="w-full py-3 bg-muted text-muted-foreground font-medium text-sm rounded-xl hover:bg-muted/80 transition-all disabled:opacity-60"
+                        className="w-full py-3 bg-secondary border border-border text-foreground font-medium text-sm rounded-xl hover:bg-secondary/80 transition-all disabled:opacity-60"
                       >
                         {canceling ? "Cancelando..." : "Cancelar mesmo assim"}
                       </button>
@@ -613,7 +613,7 @@ export default function Settings() {
                       }
                     }}
                     disabled={exporting}
-                    className="px-4 py-2 bg-primary/10 text-primary text-xs font-semibold rounded-xl hover:bg-primary/20 transition-colors disabled:opacity-60"
+                    className="px-4 py-2 bg-primary/10 text-primary-readable text-xs font-semibold rounded-xl hover:bg-primary/20 transition-colors disabled:opacity-60"
                   >
                     {exporting ? "⏳ Exportando..." : "📦 Exportar"}
                   </button>
@@ -635,7 +635,7 @@ export default function Settings() {
                         toast.success("Onboarding resetado! Recarregando…");
                         setTimeout(() => window.location.href = "/app", 800);
                       }}
-                      className="px-4 py-2 bg-primary/10 text-primary text-xs font-semibold rounded-xl hover:bg-primary/20 transition-colors"
+                      className="px-4 py-2 bg-primary/10 text-primary-readable text-xs font-semibold rounded-xl hover:bg-primary/20 transition-colors"
                     >
                       🔄 Refazer
                     </button>

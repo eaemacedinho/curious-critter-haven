@@ -10,7 +10,7 @@ export default function Privacy() {
             <ArrowLeft className="w-5 h-5" />
           </Link>
           <span className="text-lg font-extrabold tracking-tight text-foreground">
-            in1<span className="text-primary">.bio</span>
+            in1<span className="text-primary-readable">.bio</span>
           </span>
         </div>
       </nav>

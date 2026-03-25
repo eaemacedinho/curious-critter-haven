@@ -85,7 +85,7 @@ export default function Landing() {
         <div className="max-w-[1200px] mx-auto flex items-center justify-between h-16 px-6 relative z-[1]">
           <Link to="/" className="flex items-center gap-2">
             <span className="text-lg font-extrabold tracking-tight text-foreground">
-              in1<span className="text-primary">.bio</span>
+              in1<span className="text-primary-readable">.bio</span>
             </span>
           </Link>
           <div className="hidden md:flex items-center gap-8 mr-8">
@@ -119,7 +119,7 @@ export default function Landing() {
             initial="hidden" animate="visible"
             className="flex flex-col items-center"
           >
-            <motion.div variants={fadeUp} custom={0} className="inline-flex items-center gap-2 px-4 py-1.5 border border-primary/20 rounded-full text-[0.72rem] font-bold text-primary tracking-widest uppercase bg-primary/5 mb-8">
+            <motion.div variants={fadeUp} custom={0} className="inline-flex items-center gap-2 px-4 py-1.5 border border-primary/20 rounded-full text-[0.72rem] font-bold text-primary-readable tracking-widest uppercase bg-primary/5 mb-8">
               <span className="w-[7px] h-[7px] rounded-full bg-primary shadow-[0_0_10px_hsl(var(--primary))] animate-pulse" />
               Novo jeito de usar sua bio
             </motion.div>
@@ -127,7 +127,7 @@ export default function Landing() {
             <motion.h1 variants={fadeUp} custom={1} className="font-display text-[clamp(2.8rem,6vw,5rem)] font-extrabold leading-[1.04] tracking-tight mb-6">
               Sua bio pode fazer
               <br />
-              <span className="text-primary drop-shadow-[0_0_40px_hsl(var(--primary)/0.3)]">muito mais.</span>
+              <span className="text-primary-readable drop-shadow-[0_0_40px_hsl(var(--primary)/0.3)]">muito mais.</span>
             </motion.h1>
 
             <motion.p variants={fadeUp} custom={2} className="text-lg text-muted-foreground leading-relaxed max-w-[540px] mb-10">
@@ -229,14 +229,14 @@ export default function Landing() {
         initial="hidden" whileInView="visible" viewport={{ once: true, amount: 0.1 }}
       >
         <motion.div variants={fadeUp} custom={0}>
-          <span className="inline-flex items-center gap-2 text-[0.66rem] font-bold text-primary tracking-[0.14em] uppercase mb-5">
-            <span className="w-4 h-px bg-primary" />
+          <span className="inline-flex items-center gap-2 text-[0.66rem] font-bold text-primary-readable tracking-[0.14em] uppercase mb-5">
+            <span className="w-4 h-px bg-primary-readable" />
             O problema
           </span>
           <h2 className="font-display text-[clamp(1.9rem,3.5vw,3rem)] font-extrabold leading-[1.1] tracking-tight mb-4">
             Um link na bio
             <br />
-            não deveria <span className="text-primary">limitar você.</span>
+            não deveria <span className="text-primary-readable">limitar você.</span>
           </h2>
           <p className="text-base text-muted-foreground leading-relaxed max-w-[560px] mb-12">
             Hoje sua bio é um gargalo. Você produz conteúdo, fecha parcerias, cria projetos — e tudo depende de um único link genérico que não faz jus ao seu trabalho.
@@ -262,14 +262,14 @@ export default function Landing() {
         initial="hidden" whileInView="visible" viewport={{ once: true, amount: 0.1 }}
       >
         <motion.div variants={fadeUp} custom={0}>
-          <span className="inline-flex items-center gap-2 text-[0.66rem] font-bold text-primary tracking-[0.14em] uppercase mb-5">
-            <span className="w-4 h-px bg-primary" />
+          <span className="inline-flex items-center gap-2 text-[0.66rem] font-bold text-primary-readable tracking-[0.14em] uppercase mb-5">
+            <span className="w-4 h-px bg-primary-readable" />
             A solução
           </span>
           <h2 className="font-display text-[clamp(1.9rem,3.5vw,3rem)] font-extrabold leading-[1.1] tracking-tight mb-4">
             Não é só um link.
             <br />
-            É uma <span className="text-primary">experiência.</span>
+            É uma <span className="text-primary-readable">experiência.</span>
           </h2>
           <p className="text-base text-muted-foreground leading-relaxed max-w-[560px] mx-auto mb-12">
             O in1.bio transforma sua bio em uma página inteligente que centraliza, destaca e converte.
@@ -298,12 +298,12 @@ export default function Landing() {
             <img src={heroCreator} alt="Creator usando in1.bio" className="rounded-3xl w-full object-cover aspect-[4/5] shadow-[0_30px_80px_rgba(0,0,0,0.5)]" />
           </motion.div>
           <motion.div variants={fadeUp} custom={1}>
-            <span className="inline-flex items-center gap-2 text-[0.66rem] font-bold text-primary tracking-[0.14em] uppercase mb-5">
-              <span className="w-4 h-px bg-primary" />
+            <span className="inline-flex items-center gap-2 text-[0.66rem] font-bold text-primary-readable tracking-[0.14em] uppercase mb-5">
+              <span className="w-4 h-px bg-primary-readable" />
               Feito para creators
             </span>
             <h2 className="font-display text-[clamp(1.6rem,3vw,2.6rem)] font-extrabold leading-[1.08] tracking-tight mb-5">
-              Sua presença digital merece ser <span className="text-primary">profissional.</span>
+              Sua presença digital merece ser <span className="text-primary-readable">profissional.</span>
             </h2>
             <p className="text-base text-muted-foreground leading-relaxed mb-8">
               Chega de páginas genéricas que não representam quem você é. Com o in1.bio, cada detalhe da sua página comunica autoridade e profissionalismo.
@@ -317,7 +317,7 @@ export default function Landing() {
               ].map((item, i) => (
                 <div key={i} className="flex items-center gap-3">
                   <span className="w-5 h-5 rounded-full bg-primary/15 flex items-center justify-center flex-shrink-0">
-                    <Check className="w-3 h-3 text-primary" />
+                    <Check className="w-3 h-3 text-primary-readable" />
                   </span>
                   <span className="text-sm text-foreground font-medium">{item}</span>
                 </div>
@@ -334,14 +334,14 @@ export default function Landing() {
         initial="hidden" whileInView="visible" viewport={{ once: true, amount: 0.1 }}
       >
         <motion.div variants={fadeUp} custom={0}>
-          <span className="inline-flex items-center gap-2 text-[0.66rem] font-bold text-primary tracking-[0.14em] uppercase mb-5">
-            <span className="w-4 h-px bg-primary" />
+          <span className="inline-flex items-center gap-2 text-[0.66rem] font-bold text-primary-readable tracking-[0.14em] uppercase mb-5">
+            <span className="w-4 h-px bg-primary-readable" />
             Para quem
           </span>
           <h2 className="font-display text-[clamp(1.9rem,3.5vw,3rem)] font-extrabold leading-[1.1] tracking-tight mb-4">
             Feito para quem leva
             <br />
-            <span className="text-primary">presença digital</span> a sério.
+            <span className="text-primary-readable">presença digital</span> a sério.
           </h2>
           <p className="text-base text-muted-foreground max-w-[560px] mx-auto mb-12">
             Se você cria, produz, vende ou se apresenta online — o in1.bio foi feito para você.
@@ -364,12 +364,12 @@ export default function Landing() {
         initial="hidden" whileInView="visible" viewport={{ once: true, amount: 0.1 }}
       >
         <motion.div variants={fadeUp} custom={0}>
-          <span className="inline-flex items-center gap-2 text-[0.66rem] font-bold text-primary tracking-[0.14em] uppercase mb-5">
-            <span className="w-4 h-px bg-primary" />
+          <span className="inline-flex items-center gap-2 text-[0.66rem] font-bold text-primary-readable tracking-[0.14em] uppercase mb-5">
+            <span className="w-4 h-px bg-primary-readable" />
             Diferencial
           </span>
           <h2 className="font-display text-[clamp(1.9rem,3.5vw,3rem)] font-extrabold leading-[1.1] tracking-tight mb-4">
-            Por que <span className="text-primary">in1.bio</span> é diferente?
+            Por que <span className="text-primary-readable">in1.bio</span> é diferente?
           </h2>
           <p className="text-base text-muted-foreground max-w-[560px] mx-auto mb-12">
             Não é mais um Linktree. É uma nova categoria.
@@ -398,7 +398,7 @@ export default function Landing() {
             <div className="space-y-0">
               {DIFF_NEW.map((item, i) => (
                 <div key={i} className="flex items-start gap-2.5 py-2.5 border-b border-border/20 last:border-b-0 text-sm text-muted-foreground">
-                  <Check className="w-4 h-4 text-primary flex-shrink-0 mt-0.5" />
+                  <Check className="w-4 h-4 text-primary-readable flex-shrink-0 mt-0.5" />
                   {item}
                 </div>
               ))}
@@ -415,7 +415,7 @@ export default function Landing() {
         <motion.div variants={fadeUp} custom={0}>
           <div className="text-4xl mb-6 opacity-30">✦</div>
           <p className="text-xl font-medium text-muted-foreground italic max-w-[600px] mx-auto leading-relaxed mb-4">
-            "Criadores estão migrando para uma nova forma de usar a bio. Quem se apresenta melhor, <span className="text-primary font-bold not-italic">fecha mais.</span>"
+            "Criadores estão migrando para uma nova forma de usar a bio. Quem se apresenta melhor, <span className="text-primary-readable font-bold not-italic">fecha mais.</span>"
           </p>
           <p className="text-sm text-muted-foreground/60">Feito para quem leva presença digital a sério.</p>
         </motion.div>
@@ -428,12 +428,12 @@ export default function Landing() {
       >
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-16 items-center">
           <motion.div variants={fadeUp} custom={0}>
-            <span className="inline-flex items-center gap-2 text-[0.66rem] font-bold text-primary tracking-[0.14em] uppercase mb-5">
-              <span className="w-4 h-px bg-primary" />
+            <span className="inline-flex items-center gap-2 text-[0.66rem] font-bold text-primary-readable tracking-[0.14em] uppercase mb-5">
+              <span className="w-4 h-px bg-primary-readable" />
               Para agências
             </span>
             <h2 className="font-display text-[clamp(1.6rem,3vw,2.6rem)] font-extrabold leading-[1.08] tracking-tight mb-5">
-              Gerencie todos os seus creators em <span className="text-primary">um painel.</span>
+              Gerencie todos os seus creators em <span className="text-primary-readable">um painel.</span>
             </h2>
             <p className="text-base text-muted-foreground leading-relaxed mb-8">
               Painel white-label completo com gestão de membros, permissões por role, analytics detalhado e campanhas automatizadas. Tudo com a marca da sua agência.
@@ -447,7 +447,7 @@ export default function Landing() {
               ].map((item, i) => (
                 <div key={i} className="flex items-center gap-3">
                   <span className="w-5 h-5 rounded-full bg-primary/15 flex items-center justify-center flex-shrink-0">
-                    <Check className="w-3 h-3 text-primary" />
+                    <Check className="w-3 h-3 text-primary-readable" />
                   </span>
                   <span className="text-sm text-foreground font-medium">{item}</span>
                 </div>
@@ -467,14 +467,14 @@ export default function Landing() {
         initial="hidden" whileInView="visible" viewport={{ once: true, amount: 0.1 }}
       >
         <motion.div variants={fadeUp} custom={0}>
-          <span className="inline-flex items-center gap-2 text-[0.66rem] font-bold text-primary tracking-[0.14em] uppercase mb-5">
-            <span className="w-4 h-px bg-primary" />
+          <span className="inline-flex items-center gap-2 text-[0.66rem] font-bold text-primary-readable tracking-[0.14em] uppercase mb-5">
+            <span className="w-4 h-px bg-primary-readable" />
             Planos
           </span>
           <h2 className="font-display text-[clamp(1.9rem,3.5vw,3rem)] font-extrabold leading-[1.1] tracking-tight mb-4">
             Simples, transparente,
             <br />
-            <span className="text-primary">sem surpresas.</span>
+            <span className="text-primary-readable">sem surpresas.</span>
           </h2>
           <p className="text-base text-muted-foreground max-w-[560px] mx-auto mb-12">
             Comece grátis. Evolua quando quiser.
@@ -500,7 +500,7 @@ export default function Landing() {
                 { ok: false, text: "Selo verificado" },
               ].map((item, i) => (
                 <li key={i} className="flex items-center gap-2 py-1.5 border-b border-border/30 last:border-b-0 text-sm text-muted-foreground">
-                  {item.ok ? <Check className="w-3.5 h-3.5 text-primary flex-shrink-0" /> : <span className="text-muted-foreground/30 flex-shrink-0">—</span>}
+                  {item.ok ? <Check className="w-3.5 h-3.5 text-primary-readable flex-shrink-0" /> : <span className="text-muted-foreground/30 flex-shrink-0">—</span>}
                   <span className={item.ok ? "" : "text-muted-foreground/40"}>{item.text}</span>
                 </li>
               ))}
@@ -531,7 +531,7 @@ export default function Landing() {
                 "Remover branding",
               ].map((text, i) => (
                 <li key={i} className="flex items-center gap-2 py-1.5 border-b border-border/20 last:border-b-0 text-sm text-muted-foreground">
-                  <Check className="w-3.5 h-3.5 text-primary flex-shrink-0" />
+                  <Check className="w-3.5 h-3.5 text-primary-readable flex-shrink-0" />
                   {text}
                 </li>
               ))}
@@ -556,7 +556,7 @@ export default function Landing() {
                 "Templates ilimitados",
               ].map((text, i) => (
                 <li key={i} className="flex items-center gap-2 py-1.5 border-b border-border/30 last:border-b-0 text-sm text-muted-foreground">
-                  <Check className="w-3.5 h-3.5 text-primary flex-shrink-0" />
+                  <Check className="w-3.5 h-3.5 text-primary-readable flex-shrink-0" />
                   {text}
                 </li>
               ))}
@@ -581,7 +581,7 @@ export default function Landing() {
                 "Suporte prioritário",
               ].map((text, i) => (
                 <li key={i} className="flex items-center gap-2 py-1.5 border-b border-border/30 last:border-b-0 text-sm text-muted-foreground">
-                  <Check className="w-3.5 h-3.5 text-primary flex-shrink-0" />
+                  <Check className="w-3.5 h-3.5 text-primary-readable flex-shrink-0" />
                   {text}
                 </li>
               ))}
@@ -603,7 +603,7 @@ export default function Landing() {
           <motion.h2 variants={fadeUp} custom={0} className="font-display text-[clamp(2rem,4vw,3.2rem)] font-extrabold leading-[1.06] tracking-tight mb-5">
             Pronto para uma bio que
             <br />
-            <span className="text-primary">realmente funciona?</span>
+            <span className="text-primary-readable">realmente funciona?</span>
           </motion.h2>
           <motion.p variants={fadeUp} custom={1} className="text-base text-muted-foreground max-w-[440px] mx-auto mb-10">
             Crie sua página em menos de 2 minutos. Grátis.

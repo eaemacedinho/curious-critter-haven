@@ -68,12 +68,12 @@ export default function Templates() {
         <div className="pointer-events-none absolute -top-40 left-1/2 -translate-x-1/2 h-[500px] w-[800px] rounded-full bg-primary/[0.06] blur-[120px]" />
         <motion.div initial="hidden" animate="visible" className="relative mx-auto max-w-3xl px-6">
           <motion.div variants={fadeUp} custom={0} className="mb-4 inline-flex items-center gap-2 rounded-full border border-border bg-card/60 px-4 py-1.5 text-xs font-semibold text-muted-foreground backdrop-blur-sm">
-            <Sparkles className="h-3.5 w-3.5 text-primary" />
+            <Sparkles className="h-3.5 w-3.5 text-primary-readable" />
             Templates prontos para usar
           </motion.div>
           <motion.h1 variants={fadeUp} custom={1} className="font-display text-4xl font-extrabold tracking-tight sm:text-5xl lg:text-6xl">
             Escolha um modelo.{" "}
-            <span className="text-primary">Comece pronto.</span>
+            <span className="text-primary-readable">Comece pronto.</span>
           </motion.h1>
           <motion.p variants={fadeUp} custom={2} className="mt-5 text-lg text-muted-foreground max-w-xl mx-auto">
             Templates criados para converter — não só para parecer bonito.
@@ -136,7 +136,7 @@ export default function Templates() {
                 <div className="p-5">
                   <h3 className="font-display text-lg font-bold text-foreground">{template.name}</h3>
                   <p className="mt-1 text-sm text-muted-foreground leading-relaxed">{template.description}</p>
-                  <div className="mt-3 flex items-center gap-1.5 text-xs font-medium text-primary">
+                  <div className="mt-3 flex items-center gap-1.5 text-xs font-medium text-primary-readable">
                     <Sparkles className="h-3 w-3" />
                     {template.objective}
                   </div>
@@ -208,7 +208,7 @@ export default function Templates() {
                 <TemplatePreviewCard template={selectedTemplate} fullHeight />
               </div>
               <div className="flex w-full flex-col justify-center p-8 md:w-1/2 md:p-10">
-                <div className="mb-4 inline-flex w-fit items-center gap-1.5 rounded-full border border-primary/30 bg-primary/10 px-3 py-1 text-xs font-semibold text-primary">
+                <div className="mb-4 inline-flex w-fit items-center gap-1.5 rounded-full border border-primary/30 bg-primary/10 px-3 py-1 text-xs font-semibold text-primary-readable">
                   <Sparkles className="h-3 w-3" />
                   Template
                 </div>

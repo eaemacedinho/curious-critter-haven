@@ -108,7 +108,7 @@ export default function CreatorViewMinimal({ profile, links: rawLinks, socialLin
                   {prod.image_url && <img src={prod.image_url} alt="" className="w-full h-24 object-cover" />}
                   <div className="p-3">
                     <h5 className="text-[0.78rem] font-semibold">{prod.title}</h5>
-                    {prod.price && <span className="text-[0.7rem] font-bold text-primary">{prod.price}</span>}
+                    {prod.price && <span className="text-[0.7rem] font-bold text-primary-readable">{prod.price}</span>}
                   </div>
                 </div>
               ))}

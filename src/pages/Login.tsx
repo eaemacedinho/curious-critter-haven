@@ -101,7 +101,7 @@ export default function Login() {
         <div className="text-center mb-8">
           <Link to="/" className="inline-flex items-center gap-2.5 font-extrabold text-2xl tracking-tight text-foreground mb-3">
             <span className="w-9 h-9 rounded-xl gradient-primary flex items-center justify-center text-sm text-primary-foreground font-extrabold">1</span>
-            All in<span className="text-primary"> 1</span>
+            All in<span className="text-primary-readable"> 1</span>
           </Link>
           {claimedUsername ? (
             <div className="mt-2">
@@ -109,7 +109,7 @@ export default function Login() {
                 {isSignUp ? "Você está criando" : "Bem-vindo de volta"}
               </p>
               {isSignUp && (
-                <p className="text-base font-bold text-primary mt-1">
+                <p className="text-base font-bold text-primary-readable mt-1">
                   in1.bio/<span className="text-foreground">{claimedUsername}</span>
                 </p>
               )}
@@ -186,7 +186,7 @@ export default function Login() {
                   if (error) toast.error(error.message);
                   else toast.success("E-mail de recuperação enviado! Verifique sua caixa de entrada.");
                 }}
-                className="text-xs text-muted-foreground hover:text-primary transition-colors"
+                className="text-xs text-muted-foreground hover:text-primary-readable transition-colors"
               >
                 Esqueceu sua senha?
               </button>
@@ -195,7 +195,7 @@ export default function Login() {
 
           <p className="text-center text-sm text-muted-foreground mt-4">
             {isSignUp ? "Já tem conta?" : "Não tem conta?"}{" "}
-            <button onClick={() => setIsSignUp(!isSignUp)} className="text-primary font-semibold hover:underline">
+            <button onClick={() => setIsSignUp(!isSignUp)} className="text-primary-readable font-semibold hover:underline">
               {isSignUp ? "Fazer login" : "Cadastre-se"}
             </button>
           </p>

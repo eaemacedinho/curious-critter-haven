@@ -10,7 +10,7 @@ export default function Cookies() {
             <ArrowLeft className="w-5 h-5" />
           </Link>
           <span className="text-lg font-extrabold tracking-tight text-foreground">
-            in1<span className="text-primary">.bio</span>
+            in1<span className="text-primary-readable">.bio</span>
           </span>
         </div>
       </nav>
@@ -45,7 +45,7 @@ export default function Cookies() {
               <div key={i} className="grid grid-cols-[1.5fr_1fr_2fr] items-center px-5 py-3 border-b border-border last:border-b-0 text-sm">
                 <div className="font-mono text-xs text-foreground">{c.name}</div>
                 <div>
-                  <span className={`inline-flex px-2 py-0.5 rounded-full text-[0.6rem] font-bold ${c.type === "Essencial" ? "bg-primary/10 text-primary" : "bg-accent/10 text-accent-foreground"}`}>
+                  <span className={`inline-flex px-2 py-0.5 rounded-full text-[0.6rem] font-bold ${c.type === "Essencial" ? "bg-primary/10 text-primary-readable" : "bg-accent/10 text-accent-foreground"}`}>
                     {c.type}
                   </span>
                 </div>
