@@ -60,7 +60,13 @@ Deno.serve(async (req) => {
     }
 
     const body = await req.json();
-    const { card, customer } = body;
+    const { card, customer, plan: requestedPlan } = body;
+
+    // Determine plan and price
+    const planKey = requestedPlan === "scale" ? "scale" : "pro";
+    const planPrice = planKey === "scale" ? 8790 : 1790;
+    const planLabel = planKey === "scale" ? "Scale" : "Pro";
+    const planDescriptor = planKey === "scale" ? "IN1BIO SCALE" : "IN1BIO PRO";
 
     if (!card || !customer) {
       return new Response(
