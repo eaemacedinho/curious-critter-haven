@@ -78,9 +78,8 @@ export default function Login() {
             });
           }
         }
-        toast.success("Conta criada com sucesso!");
-        const dest = templateParam ? `/app?template=${templateParam}` : "/app";
-        navigate(dest);
+        toast.success("Conta criada! Confirme seu e-mail para continuar.");
+        navigate(`/verify-email?email=${encodeURIComponent(email)}&from=signup`);
       }
     } else {
       const { error } = await supabase.auth.signInWithPassword({ email, password });
