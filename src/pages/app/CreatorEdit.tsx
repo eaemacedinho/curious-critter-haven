@@ -438,6 +438,33 @@ export default function CreatorEdit() {
 
                   <div className="border-t border-border my-1" />
 
+                  {/* Saved gallery templates */}
+                  {savedGalleryTemplates.length > 0 && (
+                    <>
+                      <p className="px-3 pt-2 pb-1 text-[0.6rem] font-bold text-muted-foreground uppercase tracking-wider flex items-center gap-1.5">
+                        <Palette className="w-3 h-3" /> Da galeria
+                      </p>
+                      {savedGalleryTemplates.map((gt) => (
+                        <button
+                          key={gt.id}
+                          disabled={applyingGallery}
+                          onClick={() => {
+                            setShowTemplateDropdown(false);
+                            handleApplyGalleryTemplate(gt);
+                          }}
+                          className="w-full text-left px-3 py-2 text-sm text-foreground hover:bg-muted transition-colors flex items-center gap-2"
+                        >
+                          <Sparkles className="w-3.5 h-3.5 text-primary-readable flex-shrink-0" />
+                          <div className="flex-1 min-w-0">
+                            <span className="truncate block">{gt.name}</span>
+                            <span className="text-[0.6rem] text-muted-foreground">{gt.objective}</span>
+                          </div>
+                        </button>
+                      ))}
+                      <div className="border-t border-border my-1" />
+                    </>
+                  )}
+
                   {/* Save current as new template */}
                   <button
                     onClick={() => {
@@ -449,7 +476,7 @@ export default function CreatorEdit() {
                       setTemplateNameInput("");
                       setShowNewTemplateDialog(true);
                     }}
-                    className="w-full text-left px-3 py-2.5 text-sm text-primary font-semibold hover:bg-primary/10 transition-colors flex items-center gap-2"
+                    className="w-full text-left px-3 py-2.5 text-sm text-primary-readable font-semibold hover:bg-primary/10 transition-colors flex items-center gap-2"
                   >
                     <Save className="w-3.5 h-3.5" />
                     Salvar como template
