@@ -1,4 +1,5 @@
 import { toast } from "sonner";
+import { autoTextColor } from "@/lib/utils";
 import type { CreatorProfile, CreatorLink, SocialLink, CreatorProduct, CreatorCampaign } from "@/hooks/useCreatorData";
 import type { HeroReelData } from "./HeroReel";
 import type { Testimonial } from "./TestimonialsSection";
