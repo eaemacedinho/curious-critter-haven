@@ -19,6 +19,8 @@ export default function Invite() {
   const navigate = useNavigate();
   const refCode = searchParams.get("ref");
   const [referrerName, setReferrerName] = useState<string | null>(null);
+  const [referrerAvatar, setReferrerAvatar] = useState<string | null>(null);
+  const [referrerSlug, setReferrerSlug] = useState<string | null>(null);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {

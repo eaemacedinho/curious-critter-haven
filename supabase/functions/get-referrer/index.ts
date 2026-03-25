@@ -22,14 +22,33 @@ Deno.serve(async (req) => {
       auth: { autoRefreshToken: false, persistSession: false },
     });
 
-    const { data } = await supabase
+    // Get referrer profile
+    const { data: profile } = await supabase
       .from("profiles")
-      .select("full_name")
+      .select("id, full_name, avatar_url")
       .eq("referral_code", ref_code)
       .maybeSingle();
 
+    if (!profile) {
+      return new Response(JSON.stringify({ name: null }), {
+        headers: { ...corsHeaders, "Content-Type": "application/json" },
+      });
+    }
+
+    // Get creator slug for the @ handle
+    const { data: creator } = await supabase
+      .from("creators")
+      .select("slug, avatar_url")
+      .eq("user_id", profile.id)
+      .limit(1)
+      .maybeSingle();
+
     return new Response(
-      JSON.stringify({ name: data?.full_name || null }),
+      JSON.stringify({
+        name: profile.full_name || null,
+        avatar_url: creator?.avatar_url || profile.avatar_url || null,
+        slug: creator?.slug || null,
+      }),
       { headers: { ...corsHeaders, "Content-Type": "application/json" } }
     );
   } catch (error) {
