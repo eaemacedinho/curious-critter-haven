@@ -32,35 +32,26 @@ export function useCreatorTemplates(agencyId?: string, creatorId?: string) {
     if (!agencyId) return;
     setLoading(true);
 
-    // Fetch agency default template + creator-specific templates
-    const queries = [
+    // Fetch agency default template + ALL non-default agency templates
+    const [defaultRes, allRes] = await Promise.all([
       supabase
         .from("creator_templates" as any)
         .select("*")
         .eq("agency_id", agencyId)
         .eq("is_default", true)
         .maybeSingle(),
-    ];
+      supabase
+        .from("creator_templates" as any)
+        .select("*")
+        .eq("agency_id", agencyId)
+        .eq("is_default", false)
+        .order("created_at", { ascending: true }),
+    ]);
 
-    if (creatorId) {
-      queries.push(
-        supabase
-          .from("creator_templates" as any)
-          .select("*")
-          .eq("agency_id", agencyId)
-          .eq("creator_id", creatorId)
-          .eq("is_default", false)
-          .order("created_at", { ascending: true }) as any
-      );
-    }
-
-    const results = await Promise.all(queries);
-    setDefaultTemplate((results[0].data as any as SavedTemplate) || null);
-    if (creatorId && results[1]) {
-      setTemplates(((results[1] as any).data as any as SavedTemplate[]) || []);
-    }
+    setDefaultTemplate((defaultRes.data as any as SavedTemplate) || null);
+    setTemplates(((allRes as any).data as any as SavedTemplate[]) || []);
     setLoading(false);
-  }, [agencyId, creatorId]);
+  }, [agencyId]);
 
   useEffect(() => {
     void fetchTemplates();
