@@ -37,6 +37,7 @@ export default function CreatorEdit() {
   const [templateNameInput, setTemplateNameInput] = useState("");
   const [showNewTemplateDialog, setShowNewTemplateDialog] = useState(false);
   const [usingDefault, setUsingDefault] = useState(false);
+  const [activeGalleryTemplateName, setActiveGalleryTemplateName] = useState<string | null>(null);
   const [templateDropdownStyle, setTemplateDropdownStyle] = useState<{ top: number; left: number; width: number } | null>(null);
 
   // Track original template data for "em edição" detection and reset
@@ -176,6 +177,7 @@ export default function CreatorEdit() {
       setOriginalTemplateSnapshot(JSON.parse(JSON.stringify(snapshotData)));
       setActiveTemplateId(null);
       setUsingDefault(false);
+      setActiveGalleryTemplateName(template.name);
       toast.success(`Template "${template.name}" aplicado!`);
     } catch (err) {
       console.error(err);
@@ -278,19 +280,13 @@ export default function CreatorEdit() {
       setOriginalTemplateSnapshot(JSON.parse(JSON.stringify(defaultTemplate.template_data)));
       setActiveTemplateId(null);
       setUsingDefault(true);
+      setActiveGalleryTemplateName(null);
       setShowSwitchConfirm(null);
       toast.success("Meu Padrão aplicado!");
       return;
     }
 
-    if (templateId === null) {
-      setActiveTemplateId(null);
-      setUsingDefault(false);
-      setOriginalTemplateSnapshot(null);
-      setShowSwitchConfirm(null);
-      toast.success("Modo personalizado ativado");
-      return;
-    }
+
 
     const tpl = templates.find(t => t.id === templateId);
     if (!tpl) return;
@@ -307,6 +303,7 @@ export default function CreatorEdit() {
     setOriginalTemplateSnapshot(JSON.parse(JSON.stringify(tpl.template_data)));
     setActiveTemplateId(templateId);
     setUsingDefault(false);
+    setActiveGalleryTemplateName(null);
     setShowSwitchConfirm(null);
     toast.success(`Template "${tpl.name}" aplicado!`);
   };
@@ -394,7 +391,7 @@ export default function CreatorEdit() {
   };
 
   const activeTemplate = templates.find(t => t.id === activeTemplateId);
-  const currentLabel = usingDefault ? "⭐ Meu Padrão" : activeTemplate ? activeTemplate.name : "Personalizado";
+  const currentLabel = usingDefault ? "⭐ Meu Padrão" : activeTemplate ? activeTemplate.name : activeGalleryTemplateName ? `✨ ${activeGalleryTemplateName}` : "⭐ Meu Padrão";
   const totalSavedTemplateCount = templates.length + savedGalleryTemplates.length;
 
   return (
@@ -422,15 +419,11 @@ export default function CreatorEdit() {
             <button
               ref={templateButtonRef}
               onClick={() => setShowTemplateDropdown(!showTemplateDropdown)}
-              className={`px-2.5 sm:px-3 py-2 text-[0.68rem] sm:text-xs font-semibold rounded-xl border transition-all flex items-center gap-1.5 whitespace-nowrap ${
-                activeTemplateId || usingDefault
-                  ? "bg-primary/15 border-primary/40 text-primary-readable"
-                  : "bg-card border-border text-muted-foreground hover:text-foreground hover:border-primary/30"
-              }`}
+              className="px-2.5 sm:px-3 py-2 text-[0.68rem] sm:text-xs font-semibold rounded-xl border transition-all flex items-center gap-1.5 whitespace-nowrap bg-primary/15 border-primary/40 text-primary-readable"
             >
               <Save className="w-3.5 h-3.5" />
               <span className="hidden sm:inline">{currentLabel}</span>
-              <span className="sm:hidden">{usingDefault ? "⭐" : activeTemplate ? "📋" : "✏️"}</span>
+              <span className="sm:hidden">{usingDefault ? "⭐" : activeTemplate ? "📋" : activeGalleryTemplateName ? "✨" : "⭐"}</span>
               {isTemplateEdited && (
                 <span className="text-[0.55rem] bg-accent text-accent-foreground px-1.5 py-0.5 rounded-md font-bold animate-pulse">EM EDIÇÃO</span>
               )}
@@ -458,20 +451,6 @@ export default function CreatorEdit() {
                      width: templateDropdownStyle.width,
                    }}
                  >
-                  {/* Custom / Personalizado */}
-                  <button
-                    onClick={() => { handleSwitchTemplate(null); setShowTemplateDropdown(false); }}
-                    className={`w-full text-left px-3 py-2.5 text-sm transition-colors flex items-center gap-2 ${
-                      !activeTemplateId && !usingDefault ? "bg-secondary text-foreground font-semibold" : "text-foreground hover:bg-muted"
-                    }`}
-                  >
-                    <RotateCcw className="w-3.5 h-3.5 flex-shrink-0" />
-                    <span className="flex-1">Personalizado</span>
-                    {!activeTemplateId && !usingDefault && <span className="text-[0.6rem] bg-primary/20 text-primary-readable px-1.5 py-0.5 rounded-md font-bold">ATIVO</span>}
-                  </button>
-
-                  <div className="border-t border-border my-1" />
-
                   {/* Meu Padrão — agency default */}
                   <div className={`flex items-center gap-1 px-3 py-2.5 transition-colors ${usingDefault ? "bg-primary/10" : "hover:bg-muted"}`}>
                     <button
