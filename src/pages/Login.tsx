@@ -284,9 +284,19 @@ export default function Login() {
               </div>
             )}
 
+            <div className="flex justify-center">
+              <Turnstile
+                siteKey="0x4AAAAAACvqwP34O2k_fFUT"
+                onSuccess={(token) => setTurnstileToken(token)}
+                onExpire={() => setTurnstileToken(null)}
+                onError={() => setTurnstileToken(null)}
+                options={{ theme: "auto", size: "normal" }}
+              />
+            </div>
+
             <button
               type="submit"
-              disabled={loading || (isSignUp && confirmPassword !== "" && password !== confirmPassword)}
+              disabled={loading || !turnstileToken || (isSignUp && confirmPassword !== "" && password !== confirmPassword)}
               className="w-full py-3.5 bg-primary text-primary-foreground font-semibold text-sm rounded-xl transition-all duration-300 hover:opacity-90 active:scale-[0.98] disabled:opacity-50 flex items-center justify-center gap-2"
             >
               {loading ? (
