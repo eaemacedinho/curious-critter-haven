@@ -189,21 +189,42 @@ export default function Invite() {
         </motion.div>
       </div>
 
-      {/* Hero Image */}
+      {/* Hero Mockup with floating animation */}
       <motion.div
         initial={{ opacity: 0, y: 30 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ delay: 0.4, duration: 0.7, ease: [0.16, 1, 0.3, 1] }}
         className="relative z-10 max-w-[850px] mx-auto px-6 pb-16"
       >
-        <div className="relative rounded-2xl overflow-hidden shadow-2xl shadow-primary/20 max-w-[420px] mx-auto">
-          <img
+        <div className="relative max-w-[320px] sm:max-w-[380px] mx-auto">
+          {/* Glow ring behind phone */}
+          <div className="absolute inset-0 flex items-center justify-center pointer-events-none">
+            <motion.div
+              animate={{ scale: [1, 1.08, 1], opacity: [0.3, 0.5, 0.3] }}
+              transition={{ duration: 4, repeat: Infinity, ease: "easeInOut" }}
+              className="w-[70%] h-[70%] rounded-full bg-primary/20 blur-[60px]"
+            />
+          </div>
+          {/* Orbiting dots */}
+          <motion.div
+            animate={{ rotate: 360 }}
+            transition={{ duration: 20, repeat: Infinity, ease: "linear" }}
+            className="absolute inset-[-20px] pointer-events-none"
+          >
+            <div className="absolute top-0 left-1/2 w-2 h-2 rounded-full bg-primary/40 -translate-x-1/2" />
+            <div className="absolute bottom-0 left-1/2 w-1.5 h-1.5 rounded-full bg-primary/25 -translate-x-1/2" />
+            <div className="absolute left-0 top-1/2 w-1.5 h-1.5 rounded-full bg-primary/30 -translate-y-1/2" />
+          </motion.div>
+          {/* Floating phone */}
+          <motion.img
             src={inviteMockup}
             alt="Mockup de página de creator na plataforma All in 1"
-            className="w-full h-auto object-cover"
-            width={1024}
+            className="w-full h-auto object-contain drop-shadow-[0_20px_50px_hsl(var(--primary)/0.25)] relative z-[1]"
+            width={800}
             height={1024}
             loading="eager"
+            animate={{ y: [0, -12, 0], rotate: [0, 1, 0, -1, 0] }}
+            transition={{ duration: 6, repeat: Infinity, ease: "easeInOut" }}
           />
         </div>
       </motion.div>
