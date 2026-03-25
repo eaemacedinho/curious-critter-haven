@@ -520,7 +520,7 @@ export default function Landing() {
             <p className="text-sm text-muted-foreground mb-6">Para creators que querem se destacar.</p>
             <ul className="space-y-0 mb-7">
               {[
-                "Até 2 perfis de creator",
+                "Até 2 perfis",
                 "Links & produtos ilimitados",
                 "Todos os layouts (incl. Imersivo)",
                 "Campanhas Spotlight",
