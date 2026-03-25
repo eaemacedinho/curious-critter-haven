@@ -383,7 +383,7 @@ export default function AppTemplates() {
                 <div className="p-4">
                   <h3 className="font-display text-base font-bold text-foreground">{template.name}</h3>
                   <p className="mt-1 text-xs text-muted-foreground leading-relaxed line-clamp-2">{template.description}</p>
-                  <div className="mt-2 flex items-center gap-1.5 text-[0.68rem] font-medium text-primary">
+                  <div className="mt-2 flex items-center gap-1.5 text-[0.68rem] font-medium text-primary-readable">
                     <Sparkles className="h-3 w-3" /> {template.objective}
                   </div>
                 </div>
