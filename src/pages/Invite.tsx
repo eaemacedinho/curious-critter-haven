@@ -5,7 +5,7 @@ import { Link, useSearchParams, useNavigate } from "react-router-dom";
 import { supabase } from "@/integrations/supabase/client";
 import { captureReferralCode, getStoredReferralCode } from "@/hooks/useReferral";
 import { ArrowRight, Sparkles, Link2, BarChart3, Palette, Zap, Users, CheckCircle2 } from "lucide-react";
-import inviteMockup from "@/assets/invite-mockup.jpg";
+import inviteMockup from "@/assets/invite-mockup.png";
 
 const BENEFITS = [
   { icon: <Link2 className="w-5 h-5" />, title: "Página de Links Premium", desc: "Centralize todos os seus links em uma única página com design profissional." },
