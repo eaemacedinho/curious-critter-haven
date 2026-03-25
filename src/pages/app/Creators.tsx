@@ -13,6 +13,7 @@ interface CreatorRow {
   name: string;
   slug: string;
   avatar_url: string;
+  avatar_url_layout2: string;
   bio: string;
   layout_type: string;
   verified: boolean;
