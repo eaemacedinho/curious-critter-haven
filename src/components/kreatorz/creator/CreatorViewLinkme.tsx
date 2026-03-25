@@ -321,6 +321,32 @@ export default function CreatorViewLinkme({ profile, links: rawLinks, socialLink
                             </div>
                           ))}
                         </SectionCarousel>
+                      ) : displayModes.products === "marquee" && products.length > 1 ? (
+                        <SectionMarquee itemWidth="65%">
+                          {products.map((prod) => (
+                            <div key={prod.id} onClick={() => prod.url && window.open(prod.url, "_blank")}
+                              className={`backdrop-blur-xl ${shapeClass(profile.image_shape_products)} overflow-hidden cursor-pointer transition-all duration-300 group hover:-translate-y-1 active:scale-[0.97] h-full ${!prod.bg_color ? "bg-card/70 border border-border hover:border-primary/30" : ""}`}
+                              style={{
+                                ...(prod.bg_color ? { backgroundColor: prod.bg_color } : {}),
+                                color: autoTextColor(prod.bg_color, prod.text_color),
+                                ...(prod.border_color ? { borderColor: prod.border_color, borderWidth: "1px", borderStyle: "solid" } : {}),
+                              }}>
+                              {prod.image_url ? (
+                                <div className="w-full aspect-square overflow-hidden">
+                                  <img src={prod.image_url} alt="" className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105" />
+                                </div>
+                              ) : (
+                                <div className="p-4">
+                                  <div className="text-2xl mb-2 transition-transform group-hover:scale-110">{prod.icon}</div>
+                                </div>
+                              )}
+                              <div className="p-3.5">
+                                <h5 className="text-[0.82rem] font-semibold mb-1">{prod.title}</h5>
+                                {prod.price && <span className="text-[0.72rem] font-bold text-foreground" style={prod.text_color ? { color: prod.text_color } : undefined}>{prod.price}</span>}
+                              </div>
+                            </div>
+                          ))}
+                        </SectionMarquee>
                       ) : (
                         <div className="grid grid-cols-2 gap-3">
                           {products.map((prod) => (
