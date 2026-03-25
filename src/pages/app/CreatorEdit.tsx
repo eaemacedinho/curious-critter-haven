@@ -218,11 +218,6 @@ export default function CreatorEdit() {
     if (!saved) return;
     await refetch();
     toast.success("Alterações salvas com sucesso!");
-
-    // Only suggest saving as template if no templates exist yet
-    if (templates.length === 0 && !defaultTemplate) {
-      setShowSaveConfirm(true);
-    }
   };
 
   const handleSaveAsTemplate = async () => {
@@ -429,15 +424,6 @@ export default function CreatorEdit() {
               )}
               <ChevronDown className="w-3 h-3" />
             </button>
-            {isTemplateEdited && originalTemplateSnapshot && (
-              <button
-                onClick={() => { setResetConfirmInput(""); setShowResetConfirm(true); }}
-                className="p-2 text-muted-foreground hover:text-destructive transition-colors rounded-xl border border-border bg-card hover:border-destructive/40"
-                title="Resetar para configurações originais do template"
-              >
-                <RotateCcw className="w-3.5 h-3.5" />
-              </button>
-            )}
           </div>
 
             {showTemplateDropdown && (
@@ -648,6 +634,17 @@ export default function CreatorEdit() {
           >
             👁 <span className="hidden sm:inline">Ver página</span><span className="sm:hidden">Ver</span>
           </button>
+          {/* Reset template */}
+          {originalTemplateSnapshot && (
+            <button
+              onClick={() => { setResetConfirmInput(""); setShowResetConfirm(true); }}
+              className="px-3 sm:px-4 py-2 bg-card border border-border text-muted-foreground font-medium text-[0.68rem] sm:text-sm rounded-xl transition-all hover:border-destructive/40 hover:text-destructive flex-shrink-0 whitespace-nowrap flex items-center gap-1.5"
+              title="Resetar para configurações originais do template"
+            >
+              <RotateCcw className="w-3.5 h-3.5" />
+              <span className="hidden sm:inline">Resetar</span>
+            </button>
+          )}
           {/* Save */}
           <button
             onClick={() => void handleSave()}
