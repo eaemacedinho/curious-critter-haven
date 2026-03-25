@@ -456,7 +456,7 @@ export default function Settings() {
                       </p>
                     </div>
 
-                    <div className="bg-primary/5 border border-primary/20 rounded-2xl p-4 text-center">
+                    <div className="bg-primary/10 border border-primary/20 rounded-2xl p-4 text-center">
                       <div className="text-xs text-muted-foreground mb-1">Sua próxima fatura com desconto:</div>
                       <div className="text-2xl font-extrabold text-primary">
                         {currentPlan === "pro" ? "R$12,53" : "R$61,53"}
