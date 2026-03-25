@@ -164,7 +164,7 @@ export default function Referrals() {
                 {/* Info */}
                 <div className="flex-1 min-w-0">
                   <div className="flex items-center gap-2">
-                    <span className={`text-sm font-bold ${reward.unlocked ? "text-primary" : "text-foreground"}`}>
+                    <span className={`text-sm font-bold ${reward.unlocked ? "text-primary-readable" : "text-foreground"}`}>
                       {reward.label}
                     </span>
                     {reward.unlocked && (
