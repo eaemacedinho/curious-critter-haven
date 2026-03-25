@@ -754,6 +754,42 @@ export default function CreatorEdit() {
         cancelLabel="Cancelar"
         onConfirm={handleSaveAsTemplate}
       />
+
+      {/* Reset template confirmation — requires typing CONFIRMO */}
+      <ConfirmDialog
+        open={showResetConfirm}
+        onOpenChange={(open) => { if (!open) { setShowResetConfirm(false); setResetConfirmInput(""); } }}
+        title="Resetar template?"
+        description={
+          <div className="space-y-3 mt-1">
+            <p className="text-sm text-muted-foreground">
+              Ao resetar, você <strong className="text-destructive">perderá toda a personalização</strong> feita no template. Os dados não serão salvos e o template voltará às configurações originais.
+            </p>
+            <p className="text-sm text-muted-foreground">
+              Para confirmar, digite <strong className="text-foreground">CONFIRMO</strong> abaixo:
+            </p>
+            <input
+              autoFocus
+              value={resetConfirmInput}
+              onChange={(e) => setResetConfirmInput(e.target.value)}
+              onKeyDown={(e) => { if (e.key === "Enter" && resetConfirmInput === "CONFIRMO") handleResetTemplate(); }}
+              placeholder="Digite CONFIRMO"
+              className="w-full px-3 py-2 bg-card border border-border rounded-xl text-foreground text-sm outline-none focus:border-destructive transition-all"
+            />
+          </div>
+        }
+        confirmLabel={resetting ? "Resetando..." : "Resetar template"}
+        cancelLabel="Cancelar"
+        variant="destructive"
+        loading={resetting}
+        onConfirm={() => {
+          if (resetConfirmInput !== "CONFIRMO") {
+            toast.error("Digite CONFIRMO para confirmar o reset");
+            return;
+          }
+          handleResetTemplate();
+        }}
+      />
     </div>
   );
 }
