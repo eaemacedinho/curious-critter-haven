@@ -310,6 +310,7 @@ export default function CreatorEdit() {
     setOriginalTemplateSnapshot(JSON.parse(JSON.stringify(tpl.template_data)));
     setActiveTemplateId(templateId);
     setUsingDefault(false);
+    setActiveGalleryTemplateName(null);
     setShowSwitchConfirm(null);
     toast.success(`Template "${tpl.name}" aplicado!`);
   };
