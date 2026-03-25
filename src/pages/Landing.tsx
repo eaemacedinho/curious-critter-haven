@@ -85,7 +85,7 @@ export default function Landing() {
         <div className="max-w-[1200px] mx-auto flex items-center justify-between h-16 px-6 relative z-[1]">
           <Link to="/" className="flex items-center gap-2">
             <span className="text-lg font-extrabold tracking-tight text-foreground">
-              in1<span className="text-primary">.bio</span>
+              in1<span className="text-primary-readable">.bio</span>
             </span>
           </Link>
           <div className="hidden md:flex items-center gap-8 mr-8">
