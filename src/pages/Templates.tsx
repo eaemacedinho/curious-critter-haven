@@ -136,7 +136,7 @@ export default function Templates() {
                 <div className="p-5">
                   <h3 className="font-display text-lg font-bold text-foreground">{template.name}</h3>
                   <p className="mt-1 text-sm text-muted-foreground leading-relaxed">{template.description}</p>
-                  <div className="mt-3 flex items-center gap-1.5 text-xs font-medium text-primary">
+                  <div className="mt-3 flex items-center gap-1.5 text-xs font-medium text-primary-readable">
                     <Sparkles className="h-3 w-3" />
                     {template.objective}
                   </div>
