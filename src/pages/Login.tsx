@@ -324,10 +324,11 @@ export default function Login() {
                     toast.error("Digite seu e-mail primeiro");
                     return;
                   }
-                  const { error } = await supabase.auth.resetPasswordForEmail(email, {
-                    redirectTo: `${window.location.origin}/reset-password`,
+                  toast.info("Enviando e-mail de recuperação...");
+                  const { error } = await supabase.functions.invoke("send-recovery-email", {
+                    body: { email },
                   });
-                  if (error) toast.error(error.message);
+                  if (error) toast.error("Erro ao enviar e-mail. Tente novamente.");
                   else toast.success("E-mail de recuperação enviado! Verifique sua caixa de entrada.");
                 }}
                 className="text-xs text-muted-foreground hover:text-primary-readable transition-colors"
