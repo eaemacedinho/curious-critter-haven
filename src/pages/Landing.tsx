@@ -603,7 +603,7 @@ export default function Landing() {
           <motion.h2 variants={fadeUp} custom={0} className="font-display text-[clamp(2rem,4vw,3.2rem)] font-extrabold leading-[1.06] tracking-tight mb-5">
             Pronto para uma bio que
             <br />
-            <span className="text-primary">realmente funciona?</span>
+            <span className="text-primary-readable">realmente funciona?</span>
           </motion.h2>
           <motion.p variants={fadeUp} custom={1} className="text-base text-muted-foreground max-w-[440px] mx-auto mb-10">
             Crie sua página em menos de 2 minutos. Grátis.
