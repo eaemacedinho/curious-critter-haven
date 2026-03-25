@@ -104,7 +104,7 @@ export default function CreatorViewMinimal({ profile, links: rawLinks, socialLin
               {products.map((prod) => (
                 <div key={prod.id} onClick={() => prod.url && window.open(prod.url, "_blank")}
                   className="rounded-xl border border-border bg-card/50 overflow-hidden cursor-pointer transition-all hover:-translate-y-0.5 active:scale-[0.98]"
-                  style={{ ...(prod.bg_color ? { backgroundColor: prod.bg_color } : {}), ...(prod.text_color ? { color: prod.text_color } : {}) }}>
+                  style={{ ...(prod.bg_color ? { backgroundColor: prod.bg_color } : {}), color: autoTextColor(prod.bg_color, prod.text_color) }}>
                   {prod.image_url && <img src={prod.image_url} alt="" className="w-full h-24 object-cover" />}
                   <div className="p-3">
                     <h5 className="text-[0.78rem] font-semibold">{prod.title}</h5>
