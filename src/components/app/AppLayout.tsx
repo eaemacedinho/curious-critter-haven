@@ -216,7 +216,7 @@ export default function AppLayout() {
 
       {/* User footer */}
       <div className="mt-auto flex items-center gap-2.5 p-3 border-t border-border">
-        <div className="w-8 h-8 rounded-full bg-primary/20 flex items-center justify-center text-xs font-bold text-primary">
+        <div className="w-8 h-8 rounded-full bg-primary/20 flex items-center justify-center text-xs font-bold text-primary-readable">
           {user?.email?.[0]?.toUpperCase() || "U"}
         </div>
         <div className="min-w-0 flex-1">

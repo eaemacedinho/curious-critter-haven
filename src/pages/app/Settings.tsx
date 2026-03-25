@@ -177,8 +177,8 @@ export default function Settings() {
               onClick={() => setActiveSection(sec.id)}
               className={`flex items-center gap-2.5 px-3 py-2.5 rounded-xl text-sm transition-all whitespace-nowrap text-left ${
                 activeSection === sec.id
-                  ? "bg-accent/20 text-primary font-semibold"
-                  : "text-muted-foreground hover:bg-accent/10 hover:text-foreground"
+                  ? "bg-secondary text-foreground font-semibold border border-border"
+                  : "text-muted-foreground hover:bg-secondary/50 hover:text-foreground"
               }`}
             >
               <span className="text-xs">{sec.icon}</span>
