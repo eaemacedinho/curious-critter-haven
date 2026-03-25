@@ -1,0 +1,1 @@
+ALTER TABLE public.creators ADD COLUMN IF NOT EXISTS slug_changed_at timestamp with time zone DEFAULT NULL;
