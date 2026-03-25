@@ -162,7 +162,7 @@ export default function OnboardingChecklist({ state }: { state: OnboardingState 
                     }`}
                   >
                     <div className={`w-7 h-7 rounded-full flex items-center justify-center text-sm flex-shrink-0 transition-all ${
-                      done ? "bg-primary/20 text-primary" : "bg-muted text-muted-foreground"
+                      done ? "bg-primary/20 text-primary-readable" : "bg-muted text-muted-foreground"
                     }`}>
                       {done ? "✓" : task.icon}
                     </div>

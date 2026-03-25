@@ -433,7 +433,7 @@ export default function Landing() {
               Para agências
             </span>
             <h2 className="font-display text-[clamp(1.6rem,3vw,2.6rem)] font-extrabold leading-[1.08] tracking-tight mb-5">
-              Gerencie todos os seus creators em <span className="text-primary">um painel.</span>
+              Gerencie todos os seus creators em <span className="text-primary-readable">um painel.</span>
             </h2>
             <p className="text-base text-muted-foreground leading-relaxed mb-8">
               Painel white-label completo com gestão de membros, permissões por role, analytics detalhado e campanhas automatizadas. Tudo com a marca da sua agência.

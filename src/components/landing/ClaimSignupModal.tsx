@@ -152,7 +152,7 @@ export default function ClaimSignupModal({ username, open, onClose }: ClaimSignu
                   className="inline-flex items-center gap-1.5 px-4 py-2 bg-primary/10 border border-primary/20 rounded-full mb-4"
                 >
                   <span className="text-sm font-bold text-muted-foreground">in1.bio/</span>
-                  <span className="text-sm font-extrabold text-primary">{slug}</span>
+                  <span className="text-sm font-extrabold text-primary-readable">{slug}</span>
                 </motion.div>
 
                 {/* Availability indicator */}
