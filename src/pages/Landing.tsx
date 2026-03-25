@@ -236,7 +236,7 @@ export default function Landing() {
           <h2 className="font-display text-[clamp(1.9rem,3.5vw,3rem)] font-extrabold leading-[1.1] tracking-tight mb-4">
             Um link na bio
             <br />
-            não deveria <span className="text-primary">limitar você.</span>
+            não deveria <span className="text-primary-readable">limitar você.</span>
           </h2>
           <p className="text-base text-muted-foreground leading-relaxed max-w-[560px] mb-12">
             Hoje sua bio é um gargalo. Você produz conteúdo, fecha parcerias, cria projetos — e tudo depende de um único link genérico que não faz jus ao seu trabalho.
