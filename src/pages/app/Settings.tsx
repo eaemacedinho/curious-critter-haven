@@ -417,7 +417,7 @@ export default function Settings() {
                       <span className="text-sm font-bold text-foreground">Upgrade para Scale</span>
                       <p className="text-[0.65rem] text-muted-foreground">10 perfis · membros de equipe · criação em lote</p>
                     </div>
-                    <span className="text-sm font-bold text-primary">R$87,90/mês</span>
+                    <span className="text-sm font-bold text-primary-readable">R$87,90/mês</span>
                   </button>
                   <p className="text-[0.6rem] text-muted-foreground/60 text-center">
                     Ou conheça o <a href="mailto:contato@in1.bio?subject=Plano%20Enterprise" className="underline hover:text-foreground">Enterprise</a> com white-label completo.
