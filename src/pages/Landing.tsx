@@ -369,7 +369,7 @@ export default function Landing() {
             Diferencial
           </span>
           <h2 className="font-display text-[clamp(1.9rem,3.5vw,3rem)] font-extrabold leading-[1.1] tracking-tight mb-4">
-            Por que <span className="text-primary">in1.bio</span> é diferente?
+            Por que <span className="text-primary-readable">in1.bio</span> é diferente?
           </h2>
           <p className="text-base text-muted-foreground max-w-[560px] mx-auto mb-12">
             Não é mais um Linktree. É uma nova categoria.
