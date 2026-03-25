@@ -609,20 +609,38 @@ const CreatorEditPanel = forwardRef<CreatorEditPanelHandle, Props>(function Crea
             <div className="text-[0.68rem] text-muted-foreground text-right mt-1">{bio.length}/300</div>
           </div>
           {/* Verified badge toggle */}
-          <div className="flex items-center justify-between mt-4 p-3 bg-card/60 border border-border rounded-xl">
-            <div>
-              <span className="text-sm font-semibold text-foreground flex items-center gap-1.5">
-                <VerifiedBadge size={18} />
-                Badge de Verificado
-              </span>
-              <p className="text-[0.65rem] text-muted-foreground mt-0.5">Exibir selo de verificação ao lado do nome</p>
+          <div className="mt-4 p-3 bg-card/60 border border-border rounded-xl space-y-3">
+            <div className="flex items-center justify-between">
+              <div>
+                <span className="text-sm font-semibold text-foreground flex items-center gap-1.5">
+                  <VerifiedBadge size={18} />
+                  Badge de Verificado
+                </span>
+                <p className="text-[0.65rem] text-muted-foreground mt-0.5">Exibir selo de verificação no perfil</p>
+              </div>
+              <button
+                onClick={() => setVerified(!verified)}
+                className={`w-11 h-6 rounded-full transition-colors duration-200 relative flex-shrink-0 ${verified ? "bg-[#0095f6]" : "bg-muted border border-border"}`}
+              >
+                <span className={`block w-4.5 h-4.5 rounded-full shadow-sm absolute top-[3px] transition-transform duration-200 ${verified ? "bg-white translate-x-[22px]" : "bg-muted-foreground/50 translate-x-[3px]"}`} />
+              </button>
             </div>
-            <button
-              onClick={() => setVerified(!verified)}
-              className={`w-11 h-6 rounded-full transition-colors duration-200 relative flex-shrink-0 ${verified ? "bg-[#0095f6]" : "bg-muted border border-border"}`}
-            >
-              <span className={`block w-4.5 h-4.5 rounded-full shadow-sm absolute top-[3px] transition-transform duration-200 ${verified ? "bg-white translate-x-[22px]" : "bg-muted-foreground/50 translate-x-[3px]"}`} />
-            </button>
+            {verified && (
+              <div className="flex gap-2">
+                <button
+                  onClick={() => setBadgePosition("name")}
+                  className={`flex-1 py-2 text-xs font-semibold rounded-lg border transition-all ${badgePosition === "name" ? "bg-[#0095f6] text-white border-[#0095f6]" : "bg-card border-border text-muted-foreground hover:text-foreground"}`}
+                >
+                  Ao lado do nome
+                </button>
+                <button
+                  onClick={() => setBadgePosition("photo")}
+                  className={`flex-1 py-2 text-xs font-semibold rounded-lg border transition-all ${badgePosition === "photo" ? "bg-[#0095f6] text-white border-[#0095f6]" : "bg-card border-border text-muted-foreground hover:text-foreground"}`}
+                >
+                  Na foto de perfil
+                </button>
+              </div>
+            )}
           </div>
 
           {/* Per-section image shape selectors with live preview */}
