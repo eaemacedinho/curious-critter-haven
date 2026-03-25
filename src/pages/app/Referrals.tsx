@@ -1,8 +1,9 @@
-import { useState } from "react";
+import { useState, useEffect, useRef } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { useReferral } from "@/hooks/useReferral";
 import { toast } from "sonner";
 import { Copy, Check, Share2, Gift, Users, Trophy, Sparkles } from "lucide-react";
+import ConfettiCelebration from "@/components/onboarding/ConfettiCelebration";
 
 const SHARE_CHANNELS = [
   {
