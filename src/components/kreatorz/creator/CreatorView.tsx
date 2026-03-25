@@ -358,6 +358,12 @@ export default function CreatorView({ profile, links: rawLinks, socialLinks: raw
                           {products.map(prod => renderProductCard(prod))}
                         </SectionCarousel>
                       </div>
+                    ) : displayModes.products === "marquee" && products.length > 1 ? (
+                      <div className="mb-8">
+                        <SectionMarquee itemWidth="65%">
+                          {products.map(prod => renderProductCard(prod))}
+                        </SectionMarquee>
+                      </div>
                     ) : (
                       <div className="grid grid-cols-2 gap-3 mb-8">
                         {products.map(prod => renderProductCard(prod))}
