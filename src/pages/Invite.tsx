@@ -1,10 +1,11 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import { Avatar, AvatarImage, AvatarFallback } from "@/components/ui/avatar";
 import { motion } from "framer-motion";
 import { Link, useSearchParams, useNavigate } from "react-router-dom";
 import { supabase } from "@/integrations/supabase/client";
-import { captureReferralCode } from "@/hooks/useReferral";
+import { captureReferralCode, getStoredReferralCode } from "@/hooks/useReferral";
 import { ArrowRight, Sparkles, Link2, BarChart3, Palette, Zap, Users, CheckCircle2 } from "lucide-react";
+import inviteHero from "@/assets/invite-hero.jpg";
 
 const BENEFITS = [
   { icon: <Link2 className="w-5 h-5" />, title: "Página de Links Premium", desc: "Centralize todos os seus links em uma única página com design profissional." },
@@ -18,22 +19,23 @@ const BENEFITS = [
 export default function Invite() {
   const [searchParams] = useSearchParams();
   const navigate = useNavigate();
-  const refCode = searchParams.get("ref");
+  // Capture ref code BEFORE React Router can lose it
+  const initialRefCode = useRef(searchParams.get("ref") || getStoredReferralCode());
   const [referrerName, setReferrerName] = useState<string | null>(null);
   const [referrerAvatar, setReferrerAvatar] = useState<string | null>(null);
   const [referrerSlug, setReferrerSlug] = useState<string | null>(null);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    // Capture the ref code into localStorage
+    // Store ref code in localStorage and clean URL
     captureReferralCode();
 
+    const refCode = initialRefCode.current;
     if (!refCode) {
       setLoading(false);
       return;
     }
 
-    // Look up the referrer's name via edge function (public access)
     const fetchReferrer = async () => {
       try {
         const { data } = await supabase.functions.invoke("get-referrer", {
@@ -49,18 +51,19 @@ export default function Invite() {
     };
 
     fetchReferrer();
-  }, [refCode]);
+  }, []);
 
   const handleGetStarted = () => {
     navigate("/login?signup=1");
   };
+
+  const hasReferrer = !loading && (referrerName || initialRefCode.current);
 
   return (
     <div className="min-h-screen bg-background relative overflow-hidden">
       {/* Background effects */}
       <div className="absolute w-[600px] h-[600px] -top-[20%] -right-[15%] rounded-full bg-primary/15 blur-[150px] animate-k-orb" />
       <div className="absolute w-[500px] h-[500px] -bottom-[20%] -left-[15%] rounded-full bg-primary/10 blur-[150px] animate-k-orb" style={{ animationDelay: "-5s" }} />
-      <div className="absolute w-[300px] h-[300px] top-[40%] left-[50%] -translate-x-1/2 rounded-full bg-primary/5 blur-[120px]" />
 
       {/* Nav */}
       <nav className="relative z-10 flex items-center justify-between px-6 py-5 max-w-[1100px] mx-auto">
@@ -77,21 +80,21 @@ export default function Invite() {
       </nav>
 
       {/* Hero */}
-      <div className="relative z-10 max-w-[680px] mx-auto px-6 pt-8 pb-16 text-center">
+      <div className="relative z-10 max-w-[680px] mx-auto px-6 pt-8 pb-10 text-center">
         {/* Referrer badge */}
         {!loading && referrerName && (
           <motion.div
-initial={{ opacity: 0, y: -10, scale: 0.95 }}
+            initial={{ opacity: 0, y: -10, scale: 0.95 }}
             animate={{ opacity: 1, y: 0, scale: 1 }}
             transition={{ duration: 0.5, ease: [0.16, 1, 0.3, 1] }}
             className="inline-flex items-center gap-3 px-5 py-3 bg-card border border-border rounded-full mb-8 shadow-lg"
           >
             <Avatar className="w-10 h-10 border-2 border-primary/30">
               {referrerAvatar ? (
-                <AvatarImage src={referrerAvatar} alt={referrerName || ""} />
+                <AvatarImage src={referrerAvatar} alt={referrerName} />
               ) : null}
               <AvatarFallback className="bg-primary/15 text-primary-readable font-bold text-sm">
-                {referrerName?.charAt(0).toUpperCase() || "?"}
+                {referrerName.charAt(0).toUpperCase()}
               </AvatarFallback>
             </Avatar>
             <div className="text-left">
@@ -110,7 +113,7 @@ initial={{ opacity: 0, y: -10, scale: 0.95 }}
           </motion.div>
         )}
 
-        {!loading && !referrerName && refCode && (
+        {!loading && !referrerName && initialRefCode.current && (
           <motion.div
             initial={{ opacity: 0, y: -10 }}
             animate={{ opacity: 1, y: 0 }}
@@ -186,12 +189,30 @@ initial={{ opacity: 0, y: -10, scale: 0.95 }}
         </motion.div>
       </div>
 
+      {/* Hero Image */}
+      <motion.div
+        initial={{ opacity: 0, y: 30 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ delay: 0.4, duration: 0.7, ease: [0.16, 1, 0.3, 1] }}
+        className="relative z-10 max-w-[850px] mx-auto px-6 pb-16"
+      >
+        <div className="relative rounded-2xl overflow-hidden border border-border/50 shadow-2xl shadow-primary/10">
+          <img
+            src={inviteHero}
+            alt="Plataforma All in 1 — conecte seus links, redes e conteúdo em um só lugar"
+            className="w-full h-auto object-cover"
+            loading="eager"
+          />
+          <div className="absolute inset-0 bg-gradient-to-t from-background/60 via-transparent to-transparent" />
+        </div>
+      </motion.div>
+
       {/* Benefits grid */}
       <div className="relative z-10 max-w-[900px] mx-auto px-6 pb-20">
         <motion.h2
           initial={{ opacity: 0, y: 12 }}
           animate={{ opacity: 1, y: 0 }}
-          transition={{ delay: 0.4 }}
+          transition={{ delay: 0.5 }}
           className="text-center text-lg font-bold text-foreground mb-8"
         >
           Tudo que você precisa em uma página
@@ -203,7 +224,7 @@ initial={{ opacity: 0, y: -10, scale: 0.95 }}
               key={i}
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
-              transition={{ delay: 0.45 + i * 0.08, duration: 0.5 }}
+              transition={{ delay: 0.55 + i * 0.08, duration: 0.5 }}
               className="bg-card border border-border rounded-2xl p-5 hover:border-primary/20 transition-all group"
             >
               <div className="w-10 h-10 rounded-xl bg-primary/10 flex items-center justify-center text-primary-readable mb-3 group-hover:bg-primary/15 transition-colors">
