@@ -320,7 +320,7 @@ export default function CreatorView({ profile, links: rawLinks, socialLinks: raw
                     className={`backdrop-blur-xl ${shapeClass(profile.image_shape_products)} overflow-hidden transition-all duration-300 cursor-pointer group hover:-translate-y-1 hover:shadow-k-purple active:scale-[0.97] h-full ${!prod.bg_color ? "bg-card/65 border border-border hover:border-primary/20" : ""}`}
                     style={{
                       ...(prod.bg_color ? { backgroundColor: prod.bg_color } : {}),
-                      ...(prod.text_color ? { color: prod.text_color } : {}),
+                      color: autoTextColor(prod.bg_color, prod.text_color),
                       ...(prod.border_color ? { borderColor: prod.border_color, borderWidth: "1px", borderStyle: "solid" } : {}),
                     }}>
                     {prod.image_url ? (
