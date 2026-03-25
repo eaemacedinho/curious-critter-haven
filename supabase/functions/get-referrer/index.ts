@@ -22,10 +22,10 @@ Deno.serve(async (req) => {
       auth: { autoRefreshToken: false, persistSession: false },
     });
 
-    // Get referrer profile
+    // Get referrer profile with agency info
     const { data: profile } = await supabase
       .from("profiles")
-      .select("id, full_name, avatar_url")
+      .select("id, full_name, avatar_url, agency_id")
       .eq("referral_code", ref_code)
       .maybeSingle();
 
@@ -35,22 +35,64 @@ Deno.serve(async (req) => {
       });
     }
 
-    // Get creator slug for the @ handle
-    const { data: creator } = await supabase
-      .from("creators")
-      .select("slug, avatar_url")
-      .eq("user_id", profile.id)
-      .limit(1)
-      .maybeSingle();
+    // Get agency info (name + slug)
+    let agencyName: string | null = null;
+    let agencySlug: string | null = null;
+    let agencyLogo: string | null = null;
 
-    const name = profile.full_name || creator?.slug || null;
+    if (profile.agency_id) {
+      const { data: agency } = await supabase
+        .from("agencies")
+        .select("name, slug, logo_url")
+        .eq("id", profile.agency_id)
+        .maybeSingle();
+
+      if (agency) {
+        agencyName = agency.name;
+        agencySlug = agency.slug;
+        agencyLogo = agency.logo_url;
+      }
+    }
+
+    // Count how many creators the user has in their agency
+    let creatorCount = 0;
+    let singleCreatorSlug: string | null = null;
+    let singleCreatorAvatar: string | null = null;
+
+    if (profile.agency_id) {
+      const { data: creators } = await supabase
+        .from("creators")
+        .select("slug, avatar_url")
+        .eq("agency_id", profile.agency_id);
+
+      creatorCount = creators?.length || 0;
+
+      // If exactly 1 creator, use that creator's slug as @handle
+      if (creatorCount === 1 && creators?.[0]) {
+        singleCreatorSlug = creators[0].slug;
+        singleCreatorAvatar = creators[0].avatar_url;
+      }
+    }
+
+    // Logic:
+    // - If agency has multiple creators → show agency name + agency slug
+    // - If agency has 1 creator → show creator slug as @handle (personal account)
+    const isPersonalAccount = creatorCount <= 1;
+
+    const name = isPersonalAccount
+      ? profile.full_name || singleCreatorSlug || agencyName || null
+      : agencyName || profile.full_name || null;
+
+    const slug = isPersonalAccount
+      ? singleCreatorSlug || agencySlug || null
+      : agencySlug || null;
+
+    const avatar = isPersonalAccount
+      ? singleCreatorAvatar || agencyLogo || profile.avatar_url || null
+      : agencyLogo || profile.avatar_url || null;
 
     return new Response(
-      JSON.stringify({
-        name,
-        avatar_url: creator?.avatar_url || profile.avatar_url || null,
-        slug: creator?.slug || null,
-      }),
+      JSON.stringify({ name, avatar_url: avatar, slug }),
       { headers: { ...corsHeaders, "Content-Type": "application/json" } }
     );
   } catch (error) {

@@ -5,7 +5,7 @@ import { Link, useSearchParams, useNavigate } from "react-router-dom";
 import { supabase } from "@/integrations/supabase/client";
 import { captureReferralCode, getStoredReferralCode } from "@/hooks/useReferral";
 import { ArrowRight, Sparkles, Link2, BarChart3, Palette, Zap, Users, CheckCircle2 } from "lucide-react";
-import inviteHero from "@/assets/invite-hero.jpg";
+import inviteMockup from "@/assets/invite-mockup.jpg";
 
 const BENEFITS = [
   { icon: <Link2 className="w-5 h-5" />, title: "Página de Links Premium", desc: "Centralize todos os seus links em uma única página com design profissional." },
@@ -196,14 +196,15 @@ export default function Invite() {
         transition={{ delay: 0.4, duration: 0.7, ease: [0.16, 1, 0.3, 1] }}
         className="relative z-10 max-w-[850px] mx-auto px-6 pb-16"
       >
-        <div className="relative rounded-2xl overflow-hidden border border-border/50 shadow-2xl shadow-primary/10">
+        <div className="relative rounded-2xl overflow-hidden shadow-2xl shadow-primary/20 max-w-[420px] mx-auto">
           <img
-            src={inviteHero}
-            alt="Plataforma All in 1 — conecte seus links, redes e conteúdo em um só lugar"
+            src={inviteMockup}
+            alt="Mockup de página de creator na plataforma All in 1"
             className="w-full h-auto object-cover"
+            width={1024}
+            height={1024}
             loading="eager"
           />
-          <div className="absolute inset-0 bg-gradient-to-t from-background/60 via-transparent to-transparent" />
         </div>
       </motion.div>
 
