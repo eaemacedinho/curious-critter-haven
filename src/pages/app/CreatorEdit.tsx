@@ -1,13 +1,14 @@
-import { useRef, useState } from "react";
+import { useRef, useState, useEffect, useMemo } from "react";
 import { Link, useParams, useNavigate } from "react-router-dom";
 import { toast } from "sonner";
-import { Sparkles, Save, ChevronDown, Trash2, Pencil, RotateCcw, Star, Info } from "lucide-react";
+import { Sparkles, Save, ChevronDown, Trash2, Pencil, RotateCcw, Star, Info, Palette } from "lucide-react";
 import { useTenant } from "@/hooks/useTenant";
 import { useCreatorData } from "@/hooks/useCreatorData";
 import { useSubscription } from "@/hooks/useSubscription";
 import { useCreatorTemplates, type TemplateData } from "@/hooks/useCreatorTemplates";
 import CreatorEditPanel, { type CreatorEditPanelHandle } from "@/components/kreatorz/creator/CreatorEditPanel";
 import { ConfirmDialog } from "@/components/ui/confirm-dialog";
+import { TEMPLATE_DATA, type FullTemplateData } from "@/lib/templateData";
 
 export default function CreatorEdit() {
   const navigate = useNavigate();
@@ -36,6 +37,75 @@ export default function CreatorEdit() {
   const [usingDefault, setUsingDefault] = useState(false);
 
   const maxTemplates = currentPlan === "free" ? 1 : currentPlan === "pro" ? 5 : 10;
+
+  // Gallery saved templates (from AppTemplates page localStorage)
+  const SAVED_TEMPLATES_KEY = "in1_saved_templates";
+  const [savedGalleryIds, setSavedGalleryIds] = useState<string[]>([]);
+
+  useEffect(() => {
+    if (!agency) return;
+    const stored = localStorage.getItem(`${SAVED_TEMPLATES_KEY}_${agency.id}`);
+    if (stored) setSavedGalleryIds(JSON.parse(stored));
+  }, [agency]);
+
+  const savedGalleryTemplates = useMemo(() =>
+    savedGalleryIds.map(id => TEMPLATE_DATA.find(t => t.id === id)).filter(Boolean) as FullTemplateData[],
+  [savedGalleryIds]);
+
+  const [applyingGallery, setApplyingGallery] = useState(false);
+
+  const handleApplyGalleryTemplate = async (template: FullTemplateData) => {
+    if (!creatorId) return;
+    setApplyingGallery(true);
+    try {
+      const { profile: tp, links: tl, socialLinks: ts, products: tpr, testimonials: tt } = template;
+      await saveProfile({
+        bio: tp.bio,
+        font_family: tp.font_family,
+        font_size: tp.font_size,
+        image_shape: tp.image_shape,
+        image_shape_links: tp.image_shape_links,
+        image_shape_products: tp.image_shape_products,
+        image_shape_campaigns: tp.image_shape || "rounded",
+        tags: tp.tags as any,
+        stats: tp.stats as any,
+        brands: tp.brands as any,
+        brands_display_mode: tp.brands_display_mode,
+        section_order: tp.section_order as any,
+        ...(tp.avatar_url ? { avatar_url: tp.avatar_url } : {}),
+        ...(tp.cover_url ? { cover_url: tp.cover_url } : {}),
+      } as any);
+
+      await saveLinks(tl.map((l, i) => ({
+        creator_id: creatorId, title: l.title, url: l.url, subtitle: l.subtitle, icon: l.icon,
+        is_featured: l.is_featured, is_active: l.is_active, sort_order: i, display_mode: l.display_mode,
+      })) as any);
+
+      await saveSocialLinks(ts.map((s, i) => ({
+        creator_id: creatorId, platform: s.platform, label: s.label, url: s.url, sort_order: i,
+      })) as any);
+
+      await saveProducts(tpr.map((p, i) => ({
+        creator_id: creatorId, title: p.title, price: p.price, icon: p.icon,
+        url: p.url, is_active: p.is_active, sort_order: i, image_url: p.image_url || null,
+      })) as any);
+
+      await saveTestimonials(tt.map((t, i) => ({
+        creator_id: creatorId, author_name: t.author_name, author_role: t.author_role,
+        content: t.content, rating: t.rating, is_active: t.is_active, sort_order: i,
+      })) as any);
+
+      await refetch();
+      setActiveTemplateId(null);
+      setUsingDefault(false);
+      toast.success(`Template "${template.name}" aplicado!`);
+    } catch (err) {
+      console.error(err);
+      toast.error("Erro ao aplicar template");
+    } finally {
+      setApplyingGallery(false);
+    }
+  };
 
   const getCurrentData = (): TemplateData => ({
     profile: profile ? {
@@ -368,6 +438,33 @@ export default function CreatorEdit() {
 
                   <div className="border-t border-border my-1" />
 
+                  {/* Saved gallery templates */}
+                  {savedGalleryTemplates.length > 0 && (
+                    <>
+                      <p className="px-3 pt-2 pb-1 text-[0.6rem] font-bold text-muted-foreground uppercase tracking-wider flex items-center gap-1.5">
+                        <Palette className="w-3 h-3" /> Da galeria
+                      </p>
+                      {savedGalleryTemplates.map((gt) => (
+                        <button
+                          key={gt.id}
+                          disabled={applyingGallery}
+                          onClick={() => {
+                            setShowTemplateDropdown(false);
+                            handleApplyGalleryTemplate(gt);
+                          }}
+                          className="w-full text-left px-3 py-2 text-sm text-foreground hover:bg-muted transition-colors flex items-center gap-2"
+                        >
+                          <Sparkles className="w-3.5 h-3.5 text-primary-readable flex-shrink-0" />
+                          <div className="flex-1 min-w-0">
+                            <span className="truncate block">{gt.name}</span>
+                            <span className="text-[0.6rem] text-muted-foreground">{gt.objective}</span>
+                          </div>
+                        </button>
+                      ))}
+                      <div className="border-t border-border my-1" />
+                    </>
+                  )}
+
                   {/* Save current as new template */}
                   <button
                     onClick={() => {
@@ -379,7 +476,7 @@ export default function CreatorEdit() {
                       setTemplateNameInput("");
                       setShowNewTemplateDialog(true);
                     }}
-                    className="w-full text-left px-3 py-2.5 text-sm text-primary font-semibold hover:bg-primary/10 transition-colors flex items-center gap-2"
+                    className="w-full text-left px-3 py-2.5 text-sm text-primary-readable font-semibold hover:bg-primary/10 transition-colors flex items-center gap-2"
                   >
                     <Save className="w-3.5 h-3.5" />
                     Salvar como template
