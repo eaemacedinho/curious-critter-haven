@@ -528,7 +528,7 @@ const CreatorEditPanel = forwardRef<CreatorEditPanelHandle, Props>(function Crea
                 </div>
               </div>
               <div>
-                <button onClick={() => avatarRef.current?.click()} className="text-sm text-muted-foreground00 font-medium hover:text-foreground/8000 transition-colors">Alterar foto</button>
+                <button onClick={() => avatarRef.current?.click()} className="text-sm text-foreground font-medium hover:text-foreground/8000 transition-colors">Alterar foto</button>
                 <br /><span className="text-[0.62rem] text-muted-foreground">📐 Ideal: <strong>500×500px</strong> (1:1) · JPG/PNG · máx 2MB</span>
               </div>
             </div>
@@ -581,7 +581,7 @@ const CreatorEditPanel = forwardRef<CreatorEditPanelHandle, Props>(function Crea
                 </div>
               </div>
               <div>
-                <span className="text-sm text-muted-foreground00 font-medium">Foto do header sticky</span>
+                <span className="text-sm text-foreground font-medium">Foto do header sticky</span>
                 <br /><span className="text-[0.62rem] text-muted-foreground">📐 Ideal: <strong>500×500px</strong> (1:1) · aparece no topo ao rolar</span>
               </div>
             </div>
@@ -966,7 +966,7 @@ const CreatorEditPanel = forwardRef<CreatorEditPanelHandle, Props>(function Crea
         <p className="text-[0.68rem] text-muted-foreground mb-2">Palavras-chave que descrevem seu nicho. Ex: lifestyle, tech, fitness</p>
         <div className="flex flex-wrap gap-2 mb-2">
           {tags.map((tag, i) => (
-            <span key={i} className="px-3 py-1 rounded-full text-[0.72rem] font-semibold bg-primary/10 text-muted-foreground00 border border-primary/20 flex items-center gap-1.5">
+            <span key={i} className="px-3 py-1 rounded-full text-[0.72rem] font-semibold bg-primary/10 text-foreground border border-primary/20 flex items-center gap-1.5">
               {tag.label}
               <button onClick={() => setTags(tags.filter((_, j) => j !== i))} className="text-muted-foreground hover:destructive ml-1">×</button>
             </span>
@@ -974,7 +974,7 @@ const CreatorEditPanel = forwardRef<CreatorEditPanelHandle, Props>(function Crea
         </div>
         <div className="flex gap-2">
           <input value={newTag} onChange={(e) => setNewTag(e.target.value)} placeholder="Ex: criador de conteúdo" className={inputClass} onKeyDown={(e) => { if (e.key === "Enter" && newTag.trim()) { setTags([...tags, { label: newTag.trim() }]); setNewTag(""); }}} />
-          <button onClick={() => { if (newTag.trim()) { setTags([...tags, { label: newTag.trim() }]); setNewTag(""); }}} className="px-4 py-2 bg-primary/20 text-muted-foreground00 rounded-xl text-sm font-medium hover:bg-primary/30 transition-colors flex-shrink-0">+</button>
+          <button onClick={() => { if (newTag.trim()) { setTags([...tags, { label: newTag.trim() }]); setNewTag(""); }}} className="px-4 py-2 bg-primary/20 text-foreground rounded-xl text-sm font-medium hover:bg-primary/30 transition-colors flex-shrink-0">+</button>
         </div>
       </div>
 
@@ -992,7 +992,7 @@ const CreatorEditPanel = forwardRef<CreatorEditPanelHandle, Props>(function Crea
             <button onClick={() => setStats(stats.filter((_, j) => j !== i))} className="text-muted-foreground hover:destructive px-2 flex-shrink-0">×</button>
           </div>
         ))}
-        <button onClick={() => setStats([...stats, { value: "", label: "" }])} className="text-sm text-muted-foreground00 font-medium hover:text-foreground/8000 transition-colors">+ Adicionar estatística</button>
+        <button onClick={() => setStats([...stats, { value: "", label: "" }])} className="text-sm text-foreground font-medium hover:text-foreground/8000 transition-colors">+ Adicionar estatística</button>
       </div>
 
       <div className="mb-8">
@@ -1075,7 +1075,7 @@ const CreatorEditPanel = forwardRef<CreatorEditPanelHandle, Props>(function Crea
         <p className={sizeHint}>📐 Logo ideal: <strong>200×200px</strong> (1:1, fundo transparente)</p>
         <div className="flex gap-2 mt-2">
           <input value={newBrand} onChange={(e) => setNewBrand(e.target.value)} placeholder="Ex: Nike, Samsung..." className={inputClass} onKeyDown={(e) => { if (e.key === "Enter" && newBrand.trim()) { setBrands([...brands, { name: newBrand.trim() }]); setNewBrand(""); }}} />
-          <button onClick={() => { if (newBrand.trim()) { setBrands([...brands, { name: newBrand.trim() }]); setNewBrand(""); }}} className="px-4 py-2 bg-primary/20 text-muted-foreground00 rounded-xl text-sm font-medium hover:bg-primary/30 transition-colors flex-shrink-0">+</button>
+          <button onClick={() => { if (newBrand.trim()) { setBrands([...brands, { name: newBrand.trim() }]); setNewBrand(""); }}} className="px-4 py-2 bg-primary/20 text-foreground rounded-xl text-sm font-medium hover:bg-primary/30 transition-colors flex-shrink-0">+</button>
         </div>
       </div>
 
@@ -1247,7 +1247,7 @@ const CreatorEditPanel = forwardRef<CreatorEditPanelHandle, Props>(function Crea
                   <LinkIcon icon={link.icon} url={link.url} size={16} />
                 </button>
                 {showIconPicker === link.id && (
-                  <div className="absolute top-8 left-0 z-50 bg-k-850 border border-border rounded-xl p-2.5 shadow-k w-[280px] max-h-[400px] overflow-y-auto" style={{ scrollbarWidth: "thin" }}>
+                  <div className="absolute top-8 left-0 z-50 bg-card border border-border rounded-xl p-2.5 shadow-k w-[280px] max-h-[400px] overflow-y-auto" style={{ scrollbarWidth: "thin" }}>
                     <p className="text-[0.58rem] text-muted-foreground font-bold uppercase tracking-wider mb-2 px-1">Redes Sociais & Sites</p>
                     {linkIconGroups.map((group) => (
                       <div key={group.label} className="mb-2">
@@ -1277,9 +1277,9 @@ const CreatorEditPanel = forwardRef<CreatorEditPanelHandle, Props>(function Crea
               </div>
               <input value={link.title} onChange={(e) => { const arr = [...links]; arr[i] = { ...arr[i], title: e.target.value }; setLinks(arr); setValidationErrors((v) => { const n = { ...v }; delete n[`link-title-${i}`]; return n; }); }} placeholder="Título" className={`${inputClass} flex-1 ${validationErrors[`link-title-${i}`] ? "border-destructive/50 focus:border-destructive" : ""}`} />
               <button onClick={() => { const arr = [...links]; arr[i] = { ...arr[i], is_featured: !arr[i].is_featured }; setLinks(arr); }}
-                className={`text-xs px-2 py-1 rounded-md transition-all ${link.is_featured ? "bg-primary/20 text-muted-foreground00" : "text-muted-foreground hover:text-muted-foreground"}`}>⭐</button>
+                className={`text-xs px-2 py-1 rounded-md transition-all ${link.is_featured ? "bg-primary/20 text-foreground" : "text-muted-foreground hover:text-muted-foreground"}`}>⭐</button>
               <button onClick={() => { const arr = [...links]; arr[i] = { ...arr[i], is_active: !arr[i].is_active }; setLinks(arr); }}
-                className={`w-9 h-5 rounded-full relative cursor-pointer transition-all duration-300 flex-shrink-0 ${link.is_active ? "bg-emerald-500" : "bg-k-900 border border-border"}`}
+                className={`w-9 h-5 rounded-full relative cursor-pointer transition-all duration-300 flex-shrink-0 ${link.is_active ? "bg-emerald-500" : "bg-background border border-border"}`}
                 title={link.is_active ? "Visível na página" : "Oculto da página"}>
                 <span className={`absolute w-3.5 h-3.5 rounded-full bg-white top-[3px] transition-all duration-300 shadow-sm ${link.is_active ? "left-[18px]" : "left-[3px]"}`} />
               </button>
@@ -1310,7 +1310,7 @@ const CreatorEditPanel = forwardRef<CreatorEditPanelHandle, Props>(function Crea
                 <div className="relative w-full h-24 rounded-xl overflow-hidden border border-border group">
                   <img src={link.image_url} alt="" className="w-full h-full object-cover" />
                   <div className="absolute inset-0 bg-background/70 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center gap-2">
-                    <label className="cursor-pointer text-xs text-muted-foreground00 hover:text-foreground bg-card/80 px-2 py-1 rounded-lg">
+                    <label className="cursor-pointer text-xs text-foreground hover:text-foreground bg-card/80 px-2 py-1 rounded-lg">
                       <input type="file" accept="image/*" className="hidden" onChange={(e) => {
                         const file = e.target.files?.[0];
                         if (!file) return;
@@ -1352,13 +1352,13 @@ const CreatorEditPanel = forwardRef<CreatorEditPanelHandle, Props>(function Crea
               <span className="text-[0.62rem] text-muted-foreground font-semibold">Exibição:</span>
               <button
                 onClick={() => { const arr = [...links]; arr[i] = { ...arr[i], display_mode: "full" }; setLinks(arr); }}
-                className={`px-2.5 py-1 rounded-lg text-[0.62rem] font-semibold transition-all ${link.display_mode === "full" || !link.display_mode ? "bg-primary/20 text-muted-foreground00 border border-primary/30" : "text-muted-foreground border border-border hover:border-primary/20"}`}
+                className={`px-2.5 py-1 rounded-lg text-[0.62rem] font-semibold transition-all ${link.display_mode === "full" || !link.display_mode ? "bg-primary/20 text-foreground border border-primary/30" : "text-muted-foreground border border-border hover:border-primary/20"}`}
               >
                 ▬ Inteiro
               </button>
               <button
                 onClick={() => { const arr = [...links]; arr[i] = { ...arr[i], display_mode: "half" }; setLinks(arr); }}
-                className={`px-2.5 py-1 rounded-lg text-[0.62rem] font-semibold transition-all ${link.display_mode === "half" ? "bg-primary/20 text-muted-foreground00 border border-primary/30" : "text-muted-foreground border border-border hover:border-primary/20"}`}
+                className={`px-2.5 py-1 rounded-lg text-[0.62rem] font-semibold transition-all ${link.display_mode === "half" ? "bg-primary/20 text-foreground border border-primary/30" : "text-muted-foreground border border-border hover:border-primary/20"}`}
               >
                 ◫ Metade
               </button>
@@ -1389,7 +1389,7 @@ const CreatorEditPanel = forwardRef<CreatorEditPanelHandle, Props>(function Crea
         ))}
         <p className={sizeHint}>🖼 Imagem ideal: <strong>1280×720px</strong> (16:9, paisagem)</p>
         <button onClick={() => setLinks([...links, { id: crypto.randomUUID(), creator_id: profile.id, title: "", url: "", subtitle: "", icon: "🔗", is_featured: false, is_active: true, sort_order: links.length, bg_color: null, text_color: null, border_color: null, image_url: null, display_mode: "full" as const }])}
-          className="flex items-center justify-center gap-2 w-full p-3 border border-dashed border-k-glow rounded-xl text-muted-foreground text-sm font-medium mt-2 transition-all hover:border-k-400 hover:text-muted-foreground00 hover:bg-k-glow active:scale-[0.98]">
+          className="flex items-center justify-center gap-2 w-full p-3 border border-dashed border-k-glow rounded-xl text-muted-foreground text-sm font-medium mt-2 transition-all hover:border-k-400 hover:text-foreground hover:bg-k-glow active:scale-[0.98]">
           + Adicionar link
         </button>
       </div>
@@ -1430,7 +1430,7 @@ const CreatorEditPanel = forwardRef<CreatorEditPanelHandle, Props>(function Crea
               <div className="relative">
                 <button onClick={() => setShowIconPicker(showIconPicker === `prod-${i}` ? null : `prod-${i}`)} className="text-lg hover:scale-125 transition-transform">{prod.icon}</button>
                 {showIconPicker === `prod-${i}` && (
-                  <div className="absolute top-8 left-0 z-50 bg-k-850 border border-border rounded-xl p-2 shadow-k grid grid-cols-4 gap-1 w-[160px]">
+                  <div className="absolute top-8 left-0 z-50 bg-card border border-border rounded-xl p-2 shadow-k grid grid-cols-4 gap-1 w-[160px]">
                     {emojiIcons.map((ic) => (
                       <button key={ic} onClick={() => { const arr = [...prods]; arr[i] = { ...arr[i], icon: ic }; setProds(arr); setShowIconPicker(null); }} className="w-8 h-8 rounded-lg hover:bg-k-glow flex items-center justify-center text-sm transition-colors">{ic}</button>
                     ))}
@@ -1439,7 +1439,7 @@ const CreatorEditPanel = forwardRef<CreatorEditPanelHandle, Props>(function Crea
               </div>
               <input value={prod.title} onChange={(e) => { const arr = [...prods]; arr[i] = { ...arr[i], title: e.target.value }; setProds(arr); setValidationErrors((v) => { const n = { ...v }; delete n[`prod-title-${i}`]; return n; }); }} placeholder="Nome do produto" className={`${inputClass} flex-1 ${validationErrors[`prod-title-${i}`] ? "border-destructive/50 focus:border-destructive" : ""}`} />
               <button onClick={() => { const arr = [...prods]; arr[i] = { ...arr[i], is_active: !(arr[i].is_active ?? true) }; setProds(arr); }}
-                className={`w-9 h-5 rounded-full relative cursor-pointer transition-all duration-300 flex-shrink-0 ${(prod.is_active ?? true) ? "bg-emerald-500" : "bg-k-900 border border-border"}`}
+                className={`w-9 h-5 rounded-full relative cursor-pointer transition-all duration-300 flex-shrink-0 ${(prod.is_active ?? true) ? "bg-emerald-500" : "bg-background border border-border"}`}
                 title={(prod.is_active ?? true) ? "Visível na página" : "Oculto da página"}>
                 <span className={`absolute w-3.5 h-3.5 rounded-full bg-white top-[3px] transition-all duration-300 shadow-sm ${(prod.is_active ?? true) ? "left-[18px]" : "left-[3px]"}`} />
               </button>
@@ -1455,7 +1455,7 @@ const CreatorEditPanel = forwardRef<CreatorEditPanelHandle, Props>(function Crea
                 <div className="relative w-16 h-16 rounded-xl overflow-hidden border border-border group flex-shrink-0">
                   <img src={prod.image_url} alt="" className="w-full h-full object-cover" />
                   <div className="absolute inset-0 bg-background/70 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center gap-1">
-                    <label className="cursor-pointer text-xs text-muted-foreground00 hover:text-foreground">
+                    <label className="cursor-pointer text-xs text-foreground hover:text-foreground">
                       <input type="file" accept="image/*" className="hidden" onChange={(e) => {
                         const file = e.target.files?.[0];
                         if (!file) return;
@@ -1521,7 +1521,7 @@ const CreatorEditPanel = forwardRef<CreatorEditPanelHandle, Props>(function Crea
         ))}
         <p className={sizeHint}>📐 Imagem ideal: <strong>400×400px</strong> (1:1, quadrada)</p>
         <button onClick={() => setProds([...prods, { id: crypto.randomUUID(), creator_id: profile.id, title: "", price: "", icon: "📦", url: "", image_url: "", sort_order: prods.length, is_active: true, bg_color: null, text_color: null, border_color: null }])}
-          className="flex items-center justify-center gap-2 w-full p-3 border border-dashed border-k-glow rounded-xl text-muted-foreground text-sm font-medium mt-2 transition-all hover:border-k-400 hover:text-muted-foreground00 hover:bg-k-glow active:scale-[0.98]">
+          className="flex items-center justify-center gap-2 w-full p-3 border border-dashed border-k-glow rounded-xl text-muted-foreground text-sm font-medium mt-2 transition-all hover:border-k-400 hover:text-foreground hover:bg-k-glow active:scale-[0.98]">
           + Adicionar produto
         </button>
       </div>
@@ -1566,7 +1566,7 @@ const CreatorEditPanel = forwardRef<CreatorEditPanelHandle, Props>(function Crea
                 {camp.live ? "🔥 Spotlight" : "Ao vivo"}
               </label>
               <button onClick={() => { const arr = [...camps]; arr[i] = { ...arr[i], is_active: !(arr[i].is_active ?? true) }; setCamps(arr); }}
-                className={`w-9 h-5 rounded-full relative cursor-pointer transition-all duration-300 flex-shrink-0 ${(camp.is_active ?? true) ? "bg-emerald-500" : "bg-k-900 border border-border"}`}
+                className={`w-9 h-5 rounded-full relative cursor-pointer transition-all duration-300 flex-shrink-0 ${(camp.is_active ?? true) ? "bg-emerald-500" : "bg-background border border-border"}`}
                 title={(camp.is_active ?? true) ? "Visível na página" : "Oculto da página"}>
                 <span className={`absolute w-3.5 h-3.5 rounded-full bg-white top-[3px] transition-all duration-300 shadow-sm ${(camp.is_active ?? true) ? "left-[18px]" : "left-[3px]"}`} />
               </button>
@@ -1580,7 +1580,7 @@ const CreatorEditPanel = forwardRef<CreatorEditPanelHandle, Props>(function Crea
               <div className="space-y-2">
                 <div className="flex items-center gap-2 px-2 py-1.5 bg-primary/10 rounded-lg">
                   <span className="w-2 h-2 rounded-full bg-k-err animate-k-live-dot" />
-                  <span className="text-[0.65rem] text-muted-foreground00 font-semibold">Esta campanha aparecerá em destaque no topo da página</span>
+                  <span className="text-[0.65rem] text-foreground font-semibold">Esta campanha aparecerá em destaque no topo da página</span>
                 </div>
                 <div>
                   <label className={labelClass}>⏱ Duração do Spotlight (dias)</label>
@@ -1617,7 +1617,7 @@ const CreatorEditPanel = forwardRef<CreatorEditPanelHandle, Props>(function Crea
                       <option value="30">30 dias</option>
                     </select>
                     {camp.expires_at && (
-                      <span className="text-[0.65rem] text-k-warn font-semibold">
+                      <span className="text-[0.65rem] amber-400 font-semibold">
                         Expira em: {new Date(camp.expires_at).toLocaleDateString("pt-BR")}
                       </span>
                     )}
@@ -1698,7 +1698,7 @@ const CreatorEditPanel = forwardRef<CreatorEditPanelHandle, Props>(function Crea
         ))}
         <p className={sizeHint}>📐 Imagem ideal: <strong>1280×720px</strong> (16:9, paisagem)</p>
         <button onClick={() => setCamps([...camps, { id: crypto.randomUUID(), creator_id: profile.id, title: "", description: "", image_url: "", url: "", live: false, is_active: true, sort_order: camps.length, expires_at: null, bg_color: null, text_color: null, border_color: null }])}
-          className="flex items-center justify-center gap-2 w-full p-3 border border-dashed border-k-glow rounded-xl text-muted-foreground text-sm font-medium mt-2 transition-all hover:border-k-400 hover:text-muted-foreground00 hover:bg-k-glow active:scale-[0.98]">
+          className="flex items-center justify-center gap-2 w-full p-3 border border-dashed border-k-glow rounded-xl text-muted-foreground text-sm font-medium mt-2 transition-all hover:border-k-400 hover:text-foreground hover:bg-k-glow active:scale-[0.98]">
           + Adicionar campanha
         </button>
       </div>
@@ -1742,7 +1742,7 @@ const CreatorEditPanel = forwardRef<CreatorEditPanelHandle, Props>(function Crea
               </span>
               <div className="flex items-center gap-2">
                 <button onClick={() => setTestimonialsList(testimonialsList.map((x, j) => j === i ? { ...x, is_active: !x.is_active } : x))}
-                  className={`w-9 h-5 rounded-full relative cursor-pointer transition-all duration-300 flex-shrink-0 ${t.is_active ? "bg-emerald-500" : "bg-k-900 border border-border"}`}
+                  className={`w-9 h-5 rounded-full relative cursor-pointer transition-all duration-300 flex-shrink-0 ${t.is_active ? "bg-emerald-500" : "bg-background border border-border"}`}
                   title={t.is_active ? "Visível na página" : "Oculto da página"}>
                   <span className={`absolute w-3.5 h-3.5 rounded-full bg-white top-[3px] transition-all duration-300 shadow-sm ${t.is_active ? "left-[18px]" : "left-[3px]"}`} />
                 </button>
@@ -1794,7 +1794,7 @@ const CreatorEditPanel = forwardRef<CreatorEditPanelHandle, Props>(function Crea
           </div>
         ))}
         <button onClick={() => setTestimonialsList([...testimonialsList, { id: crypto.randomUUID(), creator_id: profile.id, author_name: "", author_role: "", author_avatar_url: "", content: "", rating: 5, is_active: true, sort_order: testimonialsList.length }])}
-          className="flex items-center justify-center gap-2 w-full p-3 border border-dashed border-k-glow rounded-xl text-muted-foreground text-sm font-medium mt-2 transition-all hover:border-k-400 hover:text-muted-foreground00 hover:bg-k-glow active:scale-[0.98]">
+          className="flex items-center justify-center gap-2 w-full p-3 border border-dashed border-k-glow rounded-xl text-muted-foreground text-sm font-medium mt-2 transition-all hover:border-k-400 hover:text-foreground hover:bg-k-glow active:scale-[0.98]">
           + Adicionar depoimento
         </button>
       </div>
