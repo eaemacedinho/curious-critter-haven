@@ -474,7 +474,7 @@ export default function Landing() {
           <h2 className="font-display text-[clamp(1.9rem,3.5vw,3rem)] font-extrabold leading-[1.1] tracking-tight mb-4">
             Simples, transparente,
             <br />
-            <span className="text-primary">sem surpresas.</span>
+            <span className="text-primary-readable">sem surpresas.</span>
           </h2>
           <p className="text-base text-muted-foreground max-w-[560px] mx-auto mb-12">
             Comece grátis. Evolua quando quiser.
