@@ -467,8 +467,8 @@ export default function Landing() {
         initial="hidden" whileInView="visible" viewport={{ once: true, amount: 0.1 }}
       >
         <motion.div variants={fadeUp} custom={0}>
-          <span className="inline-flex items-center gap-2 text-[0.66rem] font-bold text-primary tracking-[0.14em] uppercase mb-5">
-            <span className="w-4 h-px bg-primary" />
+          <span className="inline-flex items-center gap-2 text-[0.66rem] font-bold text-primary-readable tracking-[0.14em] uppercase mb-5">
+            <span className="w-4 h-px bg-primary-readable" />
             Planos
           </span>
           <h2 className="font-display text-[clamp(1.9rem,3.5vw,3rem)] font-extrabold leading-[1.1] tracking-tight mb-4">
