@@ -649,8 +649,47 @@ const CreatorEditPanel = forwardRef<CreatorEditPanelHandle, Props>(function Crea
           </div>
           <div>
             <label className={labelClass}>Handle <span className="text-destructive">*</span></label>
-            <input value={handle} onChange={(e) => { setHandle(e.target.value); setValidationErrors((v) => { const n = { ...v }; delete n.slug; return n; }); }} className={`${inputClass} ${validationErrors.slug ? "border-destructive/50 focus:border-destructive" : ""}`} placeholder="seunome" />
-            {validationErrors.slug ? <p className="text-[0.68rem] text-destructive mt-1">{validationErrors.slug}</p> : <p className="text-[0.68rem] text-muted-foreground mt-1">Identificador único, sem espaços. Ex: in1.bio/{handle.replace(/^@/, "") || "seunome"}</p>}
+            <div className="relative">
+              <input
+                value={handle}
+                onChange={(e) => {
+                  if (handleLocked) return;
+                  setHandle(e.target.value);
+                  setValidationErrors((v) => { const n = { ...v }; delete n.slug; return n; });
+                }}
+                disabled={handleLocked}
+                className={`${inputClass} pr-10 ${validationErrors.slug ? "border-destructive/50 focus:border-destructive" : handleAvailable === true ? "border-emerald-500/50 focus:border-emerald-500" : handleAvailable === false ? "border-destructive/50 focus:border-destructive" : ""} ${handleLocked ? "opacity-60 cursor-not-allowed" : ""}`}
+                placeholder="seunome"
+              />
+              {/* Availability indicator */}
+              {handle.trim().replace(/^@/, "").toLowerCase() !== originalHandle.current.replace(/^@/, "").toLowerCase() && (
+                <div className="absolute right-3 top-1/2 -translate-y-1/2">
+                  {handleChecking && <Loader2 className="w-4 h-4 text-muted-foreground animate-spin" />}
+                  {!handleChecking && handleAvailable === true && <CheckCircle2 className="w-4 h-4 text-emerald-500" />}
+                  {!handleChecking && handleAvailable === false && <XCircle className="w-4 h-4 text-destructive" />}
+                </div>
+              )}
+            </div>
+            {/* Status messages */}
+            {validationErrors.slug ? (
+              <p className="text-[0.68rem] text-destructive mt-1">{validationErrors.slug}</p>
+            ) : handleLocked ? (
+              <p className="text-[0.68rem] text-amber-500 mt-1 flex items-center gap-1">
+                <AlertTriangle className="w-3 h-3" />
+                Handle alterado recentemente. Próxima alteração disponível em {handleCooldownDays} dia{handleCooldownDays > 1 ? "s" : ""}.
+              </p>
+            ) : !handleChecking && handleAvailable === false ? (
+              <p className="text-[0.68rem] text-destructive mt-1">Esse handle já está em uso. Tente outro.</p>
+            ) : !handleChecking && handleAvailable === true ? (
+              <p className="text-[0.68rem] text-emerald-500 mt-1">✨ Disponível!</p>
+            ) : (
+              <p className="text-[0.68rem] text-muted-foreground mt-1">
+                Identificador único, sem espaços. Ex: in1.bio/{handle.replace(/^@/, "") || "seunome"}
+                {handle.trim().replace(/^@/, "").toLowerCase() !== originalHandle.current.replace(/^@/, "").toLowerCase() && (
+                  <span className="block text-amber-500/80 mt-0.5">⚠️ Após alterar, o handle só poderá ser mudado novamente em 30 dias.</span>
+                )}
+              </p>
+            )}
           </div>
           <div>
             <label className={labelClass}>Bio</label>
