@@ -284,6 +284,16 @@ export default function CreatorView({ profile, links: rawLinks, socialLinks: raw
                   );
                 }
 
+                if (displayModes.links === "marquee" && links.length > 1) {
+                  return (
+                    <div key="links" className="mb-8 animate-k-fade-up" style={{ animationDelay: ".15s" }} data-preview-section="links">
+                      <SectionMarquee itemWidth="80%">
+                        {links.map(link => renderLinkCard(link, true))}
+                      </SectionMarquee>
+                    </div>
+                  );
+                }
+
                 // Default list mode
                 const rows: CreatorLink[][] = [];
                 let i = 0;
