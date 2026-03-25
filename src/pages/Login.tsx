@@ -28,6 +28,9 @@ export default function Login() {
     if (!authLoading && user) {
       navigate("/app", { replace: true });
     }
+    if (searchParams.get("verified") === "1") {
+      toast.success("E-mail confirmado! Faça login para continuar.");
+    }
   }, [user, authLoading, navigate]);
 
   const handleSubmit = async (e: React.FormEvent) => {
@@ -78,14 +81,18 @@ export default function Login() {
             });
           }
         }
-        toast.success("Conta criada com sucesso!");
-        const dest = templateParam ? `/app?template=${templateParam}` : "/app";
-        navigate(dest);
+        toast.success("Conta criada! Confirme seu e-mail para continuar.");
+        navigate(`/verify-email?email=${encodeURIComponent(email)}&from=signup`);
       }
     } else {
       const { error } = await supabase.auth.signInWithPassword({ email, password });
       if (error) {
-        toast.error(error.message);
+        if (error.message === "Email not confirmed") {
+          toast.error("E-mail não confirmado. Verifique seu e-mail.");
+          navigate(`/verify-email?email=${encodeURIComponent(email)}`);
+        } else {
+          toast.error(error.message);
+        }
       } else {
         toast.success("Login realizado!");
         const dest = templateParam ? `/app?template=${templateParam}` : "/app";

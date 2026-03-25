@@ -18,6 +18,7 @@ import Terms from "@/pages/Terms";
 import CreatorPublic from "@/pages/CreatorPublic";
 import NotFound from "@/pages/NotFound";
 import ResetPassword from "@/pages/ResetPassword";
+import VerifyEmail from "@/pages/VerifyEmail";
 import ExampleLink from "@/pages/ExampleLink";
 import Invite from "@/pages/Invite";
 
@@ -51,6 +52,7 @@ const App = () => (
               <Route path="/cookies" element={<Cookies />} />
               <Route path="/termos" element={<Terms />} />
               <Route path="/reset-password" element={<ResetPassword />} />
+              <Route path="/verify-email" element={<VerifyEmail />} />
               <Route path="/c/:handle" element={<CreatorPublic />} />
               <Route path="/exemplo" element={<ExampleLink />} />
               <Route path="/convite" element={<Invite />} />
