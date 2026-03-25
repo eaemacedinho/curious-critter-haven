@@ -486,7 +486,7 @@ function LinkmeCard({ link, shape, onLinkClick }: { link: CreatorLink; shape?: s
   const sc = shapeClass(shape);
   const customStyle: React.CSSProperties = {
     ...(link.bg_color ? { backgroundColor: link.bg_color } : {}),
-    ...(link.text_color ? { color: link.text_color } : {}),
+    color: autoTextColor(link.bg_color, link.text_color),
     ...(link.border_color ? { borderColor: link.border_color, borderWidth: "1px", borderStyle: "solid" } : {}),
   };
   const hasCustomBg = Boolean(link.bg_color);

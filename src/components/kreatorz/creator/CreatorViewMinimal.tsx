@@ -124,7 +124,7 @@ export default function CreatorViewMinimal({ profile, links: rawLinks, socialLin
             {campaigns.map((camp) => (
               <div key={camp.id} onClick={() => camp.url && window.open(camp.url, "_blank")}
                 className="rounded-xl border border-border bg-card/50 overflow-hidden cursor-pointer mb-2.5 transition-all hover:-translate-y-0.5"
-                style={{ ...(camp.bg_color ? { backgroundColor: camp.bg_color } : {}), ...(camp.text_color ? { color: camp.text_color } : {}) }}>
+                style={{ ...(camp.bg_color ? { backgroundColor: camp.bg_color } : {}), color: autoTextColor(camp.bg_color, camp.text_color) }}>
                 {camp.image_url && <img src={camp.image_url} alt="" className="w-full h-32 object-cover" />}
                 <div className="p-3.5">
                   <h5 className="text-sm font-semibold">{camp.title}</h5>

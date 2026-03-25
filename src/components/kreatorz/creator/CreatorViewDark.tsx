@@ -165,7 +165,7 @@ export default function CreatorViewDark({ profile, links: rawLinks, socialLinks:
                   style={{
                     background: prod.bg_color || darkCard,
                     border: `1px solid ${prod.border_color || neonPrimary + "15"}`,
-                    ...(prod.text_color ? { color: prod.text_color } : {}),
+                    color: autoTextColor(prod.bg_color, prod.text_color),
                   }}>
                   {prod.image_url ? (
                     <img src={prod.image_url} alt="" className="w-full h-28 object-cover" />
