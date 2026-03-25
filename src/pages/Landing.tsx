@@ -481,13 +481,13 @@ export default function Landing() {
           </p>
         </motion.div>
 
-        <motion.div className="grid grid-cols-1 md:grid-cols-3 gap-5 max-w-[1000px] mx-auto" variants={stagger}>
+        <motion.div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-5 max-w-[1200px] mx-auto" variants={stagger}>
           {/* Free */}
-          <motion.div variants={cardFade} className="bg-card/80 border border-border rounded-3xl p-8 text-left transition-all duration-300 hover:border-border/80 hover:-translate-y-1">
+          <motion.div variants={cardFade} className="bg-card/80 border border-border rounded-3xl p-7 text-left transition-all duration-300 hover:border-border/80 hover:-translate-y-1">
             <div className="text-xs font-bold text-muted-foreground uppercase tracking-widest mb-2">Free</div>
-            <div className="text-4xl font-extrabold text-foreground tracking-tight mb-1">R$0 <span className="text-base font-medium text-muted-foreground">/mês</span></div>
-            <p className="text-sm text-muted-foreground mb-6">Para começar e sentir o poder.</p>
-            <ul className="space-y-0 mb-7">
+            <div className="text-3xl font-extrabold text-foreground tracking-tight mb-1">R$0 <span className="text-sm font-medium text-muted-foreground">/mês</span></div>
+            <p className="text-sm text-muted-foreground mb-5">Para começar e sentir o poder.</p>
+            <ul className="space-y-0 mb-6">
               {[
                 { ok: true, text: "1 perfil" },
                 { ok: true, text: "Até 5 links" },
@@ -495,79 +495,98 @@ export default function Landing() {
                 { ok: true, text: "1 layout básico" },
                 { ok: true, text: "Redes sociais" },
                 { ok: false, text: "Analytics" },
-                { ok: false, text: "Campanhas Spotlight" },
-                { ok: false, text: "Layout Imersivo" },
-                { ok: false, text: "Cores e efeitos personalizados" },
+                { ok: false, text: "Campanhas" },
                 { ok: false, text: "Hero Reels" },
                 { ok: false, text: "Selo verificado" },
-                { ok: false, text: "Remover branding" },
               ].map((item, i) => (
-                <li key={i} className="flex items-center gap-2.5 py-2 border-b border-border/30 last:border-b-0 text-sm text-muted-foreground">
-                  {item.ok ? <Check className="w-4 h-4 text-primary flex-shrink-0" /> : <span className="text-muted-foreground/30 flex-shrink-0">—</span>}
+                <li key={i} className="flex items-center gap-2 py-1.5 border-b border-border/30 last:border-b-0 text-sm text-muted-foreground">
+                  {item.ok ? <Check className="w-3.5 h-3.5 text-primary flex-shrink-0" /> : <span className="text-muted-foreground/30 flex-shrink-0">—</span>}
                   <span className={item.ok ? "" : "text-muted-foreground/40"}>{item.text}</span>
                 </li>
               ))}
             </ul>
-            <Link to="/login" className="block w-full py-3.5 text-center rounded-2xl bg-card border border-border text-foreground font-bold text-sm transition-all hover:bg-secondary">
+            <Link to="/login" className="block w-full py-3 text-center rounded-2xl bg-card border border-border text-foreground font-bold text-sm transition-all hover:bg-secondary">
               Começar grátis
             </Link>
           </motion.div>
 
           {/* Pro */}
-          <motion.div variants={cardFade} className="relative bg-primary/5 border border-primary/20 rounded-3xl p-8 text-left transition-all duration-300 hover:-translate-y-1">
-            <div className="absolute -top-3 left-1/2 -translate-x-1/2 bg-primary text-primary-foreground text-[0.62rem] font-extrabold px-4 py-1 rounded-full tracking-widest uppercase">
+          <motion.div variants={cardFade} className="relative bg-primary/5 border border-primary/20 rounded-3xl p-7 text-left transition-all duration-300 hover:-translate-y-1">
+            <div className="absolute -top-3 left-1/2 -translate-x-1/2 bg-primary text-primary-foreground text-[0.6rem] font-extrabold px-3 py-1 rounded-full tracking-widest uppercase">
               Mais popular
             </div>
             <div className="text-xs font-bold text-muted-foreground uppercase tracking-widest mb-2">Pro</div>
-            <div className="text-4xl font-extrabold text-foreground tracking-tight mb-1">R$17,90 <span className="text-base font-medium text-muted-foreground">/mês</span></div>
-            <p className="text-sm text-muted-foreground mb-6">Para creators que querem se destacar.</p>
-            <ul className="space-y-0 mb-7">
+            <div className="text-3xl font-extrabold text-foreground tracking-tight mb-1">R$17,90 <span className="text-sm font-medium text-muted-foreground">/mês</span></div>
+            <p className="text-sm text-muted-foreground mb-5">Para creators que querem se destacar.</p>
+            <ul className="space-y-0 mb-6">
               {[
                 "Até 2 perfis",
                 "Links & produtos ilimitados",
-                "Todos os layouts (incl. Imersivo)",
+                "Todos os layouts",
                 "Campanhas Spotlight",
                 "Hero Reels",
                 "Analytics completo",
-                "Cores e efeitos personalizados",
+                "Cores personalizadas",
                 "Selo verificado",
-                "Remover branding in1.bio",
+                "Remover branding",
               ].map((text, i) => (
-                <li key={i} className="flex items-center gap-2.5 py-2 border-b border-border/20 last:border-b-0 text-sm text-muted-foreground">
-                  <Check className="w-4 h-4 text-primary flex-shrink-0" />
+                <li key={i} className="flex items-center gap-2 py-1.5 border-b border-border/20 last:border-b-0 text-sm text-muted-foreground">
+                  <Check className="w-3.5 h-3.5 text-primary flex-shrink-0" />
                   {text}
                 </li>
               ))}
             </ul>
-            <Link to="/login" className="block w-full py-3.5 text-center rounded-2xl bg-primary text-primary-foreground font-bold text-sm transition-all hover:shadow-[0_0_30px_hsl(var(--primary)/0.25)]">
+            <Link to="/login" className="block w-full py-3 text-center rounded-2xl bg-primary text-primary-foreground font-bold text-sm transition-all hover:shadow-[0_0_30px_hsl(var(--primary)/0.25)]">
               Assinar Pro
             </Link>
           </motion.div>
 
           {/* Scale */}
-          <motion.div variants={cardFade} className="bg-card/80 border border-border rounded-3xl p-8 text-left transition-all duration-300 hover:border-border/80 hover:-translate-y-1">
+          <motion.div variants={cardFade} className="bg-card/80 border border-border rounded-3xl p-7 text-left transition-all duration-300 hover:border-border/80 hover:-translate-y-1">
             <div className="text-xs font-bold text-muted-foreground uppercase tracking-widest mb-2">Scale</div>
-            <div className="text-3xl font-extrabold text-foreground tracking-tight mb-1">Sob consulta</div>
-            <p className="text-sm text-muted-foreground mb-6">Para agências e equipes com white-label.</p>
-            <ul className="space-y-0 mb-7">
+            <div className="text-3xl font-extrabold text-foreground tracking-tight mb-1">R$87,90 <span className="text-sm font-medium text-muted-foreground">/mês</span></div>
+            <p className="text-sm text-muted-foreground mb-5">Para agências e equipes.</p>
+            <ul className="space-y-0 mb-6">
               {[
                 "Até 10 perfis",
                 "Tudo do plano Pro",
-                "Criação em lote de perfis",
+                "Criação em lote",
                 "Dashboard multi-creator",
-                "Membros de equipe ilimitados",
-                "Templates salvos ilimitados",
-                "Domínio customizado",
-                "White-label completo",
-                "Suporte prioritário",
+                "Membros de equipe",
+                "Templates ilimitados",
               ].map((text, i) => (
-                <li key={i} className="flex items-center gap-2.5 py-2 border-b border-border/30 last:border-b-0 text-sm text-muted-foreground">
-                  <Check className="w-4 h-4 text-primary flex-shrink-0" />
+                <li key={i} className="flex items-center gap-2 py-1.5 border-b border-border/30 last:border-b-0 text-sm text-muted-foreground">
+                  <Check className="w-3.5 h-3.5 text-primary flex-shrink-0" />
                   {text}
                 </li>
               ))}
             </ul>
-            <a href="mailto:contato@in1.bio?subject=Plano%20Scale" className="block w-full py-3.5 text-center rounded-2xl bg-card border border-border text-foreground font-bold text-sm transition-all hover:bg-secondary">
+            <Link to="/login" className="block w-full py-3 text-center rounded-2xl bg-card border border-border text-foreground font-bold text-sm transition-all hover:bg-secondary">
+              Assinar Scale
+            </Link>
+          </motion.div>
+
+          {/* Enterprise */}
+          <motion.div variants={cardFade} className="bg-card/80 border border-border rounded-3xl p-7 text-left transition-all duration-300 hover:border-border/80 hover:-translate-y-1">
+            <div className="text-xs font-bold text-muted-foreground uppercase tracking-widest mb-2">Enterprise</div>
+            <div className="text-3xl font-extrabold text-foreground tracking-tight mb-1">Sob consulta</div>
+            <p className="text-sm text-muted-foreground mb-5">White-label completo para sua marca.</p>
+            <ul className="space-y-0 mb-6">
+              {[
+                "+10 perfis",
+                "Tudo do plano Scale",
+                "White-label completo",
+                "Domínio customizado",
+                "Branding personalizado",
+                "Suporte prioritário",
+              ].map((text, i) => (
+                <li key={i} className="flex items-center gap-2 py-1.5 border-b border-border/30 last:border-b-0 text-sm text-muted-foreground">
+                  <Check className="w-3.5 h-3.5 text-primary flex-shrink-0" />
+                  {text}
+                </li>
+              ))}
+            </ul>
+            <a href="mailto:contato@in1.bio?subject=Plano%20Enterprise" className="block w-full py-3 text-center rounded-2xl bg-card border border-border text-foreground font-bold text-sm transition-all hover:bg-secondary">
               Fale conosco
             </a>
           </motion.div>
