@@ -1395,7 +1395,15 @@ const CreatorEditPanel = forwardRef<CreatorEditPanelHandle, Props>(function Crea
       </div>
 
       <div className="mb-8" data-editor-section="products">
-        <div className={sectionTitle}>🛍 Produtos</div>
+        <div className="flex items-center justify-between mb-2">
+          <div className={sectionTitle + " mb-0"}>🛍 Produtos</div>
+          {prods.length > 1 && (
+            <div className="flex bg-card border border-border rounded-lg overflow-hidden">
+              <button onClick={() => setDisplayModes(d => ({ ...d, products: "list" }))} className={`px-2 py-1 text-[0.6rem] font-semibold transition-all ${displayModes.products === "list" ? "bg-primary text-primary-foreground" : "text-muted-foreground hover:text-foreground"}`}>Grade</button>
+              <button onClick={() => setDisplayModes(d => ({ ...d, products: "carousel" }))} className={`px-2 py-1 text-[0.6rem] font-semibold transition-all ${displayModes.products === "carousel" ? "bg-primary text-primary-foreground" : "text-muted-foreground hover:text-foreground"}`}>Carrossel</button>
+            </div>
+          )}
+        </div>
         {prods.map((prod, i) => (
           <div
             key={i}
