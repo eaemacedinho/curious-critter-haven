@@ -217,17 +217,8 @@ export default function CreatorEdit() {
     await refetch();
     toast.success("Alterações salvas com sucesso!");
 
-    // If using a template, auto-update it
-    if (activeTemplateId) {
-      const tpl = templates.find(t => t.id === activeTemplateId);
-      if (tpl) {
-        await updateTemplate(activeTemplateId, getCurrentData());
-        toast.success(`Template "${tpl.name}" atualizado`);
-      }
-    } else if (usingDefault && defaultTemplate) {
-      await saveDefaultTemplate(getCurrentData());
-      toast.success("Meu Padrão atualizado");
-    } else if (templates.length === 0 && !defaultTemplate) {
+    // Only suggest saving as template if no templates exist yet
+    if (templates.length === 0 && !defaultTemplate) {
       setShowSaveConfirm(true);
     }
   };
