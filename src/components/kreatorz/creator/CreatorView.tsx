@@ -256,7 +256,7 @@ export default function CreatorView({ profile, links: rawLinks, socialLinks: raw
                         } active:scale-[0.97]`}
                       style={{
                         ...(link.bg_color ? { backgroundColor: link.bg_color } : {}),
-                        ...(link.text_color ? { color: link.text_color } : {}),
+                        color: autoTextColor(link.bg_color, link.text_color),
                         ...(link.border_color ? { borderColor: link.border_color, borderWidth: "1px", borderStyle: "solid" } : {}),
                       }}>
                       <div className={`w-[44px] h-[44px] rounded-xl flex items-center justify-center flex-shrink-0 transition-transform duration-300 group-hover:scale-110 ${link.is_featured ? "bg-primary-foreground/15" : "bg-primary/5"}`}>
