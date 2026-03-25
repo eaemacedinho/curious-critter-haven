@@ -1,7 +1,7 @@
 import { useState, useEffect, useMemo } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { useNavigate } from "react-router-dom";
-import { ArrowRight, Eye, Sparkles, X, Save, Crown, Undo2 } from "lucide-react";
+import { ArrowRight, Eye, Sparkles, X, Save, Crown, Undo2, AlertTriangle, Replace } from "lucide-react";
 import { useTenant } from "@/hooks/useTenant";
 import { useSubscription } from "@/hooks/useSubscription";
 import { supabase } from "@/integrations/supabase/client";
