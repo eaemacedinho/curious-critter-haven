@@ -1,7 +1,7 @@
 import { useRef, useState } from "react";
 import { Link, useParams, useNavigate } from "react-router-dom";
 import { toast } from "sonner";
-import { Sparkles, Save, ChevronDown, Trash2, Pencil, RotateCcw } from "lucide-react";
+import { Sparkles, Save, ChevronDown, Trash2, Pencil, RotateCcw, Star, Info } from "lucide-react";
 import { useTenant } from "@/hooks/useTenant";
 import { useCreatorData } from "@/hooks/useCreatorData";
 import { useSubscription } from "@/hooks/useSubscription";
@@ -19,7 +19,7 @@ export default function CreatorEdit() {
     uploadImage, uploadContentImage, refetch,
   } = useCreatorData(agency?.id, creatorId);
   const { canUse, currentPlan } = useSubscription();
-  const { templates, saveTemplate, updateTemplate, deleteTemplate, renameTemplate } = useCreatorTemplates(agency?.id, creatorId);
+  const { templates, defaultTemplate, saveTemplate, saveDefaultTemplate, updateTemplate, deleteTemplate, renameTemplate } = useCreatorTemplates(agency?.id, creatorId);
   const editorRef = useRef<CreatorEditPanelHandle>(null);
   const [saving, setSaving] = useState(false);
 
@@ -27,12 +27,13 @@ export default function CreatorEdit() {
   const [activeTemplateId, setActiveTemplateId] = useState<string | null>(null);
   const [showTemplateDropdown, setShowTemplateDropdown] = useState(false);
   const [showSaveConfirm, setShowSaveConfirm] = useState(false);
-  const [showSwitchConfirm, setShowSwitchConfirm] = useState<{ templateId: string | null } | null>(null);
+  const [showSwitchConfirm, setShowSwitchConfirm] = useState<{ templateId: string | null; isDefault?: boolean } | null>(null);
   const [showDeleteConfirm, setShowDeleteConfirm] = useState<string | null>(null);
   const [renamingId, setRenamingId] = useState<string | null>(null);
   const [renameValue, setRenameValue] = useState("");
   const [templateNameInput, setTemplateNameInput] = useState("");
   const [showNewTemplateDialog, setShowNewTemplateDialog] = useState(false);
+  const [usingDefault, setUsingDefault] = useState(false);
 
   const maxTemplates = currentPlan === "free" ? 1 : currentPlan === "pro" ? 5 : 10;
 
@@ -75,8 +76,10 @@ export default function CreatorEdit() {
         await updateTemplate(activeTemplateId, getCurrentData());
         toast.success(`Template "${tpl.name}" atualizado`);
       }
-    } else if (templates.length === 0) {
-      // First time saving — suggest saving as template
+    } else if (usingDefault && defaultTemplate) {
+      await saveDefaultTemplate(getCurrentData());
+      toast.success("Meu Padrão atualizado");
+    } else if (templates.length === 0 && !defaultTemplate) {
       setShowSaveConfirm(true);
     }
   };
@@ -93,6 +96,7 @@ export default function CreatorEdit() {
     const result = await saveTemplate(templateNameInput.trim(), getCurrentData());
     if (result) {
       setActiveTemplateId(result.id);
+      setUsingDefault(false);
       toast.success(`Template "${templateNameInput.trim()}" salvo!`);
     } else {
       toast.error("Erro ao salvar template");
@@ -101,18 +105,47 @@ export default function CreatorEdit() {
     setTemplateNameInput("");
   };
 
-  const handleSwitchTemplate = async (templateId: string | null) => {
-    if (templateId === activeTemplateId) return;
-    setShowSwitchConfirm({ templateId });
+  const handleSaveAsDefault = async () => {
+    const ok = await saveDefaultTemplate(getCurrentData());
+    if (ok) {
+      setUsingDefault(true);
+      setActiveTemplateId(null);
+      toast.success("Meu Padrão salvo! Este será o template base para criação em lote.");
+    } else {
+      toast.error("Erro ao salvar Meu Padrão");
+    }
+  };
+
+  const handleSwitchTemplate = (templateId: string | null, isDefault?: boolean) => {
+    if (isDefault && usingDefault) return;
+    if (!isDefault && templateId === activeTemplateId) return;
+    setShowSwitchConfirm({ templateId, isDefault });
   };
 
   const confirmSwitch = async () => {
     if (!showSwitchConfirm) return;
-    const templateId = showSwitchConfirm.templateId;
+    const { templateId, isDefault } = showSwitchConfirm;
+
+    if (isDefault && defaultTemplate) {
+      const data = defaultTemplate.template_data;
+      if (data.profile) await saveProfile(data.profile as any);
+      if (data.links) await saveLinks(data.links);
+      if (data.socialLinks) await saveSocialLinks(data.socialLinks);
+      if (data.products) await saveProducts(data.products);
+      if (data.campaigns) await saveCampaigns(data.campaigns);
+      if (data.heroReels) await saveHeroReels(data.heroReels);
+      if (data.testimonials) await saveTestimonials(data.testimonials);
+      await refetch();
+      setActiveTemplateId(null);
+      setUsingDefault(true);
+      setShowSwitchConfirm(null);
+      toast.success("Meu Padrão aplicado!");
+      return;
+    }
 
     if (templateId === null) {
-      // Switch to custom
       setActiveTemplateId(null);
+      setUsingDefault(false);
       setShowSwitchConfirm(null);
       toast.success("Modo personalizado ativado");
       return;
@@ -121,7 +154,6 @@ export default function CreatorEdit() {
     const tpl = templates.find(t => t.id === templateId);
     if (!tpl) return;
 
-    // Apply template data
     const data = tpl.template_data;
     if (data.profile) await saveProfile(data.profile as any);
     if (data.links) await saveLinks(data.links);
@@ -132,6 +164,7 @@ export default function CreatorEdit() {
     if (data.testimonials) await saveTestimonials(data.testimonials);
     await refetch();
     setActiveTemplateId(templateId);
+    setUsingDefault(false);
     setShowSwitchConfirm(null);
     toast.success(`Template "${tpl.name}" aplicado!`);
   };
@@ -196,6 +229,7 @@ export default function CreatorEdit() {
   };
 
   const activeTemplate = templates.find(t => t.id === activeTemplateId);
+  const currentLabel = usingDefault ? "⭐ Meu Padrão" : activeTemplate ? activeTemplate.name : "Personalizado";
 
   return (
     <div className="max-w-[1400px] mx-auto">
@@ -220,31 +254,67 @@ export default function CreatorEdit() {
             <button
               onClick={() => setShowTemplateDropdown(!showTemplateDropdown)}
               className={`px-3 py-2 text-xs font-semibold rounded-xl border transition-all flex items-center gap-1.5 ${
-                activeTemplateId
+                activeTemplateId || usingDefault
                   ? "bg-primary/15 border-primary/40 text-primary"
                   : "bg-card border-border text-muted-foreground hover:text-foreground hover:border-primary/30"
               }`}
             >
               <Save className="w-3.5 h-3.5" />
-              {activeTemplate ? activeTemplate.name : "Personalizado"}
+              {currentLabel}
               <ChevronDown className="w-3 h-3" />
             </button>
 
             {showTemplateDropdown && (
               <>
                 <div className="fixed inset-0 z-40" onClick={() => setShowTemplateDropdown(false)} />
-                <div className="absolute right-0 top-full mt-1 z-50 bg-card border border-border rounded-xl shadow-lg w-[260px] py-1 overflow-hidden">
-                  {/* Custom option */}
+                <div className="absolute right-0 top-full mt-1 z-50 bg-card border border-border rounded-xl shadow-lg w-[300px] py-1 overflow-hidden max-h-[400px] overflow-y-auto">
+                  {/* Custom / Personalizado */}
                   <button
                     onClick={() => { handleSwitchTemplate(null); setShowTemplateDropdown(false); }}
                     className={`w-full text-left px-3 py-2.5 text-sm transition-colors flex items-center gap-2 ${
-                      !activeTemplateId ? "bg-primary/10 text-primary font-semibold" : "text-foreground hover:bg-muted"
+                      !activeTemplateId && !usingDefault ? "bg-primary/10 text-primary font-semibold" : "text-foreground hover:bg-muted"
                     }`}
                   >
                     <RotateCcw className="w-3.5 h-3.5 flex-shrink-0" />
                     <span className="flex-1">Personalizado</span>
-                    {!activeTemplateId && <span className="text-[0.6rem] bg-primary/20 text-primary px-1.5 py-0.5 rounded-md font-bold">ATIVO</span>}
+                    {!activeTemplateId && !usingDefault && <span className="text-[0.6rem] bg-primary/20 text-primary px-1.5 py-0.5 rounded-md font-bold">ATIVO</span>}
                   </button>
+
+                  <div className="border-t border-border my-1" />
+
+                  {/* Meu Padrão — agency default */}
+                  <div className={`flex items-center gap-1 px-3 py-2.5 transition-colors ${usingDefault ? "bg-primary/10" : "hover:bg-muted"}`}>
+                    <button
+                      onClick={() => {
+                        if (defaultTemplate) {
+                          handleSwitchTemplate(null, true);
+                        } else {
+                          handleSaveAsDefault();
+                        }
+                        setShowTemplateDropdown(false);
+                      }}
+                      className="flex-1 text-left text-sm text-foreground flex items-center gap-2"
+                    >
+                      <Star className="w-3.5 h-3.5 text-amber-400 fill-amber-400 flex-shrink-0" />
+                      <span className="font-semibold">Meu Padrão</span>
+                    </button>
+                    {usingDefault && <span className="text-[0.6rem] bg-primary/20 text-primary px-1.5 py-0.5 rounded-md font-bold flex-shrink-0">ATIVO</span>}
+                    <div className="relative group flex-shrink-0">
+                      <Info className="w-3.5 h-3.5 text-muted-foreground cursor-help" />
+                      <div className="absolute bottom-full right-0 mb-1.5 w-[200px] bg-popover border border-border rounded-lg p-2 text-[0.65rem] text-muted-foreground shadow-lg opacity-0 pointer-events-none group-hover:opacity-100 group-hover:pointer-events-auto transition-opacity z-50">
+                        Template padrão da agência. Não conta no limite do plano. Usado como base na criação em lote de creators.
+                      </div>
+                    </div>
+                    {defaultTemplate && (
+                      <button
+                        onClick={(e) => { e.stopPropagation(); handleSaveAsDefault(); }}
+                        className="p-1 text-muted-foreground hover:text-primary transition-colors flex-shrink-0"
+                        title="Atualizar Meu Padrão com dados atuais"
+                      >
+                        <Save className="w-3 h-3" />
+                      </button>
+                    )}
+                  </div>
 
                   <div className="border-t border-border my-1" />
 
@@ -407,7 +477,9 @@ export default function CreatorEdit() {
         onOpenChange={(open) => !open && setShowSwitchConfirm(null)}
         title="Trocar de template?"
         description={
-          showSwitchConfirm?.templateId
+          showSwitchConfirm?.isDefault
+            ? "Os dados atuais serão substituídos pelo Meu Padrão da agência. Deseja continuar?"
+            : showSwitchConfirm?.templateId
             ? "Os dados atuais serão substituídos pelos dados do template selecionado. Deseja continuar?"
             : "Deseja voltar ao modo personalizado? Os dados atuais serão mantidos."
         }
