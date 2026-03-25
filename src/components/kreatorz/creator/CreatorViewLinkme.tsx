@@ -250,60 +250,96 @@ export default function CreatorViewLinkme({ profile, links: rawLinks, socialLink
 
                 case "links":
                   return links.length > 0 ? (
-                    <div key="links" className="flex flex-col gap-3 mt-6 px-4">
-                      {(() => {
-                        const elements: React.ReactNode[] = [];
-                        let i = 0;
-                        while (i < links.length) {
-                          const link = links[i];
-                          if (link.display_mode === "half") {
-                            const next = links[i + 1]?.display_mode === "half" ? links[i + 1] : null;
-                            elements.push(
-                              <div key={link.id + "-row"} className="grid grid-cols-2 gap-3">
-                                <LinkmeCard link={link} shape={profile.image_shape_links} onLinkClick={onLinkClick} />
-                                {next && <LinkmeCard link={next} shape={profile.image_shape_links} onLinkClick={onLinkClick} />}
-                              </div>
-                            );
-                            i += next ? 2 : 1;
-                          } else {
-                            elements.push(<LinkmeCard key={link.id} link={link} shape={profile.image_shape_links} onLinkClick={onLinkClick} />);
-                            i++;
+                    displayModes.links === "carousel" && links.length > 1 ? (
+                      <div key="links" className="mt-6 px-4" data-preview-section="links">
+                        <SectionCarousel itemWidth="80%">
+                          {links.map(link => <LinkmeCard key={link.id} link={link} shape={profile.image_shape_links} onLinkClick={onLinkClick} />)}
+                        </SectionCarousel>
+                      </div>
+                    ) : (
+                      <div key="links" className="flex flex-col gap-3 mt-6 px-4" data-preview-section="links">
+                        {(() => {
+                          const elements: React.ReactNode[] = [];
+                          let i = 0;
+                          while (i < links.length) {
+                            const link = links[i];
+                            if (link.display_mode === "half") {
+                              const next = links[i + 1]?.display_mode === "half" ? links[i + 1] : null;
+                              elements.push(
+                                <div key={link.id + "-row"} className="grid grid-cols-2 gap-3">
+                                  <LinkmeCard link={link} shape={profile.image_shape_links} onLinkClick={onLinkClick} />
+                                  {next && <LinkmeCard link={next} shape={profile.image_shape_links} onLinkClick={onLinkClick} />}
+                                </div>
+                              );
+                              i += next ? 2 : 1;
+                            } else {
+                              elements.push(<LinkmeCard key={link.id} link={link} shape={profile.image_shape_links} onLinkClick={onLinkClick} />);
+                              i++;
+                            }
                           }
-                        }
-                        return elements;
-                      })()}
-                    </div>
+                          return elements;
+                        })()}
+                      </div>
+                    )
                   ) : null;
 
                 case "products":
                   return products.length > 0 ? (
                     <div key="products" data-preview-section="products" className="mt-8 px-4">
                       <SectionLabel label="Produtos" color={profile.color_section_titles} />
-                      <div className="grid grid-cols-2 gap-3">
-                        {products.map((prod) => (
-                          <div key={prod.id} onClick={() => prod.url && window.open(prod.url, "_blank")}
-                            className={`backdrop-blur-xl ${shapeClass(profile.image_shape_products)} overflow-hidden cursor-pointer transition-all duration-300 group hover:-translate-y-1 active:scale-[0.97] ${!prod.bg_color ? "bg-card/70 border border-border hover:border-primary/30" : ""}`}
-                            style={{
-                              ...(prod.bg_color ? { backgroundColor: prod.bg_color } : {}),
-                              ...(prod.text_color ? { color: prod.text_color } : {}),
-                              ...(prod.border_color ? { borderColor: prod.border_color, borderWidth: "1px", borderStyle: "solid" } : {}),
-                            }}>
-                            {prod.image_url ? (
-                              <div className="w-full aspect-square overflow-hidden">
-                                <img src={prod.image_url} alt="" className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105" />
+                      {displayModes.products === "carousel" && products.length > 1 ? (
+                        <SectionCarousel itemWidth="65%">
+                          {products.map((prod) => (
+                            <div key={prod.id} onClick={() => prod.url && window.open(prod.url, "_blank")}
+                              className={`backdrop-blur-xl ${shapeClass(profile.image_shape_products)} overflow-hidden cursor-pointer transition-all duration-300 group hover:-translate-y-1 active:scale-[0.97] h-full ${!prod.bg_color ? "bg-card/70 border border-border hover:border-primary/30" : ""}`}
+                              style={{
+                                ...(prod.bg_color ? { backgroundColor: prod.bg_color } : {}),
+                                ...(prod.text_color ? { color: prod.text_color } : {}),
+                                ...(prod.border_color ? { borderColor: prod.border_color, borderWidth: "1px", borderStyle: "solid" } : {}),
+                              }}>
+                              {prod.image_url ? (
+                                <div className="w-full aspect-square overflow-hidden">
+                                  <img src={prod.image_url} alt="" className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105" />
+                                </div>
+                              ) : (
+                                <div className="p-4">
+                                  <div className="text-2xl mb-2 transition-transform group-hover:scale-110">{prod.icon}</div>
+                                </div>
+                              )}
+                              <div className="p-3.5">
+                                <h5 className="text-[0.82rem] font-semibold mb-1">{prod.title}</h5>
+                                {prod.price && <span className="text-[0.72rem] font-bold text-foreground" style={prod.text_color ? { color: prod.text_color } : undefined}>{prod.price}</span>}
                               </div>
-                            ) : (
-                              <div className="p-4">
-                                <div className="text-2xl mb-2 transition-transform group-hover:scale-110">{prod.icon}</div>
-                              </div>
-                            )}
-                            <div className="p-3.5">
-                              <h5 className="text-[0.82rem] font-semibold mb-1">{prod.title}</h5>
-                              {prod.price && <span className="text-[0.72rem] font-bold text-foreground" style={prod.text_color ? { color: prod.text_color } : undefined}>{prod.price}</span>}
                             </div>
-                          </div>
-                        ))}
-                      </div>
+                          ))}
+                        </SectionCarousel>
+                      ) : (
+                        <div className="grid grid-cols-2 gap-3">
+                          {products.map((prod) => (
+                            <div key={prod.id} onClick={() => prod.url && window.open(prod.url, "_blank")}
+                              className={`backdrop-blur-xl ${shapeClass(profile.image_shape_products)} overflow-hidden cursor-pointer transition-all duration-300 group hover:-translate-y-1 active:scale-[0.97] ${!prod.bg_color ? "bg-card/70 border border-border hover:border-primary/30" : ""}`}
+                              style={{
+                                ...(prod.bg_color ? { backgroundColor: prod.bg_color } : {}),
+                                ...(prod.text_color ? { color: prod.text_color } : {}),
+                                ...(prod.border_color ? { borderColor: prod.border_color, borderWidth: "1px", borderStyle: "solid" } : {}),
+                              }}>
+                              {prod.image_url ? (
+                                <div className="w-full aspect-square overflow-hidden">
+                                  <img src={prod.image_url} alt="" className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105" />
+                                </div>
+                              ) : (
+                                <div className="p-4">
+                                  <div className="text-2xl mb-2 transition-transform group-hover:scale-110">{prod.icon}</div>
+                                </div>
+                              )}
+                              <div className="p-3.5">
+                                <h5 className="text-[0.82rem] font-semibold mb-1">{prod.title}</h5>
+                                {prod.price && <span className="text-[0.72rem] font-bold text-foreground" style={prod.text_color ? { color: prod.text_color } : undefined}>{prod.price}</span>}
+                              </div>
+                            </div>
+                          ))}
+                        </div>
+                      )}
                     </div>
                   ) : null;
 
@@ -311,35 +347,67 @@ export default function CreatorViewLinkme({ profile, links: rawLinks, socialLink
                   return pastCamps.length > 0 ? (
                     <div key="past_campaigns" data-preview-section="past_campaigns" className="mt-8 px-4">
                       <SectionLabel label="Campanhas Anteriores" color={profile.color_section_titles} />
-                      <div className="flex flex-col gap-3">
-                        {pastCamps.map((camp) => (
-                          <div key={camp.id} onClick={() => camp.url && window.open(camp.url, "_blank")}
-                            className={`relative ${shapeClass(profile.image_shape_campaigns)} overflow-hidden cursor-pointer group transition-all duration-300 hover:-translate-y-1 active:scale-[0.98] opacity-75 hover:opacity-100`}
-                            style={{
-                              ...(camp.bg_color ? { backgroundColor: camp.bg_color } : {}),
-                              ...(camp.text_color ? { color: camp.text_color } : {}),
-                              ...(camp.border_color ? { borderColor: camp.border_color, borderWidth: "1px", borderStyle: "solid" } : {}),
-                            }}>
-                            {camp.image_url ? (
-                              <>
-                                <div className="w-full aspect-[16/9] overflow-hidden">
-                                  <img src={camp.image_url} alt="" className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105" />
-                                </div>
-                                <div className="absolute inset-0 bg-gradient-to-t from-background/90 via-background/30 to-transparent" />
-                                <div className="absolute inset-x-0 bottom-0 p-4">
+                      {displayModes.campaigns === "carousel" && pastCamps.length > 1 ? (
+                        <SectionCarousel itemWidth="80%">
+                          {pastCamps.map((camp) => (
+                            <div key={camp.id} onClick={() => camp.url && window.open(camp.url, "_blank")}
+                              className={`relative ${shapeClass(profile.image_shape_campaigns)} overflow-hidden cursor-pointer group transition-all duration-300 hover:-translate-y-1 active:scale-[0.98] h-full`}
+                              style={{
+                                ...(camp.bg_color ? { backgroundColor: camp.bg_color } : {}),
+                                ...(camp.text_color ? { color: camp.text_color } : {}),
+                                ...(camp.border_color ? { borderColor: camp.border_color, borderWidth: "1px", borderStyle: "solid" } : {}),
+                              }}>
+                              {camp.image_url ? (
+                                <>
+                                  <div className="w-full aspect-[16/9] overflow-hidden">
+                                    <img src={camp.image_url} alt="" className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105" />
+                                  </div>
+                                  <div className="absolute inset-0 bg-gradient-to-t from-background/90 via-background/30 to-transparent" />
+                                  <div className="absolute inset-x-0 bottom-0 p-4">
+                                    <h5 className="text-sm font-bold text-foreground">{camp.title}</h5>
+                                    {camp.description && <p className="text-[0.7rem] text-muted-foreground mt-1 line-clamp-2">{camp.description}</p>}
+                                  </div>
+                                </>
+                              ) : (
+                                <div className="bg-card/70 border border-border rounded-2xl p-5">
                                   <h5 className="text-sm font-bold text-foreground">{camp.title}</h5>
-                                  {camp.description && <p className="text-[0.7rem] text-muted-foreground mt-1 line-clamp-2">{camp.description}</p>}
+                                  {camp.description && <p className="text-[0.7rem] text-muted-foreground mt-1">{camp.description}</p>}
                                 </div>
-                              </>
-                            ) : (
-                              <div className="bg-card/70 border border-border rounded-2xl p-5">
-                                <h5 className="text-sm font-bold text-foreground">{camp.title}</h5>
-                                {camp.description && <p className="text-[0.7rem] text-muted-foreground mt-1">{camp.description}</p>}
-                              </div>
-                            )}
-                          </div>
-                        ))}
-                      </div>
+                              )}
+                            </div>
+                          ))}
+                        </SectionCarousel>
+                      ) : (
+                        <div className="flex flex-col gap-3">
+                          {pastCamps.map((camp) => (
+                            <div key={camp.id} onClick={() => camp.url && window.open(camp.url, "_blank")}
+                              className={`relative ${shapeClass(profile.image_shape_campaigns)} overflow-hidden cursor-pointer group transition-all duration-300 hover:-translate-y-1 active:scale-[0.98] opacity-75 hover:opacity-100`}
+                              style={{
+                                ...(camp.bg_color ? { backgroundColor: camp.bg_color } : {}),
+                                ...(camp.text_color ? { color: camp.text_color } : {}),
+                                ...(camp.border_color ? { borderColor: camp.border_color, borderWidth: "1px", borderStyle: "solid" } : {}),
+                              }}>
+                              {camp.image_url ? (
+                                <>
+                                  <div className="w-full aspect-[16/9] overflow-hidden">
+                                    <img src={camp.image_url} alt="" className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105" />
+                                  </div>
+                                  <div className="absolute inset-0 bg-gradient-to-t from-background/90 via-background/30 to-transparent" />
+                                  <div className="absolute inset-x-0 bottom-0 p-4">
+                                    <h5 className="text-sm font-bold text-foreground">{camp.title}</h5>
+                                    {camp.description && <p className="text-[0.7rem] text-muted-foreground mt-1 line-clamp-2">{camp.description}</p>}
+                                  </div>
+                                </>
+                              ) : (
+                                <div className="bg-card/70 border border-border rounded-2xl p-5">
+                                  <h5 className="text-sm font-bold text-foreground">{camp.title}</h5>
+                                  {camp.description && <p className="text-[0.7rem] text-muted-foreground mt-1">{camp.description}</p>}
+                                </div>
+                              )}
+                            </div>
+                          ))}
+                        </div>
+                      )}
                     </div>
                   ) : null;
 
