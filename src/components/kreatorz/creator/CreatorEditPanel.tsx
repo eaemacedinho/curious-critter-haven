@@ -263,7 +263,7 @@ const CreatorEditPanel = forwardRef<CreatorEditPanelHandle, Props>(function Crea
     image_shape_products: shapeProducts,
     image_shape_campaigns: shapeCampaigns,
     image_shape_links: shapeLinks,
-    page_effects: { effects: pageEffects, color: effectColor, emojis: effectEmojis, intensity: effectIntensity },
+    page_effects: { effects: pageEffects, color: effectColor, emojis: effectEmojis, intensity: effectIntensity, display_modes: displayModes },
     font_family: fontFamily,
     font_size: fontSize,
     color_name: colorName || null,
