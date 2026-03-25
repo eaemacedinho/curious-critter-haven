@@ -67,12 +67,14 @@ const DIFF_NEW = [
 
 export default function Landing() {
   const [claimUser, setClaimUser] = useState("");
+  const [showSignup, setShowSignup] = useState(false);
   const navigate = useNavigate();
 
   const handleClaim = () => {
     if (!claimUser.trim()) return;
     const clean = claimUser.trim().replace(/[^a-zA-Z0-9._-]/g, "").toLowerCase();
-    navigate(`/login?claim=${encodeURIComponent(clean)}`);
+    setClaimUser(clean);
+    setShowSignup(true);
   };
 
   return (
