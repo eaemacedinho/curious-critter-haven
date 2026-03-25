@@ -76,6 +76,7 @@ export default function Referrals() {
 
   return (
     <div className="max-w-[700px] mx-auto">
+      {showConfetti && <ConfettiCelebration onComplete={() => setShowConfetti(false)} />}
       <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.5 }}>
         {/* Header */}
         <div className="mb-8">
