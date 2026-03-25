@@ -452,7 +452,7 @@ export default function Settings() {
                       <div className="text-3xl mb-2">😢</div>
                       <h3 className="text-lg font-extrabold text-foreground">Que pena que quer sair!</h3>
                       <p className="text-sm text-muted-foreground mt-1">
-                        Antes de cancelar, que tal <span className="text-primary font-bold">30% de desconto</span> no próximo mês?
+                        Antes de cancelar, que tal <span className="text-primary-readable font-bold">30% de desconto</span> no próximo mês?
                       </p>
                     </div>
 
