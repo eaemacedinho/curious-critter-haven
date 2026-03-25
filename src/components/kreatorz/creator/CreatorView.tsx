@@ -363,7 +363,7 @@ export default function CreatorView({ profile, links: rawLinks, socialLinks: raw
                     className={`backdrop-blur-xl ${shapeClass(profile.image_shape_campaigns)} p-4 transition-all duration-300 group cursor-pointer active:scale-[0.98] opacity-75 hover:opacity-100 h-full ${!camp.bg_color ? "bg-card/65 border border-border hover:border-primary/20" : ""}`}
                     style={{
                       ...(camp.bg_color ? { backgroundColor: camp.bg_color } : {}),
-                      ...(camp.text_color ? { color: camp.text_color } : {}),
+                      color: autoTextColor(camp.bg_color, camp.text_color),
                       ...(camp.border_color ? { borderColor: camp.border_color, borderWidth: "1px", borderStyle: "solid" } : {}),
                     }}>
                     {camp.image_url && (
