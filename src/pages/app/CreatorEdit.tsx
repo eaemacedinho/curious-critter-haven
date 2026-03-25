@@ -426,15 +426,11 @@ export default function CreatorEdit() {
             <button
               ref={templateButtonRef}
               onClick={() => setShowTemplateDropdown(!showTemplateDropdown)}
-              className={`px-2.5 sm:px-3 py-2 text-[0.68rem] sm:text-xs font-semibold rounded-xl border transition-all flex items-center gap-1.5 whitespace-nowrap ${
-                activeTemplateId || usingDefault
-                  ? "bg-primary/15 border-primary/40 text-primary-readable"
-                  : "bg-card border-border text-muted-foreground hover:text-foreground hover:border-primary/30"
-              }`}
+              className="px-2.5 sm:px-3 py-2 text-[0.68rem] sm:text-xs font-semibold rounded-xl border transition-all flex items-center gap-1.5 whitespace-nowrap bg-primary/15 border-primary/40 text-primary-readable"
             >
               <Save className="w-3.5 h-3.5" />
               <span className="hidden sm:inline">{currentLabel}</span>
-              <span className="sm:hidden">{usingDefault ? "⭐" : activeTemplate ? "📋" : "✏️"}</span>
+              <span className="sm:hidden">{usingDefault ? "⭐" : activeTemplate ? "📋" : activeGalleryTemplateName ? "✨" : "⭐"}</span>
               {isTemplateEdited && (
                 <span className="text-[0.55rem] bg-accent text-accent-foreground px-1.5 py-0.5 rounded-md font-bold animate-pulse">EM EDIÇÃO</span>
               )}
