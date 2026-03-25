@@ -1,13 +1,14 @@
-import { useRef, useState } from "react";
+import { useRef, useState, useEffect, useMemo } from "react";
 import { Link, useParams, useNavigate } from "react-router-dom";
 import { toast } from "sonner";
-import { Sparkles, Save, ChevronDown, Trash2, Pencil, RotateCcw, Star, Info } from "lucide-react";
+import { Sparkles, Save, ChevronDown, Trash2, Pencil, RotateCcw, Star, Info, Palette } from "lucide-react";
 import { useTenant } from "@/hooks/useTenant";
 import { useCreatorData } from "@/hooks/useCreatorData";
 import { useSubscription } from "@/hooks/useSubscription";
 import { useCreatorTemplates, type TemplateData } from "@/hooks/useCreatorTemplates";
 import CreatorEditPanel, { type CreatorEditPanelHandle } from "@/components/kreatorz/creator/CreatorEditPanel";
 import { ConfirmDialog } from "@/components/ui/confirm-dialog";
+import { TEMPLATE_DATA, type FullTemplateData } from "@/lib/templateData";
 
 export default function CreatorEdit() {
   const navigate = useNavigate();
