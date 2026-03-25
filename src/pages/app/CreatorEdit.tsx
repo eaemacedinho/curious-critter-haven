@@ -42,10 +42,26 @@ export default function CreatorEdit() {
   const SAVED_TEMPLATES_KEY = "in1_saved_templates";
   const [savedGalleryIds, setSavedGalleryIds] = useState<string[]>([]);
 
+  // Read saved gallery templates — also re-read when navigating back from AppTemplates
   useEffect(() => {
     if (!agency) return;
-    const stored = localStorage.getItem(`${SAVED_TEMPLATES_KEY}_${agency.id}`);
-    if (stored) setSavedGalleryIds(JSON.parse(stored));
+    const readSaved = () => {
+      const stored = localStorage.getItem(`${SAVED_TEMPLATES_KEY}_${agency.id}`);
+      setSavedGalleryIds(stored ? JSON.parse(stored) : []);
+    };
+    readSaved();
+    // Listen for storage changes (e.g. from other tabs or same-tab writes)
+    const handler = (e: StorageEvent) => {
+      if (e.key === `${SAVED_TEMPLATES_KEY}_${agency.id}`) readSaved();
+    };
+    window.addEventListener("storage", handler);
+    // Also re-read when window gains focus (user comes back from templates page)
+    const focusHandler = () => readSaved();
+    window.addEventListener("focus", focusHandler);
+    return () => {
+      window.removeEventListener("storage", handler);
+      window.removeEventListener("focus", focusHandler);
+    };
   }, [agency]);
 
   const savedGalleryTemplates = useMemo(() =>
