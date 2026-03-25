@@ -135,7 +135,7 @@ export default function AppLayout() {
               {agency?.name || "Minha Agência"}
             </span>
             <span className={`text-[0.5rem] font-extrabold px-1.5 py-0.5 rounded-md uppercase tracking-wider ${
-              isPro ? "bg-primary/15 text-primary" : "bg-muted text-muted-foreground"
+              isPro ? "bg-primary/15 text-primary-readable" : "bg-muted text-muted-foreground"
             }`}>
               {currentPlan === "scale" ? "Scale" : isPro ? "Pro" : "Free"}
             </span>
