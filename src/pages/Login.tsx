@@ -186,7 +186,7 @@ export default function Login() {
                   if (error) toast.error(error.message);
                   else toast.success("E-mail de recuperação enviado! Verifique sua caixa de entrada.");
                 }}
-                className="text-xs text-muted-foreground hover:text-primary transition-colors"
+                className="text-xs text-muted-foreground hover:text-primary-readable transition-colors"
               >
                 Esqueceu sua senha?
               </button>
