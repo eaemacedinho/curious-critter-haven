@@ -206,7 +206,7 @@ export default function Checkout() {
         <div className="grid grid-cols-2 gap-2 p-4 bg-muted/30 rounded-2xl border border-border">
           {plan.features.map((f) => (
             <div key={f} className="flex items-center gap-2 text-sm text-muted-foreground">
-              <CheckCircle2 className="w-3.5 h-3.5 text-primary flex-shrink-0" />
+              <CheckCircle2 className="w-3.5 h-3.5 text-primary-readable flex-shrink-0" />
               {f}
             </div>
           ))}
