@@ -123,7 +123,7 @@ export default function CreatorViewGrid({ profile, links: rawLinks, socialLinks:
                   className={`${colSpan} rounded-2xl overflow-hidden transition-all hover:-translate-y-1 active:scale-[0.98] group relative border border-border`}
                   style={{
                     ...(link.bg_color ? { backgroundColor: link.bg_color } : { backgroundColor: "hsl(var(--card))" }),
-                    ...(link.text_color ? { color: link.text_color } : {}),
+                    color: autoTextColor(link.bg_color, link.text_color),
                     ...(link.border_color ? { borderColor: link.border_color } : {}),
                   }}>
                   {link.image_url ? (
