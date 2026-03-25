@@ -174,7 +174,7 @@ Deno.serve(async (req) => {
     await supabaseAdmin
       .from("subscriptions")
       .update({
-        plan: "pro",
+        plan: planKey,
         status: "active",
         payment_id: pagarmeData.id,
         payment_provider: "pagarme",
