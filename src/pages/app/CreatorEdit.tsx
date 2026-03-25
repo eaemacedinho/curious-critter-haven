@@ -451,11 +451,11 @@ export default function CreatorEdit() {
                   <div className="border-t border-border my-1" />
 
                   {/* Saved gallery templates */}
-                  {savedGalleryTemplates.length > 0 && (
+                  <p className="px-3 pt-2 pb-1 text-[0.6rem] font-bold text-muted-foreground uppercase tracking-wider flex items-center gap-1.5">
+                    <Palette className="w-3 h-3" /> Da galeria
+                  </p>
+                  {savedGalleryTemplates.length > 0 ? (
                     <>
-                      <p className="px-3 pt-2 pb-1 text-[0.6rem] font-bold text-muted-foreground uppercase tracking-wider flex items-center gap-1.5">
-                        <Palette className="w-3 h-3" /> Da galeria
-                      </p>
                       {savedGalleryTemplates.map((gt) => (
                         <button
                           key={gt.id}
@@ -473,9 +473,16 @@ export default function CreatorEdit() {
                           </div>
                         </button>
                       ))}
-                      <div className="border-t border-border my-1" />
                     </>
+                  ) : (
+                    <button
+                      onClick={() => { setShowTemplateDropdown(false); navigate("/app/templates"); }}
+                      className="w-full text-left px-3 py-2 text-xs text-muted-foreground hover:text-foreground hover:bg-muted transition-colors"
+                    >
+                      Nenhum favorito. Ir para Templates →
+                    </button>
                   )}
+                  <div className="border-t border-border my-1" />
 
                   {/* Save current as new template */}
                   <button
