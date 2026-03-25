@@ -119,7 +119,7 @@ export default function Landing() {
             initial="hidden" animate="visible"
             className="flex flex-col items-center"
           >
-            <motion.div variants={fadeUp} custom={0} className="inline-flex items-center gap-2 px-4 py-1.5 border border-primary/20 rounded-full text-[0.72rem] font-bold text-primary tracking-widest uppercase bg-primary/5 mb-8">
+            <motion.div variants={fadeUp} custom={0} className="inline-flex items-center gap-2 px-4 py-1.5 border border-primary/20 rounded-full text-[0.72rem] font-bold text-primary-readable tracking-widest uppercase bg-primary/5 mb-8">
               <span className="w-[7px] h-[7px] rounded-full bg-primary shadow-[0_0_10px_hsl(var(--primary))] animate-pulse" />
               Novo jeito de usar sua bio
             </motion.div>
@@ -127,7 +127,7 @@ export default function Landing() {
             <motion.h1 variants={fadeUp} custom={1} className="font-display text-[clamp(2.8rem,6vw,5rem)] font-extrabold leading-[1.04] tracking-tight mb-6">
               Sua bio pode fazer
               <br />
-              <span className="text-primary drop-shadow-[0_0_40px_hsl(var(--primary)/0.3)]">muito mais.</span>
+              <span className="text-primary-readable drop-shadow-[0_0_40px_hsl(var(--primary)/0.3)]">muito mais.</span>
             </motion.h1>
 
             <motion.p variants={fadeUp} custom={2} className="text-lg text-muted-foreground leading-relaxed max-w-[540px] mb-10">
@@ -229,8 +229,8 @@ export default function Landing() {
         initial="hidden" whileInView="visible" viewport={{ once: true, amount: 0.1 }}
       >
         <motion.div variants={fadeUp} custom={0}>
-          <span className="inline-flex items-center gap-2 text-[0.66rem] font-bold text-primary tracking-[0.14em] uppercase mb-5">
-            <span className="w-4 h-px bg-primary" />
+          <span className="inline-flex items-center gap-2 text-[0.66rem] font-bold text-primary-readable tracking-[0.14em] uppercase mb-5">
+            <span className="w-4 h-px bg-primary-readable" />
             O problema
           </span>
           <h2 className="font-display text-[clamp(1.9rem,3.5vw,3rem)] font-extrabold leading-[1.1] tracking-tight mb-4">
@@ -262,8 +262,8 @@ export default function Landing() {
         initial="hidden" whileInView="visible" viewport={{ once: true, amount: 0.1 }}
       >
         <motion.div variants={fadeUp} custom={0}>
-          <span className="inline-flex items-center gap-2 text-[0.66rem] font-bold text-primary tracking-[0.14em] uppercase mb-5">
-            <span className="w-4 h-px bg-primary" />
+          <span className="inline-flex items-center gap-2 text-[0.66rem] font-bold text-primary-readable tracking-[0.14em] uppercase mb-5">
+            <span className="w-4 h-px bg-primary-readable" />
             A solução
           </span>
           <h2 className="font-display text-[clamp(1.9rem,3.5vw,3rem)] font-extrabold leading-[1.1] tracking-tight mb-4">
@@ -298,8 +298,8 @@ export default function Landing() {
             <img src={heroCreator} alt="Creator usando in1.bio" className="rounded-3xl w-full object-cover aspect-[4/5] shadow-[0_30px_80px_rgba(0,0,0,0.5)]" />
           </motion.div>
           <motion.div variants={fadeUp} custom={1}>
-            <span className="inline-flex items-center gap-2 text-[0.66rem] font-bold text-primary tracking-[0.14em] uppercase mb-5">
-              <span className="w-4 h-px bg-primary" />
+            <span className="inline-flex items-center gap-2 text-[0.66rem] font-bold text-primary-readable tracking-[0.14em] uppercase mb-5">
+              <span className="w-4 h-px bg-primary-readable" />
               Feito para creators
             </span>
             <h2 className="font-display text-[clamp(1.6rem,3vw,2.6rem)] font-extrabold leading-[1.08] tracking-tight mb-5">
@@ -334,8 +334,8 @@ export default function Landing() {
         initial="hidden" whileInView="visible" viewport={{ once: true, amount: 0.1 }}
       >
         <motion.div variants={fadeUp} custom={0}>
-          <span className="inline-flex items-center gap-2 text-[0.66rem] font-bold text-primary tracking-[0.14em] uppercase mb-5">
-            <span className="w-4 h-px bg-primary" />
+          <span className="inline-flex items-center gap-2 text-[0.66rem] font-bold text-primary-readable tracking-[0.14em] uppercase mb-5">
+            <span className="w-4 h-px bg-primary-readable" />
             Para quem
           </span>
           <h2 className="font-display text-[clamp(1.9rem,3.5vw,3rem)] font-extrabold leading-[1.1] tracking-tight mb-4">
@@ -364,8 +364,8 @@ export default function Landing() {
         initial="hidden" whileInView="visible" viewport={{ once: true, amount: 0.1 }}
       >
         <motion.div variants={fadeUp} custom={0}>
-          <span className="inline-flex items-center gap-2 text-[0.66rem] font-bold text-primary tracking-[0.14em] uppercase mb-5">
-            <span className="w-4 h-px bg-primary" />
+          <span className="inline-flex items-center gap-2 text-[0.66rem] font-bold text-primary-readable tracking-[0.14em] uppercase mb-5">
+            <span className="w-4 h-px bg-primary-readable" />
             Diferencial
           </span>
           <h2 className="font-display text-[clamp(1.9rem,3.5vw,3rem)] font-extrabold leading-[1.1] tracking-tight mb-4">
@@ -398,7 +398,7 @@ export default function Landing() {
             <div className="space-y-0">
               {DIFF_NEW.map((item, i) => (
                 <div key={i} className="flex items-start gap-2.5 py-2.5 border-b border-border/20 last:border-b-0 text-sm text-muted-foreground">
-                  <Check className="w-4 h-4 text-primary flex-shrink-0 mt-0.5" />
+                  <Check className="w-4 h-4 text-primary-readable flex-shrink-0 mt-0.5" />
                   {item}
                 </div>
               ))}
@@ -415,7 +415,7 @@ export default function Landing() {
         <motion.div variants={fadeUp} custom={0}>
           <div className="text-4xl mb-6 opacity-30">✦</div>
           <p className="text-xl font-medium text-muted-foreground italic max-w-[600px] mx-auto leading-relaxed mb-4">
-            "Criadores estão migrando para uma nova forma de usar a bio. Quem se apresenta melhor, <span className="text-primary font-bold not-italic">fecha mais.</span>"
+            "Criadores estão migrando para uma nova forma de usar a bio. Quem se apresenta melhor, <span className="text-primary-readable font-bold not-italic">fecha mais.</span>"
           </p>
           <p className="text-sm text-muted-foreground/60">Feito para quem leva presença digital a sério.</p>
         </motion.div>
@@ -428,8 +428,8 @@ export default function Landing() {
       >
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-16 items-center">
           <motion.div variants={fadeUp} custom={0}>
-            <span className="inline-flex items-center gap-2 text-[0.66rem] font-bold text-primary tracking-[0.14em] uppercase mb-5">
-              <span className="w-4 h-px bg-primary" />
+            <span className="inline-flex items-center gap-2 text-[0.66rem] font-bold text-primary-readable tracking-[0.14em] uppercase mb-5">
+              <span className="w-4 h-px bg-primary-readable" />
               Para agências
             </span>
             <h2 className="font-display text-[clamp(1.6rem,3vw,2.6rem)] font-extrabold leading-[1.08] tracking-tight mb-5">
