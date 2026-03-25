@@ -27,7 +27,7 @@ export interface CreatorProfile {
   stats: { value: string; label: string }[];
   brands: { name: string; logo_url?: string }[];
   brands_display_mode: "static" | "marquee";
-  page_effects: { effects: string[]; color?: string; emojis?: string[]; intensity?: Record<string, number> };
+  page_effects: { effects: string[]; color?: string; emojis?: string[]; intensity?: Record<string, number>; display_modes?: { links?: "list" | "carousel"; products?: "list" | "carousel"; campaigns?: "list" | "carousel" } };
   font_family: string;
   font_size: string;
   color_name: string | null;
