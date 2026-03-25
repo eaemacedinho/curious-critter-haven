@@ -115,7 +115,7 @@ function UpgradeModal({ featureLabel, onClose }: { featureLabel: string; onClose
               "Selo verificado",
             ].map((f) => (
               <div key={f} className="flex items-center gap-2.5 text-sm text-muted-foreground">
-                <Sparkles className="w-3.5 h-3.5 text-primary flex-shrink-0" />
+                <Sparkles className="w-3.5 h-3.5 text-primary-readable flex-shrink-0" />
                 {f}
               </div>
             ))}
