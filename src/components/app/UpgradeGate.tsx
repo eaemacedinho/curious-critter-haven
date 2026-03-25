@@ -103,7 +103,7 @@ function UpgradeModal({ featureLabel, onClose }: { featureLabel: string; onClose
 
           <div className="w-full space-y-2.5 mb-6 text-left">
             {[
-              "Até 2 perfis de creator",
+              "Até 2 perfis",
               "Layout Imersivo",
               "Links & produtos ilimitados",
               "Analytics completo",

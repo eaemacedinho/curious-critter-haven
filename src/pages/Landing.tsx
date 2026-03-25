@@ -548,7 +548,7 @@ export default function Landing() {
             <p className="text-sm text-muted-foreground mb-6">Para agências e equipes maiores.</p>
             <ul className="space-y-0 mb-7">
               {[
-                "Até 10 perfis de creator",
+                "Até 10 perfis",
                 "Tudo do plano Pro",
                 "Criação em lote de perfis",
                 "Dashboard multi-creator",

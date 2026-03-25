@@ -160,7 +160,7 @@ export default function Checkout() {
         {/* Features */}
         <div className="grid grid-cols-2 gap-2 p-4 bg-muted/30 rounded-2xl border border-border">
           {[
-            "Até 2 perfis de creator",
+            "Até 2 perfis",
             "Layout Imersivo",
             "Links & produtos ilimitados",
             "Analytics completo",
