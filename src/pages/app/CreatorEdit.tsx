@@ -1,4 +1,5 @@
 import { useRef, useState, useEffect, useMemo } from "react";
+import { createPortal } from "react-dom";
 import { Link, useParams, useNavigate } from "react-router-dom";
 import { toast } from "sonner";
 import { Sparkles, Save, ChevronDown, Trash2, Pencil, RotateCcw, Star, Info, Palette } from "lucide-react";
@@ -20,8 +21,9 @@ export default function CreatorEdit() {
     uploadImage, uploadContentImage, refetch,
   } = useCreatorData(agency?.id, creatorId);
   const { canUse, currentPlan } = useSubscription();
-  const { templates, defaultTemplate, saveTemplate, saveDefaultTemplate, updateTemplate, deleteTemplate, renameTemplate } = useCreatorTemplates(agency?.id, creatorId);
+  const { templates, defaultTemplate, saveTemplate, saveDefaultTemplate, updateTemplate, deleteTemplate, renameTemplate, fetchTemplates } = useCreatorTemplates(agency?.id, creatorId);
   const editorRef = useRef<CreatorEditPanelHandle>(null);
+  const templateButtonRef = useRef<HTMLButtonElement>(null);
   const [saving, setSaving] = useState(false);
 
   // Template state
@@ -35,6 +37,7 @@ export default function CreatorEdit() {
   const [templateNameInput, setTemplateNameInput] = useState("");
   const [showNewTemplateDialog, setShowNewTemplateDialog] = useState(false);
   const [usingDefault, setUsingDefault] = useState(false);
+  const [templateDropdownStyle, setTemplateDropdownStyle] = useState<{ top: number; left: number; width: number } | null>(null);
 
   const maxTemplates = currentPlan === "free" ? 1 : currentPlan === "pro" ? 5 : 10;
 
@@ -59,6 +62,38 @@ export default function CreatorEdit() {
       document.removeEventListener("visibilitychange", readSaved);
     };
   }, [agency, creatorId]);
+
+  useEffect(() => {
+    if (!showTemplateDropdown) return;
+
+    void fetchTemplates();
+
+    const updateDropdownPosition = () => {
+      const rect = templateButtonRef.current?.getBoundingClientRect();
+      if (!rect) return;
+
+      const maxWidth = Math.min(300, window.innerWidth - 24);
+      const left = Math.min(
+        Math.max(12, rect.left),
+        Math.max(12, window.innerWidth - maxWidth - 12),
+      );
+
+      setTemplateDropdownStyle({
+        top: rect.bottom + 8,
+        left,
+        width: maxWidth,
+      });
+    };
+
+    updateDropdownPosition();
+    window.addEventListener("resize", updateDropdownPosition);
+    window.addEventListener("scroll", updateDropdownPosition, true);
+
+    return () => {
+      window.removeEventListener("resize", updateDropdownPosition);
+      window.removeEventListener("scroll", updateDropdownPosition, true);
+    };
+  }, [showTemplateDropdown, fetchTemplates]);
 
   const savedGalleryTemplates = useMemo(() =>
     savedGalleryIds.map(id => TEMPLATE_DATA.find(t => t.id === id)).filter(Boolean) as FullTemplateData[],
@@ -335,6 +370,7 @@ export default function CreatorEdit() {
           {/* Template selector */}
           <div className="relative flex-shrink-0">
             <button
+              ref={templateButtonRef}
               onClick={() => setShowTemplateDropdown(!showTemplateDropdown)}
               className={`px-2.5 sm:px-3 py-2 text-[0.68rem] sm:text-xs font-semibold rounded-xl border transition-all flex items-center gap-1.5 whitespace-nowrap ${
                 activeTemplateId || usingDefault
@@ -349,9 +385,16 @@ export default function CreatorEdit() {
             </button>
 
             {showTemplateDropdown && (
-              <>
+              templateDropdownStyle && createPortal(<>
                 <div className="fixed inset-0 z-40" onClick={() => setShowTemplateDropdown(false)} />
-                <div className="absolute left-0 sm:right-0 sm:left-auto top-full mt-1 z-[60] bg-card border border-border rounded-xl shadow-lg w-[280px] sm:w-[300px] py-1 overflow-hidden max-h-[60vh] overflow-y-auto">
+                 <div
+                   className="fixed z-[70] max-h-[min(70vh,32rem)] overflow-y-auto rounded-xl border border-border bg-card py-1 shadow-2xl"
+                   style={{
+                     top: templateDropdownStyle.top,
+                     left: templateDropdownStyle.left,
+                     width: templateDropdownStyle.width,
+                   }}
+                 >
                   {/* Custom / Personalizado */}
                   <button
                     onClick={() => { handleSwitchTemplate(null); setShowTemplateDropdown(false); }}
@@ -502,7 +545,7 @@ export default function CreatorEdit() {
                     <span className="ml-auto text-[0.6rem] text-muted-foreground font-normal">{templates.length}/{maxTemplates}</span>
                   </button>
                 </div>
-              </>
+               </>, document.body)
             )}
           </div>
 

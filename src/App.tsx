@@ -31,6 +31,7 @@ import Analytics from "@/pages/app/Analytics";
 import Settings from "@/pages/app/Settings";
 import Members from "@/pages/app/Members";
 import Referrals from "@/pages/app/Referrals";
+import Subscription from "@/pages/app/Subscription";
 import AppTemplates from "@/pages/app/AppTemplates";
 
 const queryClient = new QueryClient();
@@ -72,6 +73,7 @@ const App = () => (
                 <Route path="campaigns" element={<Campaigns />} />
                 <Route path="templates" element={<AppTemplates />} />
                 <Route path="analytics" element={<Analytics />} />
+                <Route path="subscription" element={<Subscription />} />
                 <Route path="settings" element={<Settings />} />
                 <Route path="members" element={<Members />} />
                 <Route path="referrals" element={<Referrals />} />
