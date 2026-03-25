@@ -424,15 +424,6 @@ export default function CreatorEdit() {
               )}
               <ChevronDown className="w-3 h-3" />
             </button>
-            {isTemplateEdited && originalTemplateSnapshot && (
-              <button
-                onClick={() => { setResetConfirmInput(""); setShowResetConfirm(true); }}
-                className="p-2 text-muted-foreground hover:text-destructive transition-colors rounded-xl border border-border bg-card hover:border-destructive/40"
-                title="Resetar para configurações originais do template"
-              >
-                <RotateCcw className="w-3.5 h-3.5" />
-              </button>
-            )}
           </div>
 
             {showTemplateDropdown && (
