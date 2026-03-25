@@ -295,6 +295,7 @@ export default function CreatorEdit() {
     if (templateId === null) {
       setActiveTemplateId(null);
       setUsingDefault(false);
+      setOriginalTemplateSnapshot(null);
       setShowSwitchConfirm(null);
       toast.success("Modo personalizado ativado");
       return;
