@@ -434,11 +434,11 @@ export default function AppTemplates() {
                 <div className="mt-4 rounded-xl border border-border bg-background/50 p-4">
                   <p className="text-xs font-semibold text-muted-foreground uppercase tracking-wider mb-2">Incluso neste template</p>
                   <div className="flex flex-wrap gap-2 text-xs">
-                    <span className="px-2 py-1 rounded-lg bg-primary/10 text-primary font-medium">{selectedTemplate.links.length} links</span>
-                    <span className="px-2 py-1 rounded-lg bg-primary/10 text-primary font-medium">{selectedTemplate.socialLinks.length} redes sociais</span>
-                    <span className="px-2 py-1 rounded-lg bg-primary/10 text-primary font-medium">{selectedTemplate.products.length} produtos</span>
+                    <span className="px-2 py-1 rounded-lg bg-primary/10 text-foreground font-medium">{selectedTemplate.links.length} links</span>
+                    <span className="px-2 py-1 rounded-lg bg-primary/10 text-foreground font-medium">{selectedTemplate.socialLinks.length} redes sociais</span>
+                    <span className="px-2 py-1 rounded-lg bg-primary/10 text-foreground font-medium">{selectedTemplate.products.length} produtos</span>
                     {selectedTemplate.testimonials.length > 0 && (
-                      <span className="px-2 py-1 rounded-lg bg-primary/10 text-primary font-medium">{selectedTemplate.testimonials.length} depoimentos</span>
+                      <span className="px-2 py-1 rounded-lg bg-primary/10 text-foreground font-medium">{selectedTemplate.testimonials.length} depoimentos</span>
                     )}
                   </div>
                 </div>

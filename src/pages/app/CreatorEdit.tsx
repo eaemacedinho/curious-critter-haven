@@ -279,7 +279,7 @@ export default function CreatorEdit() {
                   >
                     <RotateCcw className="w-3.5 h-3.5 flex-shrink-0" />
                     <span className="flex-1">Personalizado</span>
-                    {!activeTemplateId && !usingDefault && <span className="text-[0.6rem] bg-primary/20 text-primary px-1.5 py-0.5 rounded-md font-bold">ATIVO</span>}
+                    {!activeTemplateId && !usingDefault && <span className="text-[0.6rem] bg-primary/20 text-primary-readable px-1.5 py-0.5 rounded-md font-bold">ATIVO</span>}
                   </button>
 
                   <div className="border-t border-border my-1" />

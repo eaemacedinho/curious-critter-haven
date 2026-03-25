@@ -137,7 +137,7 @@ export default function Dashboard() {
               ].map((item) => (
                 <div key={item.step} className="bg-card border border-border rounded-2xl p-5 text-center relative overflow-hidden group hover:border-primary/20 transition-all">
                   <div className="absolute top-0 left-0 right-0 h-[2px] bg-gradient-to-r from-primary/0 via-primary/30 to-primary/0 opacity-0 group-hover:opacity-100 transition-opacity" />
-                  <div className="w-10 h-10 rounded-full bg-primary/10 text-primary font-bold text-sm flex items-center justify-center mx-auto mb-3">
+                  <div className="w-10 h-10 rounded-full bg-primary/10 text-primary-readable font-bold text-sm flex items-center justify-center mx-auto mb-3">
                     {item.step}
                   </div>
                   <div className="text-xl mb-2">{item.icon}</div>

@@ -464,7 +464,7 @@ export default function Creators() {
             {defaultTemplate && (
               <div className="flex items-center gap-2 px-3 py-2 bg-primary/10 border border-primary/20 rounded-xl">
                 <span className="text-amber-400">⭐</span>
-                <span className="text-xs text-primary font-semibold">Template "Meu Padrão" será aplicado automaticamente</span>
+                <span className="text-xs text-foreground font-semibold">Template "Meu Padrão" será aplicado automaticamente</span>
               </div>
             )}
           </div>
