@@ -46,8 +46,6 @@ export default function TemplatePreviewCard({ template, fullHeight }: Props) {
     image_shape_campaigns: (tp.image_shape || "rounded") as ImageShapeValue,
     font_family: tp.font_family,
     font_size: tp.font_size,
-    category: tp.category,
-    is_published: true,
     section_order: tp.section_order,
     tags: tp.tags,
     stats: tp.stats,
@@ -59,7 +57,7 @@ export default function TemplatePreviewCard({ template, fullHeight }: Props) {
     color_name: null,
     color_bio: null,
     color_section_titles: null,
-  }), [template]);
+  } as CreatorProfile), [template]);
 
   const links = useMemo<CreatorLink[]>(() =>
     tl.map((l, i) => ({
