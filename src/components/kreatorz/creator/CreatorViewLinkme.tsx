@@ -385,7 +385,7 @@ export default function CreatorViewLinkme({ profile, links: rawLinks, socialLink
                               className={`relative ${shapeClass(profile.image_shape_campaigns)} overflow-hidden cursor-pointer group transition-all duration-300 hover:-translate-y-1 active:scale-[0.98] opacity-75 hover:opacity-100`}
                               style={{
                                 ...(camp.bg_color ? { backgroundColor: camp.bg_color } : {}),
-                                ...(camp.text_color ? { color: camp.text_color } : {}),
+                                color: autoTextColor(camp.bg_color, camp.text_color),
                                 ...(camp.border_color ? { borderColor: camp.border_color, borderWidth: "1px", borderStyle: "solid" } : {}),
                               }}>
                               {camp.image_url ? (
