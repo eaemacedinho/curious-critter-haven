@@ -134,9 +134,11 @@ export default function CreatorView({ profile, links: rawLinks, socialLinks: raw
                 </div>
               )}
             </div>
-            <div className="absolute bottom-1 right-1 z-[3] w-7 h-7 bg-primary rounded-full border-[3px] border-background flex items-center justify-center shadow-lg">
-              <svg className="w-3.5 h-3.5 fill-primary-foreground" viewBox="0 0 24 24"><path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41z" /></svg>
-            </div>
+            {profile.verified && (
+              <div className="absolute bottom-0 right-0 z-[3]">
+                <VerifiedBadge size={28} />
+              </div>
+            )}
           </div>
 
           {profile.name && (
