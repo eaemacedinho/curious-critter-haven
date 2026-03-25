@@ -486,7 +486,7 @@ export default function Landing() {
             <p className="text-sm text-muted-foreground mb-6">Para começar e sentir o poder.</p>
             <ul className="space-y-0 mb-7">
               {[
-                { ok: true, text: "1 perfil de creator" },
+                { ok: true, text: "1 perfil" },
                 { ok: true, text: "Até 5 links" },
                 { ok: true, text: "Até 3 produtos" },
                 { ok: true, text: "1 layout básico" },
