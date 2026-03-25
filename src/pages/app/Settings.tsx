@@ -480,7 +480,7 @@ export default function Settings() {
                       <button
                         onClick={executeCancelSubscription}
                         disabled={canceling}
-                        className="w-full py-3 bg-muted text-muted-foreground font-medium text-sm rounded-xl hover:bg-muted/80 transition-all disabled:opacity-60"
+                        className="w-full py-3 bg-secondary border border-border text-foreground font-medium text-sm rounded-xl hover:bg-secondary/80 transition-all disabled:opacity-60"
                       >
                         {canceling ? "Cancelando..." : "Cancelar mesmo assim"}
                       </button>
