@@ -616,6 +616,7 @@ export type Database = {
           page_effects: Json | null
           section_order: Json
           slug: string
+          slug_changed_at: string | null
           spotify_url: string | null
           stats: Json | null
           tags: Json | null
@@ -650,6 +651,7 @@ export type Database = {
           page_effects?: Json | null
           section_order?: Json
           slug?: string
+          slug_changed_at?: string | null
           spotify_url?: string | null
           stats?: Json | null
           tags?: Json | null
@@ -684,6 +686,7 @@ export type Database = {
           page_effects?: Json | null
           section_order?: Json
           slug?: string
+          slug_changed_at?: string | null
           spotify_url?: string | null
           stats?: Json | null
           tags?: Json | null

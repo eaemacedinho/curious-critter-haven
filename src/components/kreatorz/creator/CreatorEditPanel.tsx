@@ -1,4 +1,6 @@
 import { forwardRef, useEffect, useImperativeHandle, useRef, useState, useCallback, useMemo, type CSSProperties } from "react";
+import { supabase } from "@/integrations/supabase/client";
+import { CheckCircle2, XCircle, Loader2, AlertTriangle } from "lucide-react";
 import { toast } from "sonner";
 import type { CreatorProfile, CreatorLink, SocialLink, CreatorProduct, CreatorCampaign } from "@/hooks/useCreatorData";
 import type { Testimonial } from "./TestimonialsSection";
@@ -212,7 +214,53 @@ const CreatorEditPanel = forwardRef<CreatorEditPanelHandle, Props>(function Crea
   const [dragTestimonialIdx, setDragTestimonialIdx] = useState<number | null>(null);
   const [focusSection, setFocusSection] = useState<string | null>(null);
 
-  // IntersectionObserver to detect which editor section is most visible
+  // Handle change cooldown (30 days) + availability check
+  const originalHandle = useRef(profile.slug);
+  const [handleChecking, setHandleChecking] = useState(false);
+  const [handleAvailable, setHandleAvailable] = useState<boolean | null>(null);
+  const [slugChangedAt, setSlugChangedAt] = useState<string | null>(null);
+  const handleDebounce = useRef<ReturnType<typeof setTimeout>>();
+
+  // Fetch slug_changed_at on mount
+  useEffect(() => {
+    if (!profile.id) return;
+    supabase.from("creators").select("slug_changed_at").eq("id", profile.id).single()
+      .then(({ data }) => { if (data) setSlugChangedAt((data as any).slug_changed_at); });
+  }, [profile.id]);
+
+  const handleCooldownDays = useMemo(() => {
+    if (!slugChangedAt) return 0;
+    const diff = Date.now() - new Date(slugChangedAt).getTime();
+    const remaining = 30 - Math.floor(diff / (1000 * 60 * 60 * 24));
+    return remaining > 0 ? remaining : 0;
+  }, [slugChangedAt]);
+
+  const handleLocked = handleCooldownDays > 0;
+
+  // Real-time availability check
+  useEffect(() => {
+    const clean = handle.trim().replace(/^@/, "").toLowerCase();
+    if (!clean || clean.length < 2 || clean === originalHandle.current.replace(/^@/, "").toLowerCase()) {
+      setHandleAvailable(null);
+      setHandleChecking(false);
+      return;
+    }
+    setHandleChecking(true);
+    setHandleAvailable(null);
+    if (handleDebounce.current) clearTimeout(handleDebounce.current);
+    handleDebounce.current = setTimeout(async () => {
+      const { data } = await supabase
+        .from("creators")
+        .select("id")
+        .or(`slug.eq.${clean},slug.eq.@${clean}`)
+        .neq("id", profile.id)
+        .limit(1);
+      setHandleAvailable(!data || data.length === 0);
+      setHandleChecking(false);
+    }, 500);
+    return () => { if (handleDebounce.current) clearTimeout(handleDebounce.current); };
+  }, [handle, profile.id]);
+
   useEffect(() => {
     if (!showPreview) return;
     const editorRoot = document.querySelector('[data-editor-root]');
@@ -297,6 +345,8 @@ const CreatorEditPanel = forwardRef<CreatorEditPanelHandle, Props>(function Crea
     if (!handle.trim()) errors.slug = "Handle é obrigatório";
     else if (/\s/.test(handle)) errors.slug = "Handle não pode conter espaços";
     else if (!/^[a-zA-Z0-9._-]+$/.test(handle.replace(/^@/, ""))) errors.slug = "Handle contém caracteres inválidos";
+    else if (handleAvailable === false) errors.slug = "Handle já está em uso";
+    else if (handleLocked && handle.trim().replace(/^@/, "").toLowerCase() !== originalHandle.current.replace(/^@/, "").toLowerCase()) errors.slug = "Handle bloqueado por 30 dias";
 
     links.forEach((link, i) => {
       const normalizedUrl = normalizeExternalUrl(link.url);
@@ -421,6 +471,13 @@ const CreatorEditPanel = forwardRef<CreatorEditPanelHandle, Props>(function Crea
       }
 
       await onSaveProfile(baseProfile);
+
+      // If handle changed, update slug_changed_at
+      if (handle.trim().replace(/^@/, "").toLowerCase() !== originalHandle.current.replace(/^@/, "").toLowerCase()) {
+        await supabase.from("creators").update({ slug_changed_at: new Date().toISOString() } as any).eq("id", profile.id);
+        originalHandle.current = handle;
+        setSlugChangedAt(new Date().toISOString());
+      }
 
         await onSaveLinks(sanitizedLinks);
       await onSaveSocialLinks(social);
@@ -601,8 +658,47 @@ const CreatorEditPanel = forwardRef<CreatorEditPanelHandle, Props>(function Crea
           </div>
           <div>
             <label className={labelClass}>Handle <span className="text-destructive">*</span></label>
-            <input value={handle} onChange={(e) => { setHandle(e.target.value); setValidationErrors((v) => { const n = { ...v }; delete n.slug; return n; }); }} className={`${inputClass} ${validationErrors.slug ? "border-destructive/50 focus:border-destructive" : ""}`} placeholder="seunome" />
-            {validationErrors.slug ? <p className="text-[0.68rem] text-destructive mt-1">{validationErrors.slug}</p> : <p className="text-[0.68rem] text-muted-foreground mt-1">Identificador único, sem espaços. Ex: in1.bio/{handle.replace(/^@/, "") || "seunome"}</p>}
+            <div className="relative">
+              <input
+                value={handle}
+                onChange={(e) => {
+                  if (handleLocked) return;
+                  setHandle(e.target.value);
+                  setValidationErrors((v) => { const n = { ...v }; delete n.slug; return n; });
+                }}
+                disabled={handleLocked}
+                className={`${inputClass} pr-10 ${validationErrors.slug ? "border-destructive/50 focus:border-destructive" : handleAvailable === true ? "border-emerald-500/50 focus:border-emerald-500" : handleAvailable === false ? "border-destructive/50 focus:border-destructive" : ""} ${handleLocked ? "opacity-60 cursor-not-allowed" : ""}`}
+                placeholder="seunome"
+              />
+              {/* Availability indicator */}
+              {handle.trim().replace(/^@/, "").toLowerCase() !== originalHandle.current.replace(/^@/, "").toLowerCase() && (
+                <div className="absolute right-3 top-1/2 -translate-y-1/2">
+                  {handleChecking && <Loader2 className="w-4 h-4 text-muted-foreground animate-spin" />}
+                  {!handleChecking && handleAvailable === true && <CheckCircle2 className="w-4 h-4 text-emerald-500" />}
+                  {!handleChecking && handleAvailable === false && <XCircle className="w-4 h-4 text-destructive" />}
+                </div>
+              )}
+            </div>
+            {/* Status messages */}
+            {validationErrors.slug ? (
+              <p className="text-[0.68rem] text-destructive mt-1">{validationErrors.slug}</p>
+            ) : handleLocked ? (
+              <p className="text-[0.68rem] text-amber-500 mt-1 flex items-center gap-1">
+                <AlertTriangle className="w-3 h-3" />
+                Handle alterado recentemente. Próxima alteração disponível em {handleCooldownDays} dia{handleCooldownDays > 1 ? "s" : ""}.
+              </p>
+            ) : !handleChecking && handleAvailable === false ? (
+              <p className="text-[0.68rem] text-destructive mt-1">Esse handle já está em uso. Tente outro.</p>
+            ) : !handleChecking && handleAvailable === true ? (
+              <p className="text-[0.68rem] text-emerald-500 mt-1">✨ Disponível!</p>
+            ) : (
+              <p className="text-[0.68rem] text-muted-foreground mt-1">
+                Identificador único, sem espaços. Ex: in1.bio/{handle.replace(/^@/, "") || "seunome"}
+                {handle.trim().replace(/^@/, "").toLowerCase() !== originalHandle.current.replace(/^@/, "").toLowerCase() && (
+                  <span className="block text-amber-500/80 mt-0.5">⚠️ Após alterar, o handle só poderá ser mudado novamente em 30 dias.</span>
+                )}
+              </p>
+            )}
           </div>
           <div>
             <label className={labelClass}>Bio</label>
