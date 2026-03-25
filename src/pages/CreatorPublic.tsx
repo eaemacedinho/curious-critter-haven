@@ -58,7 +58,8 @@ export default function CreatorPublic() {
   const [agencyFooterLink, setAgencyFooterLink] = useState<string>("");
   const [loading, setLoading] = useState(true);
   const [notFound, setNotFound] = useState(false);
-  const [pageTheme, setPageTheme] = usePageTheme();
+  const [pageTheme, setPageTheme] = useState<"dark" | "light">("dark");
+  const [themeInitialized, setThemeInitialized] = useState(false);
   const [topButtonsOpacity, setTopButtonsOpacity] = useState(1);
 
   // Scroll-based fade for top buttons (like Linktree)
