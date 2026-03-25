@@ -89,6 +89,7 @@ export default function CreatorView({ profile, links: rawLinks, socialLinks: raw
   const effectColor = pe.color;
   const effectEmojis = pe.emojis;
   const effectIntensity = pe.intensity;
+  const displayModes = pe.display_modes || {};
 
   const fontFam = getFontFamily(profile.font_family || "default");
   const fontScale = getFontSizeScale(profile.font_size || "medium");
