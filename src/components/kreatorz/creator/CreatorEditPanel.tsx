@@ -442,10 +442,10 @@ const CreatorEditPanel = forwardRef<CreatorEditPanelHandle, Props>(function Crea
     saveAll: () => handleSaveAll({ closeAfterSave: false }),
   }));
 
-  const inputClass = "w-full px-3.5 py-2.5 bg-k-800 border border-primary/10 rounded-xl text-k-1 text-sm outline-none focus:border-k-400 focus:shadow-[0_0_0_3px_hsl(268_69%_50%_/_0.12)] transition-all";
-  const labelClass = "block text-[0.72rem] font-semibold text-k-2 mb-1.5";
-  const sectionTitle = "text-[0.66rem] font-bold text-k-4 tracking-[0.12em] uppercase mb-3.5 flex items-center gap-2";
-  const sizeHint = "text-[0.62rem] text-k-4 mt-1";
+  const inputClass = "w-full px-3.5 py-2.5 bg-card border border-border rounded-xl text-foreground text-sm outline-none focus:border-primary focus:shadow-[0_0_0_3px_hsl(var(--primary)_/_0.12)] transition-all";
+  const labelClass = "block text-[0.72rem] font-semibold text-muted-foreground mb-1.5";
+  const sectionTitle = "text-[0.66rem] font-bold text-muted-foreground tracking-[0.12em] uppercase mb-3.5 flex items-center gap-2";
+  const sizeHint = "text-[0.62rem] text-muted-foreground mt-1";
 
   // Keep preview top offset in sync with the toggle button position
   useEffect(() => {
