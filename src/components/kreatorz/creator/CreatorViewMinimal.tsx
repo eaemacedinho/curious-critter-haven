@@ -82,7 +82,7 @@ export default function CreatorViewMinimal({ profile, links: rawLinks, socialLin
                 className="flex items-center gap-3 px-4 py-3.5 rounded-xl border border-border bg-card/50 transition-all hover:border-primary/20 hover:-translate-y-0.5 active:scale-[0.98]"
                 style={{
                   ...(link.bg_color ? { backgroundColor: link.bg_color } : {}),
-                  ...(link.text_color ? { color: link.text_color } : {}),
+                  color: autoTextColor(link.bg_color, link.text_color),
                   ...(link.border_color ? { borderColor: link.border_color } : {}),
                 }}>
                 <div className="w-9 h-9 rounded-lg bg-primary/5 flex items-center justify-center flex-shrink-0">
