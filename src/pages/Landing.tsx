@@ -179,62 +179,108 @@ export default function Landing() {
             </motion.div>
           </motion.div>
 
-          {/* Phone mockup */}
+          {/* Phone mockup — floating with glow effects */}
           <motion.div
             className="mt-16 flex justify-center"
             initial={{ opacity: 0, y: 60 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.8, delay: 0.5, ease: [0.16, 1, 0.3, 1] }}
-            style={{ perspective: "1000px" }}
+            style={{ perspective: "1200px" }}
           >
-            <div className="w-[300px] sm:w-[320px] bg-card rounded-[48px] border border-border/60 p-2 shadow-[0_40px_100px_rgba(0,0,0,0.6),0_0_140px_hsl(var(--primary)/0.04)] transition-transform duration-700 hover:rotate-0" style={{ transform: "rotateX(4deg)" }}>
-              <div className="bg-background rounded-[42px] overflow-hidden">
-                <div className="w-20 h-[26px] bg-background rounded-b-2xl mx-auto" />
-                <div className="px-5 pb-6 text-center">
-                  <div className="w-20 h-20 rounded-full border-[2.5px] border-primary mx-auto mb-3 overflow-hidden shadow-[0_0_24px_hsl(var(--primary)/0.15)]">
-                    <img src="https://i.pravatar.cc/200?img=32" alt="" className="w-full h-full object-cover" />
+            <div className="relative">
+              {/* Glow behind phone */}
+              <motion.div
+                animate={{ scale: [1, 1.1, 1], opacity: [0.25, 0.45, 0.25] }}
+                transition={{ duration: 5, repeat: Infinity, ease: "easeInOut" }}
+                className="absolute inset-0 -inset-x-8 -inset-y-8 bg-primary/15 rounded-full blur-[80px] pointer-events-none"
+              />
+
+              {/* Orbiting particles */}
+              <motion.div
+                animate={{ rotate: 360 }}
+                transition={{ duration: 25, repeat: Infinity, ease: "linear" }}
+                className="absolute inset-[-30px] pointer-events-none z-0"
+              >
+                <div className="absolute top-0 left-1/2 w-2 h-2 rounded-full bg-primary/50 -translate-x-1/2 shadow-[0_0_8px_hsl(var(--primary)/0.5)]" />
+                <div className="absolute bottom-0 left-1/2 w-1.5 h-1.5 rounded-full bg-primary/30 -translate-x-1/2" />
+                <div className="absolute left-0 top-1/2 w-1.5 h-1.5 rounded-full bg-primary/35 -translate-y-1/2" />
+                <div className="absolute right-0 top-1/3 w-1 h-1 rounded-full bg-primary/25" />
+              </motion.div>
+
+              {/* Floating phone */}
+              <motion.div
+                animate={{ y: [0, -14, 0], rotateX: [4, 2, 4], rotateY: [0, -2, 0, 2, 0] }}
+                transition={{ duration: 7, repeat: Infinity, ease: "easeInOut" }}
+                className="relative z-[1] w-[280px] sm:w-[310px] bg-card rounded-[44px] border border-border/60 p-2 shadow-[0_40px_100px_rgba(0,0,0,0.6),0_0_80px_hsl(var(--primary)/0.06)]"
+              >
+                <div className="bg-background rounded-[38px] overflow-hidden">
+                  {/* Notch */}
+                  <div className="w-20 h-[22px] bg-background rounded-b-2xl mx-auto relative">
+                    <div className="absolute top-[6px] left-1/2 -translate-x-1/2 w-[50px] h-[6px] rounded-full bg-foreground/10" />
                   </div>
-                  <div className="font-bold text-sm text-foreground flex items-center justify-center gap-1">
-                    Marina Costa
-                    <span className="w-3.5 h-3.5 rounded-full bg-primary inline-flex items-center justify-center">
-                      <svg className="w-2 h-2" viewBox="0 0 24 24" fill="none" stroke="hsl(var(--primary-foreground))" strokeWidth="3"><path d="M9 12l2 2 4-4" /></svg>
-                    </span>
-                  </div>
-                  <div className="text-[0.7rem] text-muted-foreground mb-2">@marinacosta</div>
-                  <div className="flex justify-center gap-5 py-2.5 mb-2 border-t border-b border-border/30">
-                    {[
-                      { v: "2.4M", l: "Seguidores" },
-                      { v: "480K", l: "YouTube" },
-                      { v: "12.8%", l: "Engajamento" },
-                    ].map((s, i) => (
-                      <div key={i} className="text-center">
-                        <div className="text-xs font-extrabold text-foreground">{s.v}</div>
-                        <div className="text-[0.5rem] text-muted-foreground uppercase tracking-widest font-semibold">{s.l}</div>
+                  <div className="px-4 pb-5 text-center">
+                    {/* Avatar with verified badge */}
+                    <div className="relative w-[72px] h-[72px] mx-auto mb-2.5">
+                      <div className="w-full h-full rounded-full border-[2.5px] border-primary overflow-hidden shadow-[0_0_20px_hsl(var(--primary)/0.2)]">
+                        <img src="https://i.pravatar.cc/200?img=32" alt="" className="w-full h-full object-cover" />
                       </div>
-                    ))}
-                  </div>
-                  <div className="text-[0.66rem] text-muted-foreground mb-3 leading-relaxed">Creator de lifestyle & beauty. Conectando marcas premium com autenticidade.</div>
-                  <div className="flex justify-center gap-1.5 mb-3">
-                    {["📸", "🎵", "▶️", "🐦"].map((e, i) => (
-                      <div key={i} className="w-[30px] h-[30px] rounded-lg bg-card border border-border flex items-center justify-center text-xs">{e}</div>
-                    ))}
-                  </div>
-                  {[
-                    { title: "Meu novo projeto — GLOW", sub: "Lançamento exclusivo", icon: "✦", featured: true },
-                    { title: "Canal no YouTube", sub: "+480k inscritos", icon: "▶", featured: false },
-                    { title: "Playlist do momento", sub: "Spotify", icon: "♫", featured: false },
-                    { title: "Media Kit 2026", sub: "Download PDF", icon: "📋", featured: false },
-                  ].map((lk, i) => (
-                    <div key={i} className={`flex items-center gap-2.5 p-2.5 rounded-xl mb-1.5 text-left transition-colors ${lk.featured ? "bg-primary/15 border border-primary/25" : "bg-card border border-border"}`}>
-                      <div className={`w-[30px] h-[30px] rounded-lg flex items-center justify-center text-xs flex-shrink-0 ${lk.featured ? "bg-primary/15" : "bg-background/50"}`}>{lk.icon}</div>
-                      <div className="flex-1 min-w-0">
-                        <h4 className="text-[0.7rem] font-semibold text-foreground">{lk.title}</h4>
-                        <span className="text-[0.56rem] text-muted-foreground">{lk.sub}</span>
+                      {/* Verified badge */}
+                      <div className="absolute -bottom-0.5 -right-0.5 w-5 h-5 rounded-full bg-primary flex items-center justify-center shadow-[0_0_10px_hsl(var(--primary)/0.4)] border-2 border-background">
+                        <svg className="w-2.5 h-2.5" viewBox="0 0 24 24" fill="none" stroke="hsl(var(--primary-foreground))" strokeWidth="3.5" strokeLinecap="round" strokeLinejoin="round"><path d="M9 12l2 2 4-4" /></svg>
                       </div>
                     </div>
-                  ))}
+                    <div className="font-bold text-sm text-foreground">Marina Costa</div>
+                    <div className="text-[0.68rem] text-muted-foreground mb-2">@marinacosta</div>
+
+                    {/* Stats */}
+                    <div className="flex justify-center gap-4 py-2 mb-2 border-t border-b border-border/30">
+                      {[
+                        { v: "2.4M", l: "Seguidores" },
+                        { v: "480K", l: "YouTube" },
+                        { v: "12.8%", l: "Engajamento" },
+                      ].map((s, i) => (
+                        <div key={i} className="text-center">
+                          <div className="text-[0.7rem] font-extrabold text-foreground">{s.v}</div>
+                          <div className="text-[0.48rem] text-muted-foreground uppercase tracking-widest font-semibold">{s.l}</div>
+                        </div>
+                      ))}
+                    </div>
+
+                    <div className="text-[0.62rem] text-muted-foreground mb-2.5 leading-relaxed">
+                      Creator de lifestyle & beauty. Conectando marcas premium com autenticidade.
+                    </div>
+
+                    {/* Social icons */}
+                    <div className="flex justify-center gap-1.5 mb-3">
+                      {["📸", "🎵", "▶️", "🐦"].map((e, i) => (
+                        <div key={i} className="w-7 h-7 rounded-lg bg-card border border-border flex items-center justify-center text-xs">{e}</div>
+                      ))}
+                    </div>
+
+                    {/* Links */}
+                    {[
+                      { title: "Meu novo projeto — GLOW", sub: "Lançamento exclusivo", icon: "✦", featured: true },
+                      { title: "Canal no YouTube", sub: "+480k inscritos", icon: "▶", featured: false },
+                      { title: "Playlist do momento", sub: "Spotify", icon: "♫", featured: false },
+                      { title: "Media Kit 2026", sub: "Baixar PDF", icon: "📋", featured: false },
+                    ].map((lk, i) => (
+                      <motion.div
+                        key={i}
+                        initial={{ opacity: 0, x: -10 }}
+                        animate={{ opacity: 1, x: 0 }}
+                        transition={{ delay: 0.8 + i * 0.12, duration: 0.5, ease: [0.16, 1, 0.3, 1] }}
+                        className={`flex items-center gap-2 p-2 rounded-xl mb-1.5 text-left transition-colors ${lk.featured ? "bg-primary/15 border border-primary/25" : "bg-card border border-border"}`}
+                      >
+                        <div className={`w-7 h-7 rounded-lg flex items-center justify-center text-[0.65rem] flex-shrink-0 ${lk.featured ? "bg-primary/15" : "bg-background/50"}`}>{lk.icon}</div>
+                        <div className="flex-1 min-w-0">
+                          <h4 className="text-[0.65rem] font-semibold text-foreground leading-tight">{lk.title}</h4>
+                          <span className="text-[0.5rem] text-muted-foreground">{lk.sub}</span>
+                        </div>
+                      </motion.div>
+                    ))}
+                  </div>
                 </div>
-              </div>
+              </motion.div>
             </div>
           </motion.div>
         </div>
