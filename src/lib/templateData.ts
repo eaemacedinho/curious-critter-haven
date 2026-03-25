@@ -159,10 +159,10 @@ export const TEMPLATE_DATA: FullTemplateData[] = [
       section_order: ["links", "products", "spotlight", "past_campaigns"],
     },
     links: [
-      { title: "Portfólio Completo", url: "https://exemplo.com/portfolio", subtitle: "Veja meus melhores trabalhos", icon: "📸", is_featured: true, is_active: true, display_mode: "full" },
-      { title: "Agende seu Ensaio", url: "https://exemplo.com/agendar", subtitle: "Horários disponíveis", icon: "📅", is_featured: false, is_active: true, display_mode: "full" },
-      { title: "Workshop de Fotografia", url: "https://exemplo.com/workshop", subtitle: "Aprenda comigo", icon: "🎓", is_featured: false, is_active: true, display_mode: "full" },
-      { title: "Loja de Presets", url: "https://exemplo.com/presets", subtitle: "Presets exclusivos Lightroom", icon: "🎨", is_featured: false, is_active: true, display_mode: "half" },
+      { title: "Portfólio Completo", url: "/exemplo", subtitle: "Veja meus melhores trabalhos", icon: "📸", is_featured: true, is_active: true, display_mode: "full" },
+      { title: "Agende seu Ensaio", url: "/exemplo", subtitle: "Horários disponíveis", icon: "📅", is_featured: false, is_active: true, display_mode: "full" },
+      { title: "Workshop de Fotografia", url: "/exemplo", subtitle: "Aprenda comigo", icon: "🎓", is_featured: false, is_active: true, display_mode: "full" },
+      { title: "Loja de Presets", url: "/exemplo", subtitle: "Presets exclusivos Lightroom", icon: "🎨", is_featured: false, is_active: true, display_mode: "half" },
     ],
     socialLinks: [
       { platform: "instagram", label: "Instagram", url: "https://instagram.com/exemplo" },
@@ -170,9 +170,9 @@ export const TEMPLATE_DATA: FullTemplateData[] = [
       { platform: "tiktok", label: "TikTok", url: "https://tiktok.com/@exemplo" },
     ],
     products: [
-      { title: "Pack 20 Presets Pro", price: "R$ 97", icon: "🎨", url: "https://exemplo.com/presets", is_active: true, image_url: productPresets },
-      { title: "E-book Fotografia", price: "R$ 49", icon: "📖", url: "https://exemplo.com/ebook", is_active: true, image_url: productEbook },
-      { title: "Mentoria Individual", price: "R$ 297", icon: "🧠", url: "https://exemplo.com/mentoria", is_active: true, image_url: productMentoria },
+      { title: "Pack 20 Presets Pro", price: "R$ 97", icon: "🎨", url: "/exemplo", is_active: true, image_url: productPresets },
+      { title: "E-book Fotografia", price: "R$ 49", icon: "📖", url: "/exemplo", is_active: true, image_url: productEbook },
+      { title: "Mentoria Individual", price: "R$ 297", icon: "🧠", url: "/exemplo", is_active: true, image_url: productMentoria },
     ],
     testimonials: [],
   },
@@ -207,9 +207,9 @@ export const TEMPLATE_DATA: FullTemplateData[] = [
       section_order: ["products", "links", "spotlight", "past_campaigns"],
     },
     links: [
-      { title: "Consultoria Gratuita", url: "https://exemplo.com/consultoria", subtitle: "Agende 30 min grátis", icon: "🎯", is_featured: true, is_active: true, display_mode: "full" },
-      { title: "Curso Completo de Vendas", url: "https://exemplo.com/curso", subtitle: "De zero a expert", icon: "📚", is_featured: true, is_active: true, display_mode: "full" },
-      { title: "Comunidade VIP", url: "https://exemplo.com/comunidade", subtitle: "Networking exclusivo", icon: "👥", is_featured: false, is_active: true, display_mode: "full" },
+      { title: "Consultoria Gratuita", url: "/exemplo", subtitle: "Agende 30 min grátis", icon: "🎯", is_featured: true, is_active: true, display_mode: "full" },
+      { title: "Curso Completo de Vendas", url: "/exemplo", subtitle: "De zero a expert", icon: "📚", is_featured: true, is_active: true, display_mode: "full" },
+      { title: "Comunidade VIP", url: "/exemplo", subtitle: "Networking exclusivo", icon: "👥", is_featured: false, is_active: true, display_mode: "full" },
     ],
     socialLinks: [
       { platform: "instagram", label: "Instagram", url: "https://instagram.com/exemplo" },
@@ -217,10 +217,10 @@ export const TEMPLATE_DATA: FullTemplateData[] = [
       { platform: "whatsapp", label: "WhatsApp", url: "https://wa.me/5511999999999" },
     ],
     products: [
-      { title: "Mentoria de Vendas", price: "R$ 497", icon: "🚀", url: "https://exemplo.com/mentoria", is_active: true, image_url: productMentoria },
-      { title: "Pack de Templates", price: "R$ 127", icon: "📋", url: "https://exemplo.com/templates", is_active: true, image_url: productTemplates },
-      { title: "Curso de Copywriting", price: "R$ 197", icon: "✍️", url: "https://exemplo.com/copy", is_active: true, image_url: productCurso },
-      { title: "Planilha de Gestão", price: "R$ 47", icon: "📊", url: "https://exemplo.com/planilha", is_active: true, image_url: productEbook },
+      { title: "Mentoria de Vendas", price: "R$ 497", icon: "🚀", url: "/exemplo", is_active: true, image_url: productMentoria },
+      { title: "Pack de Templates", price: "R$ 127", icon: "📋", url: "/exemplo", is_active: true, image_url: productTemplates },
+      { title: "Curso de Copywriting", price: "R$ 197", icon: "✍️", url: "/exemplo", is_active: true, image_url: productCurso },
+      { title: "Planilha de Gestão", price: "R$ 47", icon: "📊", url: "/exemplo", is_active: true, image_url: productEbook },
     ],
     testimonials: [
       { author_name: "Carlos Silva", author_role: "Empreendedor", content: "Triplicou minhas vendas em 3 meses! Metodologia incrível.", rating: 5, is_active: true },
@@ -265,9 +265,9 @@ export const TEMPLATE_DATA: FullTemplateData[] = [
     },
     links: [
       { title: "Meu Canal no YouTube", url: "https://youtube.com/@exemplo", subtitle: "Vídeos toda semana", icon: "▶️", is_featured: true, is_active: true, display_mode: "full" },
-      { title: "Última Viagem - Bali", url: "https://exemplo.com/bali", subtitle: "Vlog completo", icon: "🌴", is_featured: false, is_active: true, display_mode: "full" },
-      { title: "Looks da Semana", url: "https://exemplo.com/looks", subtitle: "Inspiração de moda", icon: "👗", is_featured: false, is_active: true, display_mode: "half" },
-      { title: "Publi & Parcerias", url: "https://exemplo.com/midia-kit", subtitle: "Mídia kit", icon: "📩", is_featured: false, is_active: true, display_mode: "half" },
+      { title: "Última Viagem - Bali", url: "/exemplo", subtitle: "Vlog completo", icon: "🌴", is_featured: false, is_active: true, display_mode: "full" },
+      { title: "Looks da Semana", url: "/exemplo", subtitle: "Inspiração de moda", icon: "👗", is_featured: false, is_active: true, display_mode: "half" },
+      { title: "Publi & Parcerias", url: "/exemplo", subtitle: "Mídia kit", icon: "📩", is_featured: false, is_active: true, display_mode: "half" },
     ],
     socialLinks: [
       { platform: "instagram", label: "Instagram", url: "https://instagram.com/exemplo" },
@@ -276,8 +276,8 @@ export const TEMPLATE_DATA: FullTemplateData[] = [
       { platform: "twitter", label: "Twitter", url: "https://twitter.com/exemplo" },
     ],
     products: [
-      { title: "Guia de Viagem Bali", price: "R$ 39", icon: "🗺️", url: "https://exemplo.com/guia", is_active: true, image_url: productEbook },
-      { title: "Filtros Exclusivos", price: "R$ 29", icon: "📱", url: "https://exemplo.com/filtros", is_active: true, image_url: productPresets },
+      { title: "Guia de Viagem Bali", price: "R$ 39", icon: "🗺️", url: "/exemplo", is_active: true, image_url: productEbook },
+      { title: "Filtros Exclusivos", price: "R$ 29", icon: "📱", url: "/exemplo", is_active: true, image_url: productPresets },
     ],
     testimonials: [],
   },
@@ -317,9 +317,9 @@ export const TEMPLATE_DATA: FullTemplateData[] = [
     },
     links: [
       { title: "Portfólio no Behance", url: "https://behance.net/exemplo", subtitle: "Cases e projetos", icon: "🎨", is_featured: true, is_active: true, display_mode: "full" },
-      { title: "Agendar Reunião", url: "https://calendly.com/exemplo", subtitle: "Escolha o melhor horário", icon: "📅", is_featured: true, is_active: true, display_mode: "full" },
-      { title: "Currículo", url: "https://exemplo.com/cv", subtitle: "PDF completo", icon: "📄", is_featured: false, is_active: true, display_mode: "half" },
-      { title: "Certificações", url: "https://exemplo.com/certs", subtitle: "Google, Adobe, Figma", icon: "🏆", is_featured: false, is_active: true, display_mode: "half" },
+      { title: "Agendar Reunião", url: "/exemplo", subtitle: "Escolha o melhor horário", icon: "📅", is_featured: true, is_active: true, display_mode: "full" },
+      { title: "Currículo", url: "/exemplo", subtitle: "PDF completo", icon: "📄", is_featured: false, is_active: true, display_mode: "half" },
+      { title: "Certificações", url: "/exemplo", subtitle: "Google, Adobe, Figma", icon: "🏆", is_featured: false, is_active: true, display_mode: "half" },
     ],
     socialLinks: [
       { platform: "linkedin", label: "LinkedIn", url: "https://linkedin.com/in/exemplo" },
@@ -327,8 +327,8 @@ export const TEMPLATE_DATA: FullTemplateData[] = [
       { platform: "github", label: "GitHub", url: "https://github.com/exemplo" },
     ],
     products: [
-      { title: "Consultoria de Design", price: "R$ 350/h", icon: "💡", url: "https://exemplo.com/consultoria", is_active: true, image_url: productMentoria },
-      { title: "Template UI Kit", price: "R$ 89", icon: "🧩", url: "https://exemplo.com/uikit", is_active: true, image_url: productTemplates },
+      { title: "Consultoria de Design", price: "R$ 350/h", icon: "💡", url: "/exemplo", is_active: true, image_url: productMentoria },
+      { title: "Template UI Kit", price: "R$ 89", icon: "🧩", url: "/exemplo", is_active: true, image_url: productTemplates },
     ],
     testimonials: [
       { author_name: "Pedro Souza", author_role: "CEO, TechStart", content: "Profissional excepcional! Entregou o projeto no prazo com qualidade impressionante.", rating: 5, is_active: true },
@@ -366,19 +366,19 @@ export const TEMPLATE_DATA: FullTemplateData[] = [
       section_order: ["links", "products", "spotlight", "past_campaigns"],
     },
     links: [
-      { title: "Nosso Cardápio", url: "https://exemplo.com/cardapio", subtitle: "Veja todas as opções", icon: "🍽️", is_featured: true, is_active: true, display_mode: "full" },
-      { title: "Peça pelo iFood", url: "https://ifood.com.br/exemplo", subtitle: "Delivery rápido", icon: "🛵", is_featured: true, is_active: true, display_mode: "full" },
-      { title: "Como Chegar", url: "https://maps.google.com/exemplo", subtitle: "Rua Exemplo, 123 - Centro", icon: "📍", is_featured: false, is_active: true, display_mode: "full" },
-      { title: "Reservar Mesa", url: "https://exemplo.com/reserva", subtitle: "Garanta seu lugar", icon: "🪑", is_featured: false, is_active: true, display_mode: "full" },
+      { title: "Nosso Cardápio", url: "/exemplo", subtitle: "Veja todas as opções", icon: "🍽️", is_featured: true, is_active: true, display_mode: "full" },
+      { title: "Peça pelo iFood", url: "/exemplo", subtitle: "Delivery rápido", icon: "🛵", is_featured: true, is_active: true, display_mode: "full" },
+      { title: "Como Chegar", url: "/exemplo", subtitle: "Rua Exemplo, 123 - Centro", icon: "📍", is_featured: false, is_active: true, display_mode: "full" },
+      { title: "Reservar Mesa", url: "/exemplo", subtitle: "Garanta seu lugar", icon: "🪑", is_featured: false, is_active: true, display_mode: "full" },
     ],
     socialLinks: [
       { platform: "instagram", label: "Instagram", url: "https://instagram.com/exemplo" },
       { platform: "whatsapp", label: "WhatsApp", url: "https://wa.me/5511999999999" },
     ],
     products: [
-      { title: "Café Especial 250g", price: "R$ 35", icon: "☕", url: "https://exemplo.com/cafe", is_active: true, image_url: productCafe },
-      { title: "Kit Brunch em Casa", price: "R$ 89", icon: "🥐", url: "https://exemplo.com/brunch", is_active: true, image_url: productDieta },
-      { title: "Vale-Presente", price: "R$ 50", icon: "🎁", url: "https://exemplo.com/gift", is_active: true, image_url: productCafe },
+      { title: "Café Especial 250g", price: "R$ 35", icon: "☕", url: "/exemplo", is_active: true, image_url: productCafe },
+      { title: "Kit Brunch em Casa", price: "R$ 89", icon: "🥐", url: "/exemplo", is_active: true, image_url: productDieta },
+      { title: "Vale-Presente", price: "R$ 50", icon: "🎁", url: "/exemplo", is_active: true, image_url: productCafe },
     ],
     testimonials: [
       { author_name: "Juliana Lima", author_role: "Cliente frequente", content: "Melhor café da cidade! Ambiente acolhedor e atendimento nota 10.", rating: 5, is_active: true },
@@ -416,18 +416,18 @@ export const TEMPLATE_DATA: FullTemplateData[] = [
       section_order: ["links", "products", "spotlight", "past_campaigns"],
     },
     links: [
-      { title: "Galeria de Obras", url: "https://exemplo.com/galeria", subtitle: "Coleção completa", icon: "🖼️", is_featured: true, is_active: true, display_mode: "full" },
-      { title: "Loja de Prints", url: "https://exemplo.com/prints", subtitle: "Impressões em alta qualidade", icon: "🖨️", is_featured: true, is_active: true, display_mode: "full" },
-      { title: "Comissões", url: "https://exemplo.com/comissoes", subtitle: "Encomende sua arte personalizada", icon: "✏️", is_featured: false, is_active: true, display_mode: "full" },
+      { title: "Galeria de Obras", url: "/exemplo", subtitle: "Coleção completa", icon: "🖼️", is_featured: true, is_active: true, display_mode: "full" },
+      { title: "Loja de Prints", url: "/exemplo", subtitle: "Impressões em alta qualidade", icon: "🖨️", is_featured: true, is_active: true, display_mode: "full" },
+      { title: "Comissões", url: "/exemplo", subtitle: "Encomende sua arte personalizada", icon: "✏️", is_featured: false, is_active: true, display_mode: "full" },
     ],
     socialLinks: [
       { platform: "instagram", label: "Instagram", url: "https://instagram.com/exemplo" },
-      { platform: "website", label: "Site", url: "https://exemplo.com" },
+      { platform: "website", label: "Site", url: "/exemplo" },
     ],
     products: [
-      { title: "Print A3 - Série Cosmos", price: "R$ 120", icon: "🌌", url: "https://exemplo.com/cosmos", is_active: true, image_url: productArtprint },
-      { title: "Print A4 - Natureza", price: "R$ 75", icon: "🌿", url: "https://exemplo.com/natureza", is_active: true, image_url: productArtprint },
-      { title: "Arte Digital Custom", price: "Sob consulta", icon: "💎", url: "https://exemplo.com/custom", is_active: true, image_url: productMentoria },
+      { title: "Print A3 - Série Cosmos", price: "R$ 120", icon: "🌌", url: "/exemplo", is_active: true, image_url: productArtprint },
+      { title: "Print A4 - Natureza", price: "R$ 75", icon: "🌿", url: "/exemplo", is_active: true, image_url: productArtprint },
+      { title: "Arte Digital Custom", price: "Sob consulta", icon: "💎", url: "/exemplo", is_active: true, image_url: productMentoria },
     ],
     testimonials: [],
   },
@@ -468,9 +468,9 @@ export const TEMPLATE_DATA: FullTemplateData[] = [
     links: [
       { title: "Ouvir no Spotify", url: "https://open.spotify.com/show/exemplo", subtitle: "Todos os episódios", icon: "🎧", is_featured: true, is_active: true, display_mode: "full" },
       { title: "Apple Podcasts", url: "https://podcasts.apple.com/exemplo", subtitle: "Ouça na Apple", icon: "🍎", is_featured: true, is_active: true, display_mode: "full" },
-      { title: "Último Episódio", url: "https://exemplo.com/ep200", subtitle: "Ep. 200 - Especial de Aniversário", icon: "🆕", is_featured: false, is_active: true, display_mode: "full" },
-      { title: "Newsletter", url: "https://exemplo.com/newsletter", subtitle: "Resumo semanal", icon: "📧", is_featured: false, is_active: true, display_mode: "half" },
-      { title: "Seja Patrocinador", url: "https://exemplo.com/patrocinio", subtitle: "Mídia kit", icon: "🤝", is_featured: false, is_active: true, display_mode: "half" },
+      { title: "Último Episódio", url: "/exemplo", subtitle: "Ep. 200 - Especial de Aniversário", icon: "🆕", is_featured: false, is_active: true, display_mode: "full" },
+      { title: "Newsletter", url: "/exemplo", subtitle: "Resumo semanal", icon: "📧", is_featured: false, is_active: true, display_mode: "half" },
+      { title: "Seja Patrocinador", url: "/exemplo", subtitle: "Mídia kit", icon: "🤝", is_featured: false, is_active: true, display_mode: "half" },
     ],
     socialLinks: [
       { platform: "instagram", label: "Instagram", url: "https://instagram.com/exemplo" },
@@ -479,8 +479,8 @@ export const TEMPLATE_DATA: FullTemplateData[] = [
       { platform: "spotify", label: "Spotify", url: "https://open.spotify.com/show/exemplo" },
     ],
     products: [
-      { title: "Caneca do Podcast", price: "R$ 45", icon: "☕", url: "https://exemplo.com/caneca", is_active: true, image_url: productPodcast },
-      { title: "Camiseta Oficial", price: "R$ 69", icon: "👕", url: "https://exemplo.com/camiseta", is_active: true, image_url: productMerch },
+      { title: "Caneca do Podcast", price: "R$ 45", icon: "☕", url: "/exemplo", is_active: true, image_url: productPodcast },
+      { title: "Camiseta Oficial", price: "R$ 69", icon: "👕", url: "/exemplo", is_active: true, image_url: productMerch },
     ],
     testimonials: [],
   },
@@ -515,10 +515,10 @@ export const TEMPLATE_DATA: FullTemplateData[] = [
       section_order: ["links", "products", "spotlight", "past_campaigns"],
     },
     links: [
-      { title: "Agendar Sessão Gratuita", url: "https://calendly.com/exemplo", subtitle: "30 minutos de mentoria", icon: "📞", is_featured: true, is_active: true, display_mode: "full" },
-      { title: "Programa de Mentoria", url: "https://exemplo.com/mentoria", subtitle: "12 semanas intensivas", icon: "🎯", is_featured: true, is_active: true, display_mode: "full" },
-      { title: "Blog & Artigos", url: "https://exemplo.com/blog", subtitle: "Dicas gratuitas", icon: "📝", is_featured: false, is_active: true, display_mode: "full" },
-      { title: "Palestras & Eventos", url: "https://exemplo.com/palestras", subtitle: "Contrate para seu evento", icon: "🎤", is_featured: false, is_active: true, display_mode: "full" },
+      { title: "Agendar Sessão Gratuita", url: "/exemplo", subtitle: "30 minutos de mentoria", icon: "📞", is_featured: true, is_active: true, display_mode: "full" },
+      { title: "Programa de Mentoria", url: "/exemplo", subtitle: "12 semanas intensivas", icon: "🎯", is_featured: true, is_active: true, display_mode: "full" },
+      { title: "Blog & Artigos", url: "/exemplo", subtitle: "Dicas gratuitas", icon: "📝", is_featured: false, is_active: true, display_mode: "full" },
+      { title: "Palestras & Eventos", url: "/exemplo", subtitle: "Contrate para seu evento", icon: "🎤", is_featured: false, is_active: true, display_mode: "full" },
     ],
     socialLinks: [
       { platform: "instagram", label: "Instagram", url: "https://instagram.com/exemplo" },
@@ -526,9 +526,9 @@ export const TEMPLATE_DATA: FullTemplateData[] = [
       { platform: "youtube", label: "YouTube", url: "https://youtube.com/@exemplo" },
     ],
     products: [
-      { title: "Mentoria Premium", price: "R$ 997", icon: "💎", url: "https://exemplo.com/premium", is_active: true, image_url: productMentoria },
-      { title: "Curso de Liderança", price: "R$ 297", icon: "📚", url: "https://exemplo.com/lideranca", is_active: true, image_url: productCurso },
-      { title: "E-book Gratuito", price: "Grátis", icon: "📖", url: "https://exemplo.com/ebook", is_active: true, image_url: productEbook },
+      { title: "Mentoria Premium", price: "R$ 997", icon: "💎", url: "/exemplo", is_active: true, image_url: productMentoria },
+      { title: "Curso de Liderança", price: "R$ 297", icon: "📚", url: "/exemplo", is_active: true, image_url: productCurso },
+      { title: "E-book Gratuito", price: "Grátis", icon: "📖", url: "/exemplo", is_active: true, image_url: productEbook },
     ],
     testimonials: [
       { author_name: "Fernanda Rocha", author_role: "Gerente de Projetos", content: "A mentoria mudou minha carreira! Fui promovida em 3 meses.", rating: 5, is_active: true },
@@ -567,9 +567,9 @@ export const TEMPLATE_DATA: FullTemplateData[] = [
       section_order: ["products", "links", "spotlight", "past_campaigns"],
     },
     links: [
-      { title: "Loja Completa", url: "https://exemplo.com/loja", subtitle: "Veja todos os produtos", icon: "🛒", is_featured: true, is_active: true, display_mode: "full" },
-      { title: "Promoções da Semana", url: "https://exemplo.com/promo", subtitle: "Até 40% OFF", icon: "🔥", is_featured: true, is_active: true, display_mode: "full" },
-      { title: "Rastrear Pedido", url: "https://exemplo.com/rastreio", subtitle: "Acompanhe sua entrega", icon: "📦", is_featured: false, is_active: true, display_mode: "half" },
+      { title: "Loja Completa", url: "/exemplo", subtitle: "Veja todos os produtos", icon: "🛒", is_featured: true, is_active: true, display_mode: "full" },
+      { title: "Promoções da Semana", url: "/exemplo", subtitle: "Até 40% OFF", icon: "🔥", is_featured: true, is_active: true, display_mode: "full" },
+      { title: "Rastrear Pedido", url: "/exemplo", subtitle: "Acompanhe sua entrega", icon: "📦", is_featured: false, is_active: true, display_mode: "half" },
       { title: "WhatsApp", url: "https://wa.me/5511999999999", subtitle: "Tire dúvidas", icon: "💬", is_featured: false, is_active: true, display_mode: "half" },
     ],
     socialLinks: [
@@ -578,10 +578,10 @@ export const TEMPLATE_DATA: FullTemplateData[] = [
       { platform: "tiktok", label: "TikTok", url: "https://tiktok.com/@exemplo" },
     ],
     products: [
-      { title: "Colar Lua Dourada", price: "R$ 89", icon: "🌙", url: "https://exemplo.com/colar", is_active: true, image_url: productSkincare },
-      { title: "Brinco Estrela", price: "R$ 59", icon: "⭐", url: "https://exemplo.com/brinco", is_active: true, image_url: productSkincare },
-      { title: "Pulseira Cristal", price: "R$ 69", icon: "💎", url: "https://exemplo.com/pulseira", is_active: true, image_url: productSkincare },
-      { title: "Kit Presente", price: "R$ 149", icon: "🎁", url: "https://exemplo.com/kit", is_active: true, image_url: productSkincare },
+      { title: "Colar Lua Dourada", price: "R$ 89", icon: "🌙", url: "/exemplo", is_active: true, image_url: productSkincare },
+      { title: "Brinco Estrela", price: "R$ 59", icon: "⭐", url: "/exemplo", is_active: true, image_url: productSkincare },
+      { title: "Pulseira Cristal", price: "R$ 69", icon: "💎", url: "/exemplo", is_active: true, image_url: productSkincare },
+      { title: "Kit Presente", price: "R$ 149", icon: "🎁", url: "/exemplo", is_active: true, image_url: productSkincare },
     ],
     testimonials: [
       { author_name: "Camila Torres", author_role: "Cliente", content: "Peças lindas e embalagem impecável! Chegou super rápido.", rating: 5, is_active: true },
@@ -612,10 +612,10 @@ export const TEMPLATE_DATA: FullTemplateData[] = [
       section_order: ["links", "products", "spotlight", "past_campaigns"],
     },
     links: [
-      { title: "Agende sua Avaliação", url: "https://exemplo.com/avaliacao", subtitle: "Primeira aula grátis", icon: "📋", is_featured: true, is_active: true, display_mode: "full" },
-      { title: "Treino da Semana", url: "https://exemplo.com/treino", subtitle: "Vídeo novo toda segunda", icon: "🏋️", is_featured: false, is_active: true, display_mode: "full" },
-      { title: "Plano Online", url: "https://exemplo.com/plano", subtitle: "Treino + dieta personalizados", icon: "📱", is_featured: true, is_active: true, display_mode: "full" },
-      { title: "Resultados dos Alunos", url: "https://exemplo.com/resultados", subtitle: "Antes e depois", icon: "📸", is_featured: false, is_active: true, display_mode: "half" },
+      { title: "Agende sua Avaliação", url: "/exemplo", subtitle: "Primeira aula grátis", icon: "📋", is_featured: true, is_active: true, display_mode: "full" },
+      { title: "Treino da Semana", url: "/exemplo", subtitle: "Vídeo novo toda segunda", icon: "🏋️", is_featured: false, is_active: true, display_mode: "full" },
+      { title: "Plano Online", url: "/exemplo", subtitle: "Treino + dieta personalizados", icon: "📱", is_featured: true, is_active: true, display_mode: "full" },
+      { title: "Resultados dos Alunos", url: "/exemplo", subtitle: "Antes e depois", icon: "📸", is_featured: false, is_active: true, display_mode: "half" },
     ],
     socialLinks: [
       { platform: "instagram", label: "Instagram", url: "https://instagram.com/exemplo" },
@@ -623,9 +623,9 @@ export const TEMPLATE_DATA: FullTemplateData[] = [
       { platform: "whatsapp", label: "WhatsApp", url: "https://wa.me/5511999999999" },
     ],
     products: [
-      { title: "Plano Mensal Online", price: "R$ 149/mês", icon: "📱", url: "https://exemplo.com/mensal", is_active: true, image_url: productWorkout },
-      { title: "Consultoria Nutricional", price: "R$ 197", icon: "🥗", url: "https://exemplo.com/nutri", is_active: true, image_url: productDieta },
-      { title: "Pack 12 Semanas", price: "R$ 397", icon: "🔥", url: "https://exemplo.com/pack12", is_active: true, image_url: productSuplemento },
+      { title: "Plano Mensal Online", price: "R$ 149/mês", icon: "📱", url: "/exemplo", is_active: true, image_url: productWorkout },
+      { title: "Consultoria Nutricional", price: "R$ 197", icon: "🥗", url: "/exemplo", is_active: true, image_url: productDieta },
+      { title: "Pack 12 Semanas", price: "R$ 397", icon: "🔥", url: "/exemplo", is_active: true, image_url: productSuplemento },
     ],
     testimonials: [
       { author_name: "Marcos Silva", author_role: "Aluno há 1 ano", content: "Perdi 15kg em 6 meses! Melhor decisão que tomei.", rating: 5, is_active: true },
@@ -656,9 +656,9 @@ export const TEMPLATE_DATA: FullTemplateData[] = [
     },
     links: [
       { title: "Ouça no Spotify", url: "https://open.spotify.com/exemplo", subtitle: "Todos os singles e EPs", icon: "🎵", is_featured: true, is_active: true, display_mode: "full" },
-      { title: "SoundCloud", url: "https://soundcloud.com/exemplo", subtitle: "Sets e mixes exclusivos", icon: "☁️", is_featured: false, is_active: true, display_mode: "full" },
-      { title: "Booking", url: "https://exemplo.com/booking", subtitle: "Contrate para seu evento", icon: "🎤", is_featured: true, is_active: true, display_mode: "full" },
-      { title: "Próximo Show", url: "https://exemplo.com/show", subtitle: "São Paulo - 15/03", icon: "🎉", is_featured: false, is_active: true, display_mode: "half" },
+      { title: "SoundCloud", url: "/exemplo", subtitle: "Sets e mixes exclusivos", icon: "☁️", is_featured: false, is_active: true, display_mode: "full" },
+      { title: "Booking", url: "/exemplo", subtitle: "Contrate para seu evento", icon: "🎤", is_featured: true, is_active: true, display_mode: "full" },
+      { title: "Próximo Show", url: "/exemplo", subtitle: "São Paulo - 15/03", icon: "🎉", is_featured: false, is_active: true, display_mode: "half" },
     ],
     socialLinks: [
       { platform: "instagram", label: "Instagram", url: "https://instagram.com/exemplo" },
@@ -667,8 +667,8 @@ export const TEMPLATE_DATA: FullTemplateData[] = [
       { platform: "tiktok", label: "TikTok", url: "https://tiktok.com/@exemplo" },
     ],
     products: [
-      { title: "Sample Pack Vol. 1", price: "R$ 59", icon: "🎹", url: "https://exemplo.com/samples", is_active: true, image_url: productAlbum },
-      { title: "Curso de Produção", price: "R$ 297", icon: "🎓", url: "https://exemplo.com/curso", is_active: true, image_url: productCurso },
+      { title: "Sample Pack Vol. 1", price: "R$ 59", icon: "🎹", url: "/exemplo", is_active: true, image_url: productAlbum },
+      { title: "Curso de Produção", price: "R$ 297", icon: "🎓", url: "/exemplo", is_active: true, image_url: productCurso },
     ],
     testimonials: [],
   },
@@ -699,7 +699,7 @@ export const TEMPLATE_DATA: FullTemplateData[] = [
       { title: "Twitch - Ao Vivo", url: "https://twitch.tv/exemplo", subtitle: "Lives todos os dias 20h", icon: "🔴", is_featured: true, is_active: true, display_mode: "full" },
       { title: "Discord da Comunidade", url: "https://discord.gg/exemplo", subtitle: "Entre no server", icon: "💬", is_featured: true, is_active: true, display_mode: "full" },
       { title: "Melhores Clips", url: "https://youtube.com/@exemplo/clips", subtitle: "Compilação semanal", icon: "🎬", is_featured: false, is_active: true, display_mode: "full" },
-      { title: "Setup Tour", url: "https://exemplo.com/setup", subtitle: "Meu equipamento", icon: "🖥️", is_featured: false, is_active: true, display_mode: "half" },
+      { title: "Setup Tour", url: "/exemplo", subtitle: "Meu equipamento", icon: "🖥️", is_featured: false, is_active: true, display_mode: "half" },
     ],
     socialLinks: [
       { platform: "twitch", label: "Twitch", url: "https://twitch.tv/exemplo" },
@@ -708,8 +708,8 @@ export const TEMPLATE_DATA: FullTemplateData[] = [
       { platform: "twitter", label: "Twitter", url: "https://twitter.com/exemplo" },
     ],
     products: [
-      { title: "Camiseta Gamer", price: "R$ 79", icon: "👕", url: "https://exemplo.com/camiseta", is_active: true, image_url: productMerch },
-      { title: "Mousepad Custom", price: "R$ 49", icon: "🖱️", url: "https://exemplo.com/mousepad", is_active: true, image_url: productGaming },
+      { title: "Camiseta Gamer", price: "R$ 79", icon: "👕", url: "/exemplo", is_active: true, image_url: productMerch },
+      { title: "Mousepad Custom", price: "R$ 49", icon: "🖱️", url: "/exemplo", is_active: true, image_url: productGaming },
       { title: "Sub Twitch Tier 1", price: "R$ 7,90/mês", icon: "⭐", url: "https://twitch.tv/subs/exemplo", is_active: true, image_url: productGaming },
     ],
     testimonials: [],
@@ -737,10 +737,10 @@ export const TEMPLATE_DATA: FullTemplateData[] = [
       section_order: ["links", "products", "spotlight", "past_campaigns"],
     },
     links: [
-      { title: "Agendar Consulta", url: "https://exemplo.com/consulta", subtitle: "Online ou presencial", icon: "📅", is_featured: true, is_active: true, display_mode: "full" },
-      { title: "Receitas Saudáveis", url: "https://exemplo.com/receitas", subtitle: "Blog com 100+ receitas", icon: "🍳", is_featured: false, is_active: true, display_mode: "full" },
-      { title: "Guia Alimentar Grátis", url: "https://exemplo.com/guia", subtitle: "PDF com dicas essenciais", icon: "📖", is_featured: true, is_active: true, display_mode: "full" },
-      { title: "Depoimentos", url: "https://exemplo.com/depoimentos", subtitle: "Resultados reais", icon: "💚", is_featured: false, is_active: true, display_mode: "half" },
+      { title: "Agendar Consulta", url: "/exemplo", subtitle: "Online ou presencial", icon: "📅", is_featured: true, is_active: true, display_mode: "full" },
+      { title: "Receitas Saudáveis", url: "/exemplo", subtitle: "Blog com 100+ receitas", icon: "🍳", is_featured: false, is_active: true, display_mode: "full" },
+      { title: "Guia Alimentar Grátis", url: "/exemplo", subtitle: "PDF com dicas essenciais", icon: "📖", is_featured: true, is_active: true, display_mode: "full" },
+      { title: "Depoimentos", url: "/exemplo", subtitle: "Resultados reais", icon: "💚", is_featured: false, is_active: true, display_mode: "half" },
     ],
     socialLinks: [
       { platform: "instagram", label: "Instagram", url: "https://instagram.com/exemplo" },
@@ -748,9 +748,9 @@ export const TEMPLATE_DATA: FullTemplateData[] = [
       { platform: "whatsapp", label: "WhatsApp", url: "https://wa.me/5511999999999" },
     ],
     products: [
-      { title: "Plano Alimentar 30 dias", price: "R$ 197", icon: "🥗", url: "https://exemplo.com/plano30", is_active: true, image_url: productDieta },
-      { title: "E-book 50 Receitas Fit", price: "R$ 39", icon: "📚", url: "https://exemplo.com/ebook", is_active: true, image_url: productEbook },
-      { title: "Consultoria Express", price: "R$ 97", icon: "⚡", url: "https://exemplo.com/express", is_active: true, image_url: productMentoria },
+      { title: "Plano Alimentar 30 dias", price: "R$ 197", icon: "🥗", url: "/exemplo", is_active: true, image_url: productDieta },
+      { title: "E-book 50 Receitas Fit", price: "R$ 39", icon: "📚", url: "/exemplo", is_active: true, image_url: productEbook },
+      { title: "Consultoria Express", price: "R$ 97", icon: "⚡", url: "/exemplo", is_active: true, image_url: productMentoria },
     ],
     testimonials: [
       { author_name: "Amanda Reis", author_role: "Paciente", content: "Mudou minha relação com a comida! Me sinto muito melhor.", rating: 5, is_active: true },
@@ -781,9 +781,9 @@ export const TEMPLATE_DATA: FullTemplateData[] = [
     },
     links: [
       { title: "GitHub", url: "https://github.com/exemplo", subtitle: "Projetos open source", icon: "🐙", is_featured: true, is_active: true, display_mode: "full" },
-      { title: "Portfólio", url: "https://exemplo.dev", subtitle: "Cases e projetos entregues", icon: "💻", is_featured: true, is_active: true, display_mode: "full" },
-      { title: "Blog Técnico", url: "https://exemplo.com/blog", subtitle: "Artigos sobre React e Cloud", icon: "✍️", is_featured: false, is_active: true, display_mode: "full" },
-      { title: "Contratar Freelance", url: "https://exemplo.com/hire", subtitle: "Disponível para projetos", icon: "🤝", is_featured: false, is_active: true, display_mode: "half" },
+      { title: "Portfólio", url: "/exemplo", subtitle: "Cases e projetos entregues", icon: "💻", is_featured: true, is_active: true, display_mode: "full" },
+      { title: "Blog Técnico", url: "/exemplo", subtitle: "Artigos sobre React e Cloud", icon: "✍️", is_featured: false, is_active: true, display_mode: "full" },
+      { title: "Contratar Freelance", url: "/exemplo", subtitle: "Disponível para projetos", icon: "🤝", is_featured: false, is_active: true, display_mode: "half" },
     ],
     socialLinks: [
       { platform: "github", label: "GitHub", url: "https://github.com/exemplo" },
@@ -791,9 +791,9 @@ export const TEMPLATE_DATA: FullTemplateData[] = [
       { platform: "twitter", label: "Twitter", url: "https://twitter.com/exemplo" },
     ],
     products: [
-      { title: "Template SaaS Starter", price: "R$ 149", icon: "🧩", url: "https://exemplo.com/template", is_active: true, image_url: productTech },
-      { title: "Curso React Avançado", price: "R$ 247", icon: "📚", url: "https://exemplo.com/curso", is_active: true, image_url: productCodeCourse },
-      { title: "Mentoria 1:1", price: "R$ 300/h", icon: "🧠", url: "https://exemplo.com/mentoria", is_active: true, image_url: productMentoria },
+      { title: "Template SaaS Starter", price: "R$ 149", icon: "🧩", url: "/exemplo", is_active: true, image_url: productTech },
+      { title: "Curso React Avançado", price: "R$ 247", icon: "📚", url: "/exemplo", is_active: true, image_url: productCodeCourse },
+      { title: "Mentoria 1:1", price: "R$ 300/h", icon: "🧠", url: "/exemplo", is_active: true, image_url: productMentoria },
     ],
     testimonials: [
       { author_name: "Ricardo Almeida", author_role: "CTO, StartupXYZ", content: "Entregou o MVP em 3 semanas. Código limpo e documentado.", rating: 5, is_active: true },
@@ -823,10 +823,10 @@ export const TEMPLATE_DATA: FullTemplateData[] = [
       section_order: ["links", "products", "spotlight", "past_campaigns"],
     },
     links: [
-      { title: "Looks da Semana", url: "https://exemplo.com/looks", subtitle: "Inspiração todo dia", icon: "👗", is_featured: true, is_active: true, display_mode: "full" },
-      { title: "Shopee Favoritos", url: "https://shopee.com.br/exemplo", subtitle: "Achados até R$50", icon: "🛍️", is_featured: true, is_active: true, display_mode: "full" },
-      { title: "Consultoria de Imagem", url: "https://exemplo.com/consultoria", subtitle: "Descubra seu estilo", icon: "✨", is_featured: false, is_active: true, display_mode: "full" },
-      { title: "Mídia Kit", url: "https://exemplo.com/midiakit", subtitle: "Parcerias & collabs", icon: "📩", is_featured: false, is_active: true, display_mode: "half" },
+      { title: "Looks da Semana", url: "/exemplo", subtitle: "Inspiração todo dia", icon: "👗", is_featured: true, is_active: true, display_mode: "full" },
+      { title: "Shopee Favoritos", url: "/exemplo", subtitle: "Achados até R$50", icon: "🛍️", is_featured: true, is_active: true, display_mode: "full" },
+      { title: "Consultoria de Imagem", url: "/exemplo", subtitle: "Descubra seu estilo", icon: "✨", is_featured: false, is_active: true, display_mode: "full" },
+      { title: "Mídia Kit", url: "/exemplo", subtitle: "Parcerias & collabs", icon: "📩", is_featured: false, is_active: true, display_mode: "half" },
     ],
     socialLinks: [
       { platform: "instagram", label: "Instagram", url: "https://instagram.com/exemplo" },
@@ -834,9 +834,9 @@ export const TEMPLATE_DATA: FullTemplateData[] = [
       { platform: "pinterest", label: "Pinterest", url: "https://pinterest.com/exemplo" },
     ],
     products: [
-      { title: "Guia de Estilo Pessoal", price: "R$ 67", icon: "📖", url: "https://exemplo.com/guia", is_active: true, image_url: productEbook },
-      { title: "Closet Cápsula PDF", price: "R$ 39", icon: "👚", url: "https://exemplo.com/capsula", is_active: true, image_url: productMerch },
-      { title: "Consultoria Online", price: "R$ 197", icon: "💎", url: "https://exemplo.com/online", is_active: true, image_url: productMentoria },
+      { title: "Guia de Estilo Pessoal", price: "R$ 67", icon: "📖", url: "/exemplo", is_active: true, image_url: productEbook },
+      { title: "Closet Cápsula PDF", price: "R$ 39", icon: "👚", url: "/exemplo", is_active: true, image_url: productMerch },
+      { title: "Consultoria Online", price: "R$ 197", icon: "💎", url: "/exemplo", is_active: true, image_url: productMentoria },
     ],
     testimonials: [
       { author_name: "Larissa Nunes", author_role: "Cliente", content: "Nunca mais comprei peça errada! A consultoria vale cada centavo.", rating: 5, is_active: true },
@@ -865,10 +865,10 @@ export const TEMPLATE_DATA: FullTemplateData[] = [
       section_order: ["links", "products", "spotlight", "past_campaigns"],
     },
     links: [
-      { title: "Aula Experimental Grátis", url: "https://exemplo.com/experimental", subtitle: "Teste o método sem compromisso", icon: "🎁", is_featured: true, is_active: true, display_mode: "full" },
-      { title: "Plataforma de Aulas", url: "https://exemplo.com/plataforma", subtitle: "Acesse seu curso", icon: "🎓", is_featured: true, is_active: true, display_mode: "full" },
+      { title: "Aula Experimental Grátis", url: "/exemplo", subtitle: "Teste o método sem compromisso", icon: "🎁", is_featured: true, is_active: true, display_mode: "full" },
+      { title: "Plataforma de Aulas", url: "/exemplo", subtitle: "Acesse seu curso", icon: "🎓", is_featured: true, is_active: true, display_mode: "full" },
       { title: "Canal no YouTube", url: "https://youtube.com/@exemplo", subtitle: "Dicas gratuitas de inglês", icon: "▶️", is_featured: false, is_active: true, display_mode: "full" },
-      { title: "Material de Apoio", url: "https://exemplo.com/materiais", subtitle: "PDFs e exercícios", icon: "📝", is_featured: false, is_active: true, display_mode: "half" },
+      { title: "Material de Apoio", url: "/exemplo", subtitle: "PDFs e exercícios", icon: "📝", is_featured: false, is_active: true, display_mode: "half" },
     ],
     socialLinks: [
       { platform: "instagram", label: "Instagram", url: "https://instagram.com/exemplo" },
@@ -876,10 +876,10 @@ export const TEMPLATE_DATA: FullTemplateData[] = [
       { platform: "tiktok", label: "TikTok", url: "https://tiktok.com/@exemplo" },
     ],
     products: [
-      { title: "Curso Completo A1-B2", price: "R$ 297", icon: "📚", url: "https://exemplo.com/curso", is_active: true, image_url: productCurso },
-      { title: "Pack de Flashcards", price: "R$ 29", icon: "🃏", url: "https://exemplo.com/flashcards", is_active: true, image_url: productEbook },
-      { title: "Aulas Particulares", price: "R$ 80/h", icon: "👩‍🏫", url: "https://exemplo.com/particular", is_active: true, image_url: productMentoria },
-      { title: "Grupo de Conversação", price: "R$ 49/mês", icon: "💬", url: "https://exemplo.com/grupo", is_active: true, image_url: productCodeCourse },
+      { title: "Curso Completo A1-B2", price: "R$ 297", icon: "📚", url: "/exemplo", is_active: true, image_url: productCurso },
+      { title: "Pack de Flashcards", price: "R$ 29", icon: "🃏", url: "/exemplo", is_active: true, image_url: productEbook },
+      { title: "Aulas Particulares", price: "R$ 80/h", icon: "👩‍🏫", url: "/exemplo", is_active: true, image_url: productMentoria },
+      { title: "Grupo de Conversação", price: "R$ 49/mês", icon: "💬", url: "/exemplo", is_active: true, image_url: productCodeCourse },
     ],
     testimonials: [
       { author_name: "Thiago Santos", author_role: "Aluno B2", content: "Em 6 meses já consigo conversar fluente! Método incrível.", rating: 5, is_active: true },
