@@ -6,7 +6,7 @@ import type { CreatorProfile, CreatorLink, SocialLink, CreatorProduct, CreatorCa
 import type { Testimonial } from "@/components/kreatorz/creator/TestimonialsSection";
 import CreatorView from "@/components/kreatorz/creator/CreatorView";
 import CreatorViewLinkme from "@/components/kreatorz/creator/CreatorViewLinkme";
-import ThemeToggle, { usePageTheme } from "@/components/kreatorz/creator/ThemeToggle";
+import ThemeToggle from "@/components/kreatorz/creator/ThemeToggle";
 import GrowthWatermark from "@/components/kreatorz/creator/GrowthWatermark";
 import PremiumShareModal from "@/components/kreatorz/creator/PremiumShareModal";
 
@@ -58,7 +58,8 @@ export default function CreatorPublic() {
   const [agencyFooterLink, setAgencyFooterLink] = useState<string>("");
   const [loading, setLoading] = useState(true);
   const [notFound, setNotFound] = useState(false);
-  const [pageTheme, setPageTheme] = usePageTheme();
+  const [pageTheme, setPageTheme] = useState<"dark" | "light">("dark");
+  const [themeInitialized, setThemeInitialized] = useState(false);
   const [topButtonsOpacity, setTopButtonsOpacity] = useState(1);
 
   // Scroll-based fade for top buttons (like Linktree)
@@ -116,7 +117,15 @@ export default function CreatorPublic() {
         return;
       }
 
-      setProfile(normalizeProfile(creator));
+      const normalized = normalizeProfile(creator);
+      setProfile(normalized);
+
+      // Set default theme from creator preference (only on first load)
+      if (!themeInitialized) {
+        const creatorDefaultTheme = (normalized.page_effects as any)?.default_theme || "dark";
+        setPageTheme(creatorDefaultTheme);
+        setThemeInitialized(true);
+      }
 
       // Fetch agency name for footer
       if (creator.agency_id) {

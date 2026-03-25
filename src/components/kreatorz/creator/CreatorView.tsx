@@ -13,6 +13,7 @@ import BrandsSection from "./BrandsSection";
 import SpotifyEmbed from "./SpotifyEmbed";
 import TestimonialsSection from "./TestimonialsSection";
 import SectionCarousel from "./SectionCarousel";
+import SectionMarquee from "./SectionMarquee";
 import type { PageEffect } from "./PageEffects";
 import { getFontFamily, getFontSizeScale, loadGoogleFont } from "@/lib/fontUtils";
 
@@ -283,6 +284,16 @@ export default function CreatorView({ profile, links: rawLinks, socialLinks: raw
                   );
                 }
 
+                if (displayModes.links === "marquee" && links.length > 1) {
+                  return (
+                    <div key="links" className="mb-8 animate-k-fade-up" style={{ animationDelay: ".15s" }} data-preview-section="links">
+                      <SectionMarquee itemWidth="80%">
+                        {links.map(link => renderLinkCard(link, true))}
+                      </SectionMarquee>
+                    </div>
+                  );
+                }
+
                 // Default list mode
                 const rows: CreatorLink[][] = [];
                 let i = 0;
@@ -347,6 +358,12 @@ export default function CreatorView({ profile, links: rawLinks, socialLinks: raw
                           {products.map(prod => renderProductCard(prod))}
                         </SectionCarousel>
                       </div>
+                    ) : displayModes.products === "marquee" && products.length > 1 ? (
+                      <div className="mb-8">
+                        <SectionMarquee itemWidth="65%">
+                          {products.map(prod => renderProductCard(prod))}
+                        </SectionMarquee>
+                      </div>
                     ) : (
                       <div className="grid grid-cols-2 gap-3 mb-8">
                         {products.map(prod => renderProductCard(prod))}
@@ -387,6 +404,12 @@ export default function CreatorView({ profile, links: rawLinks, socialLinks: raw
                         <SectionCarousel itemWidth="80%">
                           {pastCampaigns.map(camp => renderCampaignCard(camp))}
                         </SectionCarousel>
+                      </div>
+                    ) : displayModes.campaigns === "marquee" && pastCampaigns.length > 1 ? (
+                      <div className="mb-8">
+                        <SectionMarquee itemWidth="80%">
+                          {pastCampaigns.map(camp => renderCampaignCard(camp))}
+                        </SectionMarquee>
                       </div>
                     ) : (
                       <div className="flex flex-col gap-3 mb-8">

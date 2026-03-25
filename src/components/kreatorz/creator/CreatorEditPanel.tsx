@@ -185,11 +185,12 @@ const CreatorEditPanel = forwardRef<CreatorEditPanelHandle, Props>(function Crea
   const [sectionOrder, setSectionOrder] = useState<string[]>(profile.section_order || ["spotlight", "links", "products", "past_campaigns", "hero_reel", "testimonials"]);
   const [testimonialsList, setTestimonialsList] = useState<Testimonial[]>(initialTestimonials || []);
   const [spotifyUrl, setSpotifyUrl] = useState(profile.spotify_url || "");
-  const [displayModes, setDisplayModes] = useState<{ links: "list" | "carousel"; products: "list" | "carousel"; campaigns: "list" | "carousel" }>({
+  const [displayModes, setDisplayModes] = useState<{ links: "list" | "carousel" | "marquee"; products: "list" | "carousel" | "marquee"; campaigns: "list" | "carousel" | "marquee" }>({
     links: profile.page_effects?.display_modes?.links || "list",
     products: profile.page_effects?.display_modes?.products || "list",
     campaigns: profile.page_effects?.display_modes?.campaigns || "list",
   });
+  const [defaultTheme, setDefaultTheme] = useState<"dark" | "light">((profile.page_effects as any)?.default_theme || "dark");
   const [badgePosition, setBadgePosition] = useState<"name" | "photo">((profile.page_effects as any)?.badge_position || "name");
   const [dragSectionIdx, setDragSectionIdx] = useState<number | null>(null);
   const [saving, setSaving] = useState(false);
@@ -264,7 +265,7 @@ const CreatorEditPanel = forwardRef<CreatorEditPanelHandle, Props>(function Crea
     image_shape_products: shapeProducts,
     image_shape_campaigns: shapeCampaigns,
     image_shape_links: shapeLinks,
-    page_effects: { effects: pageEffects, color: effectColor, emojis: effectEmojis, intensity: effectIntensity, display_modes: displayModes, badge_position: badgePosition },
+    page_effects: { effects: pageEffects, color: effectColor, emojis: effectEmojis, intensity: effectIntensity, display_modes: displayModes, badge_position: badgePosition, default_theme: defaultTheme },
     font_family: fontFamily,
     font_size: fontSize,
     color_name: colorName || null,
@@ -272,7 +273,7 @@ const CreatorEditPanel = forwardRef<CreatorEditPanelHandle, Props>(function Crea
     color_section_titles: colorSectionTitles || null,
     section_order: sectionOrder,
     spotify_url: spotifyUrl,
-  }), [profile, name, handle, bio, avatarUrl, coverUrl, avatarUrlL2, coverUrlL2, verified, tags, stats, brands, brandsDisplayMode, shapeProducts, shapeCampaigns, shapeLinks, pageEffects, effectColor, effectEmojis, effectIntensity, displayModes, badgePosition, fontFamily, fontSize, colorName, colorBio, colorSectionTitles, sectionOrder, spotifyUrl]);
+  }), [profile, name, handle, bio, avatarUrl, coverUrl, avatarUrlL2, coverUrlL2, verified, tags, stats, brands, brandsDisplayMode, shapeProducts, shapeCampaigns, shapeLinks, pageEffects, effectColor, effectEmojis, effectIntensity, displayModes, badgePosition, defaultTheme, fontFamily, fontSize, colorName, colorBio, colorSectionTitles, sectionOrder, spotifyUrl]);
 
   const isValidUrl = (url: string) => {
     if (!url) return true;
@@ -402,7 +403,7 @@ const CreatorEditPanel = forwardRef<CreatorEditPanelHandle, Props>(function Crea
           }))
           .filter((camp) => !isEmptyCampaignEntry(camp));
 
-      const baseProfile = { name, slug: handle, bio, avatar_url: avatarUrl, cover_url: coverUrl, avatar_url_layout2: avatarUrlL2, cover_url_layout2: coverUrlL2, verified, tags, stats, brands, brands_display_mode: brandsDisplayMode, image_shape: shapeProducts, image_shape_products: shapeProducts, image_shape_campaigns: shapeCampaigns, image_shape_links: shapeLinks, page_effects: { effects: pageEffects, color: effectColor, emojis: effectEmojis, intensity: effectIntensity, display_modes: displayModes, badge_position: badgePosition }, font_family: fontFamily, font_size: fontSize, color_name: colorName || null, color_bio: colorBio || null, color_section_titles: colorSectionTitles || null, section_order: sectionOrder, spotify_url: spotifyUrl };
+      const baseProfile = { name, slug: handle, bio, avatar_url: avatarUrl, cover_url: coverUrl, avatar_url_layout2: avatarUrlL2, cover_url_layout2: coverUrlL2, verified, tags, stats, brands, brands_display_mode: brandsDisplayMode, image_shape: shapeProducts, image_shape_products: shapeProducts, image_shape_campaigns: shapeCampaigns, image_shape_links: shapeLinks, page_effects: { effects: pageEffects, color: effectColor, emojis: effectEmojis, intensity: effectIntensity, display_modes: displayModes, badge_position: badgePosition, default_theme: defaultTheme }, font_family: fontFamily, font_size: fontSize, color_name: colorName || null, color_bio: colorBio || null, color_section_titles: colorSectionTitles || null, section_order: sectionOrder, spotify_url: spotifyUrl };
 
       if (cropImage) {
         const { file, type } = cropImage;
@@ -825,6 +826,28 @@ const CreatorEditPanel = forwardRef<CreatorEditPanelHandle, Props>(function Crea
         </div>
       </div>
 
+      {/* 🌗 Tema padrão */}
+      <div className="mb-8" data-editor-section="effects">
+        <div className={sectionTitle}>🌗 Tema Padrão da Página</div>
+        <p className="text-[0.68rem] text-muted-foreground mb-3">Escolha qual tema os visitantes verão ao abrir sua página. Eles podem trocar depois.</p>
+        <div className="flex gap-2">
+          <button
+            onClick={() => setDefaultTheme("dark")}
+            className={`flex-1 flex items-center justify-center gap-2 py-3 rounded-xl border-2 transition-all duration-200 ${defaultTheme === "dark" ? "border-primary bg-primary/10 shadow-[0_0_12px_hsl(var(--primary)_/_0.2)]" : "border-border bg-card hover:border-primary/30"}`}
+          >
+            <span className="text-lg">🌙</span>
+            <span className={`text-[0.78rem] font-semibold ${defaultTheme === "dark" ? "text-primary-readable" : "text-foreground/70"}`}>Escuro</span>
+          </button>
+          <button
+            onClick={() => setDefaultTheme("light")}
+            className={`flex-1 flex items-center justify-center gap-2 py-3 rounded-xl border-2 transition-all duration-200 ${defaultTheme === "light" ? "border-primary bg-primary/10 shadow-[0_0_12px_hsl(var(--primary)_/_0.2)]" : "border-border bg-card hover:border-primary/30"}`}
+          >
+            <span className="text-lg">☀️</span>
+            <span className={`text-[0.78rem] font-semibold ${defaultTheme === "light" ? "text-primary-readable" : "text-foreground/70"}`}>Claro</span>
+          </button>
+        </div>
+      </div>
+
       <div className="mb-8" data-editor-section="effects">
         <div className={sectionTitle}>✨ Efeitos Visuais</div>
         <p className="text-[0.68rem] text-muted-foreground mb-3">Adicione efeitos animados à sua página pública. Selecione quantos quiser.</p>
@@ -1234,7 +1257,8 @@ const CreatorEditPanel = forwardRef<CreatorEditPanelHandle, Props>(function Crea
           {links.length > 1 && (
             <div className="flex bg-card border border-border rounded-lg overflow-hidden">
               <button onClick={() => setDisplayModes(d => ({ ...d, links: "list" }))} className={`px-2 py-1 text-[0.6rem] font-semibold transition-all ${displayModes.links === "list" ? "bg-primary text-primary-foreground" : "text-muted-foreground hover:text-foreground"}`}>Lista</button>
-              <button onClick={() => setDisplayModes(d => ({ ...d, links: "carousel" }))} className={`px-2 py-1 text-[0.6rem] font-semibold transition-all ${displayModes.links === "carousel" ? "bg-primary text-primary-foreground" : "text-muted-foreground hover:text-foreground"}`}>Carrossel</button>
+              <button onClick={() => setDisplayModes(d => ({ ...d, links: "carousel" }))} className={`px-2 py-1 text-[0.6rem] font-semibold transition-all ${displayModes.links === "carousel" ? "bg-primary text-primary-foreground" : "text-muted-foreground hover:text-foreground"}`}>Deslizar</button>
+              <button onClick={() => setDisplayModes(d => ({ ...d, links: "marquee" }))} className={`px-2 py-1 text-[0.6rem] font-semibold transition-all ${displayModes.links === "marquee" ? "bg-primary text-primary-foreground" : "text-muted-foreground hover:text-foreground"}`}>Automático</button>
             </div>
           )}
         </div>
@@ -1419,7 +1443,8 @@ const CreatorEditPanel = forwardRef<CreatorEditPanelHandle, Props>(function Crea
           {prods.length > 1 && (
             <div className="flex bg-card border border-border rounded-lg overflow-hidden">
               <button onClick={() => setDisplayModes(d => ({ ...d, products: "list" }))} className={`px-2 py-1 text-[0.6rem] font-semibold transition-all ${displayModes.products === "list" ? "bg-primary text-primary-foreground" : "text-muted-foreground hover:text-foreground"}`}>Grade</button>
-              <button onClick={() => setDisplayModes(d => ({ ...d, products: "carousel" }))} className={`px-2 py-1 text-[0.6rem] font-semibold transition-all ${displayModes.products === "carousel" ? "bg-primary text-primary-foreground" : "text-muted-foreground hover:text-foreground"}`}>Carrossel</button>
+              <button onClick={() => setDisplayModes(d => ({ ...d, products: "carousel" }))} className={`px-2 py-1 text-[0.6rem] font-semibold transition-all ${displayModes.products === "carousel" ? "bg-primary text-primary-foreground" : "text-muted-foreground hover:text-foreground"}`}>Deslizar</button>
+              <button onClick={() => setDisplayModes(d => ({ ...d, products: "marquee" }))} className={`px-2 py-1 text-[0.6rem] font-semibold transition-all ${displayModes.products === "marquee" ? "bg-primary text-primary-foreground" : "text-muted-foreground hover:text-foreground"}`}>Automático</button>
             </div>
           )}
         </div>
@@ -1551,7 +1576,8 @@ const CreatorEditPanel = forwardRef<CreatorEditPanelHandle, Props>(function Crea
           {camps.length > 1 && (
             <div className="flex bg-card border border-border rounded-lg overflow-hidden">
               <button onClick={() => setDisplayModes(d => ({ ...d, campaigns: "list" }))} className={`px-2 py-1 text-[0.6rem] font-semibold transition-all ${displayModes.campaigns === "list" ? "bg-primary text-primary-foreground" : "text-muted-foreground hover:text-foreground"}`}>Lista</button>
-              <button onClick={() => setDisplayModes(d => ({ ...d, campaigns: "carousel" }))} className={`px-2 py-1 text-[0.6rem] font-semibold transition-all ${displayModes.campaigns === "carousel" ? "bg-primary text-primary-foreground" : "text-muted-foreground hover:text-foreground"}`}>Carrossel</button>
+              <button onClick={() => setDisplayModes(d => ({ ...d, campaigns: "carousel" }))} className={`px-2 py-1 text-[0.6rem] font-semibold transition-all ${displayModes.campaigns === "carousel" ? "bg-primary text-primary-foreground" : "text-muted-foreground hover:text-foreground"}`}>Deslizar</button>
+              <button onClick={() => setDisplayModes(d => ({ ...d, campaigns: "marquee" }))} className={`px-2 py-1 text-[0.6rem] font-semibold transition-all ${displayModes.campaigns === "marquee" ? "bg-primary text-primary-foreground" : "text-muted-foreground hover:text-foreground"}`}>Automático</button>
             </div>
           )}
         </div>
