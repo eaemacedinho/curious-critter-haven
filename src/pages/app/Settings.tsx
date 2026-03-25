@@ -613,7 +613,7 @@ export default function Settings() {
                       }
                     }}
                     disabled={exporting}
-                    className="px-4 py-2 bg-primary/10 text-primary text-xs font-semibold rounded-xl hover:bg-primary/20 transition-colors disabled:opacity-60"
+                    className="px-4 py-2 bg-primary/10 text-primary-readable text-xs font-semibold rounded-xl hover:bg-primary/20 transition-colors disabled:opacity-60"
                   >
                     {exporting ? "⏳ Exportando..." : "📦 Exportar"}
                   </button>
