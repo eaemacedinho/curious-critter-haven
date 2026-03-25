@@ -101,7 +101,7 @@ export default function Checkout() {
           animate={{ scale: 1, opacity: 1 }}
           className="text-center space-y-4"
         >
-          <CheckCircle2 className="w-16 h-16 text-primary mx-auto" />
+          <CheckCircle2 className="w-16 h-16 text-primary-readable mx-auto" />
           <h2 className="text-2xl font-bold text-foreground">Pagamento confirmado!</h2>
           <p className="text-muted-foreground">Bem-vindo ao plano {plan.label}. Aproveite todos os recursos.</p>
           <Button onClick={() => navigate("/app")}>
