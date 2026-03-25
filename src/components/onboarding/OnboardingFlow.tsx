@@ -319,8 +319,7 @@ export default function OnboardingFlow({ onComplete }: { onComplete: () => void 
 
               <div className="flex flex-col gap-3">
                 {([
-                  { id: "agency" as Purpose, icon: "🏢", label: "Minha agência", desc: "Gerencio creators para clientes" },
-                  { id: "creators" as Purpose, icon: "🎨", label: "Meus creators", desc: "Tenho uma rede de influenciadores" },
+                  { id: "agency" as Purpose, icon: "🏢", label: "Minha agência", desc: "Quero gerenciar perfis de 2 ou mais pessoas" },
                   { id: "myself" as Purpose, icon: "🙋", label: "Eu mesmo", desc: "Quero minha própria página" },
                 ]).map(opt => (
                   <button
