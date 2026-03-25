@@ -39,6 +39,12 @@ export default function CreatorEdit() {
   const [usingDefault, setUsingDefault] = useState(false);
   const [templateDropdownStyle, setTemplateDropdownStyle] = useState<{ top: number; left: number; width: number } | null>(null);
 
+  // Track original template data for "em edição" detection and reset
+  const [originalTemplateSnapshot, setOriginalTemplateSnapshot] = useState<TemplateData | null>(null);
+  const [showResetConfirm, setShowResetConfirm] = useState(false);
+  const [resetConfirmInput, setResetConfirmInput] = useState("");
+  const [resetting, setResetting] = useState(false);
+
   const maxTemplates = currentPlan === "free" ? 1 : currentPlan === "pro" ? 5 : 10;
 
   // Gallery saved templates (from AppTemplates page localStorage)
@@ -99,6 +105,28 @@ export default function CreatorEdit() {
     savedGalleryIds.map(id => TEMPLATE_DATA.find(t => t.id === id)).filter(Boolean) as FullTemplateData[],
   [savedGalleryIds]);
 
+  // Detect if template has been edited
+  const isTemplateEdited = useMemo(() => {
+    if (!originalTemplateSnapshot || (!activeTemplateId && !usingDefault)) return false;
+    const current = getCurrentData();
+    const snap = originalTemplateSnapshot;
+    // Compare profile fields
+    const profileKeys = ["bio", "font_family", "font_size", "image_shape", "image_shape_links", "image_shape_products", "image_shape_campaigns", "brands_display_mode", "spotify_url", "color_name", "color_bio", "color_section_titles"] as const;
+    for (const key of profileKeys) {
+      if (JSON.stringify((current.profile as any)?.[key]) !== JSON.stringify((snap.profile as any)?.[key])) return true;
+    }
+    if (JSON.stringify(current.profile?.tags) !== JSON.stringify(snap.profile?.tags)) return true;
+    if (JSON.stringify(current.profile?.stats) !== JSON.stringify(snap.profile?.stats)) return true;
+    if (JSON.stringify(current.profile?.brands) !== JSON.stringify(snap.profile?.brands)) return true;
+    if (JSON.stringify(current.profile?.section_order) !== JSON.stringify(snap.profile?.section_order)) return true;
+    // Compare arrays by length + titles
+    if (current.links?.length !== snap.links?.length) return true;
+    if (current.products?.length !== snap.products?.length) return true;
+    if (current.socialLinks?.length !== snap.socialLinks?.length) return true;
+    if (current.testimonials?.length !== snap.testimonials?.length) return true;
+    return false;
+  }, [profile, links, socialLinks, products, campaigns, heroReels, testimonials, originalTemplateSnapshot, activeTemplateId, usingDefault]);
+
   const [applyingGallery, setApplyingGallery] = useState(false);
 
   const handleApplyGalleryTemplate = async (template: FullTemplateData) => {
@@ -143,6 +171,9 @@ export default function CreatorEdit() {
       })) as any);
 
       await refetch();
+      // Store snapshot for gallery templates too (no activeTemplateId but track as gallery)
+      const snapshotData = getCurrentData();
+      setOriginalTemplateSnapshot(JSON.parse(JSON.stringify(snapshotData)));
       setActiveTemplateId(null);
       setUsingDefault(false);
       toast.success(`Template "${template.name}" aplicado!`);
@@ -186,17 +217,8 @@ export default function CreatorEdit() {
     await refetch();
     toast.success("Alterações salvas com sucesso!");
 
-    // If using a template, auto-update it
-    if (activeTemplateId) {
-      const tpl = templates.find(t => t.id === activeTemplateId);
-      if (tpl) {
-        await updateTemplate(activeTemplateId, getCurrentData());
-        toast.success(`Template "${tpl.name}" atualizado`);
-      }
-    } else if (usingDefault && defaultTemplate) {
-      await saveDefaultTemplate(getCurrentData());
-      toast.success("Meu Padrão atualizado");
-    } else if (templates.length === 0 && !defaultTemplate) {
+    // Only suggest saving as template if no templates exist yet
+    if (templates.length === 0 && !defaultTemplate) {
       setShowSaveConfirm(true);
     }
   };
@@ -253,6 +275,7 @@ export default function CreatorEdit() {
       if (data.heroReels) await saveHeroReels(data.heroReels);
       if (data.testimonials) await saveTestimonials(data.testimonials);
       await refetch();
+      setOriginalTemplateSnapshot(JSON.parse(JSON.stringify(defaultTemplate.template_data)));
       setActiveTemplateId(null);
       setUsingDefault(true);
       setShowSwitchConfirm(null);
@@ -263,6 +286,7 @@ export default function CreatorEdit() {
     if (templateId === null) {
       setActiveTemplateId(null);
       setUsingDefault(false);
+      setOriginalTemplateSnapshot(null);
       setShowSwitchConfirm(null);
       toast.success("Modo personalizado ativado");
       return;
@@ -280,6 +304,7 @@ export default function CreatorEdit() {
     if (data.heroReels) await saveHeroReels(data.heroReels);
     if (data.testimonials) await saveTestimonials(data.testimonials);
     await refetch();
+    setOriginalTemplateSnapshot(JSON.parse(JSON.stringify(tpl.template_data)));
     setActiveTemplateId(templateId);
     setUsingDefault(false);
     setShowSwitchConfirm(null);
@@ -345,6 +370,29 @@ export default function CreatorEdit() {
     }
   };
 
+  const handleResetTemplate = async () => {
+    if (!originalTemplateSnapshot) return;
+    setResetting(true);
+    try {
+      const data = originalTemplateSnapshot;
+      if (data.profile) await saveProfile(data.profile as any);
+      if (data.links) await saveLinks(data.links);
+      if (data.socialLinks) await saveSocialLinks(data.socialLinks);
+      if (data.products) await saveProducts(data.products);
+      if (data.campaigns) await saveCampaigns(data.campaigns);
+      if (data.heroReels) await saveHeroReels(data.heroReels);
+      if (data.testimonials) await saveTestimonials(data.testimonials);
+      await refetch();
+      toast.success("Template resetado para as configurações originais!");
+    } catch {
+      toast.error("Erro ao resetar template");
+    } finally {
+      setResetting(false);
+      setShowResetConfirm(false);
+      setResetConfirmInput("");
+    }
+  };
+
   const activeTemplate = templates.find(t => t.id === activeTemplateId);
   const currentLabel = usingDefault ? "⭐ Meu Padrão" : activeTemplate ? activeTemplate.name : "Personalizado";
   const totalSavedTemplateCount = templates.length + savedGalleryTemplates.length;
@@ -370,6 +418,7 @@ export default function CreatorEdit() {
       <div className="flex items-center gap-2 mb-4 sm:mb-6 overflow-x-auto overflow-y-visible pb-2 -mx-1 px-1 scrollbar-none">
           {/* Template selector */}
           <div className="relative flex-shrink-0">
+          <div className="flex items-center gap-1">
             <button
               ref={templateButtonRef}
               onClick={() => setShowTemplateDropdown(!showTemplateDropdown)}
@@ -382,8 +431,21 @@ export default function CreatorEdit() {
               <Save className="w-3.5 h-3.5" />
               <span className="hidden sm:inline">{currentLabel}</span>
               <span className="sm:hidden">{usingDefault ? "⭐" : activeTemplate ? "📋" : "✏️"}</span>
+              {isTemplateEdited && (
+                <span className="text-[0.55rem] bg-accent text-accent-foreground px-1.5 py-0.5 rounded-md font-bold animate-pulse">EM EDIÇÃO</span>
+              )}
               <ChevronDown className="w-3 h-3" />
             </button>
+            {isTemplateEdited && originalTemplateSnapshot && (
+              <button
+                onClick={() => { setResetConfirmInput(""); setShowResetConfirm(true); }}
+                className="p-2 text-muted-foreground hover:text-destructive transition-colors rounded-xl border border-border bg-card hover:border-destructive/40"
+                title="Resetar para configurações originais do template"
+              >
+                <RotateCcw className="w-3.5 h-3.5" />
+              </button>
+            )}
+          </div>
 
             {showTemplateDropdown && (
               templateDropdownStyle && createPortal(<>
@@ -682,6 +744,42 @@ export default function CreatorEdit() {
         confirmLabel="Salvar"
         cancelLabel="Cancelar"
         onConfirm={handleSaveAsTemplate}
+      />
+
+      {/* Reset template confirmation — requires typing CONFIRMO */}
+      <ConfirmDialog
+        open={showResetConfirm}
+        onOpenChange={(open) => { if (!open) { setShowResetConfirm(false); setResetConfirmInput(""); } }}
+        title="Resetar template?"
+        description={
+          <div className="space-y-3 mt-1">
+            <p className="text-sm text-muted-foreground">
+              Ao resetar, você <strong className="text-destructive">perderá toda a personalização</strong> feita no template. Os dados não serão salvos e o template voltará às configurações originais.
+            </p>
+            <p className="text-sm text-muted-foreground">
+              Para confirmar, digite <strong className="text-foreground">CONFIRMO</strong> abaixo:
+            </p>
+            <input
+              autoFocus
+              value={resetConfirmInput}
+              onChange={(e) => setResetConfirmInput(e.target.value)}
+              onKeyDown={(e) => { if (e.key === "Enter" && resetConfirmInput === "CONFIRMO") handleResetTemplate(); }}
+              placeholder="Digite CONFIRMO"
+              className="w-full px-3 py-2 bg-card border border-border rounded-xl text-foreground text-sm outline-none focus:border-destructive transition-all"
+            />
+          </div>
+        }
+        confirmLabel={resetting ? "Resetando..." : "Resetar template"}
+        cancelLabel="Cancelar"
+        variant="destructive"
+        loading={resetting}
+        onConfirm={() => {
+          if (resetConfirmInput !== "CONFIRMO") {
+            toast.error("Digite CONFIRMO para confirmar o reset");
+            return;
+          }
+          handleResetTemplate();
+        }}
       />
     </div>
   );
