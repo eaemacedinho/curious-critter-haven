@@ -129,7 +129,7 @@ function UpgradeModal({ featureLabel, onClose }: { featureLabel: string; onClose
             <ArrowRight className="w-4 h-4" />
           </button>
 
-          {/* Scale CTA for Pro users */}
+          {/* Scale / Enterprise CTA for Pro users */}
           {isPro && (
             <div className="w-full mt-4 p-4 bg-muted/30 border border-border rounded-2xl">
               <div className="flex items-center gap-2 mb-2">
@@ -137,14 +137,14 @@ function UpgradeModal({ featureLabel, onClose }: { featureLabel: string; onClose
                 <span className="text-sm font-bold text-foreground">Precisa de mais?</span>
               </div>
               <p className="text-xs text-muted-foreground mb-3">
-                O plano <span className="text-primary font-bold">Scale</span> inclui até 10 perfis, white-label completo, domínio customizado e membros de equipe.
+                O plano <span className="text-primary font-bold">Scale</span> (R$87,90/mês) tem até 10 perfis, membros de equipe e criação em lote. Ou conheça o <span className="text-primary font-bold">Enterprise</span> com white-label completo e domínio customizado.
               </p>
               <a
-                href="mailto:contato@in1.bio?subject=Plano%20Scale"
+                href="mailto:contato@in1.bio?subject=Plano%20Enterprise"
                 onClick={onClose}
                 className="w-full py-2.5 bg-card border border-border text-foreground font-bold text-sm rounded-xl transition-all hover:bg-secondary flex items-center justify-center gap-2"
               >
-                Fale conosco sobre o Scale
+                Fale conosco
                 <ArrowRight className="w-3.5 h-3.5" />
               </a>
             </div>
