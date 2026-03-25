@@ -18,6 +18,7 @@ import Terms from "@/pages/Terms";
 import CreatorPublic from "@/pages/CreatorPublic";
 import NotFound from "@/pages/NotFound";
 import ResetPassword from "@/pages/ResetPassword";
+import VerifyEmail from "@/pages/VerifyEmail";
 import ExampleLink from "@/pages/ExampleLink";
 import Invite from "@/pages/Invite";
 
