@@ -100,8 +100,8 @@ Deno.serve(async (req) => {
       interval_count: 1,
       billing_type: "prepaid",
       installments: 1,
-      minimum_price: 1790,
-      statement_descriptor: "IN1BIO PRO",
+      minimum_price: planPrice,
+      statement_descriptor: planDescriptor,
       card: {
         number: card.number.replace(/\s/g, ""),
         holder_name: card.holder_name,
