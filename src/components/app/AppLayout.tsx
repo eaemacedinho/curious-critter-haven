@@ -150,7 +150,7 @@ export default function AppLayout() {
       {!isPro && (
         <div className="mx-3 mb-5 p-3 bg-primary/5 border border-primary/10 rounded-xl">
           <div className="flex items-center gap-2 mb-1.5">
-            <Crown className="w-3.5 h-3.5 text-primary" />
+            <Crown className="w-3.5 h-3.5 text-primary-readable" />
             <span className="text-[0.68rem] font-bold text-foreground">Upgrade Pro</span>
           </div>
           <p className="text-[0.6rem] text-muted-foreground mb-2 leading-relaxed">
