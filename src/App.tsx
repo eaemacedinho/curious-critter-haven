@@ -53,6 +53,7 @@ const App = () => (
               <Route path="/reset-password" element={<ResetPassword />} />
               <Route path="/c/:handle" element={<CreatorPublic />} />
               <Route path="/exemplo" element={<ExampleLink />} />
+              <Route path="/convite" element={<Invite />} />
 
               {/* Protected app routes */}
               <Route

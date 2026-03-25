@@ -139,7 +139,7 @@ export function useReferral(): ReferralData {
   }));
 
   const referralLink = referralCode
-    ? `${window.location.origin}?ref=${referralCode}`
+    ? `${window.location.origin}/convite?ref=${referralCode}`
     : "";
 
   return { referralCode, referralLink, totalReferrals, convertedReferrals, rewards, loading };
