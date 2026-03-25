@@ -286,14 +286,7 @@ export default function CreatorEdit() {
       return;
     }
 
-    if (templateId === null) {
-      setActiveTemplateId(null);
-      setUsingDefault(false);
-      setOriginalTemplateSnapshot(null);
-      setShowSwitchConfirm(null);
-      toast.success("Modo personalizado ativado");
-      return;
-    }
+
 
     const tpl = templates.find(t => t.id === templateId);
     if (!tpl) return;
