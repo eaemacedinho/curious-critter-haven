@@ -427,6 +427,7 @@ export default function CreatorEdit() {
       <div className="flex items-center gap-2 mb-4 sm:mb-6 overflow-x-auto overflow-y-visible pb-2 -mx-1 px-1 scrollbar-none">
           {/* Template selector */}
           <div className="relative flex-shrink-0">
+          <div className="flex items-center gap-1">
             <button
               ref={templateButtonRef}
               onClick={() => setShowTemplateDropdown(!showTemplateDropdown)}
@@ -439,8 +440,21 @@ export default function CreatorEdit() {
               <Save className="w-3.5 h-3.5" />
               <span className="hidden sm:inline">{currentLabel}</span>
               <span className="sm:hidden">{usingDefault ? "⭐" : activeTemplate ? "📋" : "✏️"}</span>
+              {isTemplateEdited && (
+                <span className="text-[0.55rem] bg-accent text-accent-foreground px-1.5 py-0.5 rounded-md font-bold animate-pulse">EM EDIÇÃO</span>
+              )}
               <ChevronDown className="w-3 h-3" />
             </button>
+            {isTemplateEdited && originalTemplateSnapshot && (
+              <button
+                onClick={() => { setResetConfirmInput(""); setShowResetConfirm(true); }}
+                className="p-2 text-muted-foreground hover:text-destructive transition-colors rounded-xl border border-border bg-card hover:border-destructive/40"
+                title="Resetar para configurações originais do template"
+              >
+                <RotateCcw className="w-3.5 h-3.5" />
+              </button>
+            )}
+          </div>
 
             {showTemplateDropdown && (
               templateDropdownStyle && createPortal(<>
