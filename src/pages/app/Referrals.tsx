@@ -1,8 +1,9 @@
-import { useState } from "react";
+import { useState, useEffect, useRef } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { useReferral } from "@/hooks/useReferral";
 import { toast } from "sonner";
 import { Copy, Check, Share2, Gift, Users, Trophy, Sparkles } from "lucide-react";
+import ConfettiCelebration from "@/components/onboarding/ConfettiCelebration";
 
 const SHARE_CHANNELS = [
   {
@@ -31,6 +32,25 @@ const SHARE_CHANNELS = [
 export default function Referrals() {
   const { referralCode, referralLink, convertedReferrals, rewards, loading } = useReferral();
   const [copied, setCopied] = useState(false);
+  const [showConfetti, setShowConfetti] = useState(false);
+  const prevUnlockedRef = useRef<number | null>(null);
+
+  // Detect newly unlocked rewards
+  const unlockedCount = rewards.filter(r => r.unlocked).length;
+  useEffect(() => {
+    if (prevUnlockedRef.current === null) {
+      prevUnlockedRef.current = unlockedCount;
+      return;
+    }
+    if (unlockedCount > prevUnlockedRef.current) {
+      setShowConfetti(true);
+      const newReward = rewards.filter(r => r.unlocked).pop();
+      if (newReward) {
+        toast.success(`🎉 Recompensa desbloqueada: ${newReward.label}!`);
+      }
+    }
+    prevUnlockedRef.current = unlockedCount;
+  }, [unlockedCount, rewards]);
 
   const handleCopy = () => {
     navigator.clipboard.writeText(referralLink);
@@ -56,6 +76,7 @@ export default function Referrals() {
 
   return (
     <div className="max-w-[700px] mx-auto">
+      {showConfetti && <ConfettiCelebration onComplete={() => setShowConfetti(false)} />}
       <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.5 }}>
         {/* Header */}
         <div className="mb-8">
