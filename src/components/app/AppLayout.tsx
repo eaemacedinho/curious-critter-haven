@@ -182,7 +182,7 @@ export default function AppLayout() {
             <span className="text-xs w-4 text-center">{item.icon}</span>
             {item.label}
             {(item as any).pro && !isPro && (
-              <span className="ml-auto inline-flex items-center gap-0.5 px-1.5 py-0.5 bg-primary/10 text-primary text-[0.55rem] font-extrabold rounded-md uppercase tracking-wider">
+              <span className="ml-auto inline-flex items-center gap-0.5 px-1.5 py-0.5 bg-primary/10 text-primary-readable text-[0.55rem] font-extrabold rounded-md uppercase tracking-wider">
                 <Crown className="w-2.5 h-2.5" />
                 Pro
               </span>
