@@ -137,7 +137,7 @@ function UpgradeModal({ featureLabel, onClose }: { featureLabel: string; onClose
                 <span className="text-sm font-bold text-foreground">Precisa de mais?</span>
               </div>
               <p className="text-xs text-muted-foreground mb-3">
-                O plano <span className="text-primary font-bold">Scale</span> (R$87,90/mês) tem até 10 perfis, membros de equipe e criação em lote. Ou conheça o <span className="text-primary font-bold">Enterprise</span> com white-label completo e domínio customizado.
+                O plano <span className="text-primary-readable font-bold">Scale</span> (R$87,90/mês) tem até 10 perfis, membros de equipe e criação em lote. Ou conheça o <span className="text-primary-readable font-bold">Enterprise</span> com white-label completo e domínio customizado.
               </p>
               <a
                 href="mailto:contato@in1.bio?subject=Plano%20Enterprise"
