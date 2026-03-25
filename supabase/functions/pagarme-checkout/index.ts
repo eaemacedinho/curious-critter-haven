@@ -132,10 +132,10 @@ Deno.serve(async (req) => {
       },
       pricing_scheme: {
         scheme_type: "unit",
-        price: 1790, // R$17,90 in cents
+        price: planPrice,
       },
       quantity: 1,
-      description: "Plano Pro - in1.bio",
+      description: `Plano ${planLabel} - in1.bio`,
       metadata: {
         agency_id: profile.agency_id,
         user_id: userId,
