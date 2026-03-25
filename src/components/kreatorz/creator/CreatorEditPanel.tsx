@@ -185,6 +185,11 @@ const CreatorEditPanel = forwardRef<CreatorEditPanelHandle, Props>(function Crea
   const [sectionOrder, setSectionOrder] = useState<string[]>(profile.section_order || ["spotlight", "links", "products", "past_campaigns", "hero_reel", "testimonials"]);
   const [testimonialsList, setTestimonialsList] = useState<Testimonial[]>(initialTestimonials || []);
   const [spotifyUrl, setSpotifyUrl] = useState(profile.spotify_url || "");
+  const [displayModes, setDisplayModes] = useState<{ links: "list" | "carousel"; products: "list" | "carousel"; campaigns: "list" | "carousel" }>({
+    links: profile.page_effects?.display_modes?.links || "list",
+    products: profile.page_effects?.display_modes?.products || "list",
+    campaigns: profile.page_effects?.display_modes?.campaigns || "list",
+  });
   const [dragSectionIdx, setDragSectionIdx] = useState<number | null>(null);
   const [saving, setSaving] = useState(false);
   const [uploadingImage, setUploadingImage] = useState<"avatar" | "cover" | null>(null);
@@ -258,7 +263,7 @@ const CreatorEditPanel = forwardRef<CreatorEditPanelHandle, Props>(function Crea
     image_shape_products: shapeProducts,
     image_shape_campaigns: shapeCampaigns,
     image_shape_links: shapeLinks,
-    page_effects: { effects: pageEffects, color: effectColor, emojis: effectEmojis, intensity: effectIntensity },
+    page_effects: { effects: pageEffects, color: effectColor, emojis: effectEmojis, intensity: effectIntensity, display_modes: displayModes },
     font_family: fontFamily,
     font_size: fontSize,
     color_name: colorName || null,
@@ -266,7 +271,7 @@ const CreatorEditPanel = forwardRef<CreatorEditPanelHandle, Props>(function Crea
     color_section_titles: colorSectionTitles || null,
     section_order: sectionOrder,
     spotify_url: spotifyUrl,
-  }), [profile, name, handle, bio, avatarUrl, coverUrl, avatarUrlL2, coverUrlL2, verified, tags, stats, brands, brandsDisplayMode, shapeProducts, shapeCampaigns, shapeLinks, pageEffects, effectColor, effectEmojis, effectIntensity, fontFamily, fontSize, colorName, colorBio, colorSectionTitles, sectionOrder, spotifyUrl]);
+  }), [profile, name, handle, bio, avatarUrl, coverUrl, avatarUrlL2, coverUrlL2, verified, tags, stats, brands, brandsDisplayMode, shapeProducts, shapeCampaigns, shapeLinks, pageEffects, effectColor, effectEmojis, effectIntensity, displayModes, fontFamily, fontSize, colorName, colorBio, colorSectionTitles, sectionOrder, spotifyUrl]);
 
   const isValidUrl = (url: string) => {
     if (!url) return true;
@@ -396,7 +401,7 @@ const CreatorEditPanel = forwardRef<CreatorEditPanelHandle, Props>(function Crea
           }))
           .filter((camp) => !isEmptyCampaignEntry(camp));
 
-      const baseProfile = { name, slug: handle, bio, avatar_url: avatarUrl, cover_url: coverUrl, avatar_url_layout2: avatarUrlL2, cover_url_layout2: coverUrlL2, verified, tags, stats, brands, brands_display_mode: brandsDisplayMode, image_shape: shapeProducts, image_shape_products: shapeProducts, image_shape_campaigns: shapeCampaigns, image_shape_links: shapeLinks, page_effects: { effects: pageEffects, color: effectColor, emojis: effectEmojis, intensity: effectIntensity }, font_family: fontFamily, font_size: fontSize, color_name: colorName || null, color_bio: colorBio || null, color_section_titles: colorSectionTitles || null, section_order: sectionOrder, spotify_url: spotifyUrl };
+      const baseProfile = { name, slug: handle, bio, avatar_url: avatarUrl, cover_url: coverUrl, avatar_url_layout2: avatarUrlL2, cover_url_layout2: coverUrlL2, verified, tags, stats, brands, brands_display_mode: brandsDisplayMode, image_shape: shapeProducts, image_shape_products: shapeProducts, image_shape_campaigns: shapeCampaigns, image_shape_links: shapeLinks, page_effects: { effects: pageEffects, color: effectColor, emojis: effectEmojis, intensity: effectIntensity, display_modes: displayModes }, font_family: fontFamily, font_size: fontSize, color_name: colorName || null, color_bio: colorBio || null, color_section_titles: colorSectionTitles || null, section_order: sectionOrder, spotify_url: spotifyUrl };
 
       if (cropImage) {
         const { file, type } = cropImage;
@@ -1205,7 +1210,15 @@ const CreatorEditPanel = forwardRef<CreatorEditPanelHandle, Props>(function Crea
       </div>
 
       <div className="mb-8" data-editor-section="links">
-        <div className={sectionTitle}>🔗 Links <span className="text-k-3 normal-case tracking-normal font-normal">({links.length})</span></div>
+        <div className="flex items-center justify-between mb-2">
+          <div className={sectionTitle + " mb-0"}>🔗 Links <span className="text-k-3 normal-case tracking-normal font-normal">({links.length})</span></div>
+          {links.length > 1 && (
+            <div className="flex bg-card border border-border rounded-lg overflow-hidden">
+              <button onClick={() => setDisplayModes(d => ({ ...d, links: "list" }))} className={`px-2 py-1 text-[0.6rem] font-semibold transition-all ${displayModes.links === "list" ? "bg-primary text-primary-foreground" : "text-muted-foreground hover:text-foreground"}`}>Lista</button>
+              <button onClick={() => setDisplayModes(d => ({ ...d, links: "carousel" }))} className={`px-2 py-1 text-[0.6rem] font-semibold transition-all ${displayModes.links === "carousel" ? "bg-primary text-primary-foreground" : "text-muted-foreground hover:text-foreground"}`}>Carrossel</button>
+            </div>
+          )}
+        </div>
         {links.map((link, i) => (
           <div
             key={link.id}
@@ -1382,7 +1395,15 @@ const CreatorEditPanel = forwardRef<CreatorEditPanelHandle, Props>(function Crea
       </div>
 
       <div className="mb-8" data-editor-section="products">
-        <div className={sectionTitle}>🛍 Produtos</div>
+        <div className="flex items-center justify-between mb-2">
+          <div className={sectionTitle + " mb-0"}>🛍 Produtos</div>
+          {prods.length > 1 && (
+            <div className="flex bg-card border border-border rounded-lg overflow-hidden">
+              <button onClick={() => setDisplayModes(d => ({ ...d, products: "list" }))} className={`px-2 py-1 text-[0.6rem] font-semibold transition-all ${displayModes.products === "list" ? "bg-primary text-primary-foreground" : "text-muted-foreground hover:text-foreground"}`}>Grade</button>
+              <button onClick={() => setDisplayModes(d => ({ ...d, products: "carousel" }))} className={`px-2 py-1 text-[0.6rem] font-semibold transition-all ${displayModes.products === "carousel" ? "bg-primary text-primary-foreground" : "text-muted-foreground hover:text-foreground"}`}>Carrossel</button>
+            </div>
+          )}
+        </div>
         {prods.map((prod, i) => (
           <div
             key={i}
@@ -1506,7 +1527,15 @@ const CreatorEditPanel = forwardRef<CreatorEditPanelHandle, Props>(function Crea
       </div>
 
       <div className="mb-8" data-editor-section="past_campaigns">
-        <div className={sectionTitle}>📢 Campanhas / Spotlight</div>
+        <div className="flex items-center justify-between mb-2">
+          <div className={sectionTitle + " mb-0"}>📢 Campanhas / Spotlight</div>
+          {camps.length > 1 && (
+            <div className="flex bg-card border border-border rounded-lg overflow-hidden">
+              <button onClick={() => setDisplayModes(d => ({ ...d, campaigns: "list" }))} className={`px-2 py-1 text-[0.6rem] font-semibold transition-all ${displayModes.campaigns === "list" ? "bg-primary text-primary-foreground" : "text-muted-foreground hover:text-foreground"}`}>Lista</button>
+              <button onClick={() => setDisplayModes(d => ({ ...d, campaigns: "carousel" }))} className={`px-2 py-1 text-[0.6rem] font-semibold transition-all ${displayModes.campaigns === "carousel" ? "bg-primary text-primary-foreground" : "text-muted-foreground hover:text-foreground"}`}>Carrossel</button>
+            </div>
+          )}
+        </div>
         <p className="text-[0.68rem] text-k-4 mb-3">Campanhas marcadas como <strong>"Ao vivo"</strong> aparecem automaticamente no <strong>topo da página</strong> com destaque visual (Spotlight).</p>
         {camps.map((camp, i) => (
           <div

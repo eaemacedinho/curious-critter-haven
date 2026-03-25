@@ -11,6 +11,7 @@ import PageEffects from "./PageEffects";
 import BrandsSection from "./BrandsSection";
 import SpotifyEmbed from "./SpotifyEmbed";
 import TestimonialsSection from "./TestimonialsSection";
+import SectionCarousel from "./SectionCarousel";
 import type { PageEffect } from "./PageEffects";
 import { getFontFamily, getFontSizeScale, loadGoogleFont } from "@/lib/fontUtils";
 
@@ -88,6 +89,7 @@ export default function CreatorView({ profile, links: rawLinks, socialLinks: raw
   const effectColor = pe.color;
   const effectEmojis = pe.emojis;
   const effectIntensity = pe.intensity;
+  const displayModes = pe.display_modes || {};
 
   const fontFam = getFontFamily(profile.font_family || "default");
   const fontScale = getFontSizeScale(profile.font_size || "medium");
@@ -208,6 +210,75 @@ export default function CreatorView({ profile, links: rawLinks, socialLinks: raw
 
             case "links":
               return links.length > 0 ? (() => {
+                const renderLinkCard = (link: CreatorLink, compact?: boolean) => {
+                  const linkIdx = links.indexOf(link);
+                  const hasImage = !!link.image_url;
+
+                  if (hasImage) {
+                    return (
+                      <div
+                        key={link.id}
+                        onClick={() => handleLinkClick(linkIdx, link.url, link)}
+                        className={`${shapeClass(profile.image_shape_links)} cursor-pointer transition-all duration-300 relative overflow-hidden group hover:-translate-y-1 hover:shadow-k-purple active:scale-[0.97] ${clickedLink === linkIdx ? "scale-[0.97]" : ""} h-full`}
+                        style={{
+                          ...(link.border_color ? { borderColor: link.border_color, borderWidth: "1px", borderStyle: "solid" } : {}),
+                        }}
+                      >
+                        <div className={`relative ${compact ? "aspect-square" : "aspect-[16/9]"} w-full`}>
+                          <img src={link.image_url!} alt={link.title} className="absolute inset-0 w-full h-full object-cover" />
+                          <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/20 to-transparent" />
+                          <div className="absolute top-2.5 left-2.5 w-8 h-8 rounded-lg bg-white/20 backdrop-blur-md flex items-center justify-center shadow-sm border border-white/10">
+                            <LinkIcon icon={link.icon} url={link.url} size={14} />
+                          </div>
+                          <div className="absolute bottom-0 left-0 right-0 p-3.5">
+                            <h4 className="text-sm font-semibold text-white leading-snug drop-shadow-lg"
+                              style={link.text_color ? { color: link.text_color } : undefined}
+                            >{link.title}</h4>
+                            {link.subtitle && <span className="text-[0.72rem] text-white/70 drop-shadow">{link.subtitle}</span>}
+                          </div>
+                        </div>
+                      </div>
+                    );
+                  }
+
+                  return (
+                    <div key={link.id} onClick={() => handleLinkClick(linkIdx, link.url, link)}
+                      className={`flex items-center gap-4 p-4 ${shapeClass(profile.image_shape_links)} cursor-pointer transition-all duration-300 relative overflow-hidden group min-h-[56px] h-full
+                        ${clickedLink === linkIdx ? "scale-[0.97]" : ""}
+                        ${link.is_featured && !link.bg_color
+                          ? "gradient-primary border-transparent shadow-k-purple-lg hover:-translate-y-1"
+                          : !link.bg_color ? "bg-card/65 backdrop-blur-2xl border border-border hover:border-primary/20 hover:-translate-y-1 hover:shadow-k-purple" : "hover:-translate-y-1"
+                        } active:scale-[0.97]`}
+                      style={{
+                        ...(link.bg_color ? { backgroundColor: link.bg_color } : {}),
+                        ...(link.text_color ? { color: link.text_color } : {}),
+                        ...(link.border_color ? { borderColor: link.border_color, borderWidth: "1px", borderStyle: "solid" } : {}),
+                      }}>
+                      <div className={`w-[44px] h-[44px] rounded-xl flex items-center justify-center flex-shrink-0 transition-transform duration-300 group-hover:scale-110 ${link.is_featured ? "bg-primary-foreground/15" : "bg-primary/5"}`}>
+                        <LinkIcon icon={link.icon} url={link.url} size={18} />
+                      </div>
+                      <div className="flex-1 min-w-0">
+                        <h4 className="text-sm font-semibold leading-snug">{link.title}</h4>
+                        {link.subtitle && <span className="text-[0.72rem] opacity-55">{link.subtitle}</span>}
+                      </div>
+                      <div className="opacity-30 transition-all duration-200 group-hover:opacity-60 group-hover:translate-x-0.5">
+                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M5 12h14M12 5l7 7-7 7" /></svg>
+                      </div>
+                    </div>
+                  );
+                };
+
+                if (displayModes.links === "carousel" && links.length > 1) {
+                  return (
+                    <div key="links" className="mb-8 animate-k-fade-up" style={{ animationDelay: ".15s" }} data-preview-section="links">
+                      <SectionCarousel itemWidth="80%">
+                        {links.map(link => renderLinkCard(link, true))}
+                      </SectionCarousel>
+                    </div>
+                  );
+                }
+
+                // Default list mode
                 const rows: CreatorLink[][] = [];
                 let i = 0;
                 while (i < links.length) {
@@ -227,66 +298,10 @@ export default function CreatorView({ profile, links: rawLinks, socialLinks: raw
                 }
 
                 return (
-                  <div key="links" className="flex flex-col gap-3 mb-8 animate-k-fade-up" style={{ animationDelay: ".15s" }}>
+                  <div key="links" className="flex flex-col gap-3 mb-8 animate-k-fade-up" style={{ animationDelay: ".15s" }} data-preview-section="links">
                     {rows.map((row, rowIdx) => (
                       <div key={rowIdx} className={row.length > 1 ? "grid grid-cols-2 gap-3" : ""}>
-                        {row.map((link) => {
-                          const linkIdx = links.indexOf(link);
-                          const hasImage = !!link.image_url;
-
-                          if (hasImage) {
-                            return (
-                              <div
-                                key={link.id}
-                                onClick={() => handleLinkClick(linkIdx, link.url, link)}
-                                className={`${shapeClass(profile.image_shape_links)} cursor-pointer transition-all duration-300 relative overflow-hidden group hover:-translate-y-1 hover:shadow-k-purple active:scale-[0.97] ${clickedLink === linkIdx ? "scale-[0.97]" : ""}`}
-                                style={{
-                                  ...(link.border_color ? { borderColor: link.border_color, borderWidth: "1px", borderStyle: "solid" } : {}),
-                                }}
-                              >
-                                <div className={`relative ${row.length > 1 ? "aspect-square" : "aspect-[16/9]"} w-full`}>
-                                  <img src={link.image_url!} alt={link.title} className="absolute inset-0 w-full h-full object-cover" />
-                                  <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/20 to-transparent" />
-                                  <div className="absolute top-2.5 left-2.5 w-8 h-8 rounded-lg bg-white/20 backdrop-blur-md flex items-center justify-center shadow-sm border border-white/10">
-                                    <LinkIcon icon={link.icon} url={link.url} size={14} />
-                                  </div>
-                                  <div className="absolute bottom-0 left-0 right-0 p-3.5">
-                                    <h4 className="text-sm font-semibold text-white leading-snug drop-shadow-lg"
-                                      style={link.text_color ? { color: link.text_color } : undefined}
-                                    >{link.title}</h4>
-                                    {link.subtitle && <span className="text-[0.72rem] text-white/70 drop-shadow">{link.subtitle}</span>}
-                                  </div>
-                                </div>
-                              </div>
-                            );
-                          }
-
-                          return (
-                            <div key={link.id} onClick={() => handleLinkClick(linkIdx, link.url, link)}
-                              className={`flex items-center gap-4 p-4 sm:p-5 ${shapeClass(profile.image_shape_links)} cursor-pointer transition-all duration-300 relative overflow-hidden group min-h-[56px]
-                                ${clickedLink === linkIdx ? "scale-[0.97]" : ""}
-                                ${link.is_featured && !link.bg_color
-                                  ? "gradient-primary border-transparent shadow-k-purple-lg hover:-translate-y-1"
-                                  : !link.bg_color ? "bg-card/65 backdrop-blur-2xl border border-border hover:border-primary/20 hover:-translate-y-1 hover:shadow-k-purple" : "hover:-translate-y-1"
-                                } active:scale-[0.97]`}
-                              style={{
-                                ...(link.bg_color ? { backgroundColor: link.bg_color } : {}),
-                                ...(link.text_color ? { color: link.text_color } : {}),
-                                ...(link.border_color ? { borderColor: link.border_color, borderWidth: "1px", borderStyle: "solid" } : {}),
-                              }}>
-                              <div className={`w-[44px] h-[44px] rounded-xl flex items-center justify-center flex-shrink-0 transition-transform duration-300 group-hover:scale-110 ${link.is_featured ? "bg-primary-foreground/15" : "bg-primary/5"}`}>
-                                <LinkIcon icon={link.icon} url={link.url} size={18} />
-                              </div>
-                              <div className="flex-1 min-w-0">
-                                <h4 className="text-sm font-semibold leading-snug">{link.title}</h4>
-                                {link.subtitle && <span className="text-[0.72rem] opacity-55">{link.subtitle}</span>}
-                              </div>
-                              <div className="opacity-30 transition-all duration-200 group-hover:opacity-60 group-hover:translate-x-0.5">
-                                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M5 12h14M12 5l7 7-7 7" /></svg>
-                              </div>
-                            </div>
-                          );
-                        })}
+                        {row.map((link) => renderLinkCard(link, row.length > 1))}
                       </div>
                     ))}
                   </div>
@@ -294,64 +309,88 @@ export default function CreatorView({ profile, links: rawLinks, socialLinks: raw
               })() : null;
 
             case "products":
-              return products.length > 0 ? (
-                <div key="products" data-preview-section="products" className="animate-k-fade-up" style={{ animationDelay: ".25s" }}>
-                  <div className="text-[0.66rem] font-bold tracking-[0.14em] uppercase mb-3.5 flex items-center gap-2.5"
-                    style={profile.color_section_titles ? { color: profile.color_section_titles } : { color: "hsl(var(--muted-foreground))" }}>
-                    Meus Produtos <span className="flex-1 h-px bg-border" />
+              return products.length > 0 ? (() => {
+                const renderProductCard = (prod: CreatorProduct) => (
+                  <div key={prod.id} onClick={() => prod.url && window.open(prod.url, "_blank")}
+                    className={`backdrop-blur-xl ${shapeClass(profile.image_shape_products)} overflow-hidden transition-all duration-300 cursor-pointer group hover:-translate-y-1 hover:shadow-k-purple active:scale-[0.97] h-full ${!prod.bg_color ? "bg-card/65 border border-border hover:border-primary/20" : ""}`}
+                    style={{
+                      ...(prod.bg_color ? { backgroundColor: prod.bg_color } : {}),
+                      ...(prod.text_color ? { color: prod.text_color } : {}),
+                      ...(prod.border_color ? { borderColor: prod.border_color, borderWidth: "1px", borderStyle: "solid" } : {}),
+                    }}>
+                    {prod.image_url ? (
+                      <img src={prod.image_url} alt={prod.title} className="w-full h-28 object-cover" />
+                    ) : (
+                      <div className="w-full h-28 flex items-center justify-center bg-primary/5 text-3xl">{prod.icon}</div>
+                    )}
+                    <div className="p-3.5">
+                      <h5 className="text-[0.82rem] font-semibold mb-1">{prod.title}</h5>
+                      {prod.price && <span className="text-[0.72rem] font-bold text-foreground" style={prod.text_color ? { color: prod.text_color } : undefined}>{prod.price}</span>}
+                    </div>
                   </div>
-                  <div className="grid grid-cols-2 gap-3 mb-8">
-                    {products.map((prod) => (
-                      <div key={prod.id} onClick={() => prod.url && window.open(prod.url, "_blank")}
-                        className={`backdrop-blur-xl ${shapeClass(profile.image_shape_products)} overflow-hidden transition-all duration-300 cursor-pointer group hover:-translate-y-1 hover:shadow-k-purple active:scale-[0.97] ${!prod.bg_color ? "bg-card/65 border border-border hover:border-primary/20" : ""}`}
-                        style={{
-                          ...(prod.bg_color ? { backgroundColor: prod.bg_color } : {}),
-                          ...(prod.text_color ? { color: prod.text_color } : {}),
-                          ...(prod.border_color ? { borderColor: prod.border_color, borderWidth: "1px", borderStyle: "solid" } : {}),
-                        }}>
-                        {prod.image_url ? (
-                          <img src={prod.image_url} alt={prod.title} className="w-full h-28 object-cover" />
-                        ) : (
-                          <div className="w-full h-28 flex items-center justify-center bg-primary/5 text-3xl">{prod.icon}</div>
-                        )}
-                        <div className="p-3.5">
-                          <h5 className="text-[0.82rem] font-semibold mb-1">{prod.title}</h5>
-                          {prod.price && <span className="text-[0.72rem] font-bold text-foreground" style={prod.text_color ? { color: prod.text_color } : undefined}>{prod.price}</span>}
-                        </div>
+                );
+
+                return (
+                  <div key="products" data-preview-section="products" className="animate-k-fade-up" style={{ animationDelay: ".25s" }}>
+                    <div className="text-[0.66rem] font-bold tracking-[0.14em] uppercase mb-3.5 flex items-center gap-2.5"
+                      style={profile.color_section_titles ? { color: profile.color_section_titles } : { color: "hsl(var(--muted-foreground))" }}>
+                      Meus Produtos <span className="flex-1 h-px bg-border" />
+                    </div>
+                    {displayModes.products === "carousel" && products.length > 1 ? (
+                      <div className="mb-8">
+                        <SectionCarousel itemWidth="65%">
+                          {products.map(prod => renderProductCard(prod))}
+                        </SectionCarousel>
                       </div>
-                    ))}
+                    ) : (
+                      <div className="grid grid-cols-2 gap-3 mb-8">
+                        {products.map(prod => renderProductCard(prod))}
+                      </div>
+                    )}
                   </div>
-                </div>
-              ) : null;
+                );
+              })() : null;
 
             case "past_campaigns":
-              return pastCampaigns.length > 0 ? (
-                <div key="past_campaigns" data-preview-section="past_campaigns" className="animate-k-fade-up" style={{ animationDelay: ".3s" }}>
-                  <div className="text-[0.66rem] font-bold tracking-[0.14em] uppercase mb-3.5 flex items-center gap-2.5"
-                    style={profile.color_section_titles ? { color: profile.color_section_titles } : { color: "hsl(var(--muted-foreground))" }}>
-                    Campanhas Anteriores <span className="flex-1 h-px bg-border" />
-                  </div>
-                  <div className="flex flex-col gap-3 mb-8">
-                    {pastCampaigns.map((camp) => (
-                      <div key={camp.id} onClick={() => camp.url && window.open(camp.url, "_blank")}
-                        className={`backdrop-blur-xl ${shapeClass(profile.image_shape_campaigns)} p-4 sm:p-5 transition-all duration-300 group cursor-pointer active:scale-[0.98] opacity-75 hover:opacity-100 ${!camp.bg_color ? "bg-card/65 border border-border hover:border-primary/20" : ""}`}
-                        style={{
-                          ...(camp.bg_color ? { backgroundColor: camp.bg_color } : {}),
-                          ...(camp.text_color ? { color: camp.text_color } : {}),
-                          ...(camp.border_color ? { borderColor: camp.border_color, borderWidth: "1px", borderStyle: "solid" } : {}),
-                        }}>
-                        {camp.image_url && (
-                          <div className={`w-full h-[100px] ${shapeClass(profile.image_shape_campaigns)} overflow-hidden mb-3`}>
-                            <img src={camp.image_url} alt="" className="w-full h-full object-cover" />
-                          </div>
-                        )}
-                        <h5 className="text-[0.82rem] font-semibold mb-1">{camp.title}</h5>
-                        {camp.description && <span className="text-[0.68rem] opacity-70">{camp.description}</span>}
+              return pastCampaigns.length > 0 ? (() => {
+                const renderCampaignCard = (camp: CreatorCampaign) => (
+                  <div key={camp.id} onClick={() => camp.url && window.open(camp.url, "_blank")}
+                    className={`backdrop-blur-xl ${shapeClass(profile.image_shape_campaigns)} p-4 transition-all duration-300 group cursor-pointer active:scale-[0.98] opacity-75 hover:opacity-100 h-full ${!camp.bg_color ? "bg-card/65 border border-border hover:border-primary/20" : ""}`}
+                    style={{
+                      ...(camp.bg_color ? { backgroundColor: camp.bg_color } : {}),
+                      ...(camp.text_color ? { color: camp.text_color } : {}),
+                      ...(camp.border_color ? { borderColor: camp.border_color, borderWidth: "1px", borderStyle: "solid" } : {}),
+                    }}>
+                    {camp.image_url && (
+                      <div className={`w-full h-[100px] ${shapeClass(profile.image_shape_campaigns)} overflow-hidden mb-3`}>
+                        <img src={camp.image_url} alt="" className="w-full h-full object-cover" />
                       </div>
-                    ))}
+                    )}
+                    <h5 className="text-[0.82rem] font-semibold mb-1">{camp.title}</h5>
+                    {camp.description && <span className="text-[0.68rem] opacity-70">{camp.description}</span>}
                   </div>
-                </div>
-              ) : null;
+                );
+
+                return (
+                  <div key="past_campaigns" data-preview-section="past_campaigns" className="animate-k-fade-up" style={{ animationDelay: ".3s" }}>
+                    <div className="text-[0.66rem] font-bold tracking-[0.14em] uppercase mb-3.5 flex items-center gap-2.5"
+                      style={profile.color_section_titles ? { color: profile.color_section_titles } : { color: "hsl(var(--muted-foreground))" }}>
+                      Campanhas Anteriores <span className="flex-1 h-px bg-border" />
+                    </div>
+                    {displayModes.campaigns === "carousel" && pastCampaigns.length > 1 ? (
+                      <div className="mb-8">
+                        <SectionCarousel itemWidth="80%">
+                          {pastCampaigns.map(camp => renderCampaignCard(camp))}
+                        </SectionCarousel>
+                      </div>
+                    ) : (
+                      <div className="flex flex-col gap-3 mb-8">
+                        {pastCampaigns.map(camp => renderCampaignCard(camp))}
+                      </div>
+                    )}
+                  </div>
+                );
+              })() : null;
 
             case "hero_reel":
               return activeReels.length > 0 ? (
