@@ -190,9 +190,9 @@ export default function Checkout() {
         <div className="text-center space-y-2">
           <div className="w-14 h-14 rounded-2xl bg-primary/10 flex items-center justify-center mx-auto">
             {planKey === "scale" ? (
-              <Rocket className="w-7 h-7 text-primary" />
+              <Rocket className="w-7 h-7 text-primary-readable" />
             ) : (
-              <Sparkles className="w-7 h-7 text-primary" />
+              <Sparkles className="w-7 h-7 text-primary-readable" />
             )}
           </div>
           <h1 className="text-2xl font-extrabold text-foreground">Upgrade para o {plan.label}</h1>
