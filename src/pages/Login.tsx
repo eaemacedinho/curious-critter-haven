@@ -109,7 +109,7 @@ export default function Login() {
                 {isSignUp ? "Você está criando" : "Bem-vindo de volta"}
               </p>
               {isSignUp && (
-                <p className="text-base font-bold text-primary mt-1">
+                <p className="text-base font-bold text-primary-readable mt-1">
                   in1.bio/<span className="text-foreground">{claimedUsername}</span>
                 </p>
               )}
