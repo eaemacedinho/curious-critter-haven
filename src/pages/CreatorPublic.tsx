@@ -117,7 +117,15 @@ export default function CreatorPublic() {
         return;
       }
 
-      setProfile(normalizeProfile(creator));
+      const normalized = normalizeProfile(creator);
+      setProfile(normalized);
+
+      // Set default theme from creator preference (only on first load)
+      if (!themeInitialized) {
+        const creatorDefaultTheme = (normalized.page_effects as any)?.default_theme || "dark";
+        setPageTheme(creatorDefaultTheme);
+        setThemeInitialized(true);
+      }
 
       // Fetch agency name for footer
       if (creator.agency_id) {
