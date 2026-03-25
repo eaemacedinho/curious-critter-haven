@@ -263,13 +263,22 @@ export default function AppTemplates() {
       return;
     }
     if (savedTemplates.length >= maxSaved) {
-      toast.error(`Você pode salvar no máximo ${maxSaved} template${maxSaved > 1 ? "s" : ""}. ${!isPro ? "Faça upgrade para Pro para salvar até 5!" : ""}`);
+      setReplaceDialog({ templateToSave: templateId });
       return;
     }
     const updated = [...savedTemplates, templateId];
     setSavedTemplates(updated);
     localStorage.setItem(`${SAVED_TEMPLATES_KEY}_${agency.id}`, JSON.stringify(updated));
     toast.success("Template salvo!");
+  };
+
+  const handleReplaceTemplate = (oldTemplateId: string) => {
+    if (!agency || !replaceDialog) return;
+    const updated = savedTemplates.map(t => t === oldTemplateId ? replaceDialog.templateToSave : t);
+    setSavedTemplates(updated);
+    localStorage.setItem(`${SAVED_TEMPLATES_KEY}_${agency.id}`, JSON.stringify(updated));
+    setReplaceDialog(null);
+    toast.success("Template substituído!");
   };
 
   const filtered = useMemo(
