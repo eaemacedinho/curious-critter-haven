@@ -405,6 +405,12 @@ export default function CreatorView({ profile, links: rawLinks, socialLinks: raw
                           {pastCampaigns.map(camp => renderCampaignCard(camp))}
                         </SectionCarousel>
                       </div>
+                    ) : displayModes.campaigns === "marquee" && pastCampaigns.length > 1 ? (
+                      <div className="mb-8">
+                        <SectionMarquee itemWidth="80%">
+                          {pastCampaigns.map(camp => renderCampaignCard(camp))}
+                        </SectionMarquee>
+                      </div>
                     ) : (
                       <div className="flex flex-col gap-3 mb-8">
                         {pastCampaigns.map(camp => renderCampaignCard(camp))}
