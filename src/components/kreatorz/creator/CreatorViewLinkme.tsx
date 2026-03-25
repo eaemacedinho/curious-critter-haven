@@ -10,6 +10,7 @@ import type { HeroReelData } from "./HeroReel";
 import type { Testimonial } from "./TestimonialsSection";
 import TestimonialsSection from "./TestimonialsSection";
 import SectionCarousel from "./SectionCarousel";
+import SectionMarquee from "./SectionMarquee";
 import PageEffects from "./PageEffects";
 import BrandsSection from "./BrandsSection";
 import type { PageEffect } from "./PageEffects";
