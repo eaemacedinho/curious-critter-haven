@@ -94,12 +94,20 @@ export default function Landing() {
             <a href="#pricing" className="text-sm text-muted-foreground hover:text-foreground transition-colors font-medium">Planos</a>
             <Link to="/templates" className="text-sm text-muted-foreground hover:text-foreground transition-colors font-medium">Templates</Link>
           </div>
-          <Link
-            to="/login"
-            className="px-5 py-2.5 bg-foreground text-background font-bold text-sm rounded-full transition-all hover:bg-primary hover:text-primary-foreground hover:shadow-[0_0_30px_hsl(var(--primary)/0.25)]"
-          >
-            Criar minha página
-          </Link>
+          <div className="flex items-center gap-3">
+            <Link
+              to="/login"
+              className="px-4 py-2.5 text-sm font-semibold text-muted-foreground hover:text-foreground transition-colors"
+            >
+              Entrar
+            </Link>
+            <Link
+              to="/login"
+              className="px-5 py-2.5 bg-foreground text-background font-bold text-sm rounded-full transition-all hover:bg-primary hover:text-primary-foreground hover:shadow-[0_0_30px_hsl(var(--primary)/0.25)]"
+            >
+              Criar minha página
+            </Link>
+          </div>
         </div>
       </nav>
 
@@ -157,9 +165,18 @@ export default function Landing() {
               </button>
             </motion.div>
 
-            <motion.p variants={fadeUp} custom={4} className="text-xs text-muted-foreground mt-5">
-              <span className="text-foreground/70 font-semibold">Grátis para começar</span> — sem cartão de crédito
-            </motion.p>
+            <motion.div variants={fadeUp} custom={4} className="flex items-center gap-3 mt-5">
+              <span className="text-xs text-muted-foreground">
+                <span className="text-foreground/70 font-semibold">Grátis para começar</span> — sem cartão de crédito
+              </span>
+              <span className="text-muted-foreground/30">|</span>
+              <Link
+                to="/login"
+                className="text-xs font-semibold text-primary-readable hover:underline transition-colors"
+              >
+                Já tenho conta →
+              </Link>
+            </motion.div>
           </motion.div>
 
           {/* Phone mockup */}
