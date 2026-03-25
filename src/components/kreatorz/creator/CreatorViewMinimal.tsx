@@ -1,4 +1,5 @@
 import { useState, useEffect, useCallback } from "react";
+import { autoTextColor } from "@/lib/utils";
 import type { CreatorProfile, CreatorLink, SocialLink, CreatorProduct, CreatorCampaign } from "@/hooks/useCreatorData";
 import SocialIcon, { LinkIcon } from "./SocialIcon";
 import VerifiedBadge from "./VerifiedBadge";
@@ -81,7 +82,7 @@ export default function CreatorViewMinimal({ profile, links: rawLinks, socialLin
                 className="flex items-center gap-3 px-4 py-3.5 rounded-xl border border-border bg-card/50 transition-all hover:border-primary/20 hover:-translate-y-0.5 active:scale-[0.98]"
                 style={{
                   ...(link.bg_color ? { backgroundColor: link.bg_color } : {}),
-                  ...(link.text_color ? { color: link.text_color } : {}),
+                  color: autoTextColor(link.bg_color, link.text_color),
                   ...(link.border_color ? { borderColor: link.border_color } : {}),
                 }}>
                 <div className="w-9 h-9 rounded-lg bg-primary/5 flex items-center justify-center flex-shrink-0">
@@ -103,7 +104,7 @@ export default function CreatorViewMinimal({ profile, links: rawLinks, socialLin
               {products.map((prod) => (
                 <div key={prod.id} onClick={() => prod.url && window.open(prod.url, "_blank")}
                   className="rounded-xl border border-border bg-card/50 overflow-hidden cursor-pointer transition-all hover:-translate-y-0.5 active:scale-[0.98]"
-                  style={{ ...(prod.bg_color ? { backgroundColor: prod.bg_color } : {}), ...(prod.text_color ? { color: prod.text_color } : {}) }}>
+                  style={{ ...(prod.bg_color ? { backgroundColor: prod.bg_color } : {}), color: autoTextColor(prod.bg_color, prod.text_color) }}>
                   {prod.image_url && <img src={prod.image_url} alt="" className="w-full h-24 object-cover" />}
                   <div className="p-3">
                     <h5 className="text-[0.78rem] font-semibold">{prod.title}</h5>
@@ -123,7 +124,7 @@ export default function CreatorViewMinimal({ profile, links: rawLinks, socialLin
             {campaigns.map((camp) => (
               <div key={camp.id} onClick={() => camp.url && window.open(camp.url, "_blank")}
                 className="rounded-xl border border-border bg-card/50 overflow-hidden cursor-pointer mb-2.5 transition-all hover:-translate-y-0.5"
-                style={{ ...(camp.bg_color ? { backgroundColor: camp.bg_color } : {}), ...(camp.text_color ? { color: camp.text_color } : {}) }}>
+                style={{ ...(camp.bg_color ? { backgroundColor: camp.bg_color } : {}), color: autoTextColor(camp.bg_color, camp.text_color) }}>
                 {camp.image_url && <img src={camp.image_url} alt="" className="w-full h-32 object-cover" />}
                 <div className="p-3.5">
                   <h5 className="text-sm font-semibold">{camp.title}</h5>

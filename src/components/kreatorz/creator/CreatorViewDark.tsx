@@ -1,4 +1,5 @@
 import { useState, useEffect, useRef, useCallback } from "react";
+import { autoTextColor } from "@/lib/utils";
 import type { CreatorProfile, CreatorLink, SocialLink, CreatorProduct, CreatorCampaign } from "@/hooks/useCreatorData";
 import SocialIcon, { LinkIcon } from "./SocialIcon";
 import VerifiedBadge from "./VerifiedBadge";
@@ -133,7 +134,7 @@ export default function CreatorViewDark({ profile, links: rawLinks, socialLinks:
                 style={{
                   background: link.bg_color || darkCard,
                   border: `1px solid ${link.border_color || neonPrimary + "20"}`,
-                  ...(link.text_color ? { color: link.text_color } : {}),
+                  color: autoTextColor(link.bg_color, link.text_color),
                   ...(link.is_featured ? { boxShadow: `0 0 20px ${neonPrimary}20, inset 0 0 20px ${neonPrimary}05` } : {}),
                 }}>
                 <div className="w-10 h-10 rounded-xl flex items-center justify-center flex-shrink-0 transition-transform hover:scale-110"
@@ -164,7 +165,7 @@ export default function CreatorViewDark({ profile, links: rawLinks, socialLinks:
                   style={{
                     background: prod.bg_color || darkCard,
                     border: `1px solid ${prod.border_color || neonPrimary + "15"}`,
-                    ...(prod.text_color ? { color: prod.text_color } : {}),
+                    color: autoTextColor(prod.bg_color, prod.text_color),
                   }}>
                   {prod.image_url ? (
                     <img src={prod.image_url} alt="" className="w-full h-28 object-cover" />

@@ -1,4 +1,5 @@
 import { useState, useEffect } from "react";
+import { autoTextColor } from "@/lib/utils";
 import type { CreatorProfile, CreatorLink, SocialLink, CreatorProduct, CreatorCampaign } from "@/hooks/useCreatorData";
 import SocialIcon, { LinkIcon } from "./SocialIcon";
 import VerifiedBadge from "./VerifiedBadge";
@@ -122,7 +123,7 @@ export default function CreatorViewGrid({ profile, links: rawLinks, socialLinks:
                   className={`${colSpan} rounded-2xl overflow-hidden transition-all hover:-translate-y-1 active:scale-[0.98] group relative border border-border`}
                   style={{
                     ...(link.bg_color ? { backgroundColor: link.bg_color } : { backgroundColor: "hsl(var(--card))" }),
-                    ...(link.text_color ? { color: link.text_color } : {}),
+                    color: autoTextColor(link.bg_color, link.text_color),
                     ...(link.border_color ? { borderColor: link.border_color } : {}),
                   }}>
                   {link.image_url ? (
@@ -156,7 +157,7 @@ export default function CreatorViewGrid({ profile, links: rawLinks, socialLinks:
                 <div key={`prod-${prod.id}`}
                   onClick={() => prod.url && window.open(prod.url, "_blank")}
                   className={`rounded-2xl overflow-hidden cursor-pointer group transition-all hover:-translate-y-1 active:scale-[0.98] border border-border`}
-                  style={{ ...(prod.bg_color ? { backgroundColor: prod.bg_color } : { backgroundColor: "hsl(var(--card))" }), ...(prod.text_color ? { color: prod.text_color } : {}) }}>
+                  style={{ ...(prod.bg_color ? { backgroundColor: prod.bg_color } : { backgroundColor: "hsl(var(--card))" }), color: autoTextColor(prod.bg_color, prod.text_color) }}>
                   {prod.image_url ? (
                     <div className="w-full aspect-square overflow-hidden">
                       <img src={prod.image_url} alt="" className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105" />

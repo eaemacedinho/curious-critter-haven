@@ -1,4 +1,5 @@
 import { toast } from "sonner";
+import { autoTextColor } from "@/lib/utils";
 import type { CreatorProfile, CreatorLink, SocialLink, CreatorProduct, CreatorCampaign } from "@/hooks/useCreatorData";
 import type { HeroReelData } from "./HeroReel";
 import type { Testimonial } from "./TestimonialsSection";
@@ -90,6 +91,7 @@ export default function CreatorView({ profile, links: rawLinks, socialLinks: raw
   const effectEmojis = pe.emojis;
   const effectIntensity = pe.intensity;
   const displayModes = pe.display_modes || {};
+  const badgePosition = (pe as any).badge_position || "name";
 
   const fontFam = getFontFamily(profile.font_family || "default");
   const fontScale = getFontSizeScale(profile.font_size || "medium");
@@ -134,7 +136,7 @@ export default function CreatorView({ profile, links: rawLinks, socialLinks: raw
                 </div>
               )}
             </div>
-            {profile.verified && (
+            {profile.verified && badgePosition === "photo" && (
               <div className="absolute bottom-0 right-0 z-[3]">
                 <VerifiedBadge size={28} />
               </div>
@@ -145,7 +147,7 @@ export default function CreatorView({ profile, links: rawLinks, socialLinks: raw
             <h1 className="font-display text-[1.85rem] font-normal mt-4 tracking-tight flex items-center justify-center gap-1.5"
               style={profile.color_name ? { color: profile.color_name } : { color: "hsl(var(--foreground))" }}>
               {profile.name}
-              {profile.verified && <VerifiedBadge size={22} />}
+              {profile.verified && badgePosition === "name" && <VerifiedBadge size={22} />}
             </h1>
           )}
           {profile.slug && <p className="text-sm text-muted-foreground mt-1">@{profile.slug.replace(/^@+/, "")}</p>}
@@ -254,7 +256,7 @@ export default function CreatorView({ profile, links: rawLinks, socialLinks: raw
                         } active:scale-[0.97]`}
                       style={{
                         ...(link.bg_color ? { backgroundColor: link.bg_color } : {}),
-                        ...(link.text_color ? { color: link.text_color } : {}),
+                        color: autoTextColor(link.bg_color, link.text_color),
                         ...(link.border_color ? { borderColor: link.border_color, borderWidth: "1px", borderStyle: "solid" } : {}),
                       }}>
                       <div className={`w-[44px] h-[44px] rounded-xl flex items-center justify-center flex-shrink-0 transition-transform duration-300 group-hover:scale-110 ${link.is_featured ? "bg-primary-foreground/15" : "bg-primary/5"}`}>
@@ -318,7 +320,7 @@ export default function CreatorView({ profile, links: rawLinks, socialLinks: raw
                     className={`backdrop-blur-xl ${shapeClass(profile.image_shape_products)} overflow-hidden transition-all duration-300 cursor-pointer group hover:-translate-y-1 hover:shadow-k-purple active:scale-[0.97] h-full ${!prod.bg_color ? "bg-card/65 border border-border hover:border-primary/20" : ""}`}
                     style={{
                       ...(prod.bg_color ? { backgroundColor: prod.bg_color } : {}),
-                      ...(prod.text_color ? { color: prod.text_color } : {}),
+                      color: autoTextColor(prod.bg_color, prod.text_color),
                       ...(prod.border_color ? { borderColor: prod.border_color, borderWidth: "1px", borderStyle: "solid" } : {}),
                     }}>
                     {prod.image_url ? (
@@ -361,7 +363,7 @@ export default function CreatorView({ profile, links: rawLinks, socialLinks: raw
                     className={`backdrop-blur-xl ${shapeClass(profile.image_shape_campaigns)} p-4 transition-all duration-300 group cursor-pointer active:scale-[0.98] opacity-75 hover:opacity-100 h-full ${!camp.bg_color ? "bg-card/65 border border-border hover:border-primary/20" : ""}`}
                     style={{
                       ...(camp.bg_color ? { backgroundColor: camp.bg_color } : {}),
-                      ...(camp.text_color ? { color: camp.text_color } : {}),
+                      color: autoTextColor(camp.bg_color, camp.text_color),
                       ...(camp.border_color ? { borderColor: camp.border_color, borderWidth: "1px", borderStyle: "solid" } : {}),
                     }}>
                     {camp.image_url && (

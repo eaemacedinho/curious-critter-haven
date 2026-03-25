@@ -190,6 +190,7 @@ const CreatorEditPanel = forwardRef<CreatorEditPanelHandle, Props>(function Crea
     products: profile.page_effects?.display_modes?.products || "list",
     campaigns: profile.page_effects?.display_modes?.campaigns || "list",
   });
+  const [badgePosition, setBadgePosition] = useState<"name" | "photo">((profile.page_effects as any)?.badge_position || "name");
   const [dragSectionIdx, setDragSectionIdx] = useState<number | null>(null);
   const [saving, setSaving] = useState(false);
   const [uploadingImage, setUploadingImage] = useState<"avatar" | "cover" | null>(null);
@@ -263,7 +264,7 @@ const CreatorEditPanel = forwardRef<CreatorEditPanelHandle, Props>(function Crea
     image_shape_products: shapeProducts,
     image_shape_campaigns: shapeCampaigns,
     image_shape_links: shapeLinks,
-    page_effects: { effects: pageEffects, color: effectColor, emojis: effectEmojis, intensity: effectIntensity, display_modes: displayModes },
+    page_effects: { effects: pageEffects, color: effectColor, emojis: effectEmojis, intensity: effectIntensity, display_modes: displayModes, badge_position: badgePosition },
     font_family: fontFamily,
     font_size: fontSize,
     color_name: colorName || null,
@@ -271,7 +272,7 @@ const CreatorEditPanel = forwardRef<CreatorEditPanelHandle, Props>(function Crea
     color_section_titles: colorSectionTitles || null,
     section_order: sectionOrder,
     spotify_url: spotifyUrl,
-  }), [profile, name, handle, bio, avatarUrl, coverUrl, avatarUrlL2, coverUrlL2, verified, tags, stats, brands, brandsDisplayMode, shapeProducts, shapeCampaigns, shapeLinks, pageEffects, effectColor, effectEmojis, effectIntensity, displayModes, fontFamily, fontSize, colorName, colorBio, colorSectionTitles, sectionOrder, spotifyUrl]);
+  }), [profile, name, handle, bio, avatarUrl, coverUrl, avatarUrlL2, coverUrlL2, verified, tags, stats, brands, brandsDisplayMode, shapeProducts, shapeCampaigns, shapeLinks, pageEffects, effectColor, effectEmojis, effectIntensity, displayModes, badgePosition, fontFamily, fontSize, colorName, colorBio, colorSectionTitles, sectionOrder, spotifyUrl]);
 
   const isValidUrl = (url: string) => {
     if (!url) return true;
@@ -401,7 +402,7 @@ const CreatorEditPanel = forwardRef<CreatorEditPanelHandle, Props>(function Crea
           }))
           .filter((camp) => !isEmptyCampaignEntry(camp));
 
-      const baseProfile = { name, slug: handle, bio, avatar_url: avatarUrl, cover_url: coverUrl, avatar_url_layout2: avatarUrlL2, cover_url_layout2: coverUrlL2, verified, tags, stats, brands, brands_display_mode: brandsDisplayMode, image_shape: shapeProducts, image_shape_products: shapeProducts, image_shape_campaigns: shapeCampaigns, image_shape_links: shapeLinks, page_effects: { effects: pageEffects, color: effectColor, emojis: effectEmojis, intensity: effectIntensity, display_modes: displayModes }, font_family: fontFamily, font_size: fontSize, color_name: colorName || null, color_bio: colorBio || null, color_section_titles: colorSectionTitles || null, section_order: sectionOrder, spotify_url: spotifyUrl };
+      const baseProfile = { name, slug: handle, bio, avatar_url: avatarUrl, cover_url: coverUrl, avatar_url_layout2: avatarUrlL2, cover_url_layout2: coverUrlL2, verified, tags, stats, brands, brands_display_mode: brandsDisplayMode, image_shape: shapeProducts, image_shape_products: shapeProducts, image_shape_campaigns: shapeCampaigns, image_shape_links: shapeLinks, page_effects: { effects: pageEffects, color: effectColor, emojis: effectEmojis, intensity: effectIntensity, display_modes: displayModes, badge_position: badgePosition }, font_family: fontFamily, font_size: fontSize, color_name: colorName || null, color_bio: colorBio || null, color_section_titles: colorSectionTitles || null, section_order: sectionOrder, spotify_url: spotifyUrl };
 
       if (cropImage) {
         const { file, type } = cropImage;
@@ -608,20 +609,38 @@ const CreatorEditPanel = forwardRef<CreatorEditPanelHandle, Props>(function Crea
             <div className="text-[0.68rem] text-muted-foreground text-right mt-1">{bio.length}/300</div>
           </div>
           {/* Verified badge toggle */}
-          <div className="flex items-center justify-between mt-4 p-3 bg-card/60 border border-border rounded-xl">
-            <div>
-              <span className="text-sm font-semibold text-foreground flex items-center gap-1.5">
-                <VerifiedBadge size={18} />
-                Badge de Verificado
-              </span>
-              <p className="text-[0.65rem] text-muted-foreground mt-0.5">Exibir selo de verificação ao lado do nome</p>
+          <div className="mt-4 p-3 bg-card/60 border border-border rounded-xl space-y-3">
+            <div className="flex items-center justify-between">
+              <div>
+                <span className="text-sm font-semibold text-foreground flex items-center gap-1.5">
+                  <VerifiedBadge size={18} />
+                  Badge de Verificado
+                </span>
+                <p className="text-[0.65rem] text-muted-foreground mt-0.5">Exibir selo de verificação no perfil</p>
+              </div>
+              <button
+                onClick={() => setVerified(!verified)}
+                className={`w-11 h-6 rounded-full transition-colors duration-200 relative flex-shrink-0 ${verified ? "bg-[#0095f6]" : "bg-muted border border-border"}`}
+              >
+                <span className={`block w-4.5 h-4.5 rounded-full shadow-sm absolute top-[3px] transition-transform duration-200 ${verified ? "bg-white translate-x-[22px]" : "bg-muted-foreground/50 translate-x-[3px]"}`} />
+              </button>
             </div>
-            <button
-              onClick={() => setVerified(!verified)}
-              className={`w-11 h-6 rounded-full transition-colors duration-200 relative flex-shrink-0 ${verified ? "bg-[#0095f6]" : "bg-muted border border-border"}`}
-            >
-              <span className={`block w-4.5 h-4.5 rounded-full shadow-sm absolute top-[3px] transition-transform duration-200 ${verified ? "bg-white translate-x-[22px]" : "bg-muted-foreground/50 translate-x-[3px]"}`} />
-            </button>
+            {verified && (
+              <div className="flex gap-2">
+                <button
+                  onClick={() => setBadgePosition("name")}
+                  className={`flex-1 py-2 text-xs font-semibold rounded-lg border transition-all ${badgePosition === "name" ? "bg-[#0095f6] text-white border-[#0095f6]" : "bg-card border-border text-muted-foreground hover:text-foreground"}`}
+                >
+                  Ao lado do nome
+                </button>
+                <button
+                  onClick={() => setBadgePosition("photo")}
+                  className={`flex-1 py-2 text-xs font-semibold rounded-lg border transition-all ${badgePosition === "photo" ? "bg-[#0095f6] text-white border-[#0095f6]" : "bg-card border-border text-muted-foreground hover:text-foreground"}`}
+                >
+                  Na foto de perfil
+                </button>
+              </div>
+            )}
           </div>
 
           {/* Per-section image shape selectors with live preview */}

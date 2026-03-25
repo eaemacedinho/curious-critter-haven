@@ -1,5 +1,6 @@
 import React, { useState, useEffect, useRef, useCallback } from "react";
 import { toast } from "sonner";
+import { autoTextColor } from "@/lib/utils";
 import SocialIcon, { LinkIcon } from "./SocialIcon";
 import VerifiedBadge from "./VerifiedBadge";
 import SpotlightCampaign from "./SpotlightCampaign";
@@ -294,7 +295,7 @@ export default function CreatorViewLinkme({ profile, links: rawLinks, socialLink
                               className={`backdrop-blur-xl ${shapeClass(profile.image_shape_products)} overflow-hidden cursor-pointer transition-all duration-300 group hover:-translate-y-1 active:scale-[0.97] h-full ${!prod.bg_color ? "bg-card/70 border border-border hover:border-primary/30" : ""}`}
                               style={{
                                 ...(prod.bg_color ? { backgroundColor: prod.bg_color } : {}),
-                                ...(prod.text_color ? { color: prod.text_color } : {}),
+                                color: autoTextColor(prod.bg_color, prod.text_color),
                                 ...(prod.border_color ? { borderColor: prod.border_color, borderWidth: "1px", borderStyle: "solid" } : {}),
                               }}>
                               {prod.image_url ? (
@@ -320,7 +321,7 @@ export default function CreatorViewLinkme({ profile, links: rawLinks, socialLink
                               className={`backdrop-blur-xl ${shapeClass(profile.image_shape_products)} overflow-hidden cursor-pointer transition-all duration-300 group hover:-translate-y-1 active:scale-[0.97] ${!prod.bg_color ? "bg-card/70 border border-border hover:border-primary/30" : ""}`}
                               style={{
                                 ...(prod.bg_color ? { backgroundColor: prod.bg_color } : {}),
-                                ...(prod.text_color ? { color: prod.text_color } : {}),
+                                color: autoTextColor(prod.bg_color, prod.text_color),
                                 ...(prod.border_color ? { borderColor: prod.border_color, borderWidth: "1px", borderStyle: "solid" } : {}),
                               }}>
                               {prod.image_url ? (
@@ -354,7 +355,7 @@ export default function CreatorViewLinkme({ profile, links: rawLinks, socialLink
                               className={`relative ${shapeClass(profile.image_shape_campaigns)} overflow-hidden cursor-pointer group transition-all duration-300 hover:-translate-y-1 active:scale-[0.98] h-full`}
                               style={{
                                 ...(camp.bg_color ? { backgroundColor: camp.bg_color } : {}),
-                                ...(camp.text_color ? { color: camp.text_color } : {}),
+                                color: autoTextColor(camp.bg_color, camp.text_color),
                                 ...(camp.border_color ? { borderColor: camp.border_color, borderWidth: "1px", borderStyle: "solid" } : {}),
                               }}>
                               {camp.image_url ? (
@@ -384,7 +385,7 @@ export default function CreatorViewLinkme({ profile, links: rawLinks, socialLink
                               className={`relative ${shapeClass(profile.image_shape_campaigns)} overflow-hidden cursor-pointer group transition-all duration-300 hover:-translate-y-1 active:scale-[0.98] opacity-75 hover:opacity-100`}
                               style={{
                                 ...(camp.bg_color ? { backgroundColor: camp.bg_color } : {}),
-                                ...(camp.text_color ? { color: camp.text_color } : {}),
+                                color: autoTextColor(camp.bg_color, camp.text_color),
                                 ...(camp.border_color ? { borderColor: camp.border_color, borderWidth: "1px", borderStyle: "solid" } : {}),
                               }}>
                               {camp.image_url ? (
@@ -485,7 +486,7 @@ function LinkmeCard({ link, shape, onLinkClick }: { link: CreatorLink; shape?: s
   const sc = shapeClass(shape);
   const customStyle: React.CSSProperties = {
     ...(link.bg_color ? { backgroundColor: link.bg_color } : {}),
-    ...(link.text_color ? { color: link.text_color } : {}),
+    color: autoTextColor(link.bg_color, link.text_color),
     ...(link.border_color ? { borderColor: link.border_color, borderWidth: "1px", borderStyle: "solid" } : {}),
   };
   const hasCustomBg = Boolean(link.bg_color);
