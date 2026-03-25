@@ -4,6 +4,8 @@ import { toast } from "sonner";
 import type { HeroReelData } from "@/components/kreatorz/creator/HeroReel";
 import type { Testimonial } from "@/components/kreatorz/creator/TestimonialsSection";
 
+const withOptionalId = <T extends { id?: string | null }>(item: T) => (item.id ? { id: item.id } : {});
+
 export type ImageShapeValue = "rounded" | "circular" | "pill" | "shadow" | "polaroid";
 
 export interface CreatorProfile {
@@ -242,7 +244,7 @@ export function useCreatorData(agencyId: string | undefined, creatorId?: string)
     if (deleteError) throw deleteError;
     if (normalizedLinks.length > 0) {
       const { error } = await supabase.from("creator_links").insert(
-        normalizedLinks.map((link) => ({ id: link.id, creator_id: link.creator_id, title: link.title, url: link.url, subtitle: link.subtitle || "", icon: link.icon || "🔗", is_featured: link.is_featured || false, is_active: link.is_active !== false, sort_order: link.sort_order, bg_color: link.bg_color || null, text_color: link.text_color || null, border_color: link.border_color || null, image_url: link.image_url || null, display_mode: link.display_mode || "full" }))
+        normalizedLinks.map((link) => ({ ...withOptionalId(link), creator_id: link.creator_id, title: link.title, url: link.url, subtitle: link.subtitle || "", icon: link.icon || "🔗", is_featured: link.is_featured || false, is_active: link.is_active !== false, sort_order: link.sort_order, bg_color: link.bg_color || null, text_color: link.text_color || null, border_color: link.border_color || null, image_url: link.image_url || null, display_mode: link.display_mode || "full" }))
       );
       if (error) throw error;
     }
@@ -256,7 +258,7 @@ export function useCreatorData(agencyId: string | undefined, creatorId?: string)
     if (deleteError) throw deleteError;
     if (normalizedLinks.length > 0) {
       const { error } = await supabase.from("creator_social_links").insert(
-        normalizedLinks.map((link) => ({ id: link.id, creator_id: link.creator_id, platform: link.platform, label: link.label || "", url: link.url, sort_order: link.sort_order }))
+        normalizedLinks.map((link) => ({ ...withOptionalId(link), creator_id: link.creator_id, platform: link.platform, label: link.label || "", url: link.url, sort_order: link.sort_order }))
       );
       if (error) throw error;
     }
@@ -270,7 +272,7 @@ export function useCreatorData(agencyId: string | undefined, creatorId?: string)
     if (deleteError) throw deleteError;
     if (normalized.length > 0) {
       const { error } = await supabase.from("creator_products").insert(
-        normalized.map((p) => ({ id: p.id, creator_id: p.creator_id, title: p.title, price: p.price || "", icon: p.icon || "📦", url: p.url || "", image_url: p.image_url || "", sort_order: p.sort_order, bg_color: p.bg_color || null, text_color: p.text_color || null, border_color: p.border_color || null }))
+        normalized.map((p) => ({ ...withOptionalId(p), creator_id: p.creator_id, title: p.title, price: p.price || "", icon: p.icon || "📦", url: p.url || "", image_url: p.image_url || "", sort_order: p.sort_order, bg_color: p.bg_color || null, text_color: p.text_color || null, border_color: p.border_color || null }))
       );
       if (error) throw error;
     }
@@ -284,7 +286,7 @@ export function useCreatorData(agencyId: string | undefined, creatorId?: string)
     if (deleteError) throw deleteError;
     if (normalized.length > 0) {
       const { error } = await supabase.from("campaigns").insert(
-        normalized.map((c) => ({ id: c.id, creator_id: c.creator_id, title: c.title, description: c.description || "", image_url: c.image_url || "", url: c.url || "", live: c.live || false, sort_order: c.sort_order, expires_at: c.expires_at || null, bg_color: c.bg_color || null, text_color: c.text_color || null, border_color: c.border_color || null }))
+        normalized.map((c) => ({ ...withOptionalId(c), creator_id: c.creator_id, title: c.title, description: c.description || "", image_url: c.image_url || "", url: c.url || "", live: c.live || false, sort_order: c.sort_order, expires_at: c.expires_at || null, bg_color: c.bg_color || null, text_color: c.text_color || null, border_color: c.border_color || null }))
       );
       if (error) throw error;
     }
@@ -299,7 +301,7 @@ export function useCreatorData(agencyId: string | undefined, creatorId?: string)
     if (normalized.length > 0) {
       const { error } = await supabase.from("creator_hero_reels").insert(
         normalized.map((r) => ({
-          id: r.id, creator_id: r.creator_id, title: r.title || "", subtitle: r.subtitle || "",
+          ...withOptionalId(r), creator_id: r.creator_id, title: r.title || "", subtitle: r.subtitle || "",
           video_url: r.video_url || "", thumbnail_url: r.thumbnail_url || "",
           cta_label: r.cta_label || "", cta_url: r.cta_url || "",
           aspect_ratio: r.aspect_ratio || "9:16", playback_mode: r.playback_mode || "autoplay",
@@ -319,7 +321,7 @@ export function useCreatorData(agencyId: string | undefined, creatorId?: string)
     if (normalized.length > 0) {
       const { error } = await supabase.from("creator_testimonials").insert(
         normalized.map((t) => ({
-          id: t.id, creator_id: t.creator_id, author_name: t.author_name || "",
+          ...withOptionalId(t), creator_id: t.creator_id, author_name: t.author_name || "",
           author_role: t.author_role || "", author_avatar_url: t.author_avatar_url || "",
           content: t.content || "", rating: t.rating ?? 5,
           is_active: t.is_active !== false, sort_order: t.sort_order,
