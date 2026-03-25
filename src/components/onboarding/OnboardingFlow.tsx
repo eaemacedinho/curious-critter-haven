@@ -170,13 +170,19 @@ export default function OnboardingFlow({ onComplete }: { onComplete: () => void 
   const [searchParams] = useSearchParams();
   const templateId = searchParams.get("template") || "";
   const templatePreset = templateId ? TEMPLATE_PRESETS[templateId] : null;
-  const [step, setStep] = useState<Step>("purpose");
-  const [purpose, setPurpose] = useState<Purpose | null>(null);
-  const [agencyName, setAgencyName] = useState("");
-  const [style, setStyle] = useState<VisualStyle | null>(templatePreset?.style || null);
+  const saved = loadProgress();
+  const [step, setStepRaw] = useState<Step>(saved.step && saved.step !== "creating" ? saved.step : "purpose");
+  const [purpose, setPurposeRaw] = useState<Purpose | null>(saved.purpose || null);
+  const [agencyName, setAgencyNameRaw] = useState(saved.agencyName || "");
+  const [style, setStyleRaw] = useState<VisualStyle | null>(saved.style || templatePreset?.style || null);
   const [loadingMsgIdx, setLoadingMsgIdx] = useState(0);
   const [createdHandle, setCreatedHandle] = useState("");
   const [showPreview, setShowPreview] = useState(false);
+
+  const setStep = (s: Step) => { setStepRaw(s); saveProgress({ step: s }); };
+  const setPurpose = (p: Purpose) => { setPurposeRaw(p); saveProgress({ purpose: p }); };
+  const setAgencyName = (n: string) => { setAgencyNameRaw(n); saveProgress({ agencyName: n }); };
+  const setStyle = (s: VisualStyle) => { setStyleRaw(s); saveProgress({ style: s }); };
 
   const handleSkip = async () => {
     if (!user || !agency) return;
