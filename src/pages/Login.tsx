@@ -101,7 +101,7 @@ export default function Login() {
         <div className="text-center mb-8">
           <Link to="/" className="inline-flex items-center gap-2.5 font-extrabold text-2xl tracking-tight text-foreground mb-3">
             <span className="w-9 h-9 rounded-xl gradient-primary flex items-center justify-center text-sm text-primary-foreground font-extrabold">1</span>
-            All in<span className="text-primary"> 1</span>
+            All in<span className="text-primary-readable"> 1</span>
           </Link>
           {claimedUsername ? (
             <div className="mt-2">
