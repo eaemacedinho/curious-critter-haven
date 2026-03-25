@@ -77,26 +77,34 @@ export default function AppLayout() {
   useEffect(() => {
     if (!agency) return;
     const root = document.documentElement;
+    const isDark = !root.classList.contains("light");
     const primary = hexToHsl(agency.primary_color || "");
     const accent = hexToHsl(agency.accent_color || "");
     if (primary) {
+      // For bg-primary usage, use the original color
       root.style.setProperty("--primary", primary);
       root.style.setProperty("--ring", primary);
       root.style.setProperty("--accent", primary);
       root.style.setProperty("--sidebar-primary", primary);
       root.style.setProperty("--k-500", primary);
+      // Compute proper foreground for the primary bg
+      root.style.setProperty("--primary-foreground", computeForeground(primary));
+      root.style.setProperty("--accent-foreground", computeForeground(primary));
+      root.style.setProperty("--sidebar-primary-foreground", computeForeground(primary));
     }
     if (accent) {
       root.style.setProperty("--k-400", accent);
     }
     return () => {
-      // Reset on unmount so public pages use defaults
       root.style.removeProperty("--primary");
       root.style.removeProperty("--ring");
       root.style.removeProperty("--accent");
       root.style.removeProperty("--sidebar-primary");
       root.style.removeProperty("--k-500");
       root.style.removeProperty("--k-400");
+      root.style.removeProperty("--primary-foreground");
+      root.style.removeProperty("--accent-foreground");
+      root.style.removeProperty("--sidebar-primary-foreground");
     };
   }, [agency]);
 
