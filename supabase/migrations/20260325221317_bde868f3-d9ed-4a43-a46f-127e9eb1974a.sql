@@ -1,0 +1,1 @@
+UPDATE public.subscriptions SET plan = 'free', status = 'active', payment_id = NULL, payment_provider = NULL WHERE agency_id = '0f44ad33-291c-433f-a104-ec7b6023f42a';
