@@ -49,7 +49,7 @@ export default function UpgradeGate({
         <div className="absolute inset-0 flex items-center justify-center bg-background/60 backdrop-blur-sm rounded-2xl border border-primary/10">
           <div className="flex flex-col items-center gap-2 text-center px-4">
             <div className="w-10 h-10 rounded-xl bg-primary/10 flex items-center justify-center">
-              <Crown className="w-5 h-5 text-primary" />
+              <Crown className="w-5 h-5 text-primary-readable" />
             </div>
             <p className="text-xs font-bold text-foreground">Recurso Pro</p>
             <p className="text-[0.65rem] text-muted-foreground max-w-[200px]">
