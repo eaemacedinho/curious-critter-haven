@@ -134,7 +134,7 @@ export default function CreatorViewDark({ profile, links: rawLinks, socialLinks:
                 style={{
                   background: link.bg_color || darkCard,
                   border: `1px solid ${link.border_color || neonPrimary + "20"}`,
-                  ...(link.text_color ? { color: link.text_color } : {}),
+                  color: autoTextColor(link.bg_color, link.text_color),
                   ...(link.is_featured ? { boxShadow: `0 0 20px ${neonPrimary}20, inset 0 0 20px ${neonPrimary}05` } : {}),
                 }}>
                 <div className="w-10 h-10 rounded-xl flex items-center justify-center flex-shrink-0 transition-transform hover:scale-110"
