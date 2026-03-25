@@ -411,6 +411,36 @@ export default function CreatorViewLinkme({ profile, links: rawLinks, socialLink
                             </div>
                           ))}
                         </SectionCarousel>
+                      ) : displayModes.campaigns === "marquee" && pastCamps.length > 1 ? (
+                        <SectionMarquee itemWidth="80%">
+                          {pastCamps.map((camp) => (
+                            <div key={camp.id} onClick={() => camp.url && window.open(camp.url, "_blank")}
+                              className={`relative ${shapeClass(profile.image_shape_campaigns)} overflow-hidden cursor-pointer group transition-all duration-300 hover:-translate-y-1 active:scale-[0.98] h-full`}
+                              style={{
+                                ...(camp.bg_color ? { backgroundColor: camp.bg_color } : {}),
+                                color: autoTextColor(camp.bg_color, camp.text_color),
+                                ...(camp.border_color ? { borderColor: camp.border_color, borderWidth: "1px", borderStyle: "solid" } : {}),
+                              }}>
+                              {camp.image_url ? (
+                                <>
+                                  <div className="w-full aspect-[16/9] overflow-hidden">
+                                    <img src={camp.image_url} alt="" className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105" />
+                                  </div>
+                                  <div className="absolute inset-0 bg-gradient-to-t from-background/90 via-background/30 to-transparent" />
+                                  <div className="absolute inset-x-0 bottom-0 p-4">
+                                    <h5 className="text-sm font-bold text-foreground">{camp.title}</h5>
+                                    {camp.description && <p className="text-[0.7rem] text-muted-foreground mt-1 line-clamp-2">{camp.description}</p>}
+                                  </div>
+                                </>
+                              ) : (
+                                <div className="bg-card/70 border border-border rounded-2xl p-5">
+                                  <h5 className="text-sm font-bold text-foreground">{camp.title}</h5>
+                                  {camp.description && <p className="text-[0.7rem] text-muted-foreground mt-1">{camp.description}</p>}
+                                </div>
+                              )}
+                            </div>
+                          ))}
+                        </SectionMarquee>
                       ) : (
                         <div className="flex flex-col gap-3">
                           {pastCamps.map((camp) => (
