@@ -12,8 +12,9 @@ export default function Login() {
   const [searchParams] = useSearchParams();
   const claimedUsername = searchParams.get("claim") || "";
   const templateParam = searchParams.get("template") || "";
+  const signupParam = searchParams.get("signup");
   const { user, loading: authLoading } = useAuth();
-  const [isSignUp, setIsSignUp] = useState(!!claimedUsername);
+  const [isSignUp, setIsSignUp] = useState(!!claimedUsername || signupParam === "1");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");

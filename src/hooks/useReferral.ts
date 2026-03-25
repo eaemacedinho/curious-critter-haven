@@ -60,29 +60,15 @@ export function clearStoredReferralCode() {
   } catch {}
 }
 
-/** Link referral after signup */
+/** Link referral after signup — uses edge function for service-role access */
 export async function linkReferralOnSignup(newUserId: string) {
   const refCode = getStoredReferralCode();
   if (!refCode) return;
 
   try {
-    // Find the referrer by code
-    const { data: referrer } = await supabase
-      .from("profiles")
-      .select("id")
-      .eq("referral_code", refCode)
-      .maybeSingle();
-
-    if (!referrer || referrer.id === newUserId) return;
-
-    // Create the referral record
-    await supabase.from("referrals").insert({
-      referrer_user_id: referrer.id,
-      referred_user_id: newUserId,
-      status: "converted",
-      converted_at: new Date().toISOString(),
+    await supabase.functions.invoke("link-referral", {
+      body: { ref_code: refCode, user_id: newUserId },
     });
-
     clearStoredReferralCode();
   } catch (err) {
     console.error("Error linking referral:", err);
@@ -139,7 +125,7 @@ export function useReferral(): ReferralData {
   }));
 
   const referralLink = referralCode
-    ? `${window.location.origin}?ref=${referralCode}`
+    ? `${window.location.origin}/convite?ref=${referralCode}`
     : "";
 
   return { referralCode, referralLink, totalReferrals, convertedReferrals, rewards, loading };
