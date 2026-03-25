@@ -5,8 +5,10 @@ import { useAuth } from "@/hooks/useAuth";
 import { useTenant } from "@/hooks/useTenant";
 import { usePermissions } from "@/hooks/usePermissions";
 import { useSubscription } from "@/hooks/useSubscription";
+import { useCreatorTemplates } from "@/hooks/useCreatorTemplates";
 import { toast } from "sonner";
 import { ConfirmDialog } from "@/components/ui/confirm-dialog";
+import { Users, ChevronDown } from "lucide-react";
 
 interface CreatorRow {
   id: string;
@@ -30,6 +32,15 @@ export default function Creators() {
   const [creating, setCreating] = useState(false);
   const [deleteTarget, setDeleteTarget] = useState<{ id: string; name: string } | null>(null);
   const [deleting, setDeleting] = useState(false);
+
+  // Batch creation state
+  const [showBatchDialog, setShowBatchDialog] = useState(false);
+  const [batchCount, setBatchCount] = useState(2);
+  const [batchPrefix, setBatchPrefix] = useState("Creator");
+  const [batchCreating, setBatchCreating] = useState(false);
+
+  const { isPro, isWithinLimit, limits } = useSubscription();
+  const { defaultTemplate } = useCreatorTemplates(agency?.id);
 
   useEffect(() => {
     if (!agency) return;
@@ -58,12 +69,10 @@ export default function Creators() {
     toast.success("URL copiada!");
   };
 
-  const { isWithinLimit } = useSubscription();
-
   const handleCreateCreator = async () => {
     if (!user || !agency || !canEdit) return;
     if (!isWithinLimit("creators", creators.length)) {
-      toast.error("Limite de creators atingido no plano Free. Faça upgrade para o Pro!");
+      toast.error(`Limite de ${limits.max_creators} creators atingido. ${!isPro ? "Faça upgrade para o Pro!" : ""}`);
       return;
     }
     setCreating(true);
@@ -90,6 +99,112 @@ export default function Creators() {
     setCreating(false);
     toast.success("Creator criado! Redirecionando para edição...");
     navigate(`/app/creators/${(data as any).id}/edit`);
+  };
+
+  const handleBatchCreate = async () => {
+    if (!user || !agency || !canEdit) return;
+    const remaining = limits.max_creators - creators.length;
+    const toCreate = Math.min(batchCount, remaining, 10);
+
+    if (toCreate <= 0) {
+      toast.error(`Limite de ${limits.max_creators} creators atingido.`);
+      return;
+    }
+
+    setBatchCreating(true);
+    const tplProfile = defaultTemplate?.template_data?.profile || {};
+    const newCreators: CreatorRow[] = [];
+
+    for (let i = 0; i < toCreate; i++) {
+      const num = creators.length + i + 1;
+      const suffix = Date.now().toString(36) + i;
+      const insertData: any = {
+        user_id: user.id,
+        agency_id: agency.id,
+        name: `${batchPrefix} ${num}`,
+        slug: `${batchPrefix.toLowerCase().replace(/\s+/g, "-")}-${num}-${suffix}`,
+      };
+
+      // Apply default template visual settings (not name/slug/bio which are unique)
+      if (defaultTemplate?.template_data?.profile) {
+        const tp = defaultTemplate.template_data.profile;
+        if (tp.layout_type) insertData.layout_type = tp.layout_type;
+        if (tp.font_family) insertData.font_family = tp.font_family;
+        if (tp.font_size) insertData.font_size = tp.font_size;
+        if (tp.image_shape) insertData.image_shape = tp.image_shape;
+        if (tp.image_shape_products) insertData.image_shape_products = tp.image_shape_products;
+        if (tp.image_shape_campaigns) insertData.image_shape_campaigns = tp.image_shape_campaigns;
+        if (tp.image_shape_links) insertData.image_shape_links = tp.image_shape_links;
+        if (tp.color_name) insertData.color_name = tp.color_name;
+        if (tp.color_bio) insertData.color_bio = tp.color_bio;
+        if (tp.color_section_titles) insertData.color_section_titles = tp.color_section_titles;
+        if (tp.page_effects) insertData.page_effects = tp.page_effects;
+        if (tp.section_order) insertData.section_order = tp.section_order;
+        if (tp.verified !== undefined) insertData.verified = tp.verified;
+        if (tp.brands_display_mode) insertData.brands_display_mode = tp.brands_display_mode;
+        if (tp.tags) insertData.tags = tp.tags;
+        if (tp.stats) insertData.stats = tp.stats;
+        if (tp.brands) insertData.brands = tp.brands;
+      }
+
+      const { data, error } = await supabase
+        .from("creators")
+        .insert(insertData)
+        .select("id, name, slug, avatar_url, avatar_url_layout2, bio, layout_type, verified")
+        .single();
+
+      if (!error && data) {
+        newCreators.push(data as unknown as CreatorRow);
+
+        // If default template has links/products/campaigns, create them too
+        if (defaultTemplate?.template_data) {
+          const td = defaultTemplate.template_data;
+          const cid = (data as any).id;
+
+          if (td.links?.length) {
+            await supabase.from("creator_links").insert(
+              td.links.map((l, idx) => ({
+                creator_id: cid, title: l.title, url: l.url, subtitle: l.subtitle || "",
+                icon: l.icon || "🔗", is_featured: l.is_featured || false, is_active: l.is_active ?? true,
+                sort_order: idx, bg_color: l.bg_color, text_color: l.text_color, border_color: l.border_color,
+                image_url: l.image_url, display_mode: l.display_mode || "full",
+              }))
+            );
+          }
+          if (td.socialLinks?.length) {
+            await supabase.from("creator_social_links").insert(
+              td.socialLinks.map((s, idx) => ({
+                creator_id: cid, platform: s.platform, url: s.url, label: s.label || "", sort_order: idx,
+              }))
+            );
+          }
+          if (td.products?.length) {
+            await supabase.from("creator_products").insert(
+              td.products.map((p, idx) => ({
+                creator_id: cid, title: p.title, price: p.price || "", icon: p.icon || "📦",
+                url: p.url || "", image_url: p.image_url || "", sort_order: idx, is_active: p.is_active ?? true,
+                bg_color: p.bg_color, text_color: p.text_color, border_color: p.border_color,
+              }))
+            );
+          }
+          if (td.campaigns?.length) {
+            await supabase.from("campaigns").insert(
+              td.campaigns.map((c, idx) => ({
+                creator_id: cid, agency_id: agency.id, title: c.title, description: c.description || "",
+                image_url: c.image_url || "", url: c.url || "", live: c.live || false,
+                is_active: c.is_active ?? true, sort_order: idx,
+                bg_color: c.bg_color, text_color: c.text_color, border_color: c.border_color,
+              }))
+            );
+          }
+        }
+      }
+    }
+
+    setCreators([...newCreators.reverse(), ...creators]);
+    setBatchCreating(false);
+    setShowBatchDialog(false);
+    toast.success(`${newCreators.length} creator(s) criados com sucesso!`);
   };
 
   const confirmDelete = async () => {
@@ -125,29 +240,51 @@ export default function Creators() {
     );
   }
 
+  const maxBatch = Math.min(10, limits.max_creators - creators.length);
+
   return (
     <div className="max-w-[1000px] mx-auto">
       <div className="flex items-center justify-between mb-6 flex-wrap gap-3">
         <div>
           <h1 className="font-display text-2xl font-normal text-foreground">Creators</h1>
-          <p className="text-sm text-muted-foreground mt-0.5">{creators.length} creator(s) cadastrado(s)</p>
+          <p className="text-sm text-muted-foreground mt-0.5">{creators.length} / {limits.max_creators} creator(s)</p>
         </div>
-        {canEdit && (
-          <button
-            onClick={handleCreateCreator}
-            disabled={creating}
-            className="flex items-center gap-2 px-5 py-2.5 bg-primary text-primary-foreground font-semibold text-sm rounded-xl transition-all hover:opacity-90 active:scale-[0.97] disabled:opacity-60"
-          >
-            {creating ? (
-              <>
-                <span className="w-4 h-4 border-2 border-primary-foreground border-t-transparent rounded-full animate-spin" />
-                Criando...
-              </>
-            ) : (
-              "+ Novo Creator"
-            )}
-          </button>
-        )}
+        <div className="flex items-center gap-2">
+          {/* Batch create — Pro+ only */}
+          {canEdit && isPro && (
+            <button
+              onClick={() => {
+                if (maxBatch <= 0) {
+                  toast.error(`Limite de ${limits.max_creators} creators atingido.`);
+                  return;
+                }
+                setBatchCount(Math.min(2, maxBatch));
+                setBatchPrefix("Creator");
+                setShowBatchDialog(true);
+              }}
+              className="flex items-center gap-2 px-4 py-2.5 bg-card border border-border text-foreground font-semibold text-sm rounded-xl transition-all hover:border-primary/30 hover:text-primary"
+            >
+              <Users className="w-4 h-4" />
+              Criar em lote
+            </button>
+          )}
+          {canEdit && (
+            <button
+              onClick={handleCreateCreator}
+              disabled={creating}
+              className="flex items-center gap-2 px-5 py-2.5 bg-primary text-primary-foreground font-semibold text-sm rounded-xl transition-all hover:opacity-90 active:scale-[0.97] disabled:opacity-60"
+            >
+              {creating ? (
+                <>
+                  <span className="w-4 h-4 border-2 border-primary-foreground border-t-transparent rounded-full animate-spin" />
+                  Criando...
+                </>
+              ) : (
+                "+ Novo Creator"
+              )}
+            </button>
+          )}
+        </div>
       </div>
 
       {creators.length > 0 && (
@@ -196,7 +333,6 @@ export default function Creators() {
                     className="w-full h-full object-cover"
                     onError={(e) => {
                       const target = e.currentTarget;
-                      // Try layout2 fallback if primary failed
                       if (cr.avatar_url_layout2 && target.src !== cr.avatar_url_layout2) {
                         target.src = cr.avatar_url_layout2;
                       } else {
@@ -273,6 +409,7 @@ export default function Creators() {
         </div>
       )}
 
+      {/* Delete confirmation */}
       <ConfirmDialog
         open={!!deleteTarget}
         onOpenChange={(open) => !open && setDeleteTarget(null)}
@@ -283,6 +420,59 @@ export default function Creators() {
         variant="destructive"
         onConfirm={confirmDelete}
         loading={deleting}
+      />
+
+      {/* Batch creation dialog */}
+      <ConfirmDialog
+        open={showBatchDialog}
+        onOpenChange={setShowBatchDialog}
+        title="Criar creators em lote"
+        description={
+          <div className="space-y-4 mt-2">
+            <p className="text-sm text-muted-foreground">
+              Crie vários perfis de uma vez com o mesmo padrão.
+              {defaultTemplate
+                ? " Será usado o template \"Meu Padrão\" salvo na edição."
+                : " Dica: salve um \"Meu Padrão\" na edição de um creator para que os novos já venham com suas configurações."
+              }
+            </p>
+            <div>
+              <label className="block text-xs font-semibold text-muted-foreground mb-1.5">Prefixo do nome</label>
+              <input
+                value={batchPrefix}
+                onChange={(e) => setBatchPrefix(e.target.value)}
+                placeholder="Ex: Creator, Fotógrafo, Influencer..."
+                className="w-full px-3 py-2 bg-card border border-border rounded-xl text-foreground text-sm outline-none focus:border-primary transition-all"
+              />
+            </div>
+            <div>
+              <label className="block text-xs font-semibold text-muted-foreground mb-1.5">
+                Quantidade (máx {maxBatch})
+              </label>
+              <div className="flex items-center gap-3">
+                <input
+                  type="range"
+                  min={1}
+                  max={Math.max(1, maxBatch)}
+                  value={batchCount}
+                  onChange={(e) => setBatchCount(Number(e.target.value))}
+                  className="flex-1 accent-primary"
+                />
+                <span className="text-lg font-bold text-foreground w-8 text-center">{batchCount}</span>
+              </div>
+            </div>
+            {defaultTemplate && (
+              <div className="flex items-center gap-2 px-3 py-2 bg-primary/10 border border-primary/20 rounded-xl">
+                <span className="text-amber-400">⭐</span>
+                <span className="text-xs text-primary font-semibold">Template "Meu Padrão" será aplicado automaticamente</span>
+              </div>
+            )}
+          </div>
+        }
+        confirmLabel={batchCreating ? "Criando..." : `Criar ${batchCount} creator(s)`}
+        cancelLabel="Cancelar"
+        onConfirm={handleBatchCreate}
+        loading={batchCreating}
       />
     </div>
   );

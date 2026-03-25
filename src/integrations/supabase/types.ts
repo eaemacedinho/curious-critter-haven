@@ -497,8 +497,9 @@ export type Database = {
         Row: {
           agency_id: string
           created_at: string
-          creator_id: string
+          creator_id: string | null
           id: string
+          is_default: boolean
           name: string
           template_data: Json
           updated_at: string
@@ -506,8 +507,9 @@ export type Database = {
         Insert: {
           agency_id: string
           created_at?: string
-          creator_id: string
+          creator_id?: string | null
           id?: string
+          is_default?: boolean
           name?: string
           template_data?: Json
           updated_at?: string
@@ -515,8 +517,9 @@ export type Database = {
         Update: {
           agency_id?: string
           created_at?: string
-          creator_id?: string
+          creator_id?: string | null
           id?: string
+          is_default?: boolean
           name?: string
           template_data?: Json
           updated_at?: string
