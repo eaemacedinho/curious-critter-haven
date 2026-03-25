@@ -61,7 +61,7 @@ Deno.serve(async (req) => {
     const body = await req.json();
     const { card, customer, plan: requestedPlan } = body;
 
-    // Determine plan and price
+    // Determine plan and price (in cents)
     const planKey = requestedPlan === "scale" ? "scale" : "pro";
     const planPrice = planKey === "scale" ? 8790 : 1790;
     const planLabel = planKey === "scale" ? "Scale" : "Pro";
@@ -89,7 +89,7 @@ Deno.serve(async (req) => {
       );
     }
 
-    // Create subscription on Pagar.me
+    // Create subscription on Pagar.me v5
     const pagarmeAuth = btoa(PAGARME_API_KEY + ":");
 
     const subscriptionPayload = {
@@ -109,7 +109,7 @@ Deno.serve(async (req) => {
         cvv: card.cvv,
         billing_address: {
           line_1: customer.address_line || "Rua Exemplo, 123",
-          zip_code: customer.zip_code || "01001000",
+          zip_code: (customer.zip_code || "01001000").replace(/\D/g, ""),
           city: customer.city || "São Paulo",
           state: customer.state || "SP",
           country: "BR",
@@ -129,17 +129,28 @@ Deno.serve(async (req) => {
           },
         },
       },
-      pricing_scheme: {
-        scheme_type: "unit",
-        price: planPrice,
-      },
-      quantity: 1,
-      description: `Plano ${planLabel} - in1.bio`,
+      // Items array — required by Pagar.me v5 for subscription pricing
+      items: [
+        {
+          description: `Plano ${planLabel} - in1.bio`,
+          quantity: 1,
+          pricing_scheme: {
+            scheme_type: "unit",
+            price: planPrice,
+          },
+        },
+      ],
       metadata: {
         agency_id: profile.agency_id,
         user_id: userId,
       },
     };
+
+    console.log("Creating subscription with payload:", JSON.stringify({
+      plan: planKey,
+      price: planPrice,
+      customer_email: customer.email,
+    }));
 
     const pagarmeResponse = await fetch(`${PAGARME_API_URL}/subscriptions`, {
       method: "POST",
@@ -161,6 +172,27 @@ Deno.serve(async (req) => {
           details: pagarmeData.message || pagarmeData.errors || "Unknown error",
         }),
         { status: 400, headers: { ...corsHeaders, "Content-Type": "application/json" } }
+      );
+    }
+
+    console.log("Pagar.me response:", JSON.stringify({
+      id: pagarmeData.id,
+      status: pagarmeData.status,
+    }));
+
+    // Only activate if payment was successful
+    const pagarmeStatus = pagarmeData.status;
+    const isPaymentSuccessful = pagarmeStatus === "active" || pagarmeStatus === "paid";
+
+    if (!isPaymentSuccessful) {
+      console.error("Payment not successful. Pagar.me status:", pagarmeStatus);
+      return new Response(
+        JSON.stringify({
+          error: "Pagamento recusado",
+          details: `O pagamento não foi aprovado (status: ${pagarmeStatus}). Verifique os dados do cartão e tente novamente.`,
+          pagarme_status: pagarmeStatus,
+        }),
+        { status: 402, headers: { ...corsHeaders, "Content-Type": "application/json" } }
       );
     }
 
