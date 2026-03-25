@@ -508,6 +508,12 @@ export default function CreatorEdit() {
 
                   <div className="border-t border-border my-1" />
 
+                  {/* Section label: Templates próprios */}
+                  <p className="px-3 pt-2 pb-1 text-[0.6rem] font-bold text-muted-foreground uppercase tracking-wider flex items-center gap-1.5">
+                    <Save className="w-3 h-3" /> Templates próprios
+                    <span className="ml-auto text-[0.55rem] font-normal">{templates.length}</span>
+                  </p>
+
                   {/* Saved templates */}
                   {templates.length === 0 ? (
                     <p className="px-3 py-2 text-xs text-muted-foreground">Nenhum template próprio salvo ainda</p>
@@ -536,6 +542,21 @@ export default function CreatorEdit() {
                         {activeTemplateId === tpl.id && (
                           <span className="text-[0.6rem] bg-primary/20 text-primary px-1.5 py-0.5 rounded-md font-bold flex-shrink-0">ATIVO</span>
                         )}
+                        {/* Update template with current data */}
+                        {activeTemplateId === tpl.id && isTemplateEdited && (
+                          <button
+                            onClick={async (e) => {
+                              e.stopPropagation();
+                              await updateTemplate(tpl.id, getCurrentData());
+                              setOriginalTemplateSnapshot(JSON.parse(JSON.stringify(getCurrentData())));
+                              toast.success(`Template "${tpl.name}" atualizado com as alterações atuais`);
+                            }}
+                            className="p-1 text-muted-foreground hover:text-primary transition-colors flex-shrink-0"
+                            title="Atualizar template com dados atuais"
+                          >
+                            <Save className="w-3 h-3" />
+                          </button>
+                        )}
                         <button
                           onClick={(e) => { e.stopPropagation(); setRenamingId(tpl.id); setRenameValue(tpl.name); }}
                           className="p-1 text-muted-foreground hover:text-foreground transition-colors flex-shrink-0"
@@ -556,9 +577,10 @@ export default function CreatorEdit() {
 
                   <div className="border-t border-border my-1" />
 
-                  {/* Saved gallery templates */}
+                  {/* Section label: Favoritos da galeria */}
                   <p className="px-3 pt-2 pb-1 text-[0.6rem] font-bold text-muted-foreground uppercase tracking-wider flex items-center gap-1.5">
-                    <Palette className="w-3 h-3" /> Da galeria
+                    <Palette className="w-3 h-3" /> Favoritos da galeria
+                    <span className="ml-auto text-[0.55rem] font-normal">{savedGalleryTemplates.length}</span>
                   </p>
                   {savedGalleryTemplates.length > 0 ? (
                     <>
