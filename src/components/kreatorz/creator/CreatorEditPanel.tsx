@@ -491,7 +491,7 @@ const CreatorEditPanel = forwardRef<CreatorEditPanelHandle, Props>(function Crea
       <div className={showPreview ? "md:mr-[440px]" : ""}>
         {/* Editor column */}
         <div>
-    <div data-editor-root className={`${showPreview ? "" : "max-w-[560px]"} mx-auto px-6 py-8 pt-4 animate-k-fade-up`}>
+    <div data-editor-root className={`${showPreview ? "" : "max-w-[560px]"} mx-auto px-2 sm:px-6 py-4 sm:py-8 pt-2 sm:pt-4 animate-k-fade-up`}>
       <input ref={avatarRef} type="file" accept="image/*" className="hidden" onChange={(e) => e.target.files?.[0] && handleFileSelected(e.target.files[0], "avatar")} />
       <input ref={coverRef} type="file" accept="image/*" className="hidden" onChange={(e) => e.target.files?.[0] && handleFileSelected(e.target.files[0], "cover")} />
 

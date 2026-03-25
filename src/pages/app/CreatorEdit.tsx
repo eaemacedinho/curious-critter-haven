@@ -234,40 +234,42 @@ export default function CreatorEdit() {
   return (
     <div className="max-w-[1400px] mx-auto">
       {/* Header */}
-      <div className="flex items-center justify-between gap-3 flex-wrap mb-6">
-        <div>
-          <div className="flex items-center gap-2 mb-1">
-            <Link to="/app/creators" className="text-sm text-muted-foreground hover:text-foreground transition-colors">
-              ← Creators
-            </Link>
-          </div>
-          <h1 className="font-display text-2xl text-foreground">
-            {profile.name || "Editar Creator"}
-          </h1>
-          <p className="text-sm text-muted-foreground mt-0.5">
-            As alterações aparecerão na página pública após salvar.
-          </p>
+      <div className="mb-4 sm:mb-6">
+        <div className="flex items-center gap-2 mb-1">
+          <Link to="/app/creators" className="text-xs sm:text-sm text-muted-foreground hover:text-foreground transition-colors">
+            ← Creators
+          </Link>
         </div>
-        <div className="flex items-center gap-2.5 flex-wrap">
+        <h1 className="font-display text-lg sm:text-2xl text-foreground">
+          {profile.name || "Editar Creator"}
+        </h1>
+        <p className="text-xs sm:text-sm text-muted-foreground mt-0.5">
+          As alterações aparecerão na página pública após salvar.
+        </p>
+      </div>
+
+      {/* Toolbar — scrollable on mobile */}
+      <div className="flex items-center gap-2 mb-4 sm:mb-6 overflow-x-auto pb-2 -mx-1 px-1 scrollbar-none">
           {/* Template selector */}
-          <div className="relative">
+          <div className="relative flex-shrink-0">
             <button
               onClick={() => setShowTemplateDropdown(!showTemplateDropdown)}
-              className={`px-3 py-2 text-xs font-semibold rounded-xl border transition-all flex items-center gap-1.5 ${
+              className={`px-2.5 sm:px-3 py-2 text-[0.68rem] sm:text-xs font-semibold rounded-xl border transition-all flex items-center gap-1.5 whitespace-nowrap ${
                 activeTemplateId || usingDefault
                   ? "bg-primary/15 border-primary/40 text-primary"
                   : "bg-card border-border text-muted-foreground hover:text-foreground hover:border-primary/30"
               }`}
             >
               <Save className="w-3.5 h-3.5" />
-              {currentLabel}
+              <span className="hidden sm:inline">{currentLabel}</span>
+              <span className="sm:hidden">{usingDefault ? "⭐" : activeTemplate ? "📋" : "✏️"}</span>
               <ChevronDown className="w-3 h-3" />
             </button>
 
             {showTemplateDropdown && (
               <>
                 <div className="fixed inset-0 z-40" onClick={() => setShowTemplateDropdown(false)} />
-                <div className="absolute right-0 top-full mt-1 z-50 bg-card border border-border rounded-xl shadow-lg w-[300px] py-1 overflow-hidden max-h-[400px] overflow-y-auto">
+                <div className="absolute left-0 sm:right-0 sm:left-auto top-full mt-1 z-50 bg-card border border-border rounded-xl shadow-lg w-[280px] sm:w-[300px] py-1 overflow-hidden max-h-[60vh] overflow-y-auto">
                   {/* Custom / Personalizado */}
                   <button
                     onClick={() => { handleSwitchTemplate(null); setShowTemplateDropdown(false); }}
@@ -389,12 +391,12 @@ export default function CreatorEdit() {
           </div>
 
           {/* Layout toggle */}
-          <div className="flex bg-card border border-border rounded-xl overflow-hidden">
+          <div className="flex bg-card border border-border rounded-xl overflow-hidden flex-shrink-0">
             {layoutOptions.map((opt) => (
               <button
                 key={opt.id}
                 onClick={() => void handleSetPublicLayout(opt.id)}
-                className={`px-3 py-2 text-xs font-semibold transition-all ${
+                className={`px-2.5 sm:px-3 py-2 text-[0.68rem] sm:text-xs font-semibold transition-all whitespace-nowrap ${
                   profile.layout_type === opt.id
                     ? "bg-primary text-primary-foreground"
                     : "text-muted-foreground hover:text-foreground"
@@ -407,7 +409,7 @@ export default function CreatorEdit() {
           {/* Template picker */}
           <button
             onClick={() => navigate("/app/templates")}
-            className="px-3 py-2 text-xs font-semibold bg-card border border-border rounded-xl text-muted-foreground hover:text-foreground hover:border-primary/30 transition-all flex items-center gap-1.5"
+            className="px-2.5 sm:px-3 py-2 text-[0.68rem] sm:text-xs font-semibold bg-card border border-border rounded-xl text-muted-foreground hover:text-foreground hover:border-primary/30 transition-all flex items-center gap-1.5 flex-shrink-0 whitespace-nowrap"
           >
             <Sparkles className="w-3.5 h-3.5 text-primary" />
             Templates
@@ -418,20 +420,19 @@ export default function CreatorEdit() {
               const handle = profile.slug?.replace(/^@+/, "");
               if (handle) window.open(`/c/${handle}`, "_blank");
             }}
-            className="px-4 py-2 bg-card border border-border text-muted-foreground font-medium text-sm rounded-xl transition-all hover:border-primary/30 hover:text-foreground"
+            className="px-3 sm:px-4 py-2 bg-card border border-border text-muted-foreground font-medium text-[0.68rem] sm:text-sm rounded-xl transition-all hover:border-primary/30 hover:text-foreground flex-shrink-0 whitespace-nowrap"
           >
-            👁 Ver página
+            👁 <span className="hidden sm:inline">Ver página</span><span className="sm:hidden">Ver</span>
           </button>
           {/* Save */}
           <button
             onClick={() => void handleSave()}
             disabled={saving}
-            className="px-5 py-2 bg-primary text-primary-foreground font-semibold text-sm rounded-xl transition-all hover:opacity-90 active:scale-[0.97] disabled:opacity-60"
+            className="px-4 sm:px-5 py-2 bg-primary text-primary-foreground font-semibold text-[0.68rem] sm:text-sm rounded-xl transition-all hover:opacity-90 active:scale-[0.97] disabled:opacity-60 flex-shrink-0 whitespace-nowrap ml-auto"
           >
-            {saving ? "Salvando..." : "Salvar alterações"}
+            {saving ? "Salvando..." : <><span className="hidden sm:inline">Salvar alterações</span><span className="sm:hidden">Salvar</span></>}
           </button>
         </div>
-      </div>
 
       {/* Editor */}
       <CreatorEditPanel
