@@ -32,6 +32,25 @@ const SHARE_CHANNELS = [
 export default function Referrals() {
   const { referralCode, referralLink, convertedReferrals, rewards, loading } = useReferral();
   const [copied, setCopied] = useState(false);
+  const [showConfetti, setShowConfetti] = useState(false);
+  const prevUnlockedRef = useRef<number | null>(null);
+
+  // Detect newly unlocked rewards
+  const unlockedCount = rewards.filter(r => r.unlocked).length;
+  useEffect(() => {
+    if (prevUnlockedRef.current === null) {
+      prevUnlockedRef.current = unlockedCount;
+      return;
+    }
+    if (unlockedCount > prevUnlockedRef.current) {
+      setShowConfetti(true);
+      const newReward = rewards.filter(r => r.unlocked).pop();
+      if (newReward) {
+        toast.success(`🎉 Recompensa desbloqueada: ${newReward.label}!`);
+      }
+    }
+    prevUnlockedRef.current = unlockedCount;
+  }, [unlockedCount, rewards]);
 
   const handleCopy = () => {
     navigator.clipboard.writeText(referralLink);
