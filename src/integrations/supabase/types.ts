@@ -493,6 +493,51 @@ export type Database = {
           },
         ]
       }
+      creator_templates: {
+        Row: {
+          agency_id: string
+          created_at: string
+          creator_id: string
+          id: string
+          name: string
+          template_data: Json
+          updated_at: string
+        }
+        Insert: {
+          agency_id: string
+          created_at?: string
+          creator_id: string
+          id?: string
+          name?: string
+          template_data?: Json
+          updated_at?: string
+        }
+        Update: {
+          agency_id?: string
+          created_at?: string
+          creator_id?: string
+          id?: string
+          name?: string
+          template_data?: Json
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "creator_templates_agency_id_fkey"
+            columns: ["agency_id"]
+            isOneToOne: false
+            referencedRelation: "agencies"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "creator_templates_creator_id_fkey"
+            columns: ["creator_id"]
+            isOneToOne: false
+            referencedRelation: "creators"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       creator_testimonials: {
         Row: {
           author_avatar_url: string | null
