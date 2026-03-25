@@ -81,30 +81,24 @@ export default function AppLayout() {
     const primary = hexToHsl(agency.primary_color || "");
     const accent = hexToHsl(agency.accent_color || "");
     if (primary) {
-      // For bg-primary usage, use the original color
       root.style.setProperty("--primary", primary);
       root.style.setProperty("--ring", primary);
       root.style.setProperty("--accent", primary);
       root.style.setProperty("--sidebar-primary", primary);
       root.style.setProperty("--k-500", primary);
-      // Compute proper foreground for the primary bg
       root.style.setProperty("--primary-foreground", computeForeground(primary));
       root.style.setProperty("--accent-foreground", computeForeground(primary));
       root.style.setProperty("--sidebar-primary-foreground", computeForeground(primary));
+      // Readable version: always light enough for text on dark bg
+      root.style.setProperty("--primary-readable", ensureReadableHsl(primary));
     }
     if (accent) {
       root.style.setProperty("--k-400", accent);
     }
     return () => {
-      root.style.removeProperty("--primary");
-      root.style.removeProperty("--ring");
-      root.style.removeProperty("--accent");
-      root.style.removeProperty("--sidebar-primary");
-      root.style.removeProperty("--k-500");
-      root.style.removeProperty("--k-400");
-      root.style.removeProperty("--primary-foreground");
-      root.style.removeProperty("--accent-foreground");
-      root.style.removeProperty("--sidebar-primary-foreground");
+      ["--primary", "--ring", "--accent", "--sidebar-primary", "--k-500", "--k-400",
+       "--primary-foreground", "--accent-foreground", "--sidebar-primary-foreground",
+       "--primary-readable"].forEach(v => root.style.removeProperty(v));
     };
   }, [agency]);
 
