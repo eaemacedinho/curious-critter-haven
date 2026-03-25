@@ -60,7 +60,13 @@ Deno.serve(async (req) => {
     }
 
     const body = await req.json();
-    const { card, customer } = body;
+    const { card, customer, plan: requestedPlan } = body;
+
+    // Determine plan and price
+    const planKey = requestedPlan === "scale" ? "scale" : "pro";
+    const planPrice = planKey === "scale" ? 8790 : 1790;
+    const planLabel = planKey === "scale" ? "Scale" : "Pro";
+    const planDescriptor = planKey === "scale" ? "IN1BIO SCALE" : "IN1BIO PRO";
 
     if (!card || !customer) {
       return new Response(
@@ -94,8 +100,8 @@ Deno.serve(async (req) => {
       interval_count: 1,
       billing_type: "prepaid",
       installments: 1,
-      minimum_price: 1790,
-      statement_descriptor: "IN1BIO PRO",
+      minimum_price: planPrice,
+      statement_descriptor: planDescriptor,
       card: {
         number: card.number.replace(/\s/g, ""),
         holder_name: card.holder_name,
@@ -126,10 +132,10 @@ Deno.serve(async (req) => {
       },
       pricing_scheme: {
         scheme_type: "unit",
-        price: 1790, // R$17,90 in cents
+        price: planPrice,
       },
       quantity: 1,
-      description: "Plano Pro - in1.bio",
+      description: `Plano ${planLabel} - in1.bio`,
       metadata: {
         agency_id: profile.agency_id,
         user_id: userId,
@@ -168,7 +174,7 @@ Deno.serve(async (req) => {
     await supabaseAdmin
       .from("subscriptions")
       .update({
-        plan: "pro",
+        plan: planKey,
         status: "active",
         payment_id: pagarmeData.id,
         payment_provider: "pagarme",

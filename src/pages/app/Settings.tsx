@@ -34,8 +34,9 @@ export default function Settings() {
   const [confirmDelete, setConfirmDelete] = useState(false);
   const navigate = useNavigate();
 
-  const handleCancelSubscription = async () => {
-    if (!confirm("Tem certeza que deseja cancelar sua assinatura Pro? Você perderá acesso aos recursos premium.")) return;
+  const [showCancelModal, setShowCancelModal] = useState(false);
+
+  const executeCancelSubscription = async () => {
     setCanceling(true);
     try {
       const { data: { session } } = await supabase.auth.getSession();
@@ -51,12 +52,30 @@ export default function Settings() {
       const data = await res.json();
       if (!res.ok) throw new Error(data.error || "Erro ao cancelar");
       toast.success("Assinatura cancelada com sucesso.");
+      setShowCancelModal(false);
       refetchSub();
     } catch (err: any) {
       toast.error(err.message || "Erro ao cancelar assinatura");
     } finally {
       setCanceling(false);
     }
+  };
+
+  const getNextRenewalDate = () => {
+    if (!subscription?.started_at) return null;
+    const started = new Date(subscription.started_at);
+    const now = new Date();
+    const next = new Date(started);
+    while (next <= now) {
+      next.setMonth(next.getMonth() + 1);
+    }
+    return next.toLocaleDateString("pt-BR", { day: "2-digit", month: "long", year: "numeric" });
+  };
+
+  const getPlanPrice = (plan: string) => {
+    if (plan === "pro") return "R$17,90";
+    if (plan === "scale") return "R$87,90";
+    return "R$0";
   };
 
   const handleExtractColors = async () => {
@@ -333,53 +352,144 @@ export default function Settings() {
                 <p className="text-sm text-muted-foreground mb-6">Gerencie seu plano e pagamento.</p>
               </div>
 
+              {/* Current plan card */}
               <div className="bg-card border border-border rounded-2xl p-5">
                 <div className="flex items-center justify-between">
                   <div>
                     <div className="text-[0.66rem] text-muted-foreground uppercase tracking-wider font-bold mb-1">Plano atual</div>
                     <div className="text-lg font-bold text-foreground capitalize">{currentPlan}</div>
-                    {isPro && (
-                      <div className="text-xs text-muted-foreground mt-1">R$17,90/mês</div>
+                    {currentPlan !== "free" && (
+                      <div className="text-xs text-muted-foreground mt-1">{getPlanPrice(currentPlan)}/mês</div>
                     )}
                   </div>
                   <span className={`px-3 py-1.5 rounded-full text-xs font-semibold flex items-center gap-1.5 ${
-                    isPro
+                    currentPlan !== "free"
                       ? "bg-primary/10 text-primary"
                       : "bg-muted text-muted-foreground"
                   }`}>
                     <span className="w-1.5 h-1.5 rounded-full bg-current" />
-                    {isPro ? "Ativo" : "Free"}
+                    {currentPlan !== "free" ? "Ativo" : "Free"}
                   </span>
                 </div>
+                {currentPlan !== "free" && getNextRenewalDate() && (
+                  <p className="text-[0.6rem] text-muted-foreground/60 mt-3">
+                    Próxima renovação: {getNextRenewalDate()}
+                  </p>
+                )}
               </div>
 
-              {isPro && subscription?.status === "active" && (
+              {/* Upgrade options */}
+              {currentPlan === "free" && (
+                <div className="bg-card border border-border rounded-2xl p-5 space-y-3">
+                  <div className="text-sm font-bold text-foreground mb-2">Fazer upgrade</div>
+                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                    <button
+                      onClick={() => navigate("/app/checkout?plan=pro")}
+                      className="flex flex-col items-center gap-1 p-4 bg-primary/5 border border-primary/20 rounded-xl hover:bg-primary/10 transition-all"
+                    >
+                      <span className="text-sm font-bold text-foreground">Pro</span>
+                      <span className="text-lg font-extrabold text-primary">R$17,90<span className="text-xs font-normal text-muted-foreground">/mês</span></span>
+                      <span className="text-[0.65rem] text-muted-foreground">Até 2 perfis · Analytics · Reels</span>
+                    </button>
+                    <button
+                      onClick={() => navigate("/app/checkout?plan=scale")}
+                      className="flex flex-col items-center gap-1 p-4 bg-primary/5 border border-primary/20 rounded-xl hover:bg-primary/10 transition-all"
+                    >
+                      <span className="text-sm font-bold text-foreground">Scale</span>
+                      <span className="text-lg font-extrabold text-primary">R$87,90<span className="text-xs font-normal text-muted-foreground">/mês</span></span>
+                      <span className="text-[0.65rem] text-muted-foreground">Até 10 perfis · Equipe · Lote</span>
+                    </button>
+                  </div>
+                  <p className="text-[0.6rem] text-muted-foreground/60 text-center">
+                    Precisa de mais? <a href="mailto:contato@in1.bio?subject=Plano%20Enterprise" className="underline hover:text-foreground">Fale conosco sobre o Enterprise</a>.
+                  </p>
+                </div>
+              )}
+
+              {currentPlan === "pro" && (
+                <div className="bg-card border border-border rounded-2xl p-5 space-y-3">
+                  <div className="text-sm font-bold text-foreground">Precisa de mais?</div>
+                  <button
+                    onClick={() => navigate("/app/checkout?plan=scale")}
+                    className="w-full flex items-center justify-between p-4 bg-primary/5 border border-primary/20 rounded-xl hover:bg-primary/10 transition-all"
+                  >
+                    <div className="text-left">
+                      <span className="text-sm font-bold text-foreground">Upgrade para Scale</span>
+                      <p className="text-[0.65rem] text-muted-foreground">10 perfis · membros de equipe · criação em lote</p>
+                    </div>
+                    <span className="text-sm font-bold text-primary">R$87,90/mês</span>
+                  </button>
+                  <p className="text-[0.6rem] text-muted-foreground/60 text-center">
+                    Ou conheça o <a href="mailto:contato@in1.bio?subject=Plano%20Enterprise" className="underline hover:text-foreground">Enterprise</a> com white-label completo.
+                  </p>
+                </div>
+              )}
+
+              {/* Cancel with retention */}
+              {currentPlan !== "free" && subscription?.status === "active" && (
                 <div className="bg-card border border-border rounded-2xl p-5">
                   <div className="flex items-center justify-between">
                     <div>
                       <div className="text-sm font-medium text-foreground">Cancelar assinatura</div>
-                      <div className="text-[0.66rem] text-muted-foreground">Seu plano será revertido para Free imediatamente</div>
+                      <div className="text-[0.66rem] text-muted-foreground">Seu plano será revertido para Free</div>
                     </div>
                     <button
-                      onClick={handleCancelSubscription}
-                      disabled={canceling}
-                      className="px-4 py-2 bg-destructive/10 text-destructive text-xs font-semibold rounded-xl hover:bg-destructive/20 transition-colors disabled:opacity-60"
+                      onClick={() => setShowCancelModal(true)}
+                      className="px-4 py-2 bg-destructive/10 text-destructive text-xs font-semibold rounded-xl hover:bg-destructive/20 transition-colors"
                     >
-                      {canceling ? "Cancelando..." : "Cancelar plano"}
+                      Cancelar plano
                     </button>
                   </div>
                 </div>
               )}
 
-              {!isPro && (
-                <div className="bg-card border border-border rounded-2xl p-5 text-center">
-                  <p className="text-sm text-muted-foreground mb-3">Faça upgrade para o Pro e desbloqueie todos os recursos.</p>
-                  <a
-                    href="/app/checkout"
-                    className="inline-block px-5 py-2.5 bg-primary text-primary-foreground font-semibold text-sm rounded-xl hover:opacity-90 transition-all"
-                  >
-                    Fazer upgrade — R$17,90/mês
-                  </a>
+              {/* Cancel retention modal */}
+              {showCancelModal && (
+                <div className="fixed inset-0 z-[9999] flex items-center justify-center p-4">
+                  <div className="absolute inset-0 bg-background/80 backdrop-blur-md" onClick={() => setShowCancelModal(false)} />
+                  <div className="relative w-full max-w-md bg-card border border-border rounded-3xl p-6 shadow-2xl space-y-5">
+                    <div className="text-center">
+                      <div className="text-3xl mb-2">😢</div>
+                      <h3 className="text-lg font-extrabold text-foreground">Que pena que quer sair!</h3>
+                      <p className="text-sm text-muted-foreground mt-1">
+                        Antes de cancelar, que tal <span className="text-primary font-bold">30% de desconto</span> no próximo mês?
+                      </p>
+                    </div>
+
+                    <div className="bg-primary/5 border border-primary/20 rounded-2xl p-4 text-center">
+                      <div className="text-xs text-muted-foreground mb-1">Sua próxima fatura com desconto:</div>
+                      <div className="text-2xl font-extrabold text-primary">
+                        {currentPlan === "pro" ? "R$12,53" : "R$61,53"}
+                        <span className="text-xs font-normal text-muted-foreground line-through ml-2">
+                          {getPlanPrice(currentPlan)}
+                        </span>
+                      </div>
+                      <div className="text-[0.6rem] text-muted-foreground mt-1">Válido para o próximo mês de cobrança</div>
+                    </div>
+
+                    <div className="flex flex-col gap-2">
+                      <button
+                        onClick={() => {
+                          setShowCancelModal(false);
+                          toast.success("Ótimo! Seu desconto de 30% será aplicado na próxima fatura. 🎉");
+                        }}
+                        className="w-full py-3 bg-primary text-primary-foreground font-bold text-sm rounded-xl hover:opacity-90 transition-all"
+                      >
+                        Aceitar desconto e continuar 🎉
+                      </button>
+                      <button
+                        onClick={executeCancelSubscription}
+                        disabled={canceling}
+                        className="w-full py-3 bg-muted text-muted-foreground font-medium text-sm rounded-xl hover:bg-muted/80 transition-all disabled:opacity-60"
+                      >
+                        {canceling ? "Cancelando..." : "Cancelar mesmo assim"}
+                      </button>
+                    </div>
+
+                    <p className="text-[0.6rem] text-muted-foreground/50 text-center">
+                      Ao cancelar, seu plano será revertido para Free imediatamente e você perderá acesso aos recursos premium.
+                    </p>
+                  </div>
                 </div>
               )}
             </div>
