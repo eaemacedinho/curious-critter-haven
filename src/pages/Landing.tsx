@@ -500,7 +500,7 @@ export default function Landing() {
                 { ok: false, text: "Selo verificado" },
               ].map((item, i) => (
                 <li key={i} className="flex items-center gap-2 py-1.5 border-b border-border/30 last:border-b-0 text-sm text-muted-foreground">
-                  {item.ok ? <Check className="w-3.5 h-3.5 text-primary flex-shrink-0" /> : <span className="text-muted-foreground/30 flex-shrink-0">—</span>}
+                  {item.ok ? <Check className="w-3.5 h-3.5 text-primary-readable flex-shrink-0" /> : <span className="text-muted-foreground/30 flex-shrink-0">—</span>}
                   <span className={item.ok ? "" : "text-muted-foreground/40"}>{item.text}</span>
                 </li>
               ))}
