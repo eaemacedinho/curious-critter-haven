@@ -218,11 +218,6 @@ export default function CreatorEdit() {
     if (!saved) return;
     await refetch();
     toast.success("Alterações salvas com sucesso!");
-
-    // Only suggest saving as template if no templates exist yet
-    if (templates.length === 0 && !defaultTemplate) {
-      setShowSaveConfirm(true);
-    }
   };
 
   const handleSaveAsTemplate = async () => {
