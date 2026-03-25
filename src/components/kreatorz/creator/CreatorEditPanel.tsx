@@ -1210,7 +1210,15 @@ const CreatorEditPanel = forwardRef<CreatorEditPanelHandle, Props>(function Crea
       </div>
 
       <div className="mb-8" data-editor-section="links">
-        <div className={sectionTitle}>🔗 Links <span className="text-k-3 normal-case tracking-normal font-normal">({links.length})</span></div>
+        <div className="flex items-center justify-between mb-2">
+          <div className={sectionTitle + " mb-0"}>🔗 Links <span className="text-k-3 normal-case tracking-normal font-normal">({links.length})</span></div>
+          {links.length > 1 && (
+            <div className="flex bg-card border border-border rounded-lg overflow-hidden">
+              <button onClick={() => setDisplayModes(d => ({ ...d, links: "list" }))} className={`px-2 py-1 text-[0.6rem] font-semibold transition-all ${displayModes.links === "list" ? "bg-primary text-primary-foreground" : "text-muted-foreground hover:text-foreground"}`}>Lista</button>
+              <button onClick={() => setDisplayModes(d => ({ ...d, links: "carousel" }))} className={`px-2 py-1 text-[0.6rem] font-semibold transition-all ${displayModes.links === "carousel" ? "bg-primary text-primary-foreground" : "text-muted-foreground hover:text-foreground"}`}>Carrossel</button>
+            </div>
+          )}
+        </div>
         {links.map((link, i) => (
           <div
             key={link.id}
