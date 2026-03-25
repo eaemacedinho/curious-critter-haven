@@ -190,6 +190,7 @@ const CreatorEditPanel = forwardRef<CreatorEditPanelHandle, Props>(function Crea
     products: profile.page_effects?.display_modes?.products || "list",
     campaigns: profile.page_effects?.display_modes?.campaigns || "list",
   });
+  const [badgePosition, setBadgePosition] = useState<"name" | "photo">((profile.page_effects as any)?.badge_position || "name");
   const [dragSectionIdx, setDragSectionIdx] = useState<number | null>(null);
   const [saving, setSaving] = useState(false);
   const [uploadingImage, setUploadingImage] = useState<"avatar" | "cover" | null>(null);
