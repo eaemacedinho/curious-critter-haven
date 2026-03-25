@@ -93,7 +93,7 @@ function UpgradeModal({ featureLabel, onClose }: { featureLabel: string; onClose
 
         <div className="flex flex-col items-center text-center">
           <div className="w-16 h-16 rounded-2xl bg-primary/10 flex items-center justify-center mb-5">
-            <Sparkles className="w-8 h-8 text-primary" />
+            <Sparkles className="w-8 h-8 text-primary-readable" />
           </div>
 
           <h3 className="font-display text-lg sm:text-xl font-extrabold text-foreground mb-2">
