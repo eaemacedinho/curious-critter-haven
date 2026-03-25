@@ -8,6 +8,7 @@ export interface SavedTemplate {
   id: string;
   name: string;
   template_data: TemplateData;
+  is_default: boolean;
   created_at: string;
   updated_at: string;
 }
@@ -24,18 +25,40 @@ export interface TemplateData {
 
 export function useCreatorTemplates(agencyId?: string, creatorId?: string) {
   const [templates, setTemplates] = useState<SavedTemplate[]>([]);
+  const [defaultTemplate, setDefaultTemplate] = useState<SavedTemplate | null>(null);
   const [loading, setLoading] = useState(false);
 
   const fetchTemplates = useCallback(async () => {
-    if (!agencyId || !creatorId) return;
+    if (!agencyId) return;
     setLoading(true);
-    const { data } = await supabase
-      .from("creator_templates" as any)
-      .select("*")
-      .eq("agency_id", agencyId)
-      .eq("creator_id", creatorId)
-      .order("created_at", { ascending: true });
-    setTemplates((data as any as SavedTemplate[]) || []);
+
+    // Fetch agency default template + creator-specific templates
+    const queries = [
+      supabase
+        .from("creator_templates" as any)
+        .select("*")
+        .eq("agency_id", agencyId)
+        .eq("is_default", true)
+        .maybeSingle(),
+    ];
+
+    if (creatorId) {
+      queries.push(
+        supabase
+          .from("creator_templates" as any)
+          .select("*")
+          .eq("agency_id", agencyId)
+          .eq("creator_id", creatorId)
+          .eq("is_default", false)
+          .order("created_at", { ascending: true }) as any
+      );
+    }
+
+    const results = await Promise.all(queries);
+    setDefaultTemplate((results[0].data as any as SavedTemplate) || null);
+    if (creatorId && results[1]) {
+      setTemplates(((results[1] as any).data as any as SavedTemplate[]) || []);
+    }
     setLoading(false);
   }, [agencyId, creatorId]);
 
@@ -47,12 +70,34 @@ export function useCreatorTemplates(agencyId?: string, creatorId?: string) {
     if (!agencyId || !creatorId) return null;
     const { data: row, error } = await supabase
       .from("creator_templates" as any)
-      .insert({ agency_id: agencyId, creator_id: creatorId, name, template_data: data as any })
+      .insert({ agency_id: agencyId, creator_id: creatorId, name, template_data: data as any, is_default: false })
       .select()
       .single();
     if (error) return null;
     await fetchTemplates();
     return row as any;
+  };
+
+  const saveDefaultTemplate = async (data: TemplateData): Promise<boolean> => {
+    if (!agencyId) return false;
+    if (defaultTemplate) {
+      // Update existing
+      const { error } = await supabase
+        .from("creator_templates" as any)
+        .update({ template_data: data as any, updated_at: new Date().toISOString() })
+        .eq("id", defaultTemplate.id);
+      if (error) return false;
+    } else {
+      // Create new
+      const { error } = await supabase
+        .from("creator_templates" as any)
+        .insert({ agency_id: agencyId, creator_id: null, name: "Meu Padrão", template_data: data as any, is_default: true })
+        .select()
+        .single();
+      if (error) return false;
+    }
+    await fetchTemplates();
+    return true;
   };
 
   const updateTemplate = async (templateId: string, data: TemplateData): Promise<boolean> => {
@@ -85,5 +130,15 @@ export function useCreatorTemplates(agencyId?: string, creatorId?: string) {
     return true;
   };
 
-  return { templates, loading, fetchTemplates, saveTemplate, updateTemplate, deleteTemplate, renameTemplate };
+  return {
+    templates,
+    defaultTemplate,
+    loading,
+    fetchTemplates,
+    saveTemplate,
+    saveDefaultTemplate,
+    updateTemplate,
+    deleteTemplate,
+    renameTemplate,
+  };
 }
