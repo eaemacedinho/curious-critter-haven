@@ -43,9 +43,11 @@ Deno.serve(async (req) => {
       .limit(1)
       .maybeSingle();
 
+    const name = profile.full_name || creator?.slug || null;
+
     return new Response(
       JSON.stringify({
-        name: profile.full_name || null,
+        name,
         avatar_url: creator?.avatar_url || profile.avatar_url || null,
         slug: creator?.slug || null,
       }),
