@@ -472,6 +472,13 @@ const CreatorEditPanel = forwardRef<CreatorEditPanelHandle, Props>(function Crea
 
       await onSaveProfile(baseProfile);
 
+      // If handle changed, update slug_changed_at
+      if (handle.trim().replace(/^@/, "").toLowerCase() !== originalHandle.current.replace(/^@/, "").toLowerCase()) {
+        await supabase.from("creators").update({ slug_changed_at: new Date().toISOString() } as any).eq("id", profile.id);
+        originalHandle.current = handle;
+        setSlugChangedAt(new Date().toISOString());
+      }
+
         await onSaveLinks(sanitizedLinks);
       await onSaveSocialLinks(social);
         await onSaveProducts(sanitizedProducts);
