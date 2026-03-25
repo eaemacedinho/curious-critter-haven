@@ -171,6 +171,9 @@ export default function CreatorEdit() {
       })) as any);
 
       await refetch();
+      // Store snapshot for gallery templates too (no activeTemplateId but track as gallery)
+      const snapshotData = getCurrentData();
+      setOriginalTemplateSnapshot(JSON.parse(JSON.stringify(snapshotData)));
       setActiveTemplateId(null);
       setUsingDefault(false);
       toast.success(`Template "${template.name}" aplicado!`);
