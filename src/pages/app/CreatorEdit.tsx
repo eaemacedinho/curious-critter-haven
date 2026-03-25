@@ -274,7 +274,7 @@ export default function CreatorEdit() {
                   <button
                     onClick={() => { handleSwitchTemplate(null); setShowTemplateDropdown(false); }}
                     className={`w-full text-left px-3 py-2.5 text-sm transition-colors flex items-center gap-2 ${
-                      !activeTemplateId && !usingDefault ? "bg-primary/10 text-primary font-semibold" : "text-foreground hover:bg-muted"
+                      !activeTemplateId && !usingDefault ? "bg-secondary text-foreground font-semibold" : "text-foreground hover:bg-muted"
                     }`}
                   >
                     <RotateCcw className="w-3.5 h-3.5 flex-shrink-0" />
