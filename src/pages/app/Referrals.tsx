@@ -97,7 +97,7 @@ export default function Referrals() {
           className="bg-card border border-border rounded-2xl p-5 mb-6"
         >
           <h2 className="text-sm font-bold text-foreground mb-3 flex items-center gap-2">
-            <Share2 className="w-4 h-4 text-primary" />
+            <Share2 className="w-4 h-4 text-primary-readable" />
             Seu link de convite
           </h2>
           <div className="flex items-center gap-2">
