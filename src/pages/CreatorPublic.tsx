@@ -6,7 +6,7 @@ import type { CreatorProfile, CreatorLink, SocialLink, CreatorProduct, CreatorCa
 import type { Testimonial } from "@/components/kreatorz/creator/TestimonialsSection";
 import CreatorView from "@/components/kreatorz/creator/CreatorView";
 import CreatorViewLinkme from "@/components/kreatorz/creator/CreatorViewLinkme";
-import ThemeToggle, { usePageTheme } from "@/components/kreatorz/creator/ThemeToggle";
+import ThemeToggle from "@/components/kreatorz/creator/ThemeToggle";
 import GrowthWatermark from "@/components/kreatorz/creator/GrowthWatermark";
 import PremiumShareModal from "@/components/kreatorz/creator/PremiumShareModal";
 
