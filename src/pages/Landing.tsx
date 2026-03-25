@@ -6,6 +6,7 @@ import in1Logo from "@/assets/in1-logo.png";
 import in1Icon from "@/assets/in1-icon.png";
 import heroCreator from "@/assets/landing-hero-creator.jpg";
 import teamImg from "@/assets/landing-team.jpg";
+import ClaimSignupModal from "@/components/landing/ClaimSignupModal";
 
 const fadeUp = {
   hidden: { opacity: 0, y: 32 },
