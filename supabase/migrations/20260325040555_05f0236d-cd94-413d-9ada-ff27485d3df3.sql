@@ -1,0 +1,1 @@
+CREATE UNIQUE INDEX IF NOT EXISTS creators_slug_unique ON public.creators (slug);
