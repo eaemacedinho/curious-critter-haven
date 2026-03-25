@@ -185,6 +185,11 @@ const CreatorEditPanel = forwardRef<CreatorEditPanelHandle, Props>(function Crea
   const [sectionOrder, setSectionOrder] = useState<string[]>(profile.section_order || ["spotlight", "links", "products", "past_campaigns", "hero_reel", "testimonials"]);
   const [testimonialsList, setTestimonialsList] = useState<Testimonial[]>(initialTestimonials || []);
   const [spotifyUrl, setSpotifyUrl] = useState(profile.spotify_url || "");
+  const [displayModes, setDisplayModes] = useState<{ links: "list" | "carousel"; products: "list" | "carousel"; campaigns: "list" | "carousel" }>({
+    links: profile.page_effects?.display_modes?.links || "list",
+    products: profile.page_effects?.display_modes?.products || "list",
+    campaigns: profile.page_effects?.display_modes?.campaigns || "list",
+  });
   const [dragSectionIdx, setDragSectionIdx] = useState<number | null>(null);
   const [saving, setSaving] = useState(false);
   const [uploadingImage, setUploadingImage] = useState<"avatar" | "cover" | null>(null);
