@@ -420,7 +420,7 @@ export default function AppTemplates() {
                 <TemplatePreviewCard template={selectedTemplate} fullHeight />
               </div>
               <div className="flex w-full flex-col justify-center p-8 md:w-1/2 md:p-10 overflow-y-auto">
-                <div className="mb-4 inline-flex w-fit items-center gap-1.5 rounded-full border border-primary/30 bg-primary/10 px-3 py-1 text-xs font-semibold text-primary">
+                <div className="mb-4 inline-flex w-fit items-center gap-1.5 rounded-full border border-primary/30 bg-primary/10 px-3 py-1 text-xs font-semibold text-primary-readable">
                   <Sparkles className="h-3 w-3" /> Template
                 </div>
                 <h2 className="font-display text-2xl font-extrabold text-foreground">{selectedTemplate.name}</h2>
