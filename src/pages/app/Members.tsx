@@ -221,7 +221,7 @@ export default function Members() {
                 }`}
               >
                 {/* Avatar */}
-                <div className="w-10 h-10 rounded-full bg-primary/20 flex items-center justify-center text-sm font-bold text-primary flex-shrink-0">
+                <div className="w-10 h-10 rounded-full bg-primary/20 flex items-center justify-center text-sm font-bold text-primary-readable flex-shrink-0">
                   {member.avatar_url ? (
                     <img src={member.avatar_url} alt="" className="w-full h-full rounded-full object-cover" />
                   ) : (

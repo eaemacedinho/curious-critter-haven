@@ -455,7 +455,7 @@ export default function AppTemplates() {
                           className="w-full flex items-center justify-between gap-2 px-4 py-3 rounded-xl border border-border bg-background hover:border-primary/30 transition-all text-sm"
                         >
                           <span className="font-medium text-foreground">{c.name || "Sem nome"}</span>
-                          <span className="flex items-center gap-1 text-xs text-primary font-semibold">
+                          <span className="flex items-center gap-1 text-xs text-primary-readable font-semibold">
                             {applyingTo === c.id ? "Aplicando..." : <>Aplicar <ArrowRight className="h-3 w-3" /></>}
                           </span>
                         </button>

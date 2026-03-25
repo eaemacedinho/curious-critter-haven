@@ -137,7 +137,7 @@ export default function Referrals() {
           className="bg-card border border-border rounded-2xl p-5"
         >
           <h2 className="text-sm font-bold text-foreground mb-4 flex items-center gap-2">
-            <Trophy className="w-4 h-4 text-primary" />
+            <Trophy className="w-4 h-4 text-primary-readable" />
             Recompensas
           </h2>
 

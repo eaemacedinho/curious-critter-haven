@@ -262,7 +262,7 @@ export default function Creators() {
                 setBatchPrefix("Creator");
                 setShowBatchDialog(true);
               }}
-              className="flex items-center gap-2 px-4 py-2.5 bg-card border border-border text-foreground font-semibold text-sm rounded-xl transition-all hover:border-primary/30 hover:text-primary"
+              className="flex items-center gap-2 px-4 py-2.5 bg-card border border-border text-foreground font-semibold text-sm rounded-xl transition-all hover:border-primary/30 hover:text-foreground"
             >
               <Users className="w-4 h-4" />
               Criar em lote
