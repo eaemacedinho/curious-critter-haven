@@ -258,6 +258,12 @@ export default function CreatorViewLinkme({ profile, links: rawLinks, socialLink
                           {links.map(link => <LinkmeCard key={link.id} link={link} shape={profile.image_shape_links} onLinkClick={onLinkClick} />)}
                         </SectionCarousel>
                       </div>
+                    ) : displayModes.links === "marquee" && links.length > 1 ? (
+                      <div key="links" className="mt-6 px-4" data-preview-section="links">
+                        <SectionMarquee itemWidth="80%">
+                          {links.map(link => <LinkmeCard key={link.id} link={link} shape={profile.image_shape_links} onLinkClick={onLinkClick} />)}
+                        </SectionMarquee>
+                      </div>
                     ) : (
                       <div key="links" className="flex flex-col gap-3 mt-6 px-4" data-preview-section="links">
                         {(() => {
