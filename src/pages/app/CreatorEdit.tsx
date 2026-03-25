@@ -39,6 +39,12 @@ export default function CreatorEdit() {
   const [usingDefault, setUsingDefault] = useState(false);
   const [templateDropdownStyle, setTemplateDropdownStyle] = useState<{ top: number; left: number; width: number } | null>(null);
 
+  // Track original template data for "em edição" detection and reset
+  const [originalTemplateSnapshot, setOriginalTemplateSnapshot] = useState<TemplateData | null>(null);
+  const [showResetConfirm, setShowResetConfirm] = useState(false);
+  const [resetConfirmInput, setResetConfirmInput] = useState("");
+  const [resetting, setResetting] = useState(false);
+
   const maxTemplates = currentPlan === "free" ? 1 : currentPlan === "pro" ? 5 : 10;
 
   // Gallery saved templates (from AppTemplates page localStorage)
