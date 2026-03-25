@@ -626,10 +626,10 @@ const CreatorEditPanel = forwardRef<CreatorEditPanelHandle, Props>(function Crea
 
           {/* Per-section image shape selectors with live preview */}
           <div className="mt-4 p-3 bg-k-800/50 border border-primary/10 rounded-xl space-y-4">
-            <span className="text-sm font-semibold text-primary-foreground flex items-center gap-1.5">
+            <span className="text-sm font-semibold text-foreground flex items-center gap-1.5">
               🖼 Formato das imagens
             </span>
-            <p className="text-[0.65rem] text-k-4 -mt-2">Escolha o formato das imagens para cada seção. Veja a pré-visualização ao lado.</p>
+            <p className="text-[0.65rem] text-muted-foreground -mt-2">Escolha o formato das imagens para cada seção. Veja a pré-visualização ao lado.</p>
 
             {([
               { label: "🔗 Links", value: shapeLinks, setter: setShapeLinks, previewType: "link" as const },
