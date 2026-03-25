@@ -531,7 +531,7 @@ export default function Landing() {
                 "Remover branding",
               ].map((text, i) => (
                 <li key={i} className="flex items-center gap-2 py-1.5 border-b border-border/20 last:border-b-0 text-sm text-muted-foreground">
-                  <Check className="w-3.5 h-3.5 text-primary flex-shrink-0" />
+                  <Check className="w-3.5 h-3.5 text-primary-readable flex-shrink-0" />
                   {text}
                 </li>
               ))}
