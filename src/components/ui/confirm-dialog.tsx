@@ -32,14 +32,20 @@ export function ConfirmDialog({
   onConfirm,
   loading = false,
 }: ConfirmDialogProps) {
+  const isStringDescription = typeof description === "string";
+
   return (
     <AlertDialog open={open} onOpenChange={onOpenChange}>
       <AlertDialogContent className="bg-card border-border">
         <AlertDialogHeader>
           <AlertDialogTitle className="text-foreground">{title}</AlertDialogTitle>
-          <AlertDialogDescription className="text-muted-foreground">
-            {description}
-          </AlertDialogDescription>
+          {isStringDescription ? (
+            <AlertDialogDescription className="text-muted-foreground">
+              {description}
+            </AlertDialogDescription>
+          ) : (
+            <div className="text-sm text-muted-foreground">{description}</div>
+          )}
         </AlertDialogHeader>
         <AlertDialogFooter>
           <AlertDialogCancel

@@ -206,7 +206,7 @@ export default function CreatorEdit() {
       toast.error("Digite um nome para o template");
       return;
     }
-    if (templates.length >= maxTemplates) {
+    if (totalSavedTemplateCount >= maxTemplates) {
       toast.error(`Limite de ${maxTemplates} template(s) atingido. ${currentPlan === "free" ? "Faça upgrade para o Pro!" : ""}`);
       return;
     }
@@ -347,6 +347,7 @@ export default function CreatorEdit() {
 
   const activeTemplate = templates.find(t => t.id === activeTemplateId);
   const currentLabel = usingDefault ? "⭐ Meu Padrão" : activeTemplate ? activeTemplate.name : "Personalizado";
+  const totalSavedTemplateCount = templates.length + savedGalleryTemplates.length;
 
   return (
     <div className="max-w-[1400px] mx-auto">
@@ -447,7 +448,7 @@ export default function CreatorEdit() {
 
                   {/* Saved templates */}
                   {templates.length === 0 ? (
-                    <p className="px-3 py-2 text-xs text-muted-foreground">Nenhum template salvo ainda</p>
+                    <p className="px-3 py-2 text-xs text-muted-foreground">Nenhum template próprio salvo ainda</p>
                   ) : (
                     templates.map((tpl) => (
                       <div key={tpl.id} className={`flex items-center gap-1 px-3 py-2 transition-colors ${
@@ -531,18 +532,19 @@ export default function CreatorEdit() {
                   <button
                     onClick={() => {
                       setShowTemplateDropdown(false);
-                      if (templates.length >= maxTemplates) {
+                      if (totalSavedTemplateCount >= maxTemplates) {
                         toast.error(`Limite de ${maxTemplates} template(s) atingido. ${currentPlan === "free" ? "Faça upgrade para o Pro!" : ""}`);
                         return;
                       }
                       setTemplateNameInput("");
                       setShowNewTemplateDialog(true);
                     }}
-                    className="w-full text-left px-3 py-2.5 text-sm text-primary-readable font-semibold hover:bg-primary/10 transition-colors flex items-center gap-2"
+                    disabled={totalSavedTemplateCount >= maxTemplates}
+                    className="w-full text-left px-3 py-2.5 text-sm text-primary-readable font-semibold hover:bg-primary/10 transition-colors flex items-center gap-2 disabled:pointer-events-none disabled:opacity-50"
                   >
                     <Save className="w-3.5 h-3.5" />
                     Salvar como template
-                    <span className="ml-auto text-[0.6rem] text-muted-foreground font-normal">{templates.length}/{maxTemplates}</span>
+                    <span className="ml-auto text-[0.6rem] text-muted-foreground font-normal">{totalSavedTemplateCount}/{maxTemplates}</span>
                   </button>
                 </div>
                </>, document.body)
