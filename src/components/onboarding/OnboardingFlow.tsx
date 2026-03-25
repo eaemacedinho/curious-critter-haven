@@ -186,6 +186,7 @@ export default function OnboardingFlow({ onComplete }: { onComplete: () => void 
 
   const handleSkip = async () => {
     if (!user || !agency) return;
+    clearProgress();
     await supabase
       .from("agency_settings")
       .update({ onboarding_completed: true })
