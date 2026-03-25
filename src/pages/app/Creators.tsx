@@ -77,7 +77,7 @@ export default function Creators() {
         name: `Creator ${count}`,
         slug: `creator-${count}-${uniqueSuffix}`,
       } as any)
-      .select("id, name, slug, avatar_url, bio, layout_type, verified")
+      .select("id, name, slug, avatar_url, avatar_url_layout2, bio, layout_type, verified")
       .single();
 
     if (error) {
