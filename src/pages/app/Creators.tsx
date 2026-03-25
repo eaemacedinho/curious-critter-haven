@@ -215,7 +215,7 @@ export default function Creators() {
                 <div className="font-semibold text-foreground flex items-center gap-1.5">
                   {cr.name || "Sem nome"}
                   {cr.verified && (
-                    <svg className="w-4 h-4 flex-shrink-0" viewBox="0 0 24 24" fill="none"><circle cx="12" cy="12" r="10" fill="hsl(var(--primary))" /><path d="M9 12l2 2 4-4" stroke="hsl(var(--primary-foreground))" strokeWidth="2.5" fill="none" /></svg>
+                    <svg className="w-4 h-4 flex-shrink-0" viewBox="0 0 24 24" fill="none"><circle cx="12" cy="12" r="10" fill="#0095f6" /><path d="M9 12l2 2 4-4" stroke="white" strokeWidth="2.5" fill="none" /></svg>
                   )}
                 </div>
                 <div className="text-[0.75rem] text-muted-foreground">
