@@ -494,6 +494,113 @@ export default function AppTemplates() {
         onConfirm={() => undoConfirm && handleUndoTemplate(undoConfirm)}
         loading={undoing}
       />
+
+      {/* Replace saved template dialog */}
+      <AnimatePresence>
+        {replaceDialog && (
+          <motion.div
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            className="fixed inset-0 z-[70] flex items-center justify-center bg-background/80 backdrop-blur-md p-4"
+            onClick={() => setReplaceDialog(null)}
+          >
+            <motion.div
+              initial={{ opacity: 0, scale: 0.92, y: 24 }}
+              animate={{ opacity: 1, scale: 1, y: 0 }}
+              exit={{ opacity: 0, scale: 0.92, y: 24 }}
+              className="relative w-full max-w-md rounded-2xl border border-border bg-card p-6 shadow-2xl"
+              onClick={(e) => e.stopPropagation()}
+            >
+              <button
+                onClick={() => setReplaceDialog(null)}
+                className="absolute right-3 top-3 rounded-full bg-background/80 p-1.5 text-muted-foreground hover:text-foreground"
+              >
+                <X className="h-4 w-4" />
+              </button>
+
+              <div className="flex items-center gap-3 mb-4">
+                <div className="w-10 h-10 rounded-xl bg-amber-500/10 border border-amber-500/20 flex items-center justify-center">
+                  <AlertTriangle className="h-5 w-5 text-amber-500" />
+                </div>
+                <div>
+                  <h3 className="font-display text-lg font-bold text-foreground">Limite atingido</h3>
+                  <p className="text-xs text-muted-foreground">
+                    {maxSaved === 1
+                      ? "Você só pode salvar 1 template no plano Free."
+                      : `Você já salvou ${maxSaved} templates (limite do seu plano).`}
+                  </p>
+                </div>
+              </div>
+
+              {maxSaved === 1 ? (
+                <>
+                  <div className="rounded-xl border border-border bg-background/50 p-4 mb-4">
+                    <p className="text-sm text-foreground leading-relaxed">
+                      Ao continuar, o template <strong className="text-foreground">"{TEMPLATE_DATA.find(t => t.id === savedTemplates[0])?.name || "salvo"}"</strong> será
+                      substituído pelo novo. <span className="text-amber-500 font-medium">Isso pode resultar em perda de dados.</span>
+                    </p>
+                  </div>
+                  <div className="flex gap-2">
+                    <button
+                      onClick={() => setReplaceDialog(null)}
+                      className="flex-1 px-4 py-2.5 rounded-xl border border-border bg-background text-sm font-semibold text-foreground hover:bg-accent/10 transition-colors"
+                    >
+                      Cancelar
+                    </button>
+                    <button
+                      onClick={() => handleReplaceTemplate(savedTemplates[0])}
+                      className="flex-1 flex items-center justify-center gap-2 px-4 py-2.5 rounded-xl bg-amber-500 text-white text-sm font-bold hover:bg-amber-600 transition-colors"
+                    >
+                      <Replace className="h-4 w-4" /> Substituir
+                    </button>
+                  </div>
+                  {!isPro && (
+                    <button
+                      onClick={() => { setReplaceDialog(null); navigate("/app/checkout"); }}
+                      className="mt-3 w-full flex items-center justify-center gap-1.5 text-xs text-primary-readable font-semibold hover:underline"
+                    >
+                      <Crown className="h-3 w-3" /> Upgrade para Pro — salve até 5 templates
+                    </button>
+                  )}
+                </>
+              ) : (
+                <>
+                  <p className="text-sm text-muted-foreground mb-3">
+                    Escolha qual template salvo deseja substituir:
+                  </p>
+                  <div className="space-y-2 max-h-[250px] overflow-y-auto">
+                    {savedTemplates.map((savedId) => {
+                      const tmpl = TEMPLATE_DATA.find(t => t.id === savedId);
+                      return (
+                        <button
+                          key={savedId}
+                          onClick={() => handleReplaceTemplate(savedId)}
+                          className="w-full flex items-center justify-between gap-3 px-4 py-3 rounded-xl border border-border bg-background hover:border-amber-500/40 hover:bg-amber-500/5 transition-all text-left"
+                        >
+                          <div className="min-w-0">
+                            <p className="text-sm font-medium text-foreground truncate">{tmpl?.name || "Template"}</p>
+                            <p className="text-[0.68rem] text-muted-foreground truncate">{tmpl?.objective || ""}</p>
+                          </div>
+                          <span className="shrink-0 flex items-center gap-1 text-xs text-amber-500 font-semibold">
+                            <Replace className="h-3 w-3" /> Substituir
+                          </span>
+                        </button>
+                      );
+                    })}
+                  </div>
+                  <button
+                    onClick={() => setReplaceDialog(null)}
+                    className="mt-3 w-full text-center text-sm text-muted-foreground hover:text-foreground transition-colors"
+                  >
+                    Cancelar
+                  </button>
+                </>
+              )}
+            </motion.div>
+          </motion.div>
+        )}
+      </AnimatePresence>
     </div>
   );
 }
