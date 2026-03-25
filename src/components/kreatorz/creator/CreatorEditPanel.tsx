@@ -272,7 +272,7 @@ const CreatorEditPanel = forwardRef<CreatorEditPanelHandle, Props>(function Crea
     color_section_titles: colorSectionTitles || null,
     section_order: sectionOrder,
     spotify_url: spotifyUrl,
-  }), [profile, name, handle, bio, avatarUrl, coverUrl, avatarUrlL2, coverUrlL2, verified, tags, stats, brands, brandsDisplayMode, shapeProducts, shapeCampaigns, shapeLinks, pageEffects, effectColor, effectEmojis, effectIntensity, displayModes, fontFamily, fontSize, colorName, colorBio, colorSectionTitles, sectionOrder, spotifyUrl]);
+  }), [profile, name, handle, bio, avatarUrl, coverUrl, avatarUrlL2, coverUrlL2, verified, tags, stats, brands, brandsDisplayMode, shapeProducts, shapeCampaigns, shapeLinks, pageEffects, effectColor, effectEmojis, effectIntensity, displayModes, badgePosition, fontFamily, fontSize, colorName, colorBio, colorSectionTitles, sectionOrder, spotifyUrl]);
 
   const isValidUrl = (url: string) => {
     if (!url) return true;
