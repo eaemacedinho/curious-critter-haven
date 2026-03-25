@@ -36,7 +36,7 @@ export default function Creators() {
       setLoading(true);
       const { data, error } = await supabase
         .from("creators")
-        .select("id, name, slug, avatar_url, bio, layout_type, verified")
+        .select("id, name, slug, avatar_url, avatar_url_layout2, bio, layout_type, verified")
         .eq("agency_id", agency.id)
         .order("created_at", { ascending: false });
 
