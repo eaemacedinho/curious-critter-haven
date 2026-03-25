@@ -264,7 +264,7 @@ const CreatorEditPanel = forwardRef<CreatorEditPanelHandle, Props>(function Crea
     image_shape_products: shapeProducts,
     image_shape_campaigns: shapeCampaigns,
     image_shape_links: shapeLinks,
-    page_effects: { effects: pageEffects, color: effectColor, emojis: effectEmojis, intensity: effectIntensity, display_modes: displayModes },
+    page_effects: { effects: pageEffects, color: effectColor, emojis: effectEmojis, intensity: effectIntensity, display_modes: displayModes, badge_position: badgePosition },
     font_family: fontFamily,
     font_size: fontSize,
     color_name: colorName || null,
