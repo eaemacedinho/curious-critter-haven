@@ -269,7 +269,7 @@ export default function Landing() {
           <h2 className="font-display text-[clamp(1.9rem,3.5vw,3rem)] font-extrabold leading-[1.1] tracking-tight mb-4">
             Não é só um link.
             <br />
-            É uma <span className="text-primary">experiência.</span>
+            É uma <span className="text-primary-readable">experiência.</span>
           </h2>
           <p className="text-base text-muted-foreground leading-relaxed max-w-[560px] mx-auto mb-12">
             O in1.bio transforma sua bio em uma página inteligente que centraliza, destaca e converte.
