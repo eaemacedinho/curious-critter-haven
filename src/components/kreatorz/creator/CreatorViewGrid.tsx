@@ -107,7 +107,7 @@ export default function CreatorViewGrid({ profile, links: rawLinks, socialLinks:
                     </>
                   ) : (
                     <div className="p-4">
-                      <span className="text-[0.58rem] font-bold uppercase tracking-wider text-primary">🔴 Live</span>
+                      <span className="text-[0.58rem] font-bold uppercase tracking-wider text-primary-readable">🔴 Live</span>
                       <h5 className="text-sm font-bold mt-1" style={camp.text_color ? { color: camp.text_color } : undefined}>{camp.title}</h5>
                       {camp.description && <p className="text-[0.7rem] text-muted-foreground mt-1">{camp.description}</p>}
                     </div>
@@ -167,7 +167,7 @@ export default function CreatorViewGrid({ profile, links: rawLinks, socialLinks:
                   )}
                   <div className="p-3">
                     <h5 className="text-[0.78rem] font-semibold">{prod.title}</h5>
-                    {prod.price && <span className="text-[0.7rem] font-bold text-primary">{prod.price}</span>}
+                    {prod.price && <span className="text-[0.7rem] font-bold text-primary-readable">{prod.price}</span>}
                   </div>
                 </div>
               );
