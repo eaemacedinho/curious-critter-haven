@@ -182,7 +182,7 @@ export default function Referrals() {
 
                 {/* Progress */}
                 <div className="text-right shrink-0">
-                  <div className={`text-sm font-bold ${reward.unlocked ? "text-primary" : "text-muted-foreground"}`}>
+                  <div className={`text-sm font-bold ${reward.unlocked ? "text-primary-readable" : "text-muted-foreground"}`}>
                     {Math.min(convertedReferrals, reward.threshold)}/{reward.threshold}
                   </div>
                 </div>
