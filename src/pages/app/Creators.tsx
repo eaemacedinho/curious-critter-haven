@@ -189,8 +189,22 @@ export default function Creators() {
               className="bg-card border border-border rounded-2xl p-4 sm:p-5 flex items-center gap-4 hover:border-primary/20 transition-all group"
             >
               <div className="w-12 h-12 rounded-full overflow-hidden flex-shrink-0 border-2 border-border">
-                {cr.avatar_url ? (
-                  <img src={cr.avatar_url} alt="" className="w-full h-full object-cover" />
+                {(cr.avatar_url || cr.avatar_url_layout2) ? (
+                  <img
+                    src={cr.avatar_url || cr.avatar_url_layout2}
+                    alt=""
+                    className="w-full h-full object-cover"
+                    onError={(e) => {
+                      const target = e.currentTarget;
+                      // Try layout2 fallback if primary failed
+                      if (cr.avatar_url_layout2 && target.src !== cr.avatar_url_layout2) {
+                        target.src = cr.avatar_url_layout2;
+                      } else {
+                        target.style.display = "none";
+                        target.parentElement!.innerHTML = `<div class="w-full h-full bg-primary/10 flex items-center justify-center text-lg text-muted-foreground">${cr.name?.[0] || "?"}</div>`;
+                      }
+                    }}
+                  />
                 ) : (
                   <div className="w-full h-full bg-primary/10 flex items-center justify-center text-lg text-muted-foreground">
                     {cr.name?.[0] || "?"}
