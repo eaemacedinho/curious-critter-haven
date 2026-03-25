@@ -341,7 +341,7 @@ export default function Landing() {
           <h2 className="font-display text-[clamp(1.9rem,3.5vw,3rem)] font-extrabold leading-[1.1] tracking-tight mb-4">
             Feito para quem leva
             <br />
-            <span className="text-primary">presença digital</span> a sério.
+            <span className="text-primary-readable">presença digital</span> a sério.
           </h2>
           <p className="text-base text-muted-foreground max-w-[560px] mx-auto mb-12">
             Se você cria, produz, vende ou se apresenta online — o in1.bio foi feito para você.
