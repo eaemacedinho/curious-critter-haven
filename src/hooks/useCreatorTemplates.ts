@@ -21,6 +21,7 @@ export interface TemplateData {
   campaigns: CreatorCampaign[];
   heroReels: HeroReelData[];
   testimonials: Testimonial[];
+  sourceGalleryTemplateId?: string | null;
 }
 
 export function useCreatorTemplates(agencyId?: string, creatorId?: string) {

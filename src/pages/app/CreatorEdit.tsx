@@ -37,6 +37,7 @@ export default function CreatorEdit() {
   const [templateNameInput, setTemplateNameInput] = useState("");
   const [showNewTemplateDialog, setShowNewTemplateDialog] = useState(false);
   const [usingDefault, setUsingDefault] = useState(false);
+  const [activeGalleryTemplateId, setActiveGalleryTemplateId] = useState<string | null>(null);
   const [activeGalleryTemplateName, setActiveGalleryTemplateName] = useState<string | null>(null);
   const [templateDropdownStyle, setTemplateDropdownStyle] = useState<{ top: number; left: number; width: number } | null>(null);
 
@@ -106,27 +107,29 @@ export default function CreatorEdit() {
     savedGalleryIds.map(id => TEMPLATE_DATA.find(t => t.id === id)).filter(Boolean) as FullTemplateData[],
   [savedGalleryIds]);
 
+  const galleryTemplateOverrides = useMemo(
+    () => new Map(
+      templates
+        .filter((template) => template.template_data?.sourceGalleryTemplateId)
+        .map((template) => [template.template_data.sourceGalleryTemplateId as string, template]),
+    ),
+    [templates],
+  );
+
+  const ownTemplates = useMemo(
+    () => templates.filter((template) => !template.template_data?.sourceGalleryTemplateId),
+    [templates],
+  );
+
+  const cloneTemplateData = (data: TemplateData): TemplateData => JSON.parse(JSON.stringify(data)) as TemplateData;
+
   // Detect if template has been edited
   const isTemplateEdited = useMemo(() => {
-    if (!originalTemplateSnapshot || (!activeTemplateId && !usingDefault)) return false;
+    if (!originalTemplateSnapshot || (!activeTemplateId && !usingDefault && !activeGalleryTemplateId)) return false;
     const current = getCurrentData();
     const snap = originalTemplateSnapshot;
-    // Compare profile fields
-    const profileKeys = ["bio", "font_family", "font_size", "image_shape", "image_shape_links", "image_shape_products", "image_shape_campaigns", "brands_display_mode", "spotify_url", "color_name", "color_bio", "color_section_titles"] as const;
-    for (const key of profileKeys) {
-      if (JSON.stringify((current.profile as any)?.[key]) !== JSON.stringify((snap.profile as any)?.[key])) return true;
-    }
-    if (JSON.stringify(current.profile?.tags) !== JSON.stringify(snap.profile?.tags)) return true;
-    if (JSON.stringify(current.profile?.stats) !== JSON.stringify(snap.profile?.stats)) return true;
-    if (JSON.stringify(current.profile?.brands) !== JSON.stringify(snap.profile?.brands)) return true;
-    if (JSON.stringify(current.profile?.section_order) !== JSON.stringify(snap.profile?.section_order)) return true;
-    // Compare arrays by length + titles
-    if (current.links?.length !== snap.links?.length) return true;
-    if (current.products?.length !== snap.products?.length) return true;
-    if (current.socialLinks?.length !== snap.socialLinks?.length) return true;
-    if (current.testimonials?.length !== snap.testimonials?.length) return true;
-    return false;
-  }, [profile, links, socialLinks, products, campaigns, heroReels, testimonials, originalTemplateSnapshot, activeTemplateId, usingDefault]);
+    return JSON.stringify(current) !== JSON.stringify(snap);
+  }, [profile, links, socialLinks, products, campaigns, heroReels, testimonials, originalTemplateSnapshot, activeTemplateId, activeGalleryTemplateId, usingDefault]);
 
   const [applyingGallery, setApplyingGallery] = useState(false);
 
@@ -134,48 +137,71 @@ export default function CreatorEdit() {
     if (!creatorId) return;
     setApplyingGallery(true);
     try {
-      const { profile: tp, links: tl, socialLinks: ts, products: tpr, testimonials: tt } = template;
-      await saveProfile({
-        bio: tp.bio,
-        font_family: tp.font_family,
-        font_size: tp.font_size,
-        image_shape: tp.image_shape,
-        image_shape_links: tp.image_shape_links,
-        image_shape_products: tp.image_shape_products,
-        image_shape_campaigns: tp.image_shape || "rounded",
-        tags: tp.tags as any,
-        stats: tp.stats as any,
-        brands: tp.brands as any,
-        brands_display_mode: tp.brands_display_mode,
-        section_order: tp.section_order as any,
-        ...(tp.avatar_url ? { avatar_url: tp.avatar_url } : {}),
-        ...(tp.cover_url ? { cover_url: tp.cover_url } : {}),
-      } as any);
+      const override = galleryTemplateOverrides.get(template.id);
+      const data = override?.template_data;
 
-      await saveLinks(tl.map((l, i) => ({
-        creator_id: creatorId, title: l.title, url: l.url, subtitle: l.subtitle, icon: l.icon,
-        is_featured: l.is_featured, is_active: l.is_active, sort_order: i, display_mode: l.display_mode,
-      })) as any);
+      if (data?.profile) {
+        await saveProfile(data.profile as any);
+      } else {
+        const { profile: tp } = template;
+        await saveProfile({
+          bio: tp.bio,
+          font_family: tp.font_family,
+          font_size: tp.font_size,
+          image_shape: tp.image_shape,
+          image_shape_links: tp.image_shape_links,
+          image_shape_products: tp.image_shape_products,
+          image_shape_campaigns: tp.image_shape || "rounded",
+          tags: tp.tags as any,
+          stats: tp.stats as any,
+          brands: tp.brands as any,
+          brands_display_mode: tp.brands_display_mode,
+          section_order: tp.section_order as any,
+          ...(tp.avatar_url ? { avatar_url: tp.avatar_url } : {}),
+          ...(tp.cover_url ? { cover_url: tp.cover_url } : {}),
+        } as any);
+      }
 
-      await saveSocialLinks(ts.map((s, i) => ({
-        creator_id: creatorId, platform: s.platform, label: s.label, url: s.url, sort_order: i,
-      })) as any);
+      if (data?.links) {
+        await saveLinks(data.links);
+      } else {
+        await saveLinks(template.links.map((l, i) => ({
+          creator_id: creatorId, title: l.title, url: l.url, subtitle: l.subtitle, icon: l.icon,
+          is_featured: l.is_featured, is_active: l.is_active, sort_order: i, display_mode: l.display_mode,
+        })) as any);
+      }
 
-      await saveProducts(tpr.map((p, i) => ({
-        creator_id: creatorId, title: p.title, price: p.price, icon: p.icon,
-        url: p.url, is_active: p.is_active, sort_order: i, image_url: p.image_url || null,
-      })) as any);
+      if (data?.socialLinks) {
+        await saveSocialLinks(data.socialLinks);
+      } else {
+        await saveSocialLinks(template.socialLinks.map((s, i) => ({
+          creator_id: creatorId, platform: s.platform, label: s.label, url: s.url, sort_order: i,
+        })) as any);
+      }
 
-      await saveTestimonials(tt.map((t, i) => ({
-        creator_id: creatorId, author_name: t.author_name, author_role: t.author_role,
-        content: t.content, rating: t.rating, is_active: t.is_active, sort_order: i,
-      })) as any);
+      if (data?.products) {
+        await saveProducts(data.products);
+      } else {
+        await saveProducts(template.products.map((p, i) => ({
+          creator_id: creatorId, title: p.title, price: p.price, icon: p.icon,
+          url: p.url, is_active: p.is_active, sort_order: i, image_url: p.image_url || null,
+        })) as any);
+      }
+
+      if (data?.testimonials) {
+        await saveTestimonials(data.testimonials);
+      } else {
+        await saveTestimonials(template.testimonials.map((t, i) => ({
+          creator_id: creatorId, author_name: t.author_name, author_role: t.author_role,
+          content: t.content, rating: t.rating, is_active: t.is_active, sort_order: i,
+        })) as any);
+      }
 
       await refetch();
-      // Store snapshot for gallery templates too (no activeTemplateId but track as gallery)
-      const snapshotData = getCurrentData();
-      setOriginalTemplateSnapshot(JSON.parse(JSON.stringify(snapshotData)));
-      setActiveTemplateId(null);
+      const snapshotData = data ? cloneTemplateData(data) : getCurrentData();
+      setOriginalTemplateSnapshot(snapshotData);
+      setActiveTemplateId(override?.id ?? null);
+      setActiveGalleryTemplateId(template.id);
       setUsingDefault(false);
       setActiveGalleryTemplateName(template.name);
       toast.success(`Template "${template.name}" aplicado!`);
@@ -213,11 +239,48 @@ export default function CreatorEdit() {
   const handleSave = async () => {
     if (!editorRef.current) return;
     setSaving(true);
-    const saved = await editorRef.current.saveAll();
-    setSaving(false);
-    if (!saved) return;
-    await refetch();
-    toast.success("Alterações salvas com sucesso!");
+    try {
+      const saved = await editorRef.current.saveAll();
+      if (!saved) return;
+
+      await refetch();
+      const currentData = getCurrentData();
+
+      if (usingDefault) {
+        const ok = await saveDefaultTemplate(currentData);
+        if (!ok) throw new Error("default_template_update_failed");
+      } else if (activeGalleryTemplateId && activeGalleryTemplateName) {
+        const galleryPayload: TemplateData = {
+          ...currentData,
+          sourceGalleryTemplateId: activeGalleryTemplateId,
+        };
+        const existingOverride = galleryTemplateOverrides.get(activeGalleryTemplateId);
+
+        if (existingOverride) {
+          const ok = await updateTemplate(existingOverride.id, galleryPayload);
+          if (!ok) throw new Error("gallery_template_update_failed");
+          setActiveTemplateId(existingOverride.id);
+        } else {
+          const created = await saveTemplate(activeGalleryTemplateName, galleryPayload);
+          if (!created) throw new Error("gallery_template_create_failed");
+          setActiveTemplateId(created.id);
+        }
+
+        await fetchTemplates();
+      } else if (activeTemplateId) {
+        const ok = await updateTemplate(activeTemplateId, currentData);
+        if (!ok) throw new Error("template_update_failed");
+        await fetchTemplates();
+      }
+
+      setOriginalTemplateSnapshot(cloneTemplateData(currentData));
+      toast.success("Alterações salvas com sucesso!");
+    } catch (error) {
+      console.error(error);
+      toast.error("Erro ao salvar alterações");
+    } finally {
+      setSaving(false);
+    }
   };
 
   const handleSaveAsTemplate = async () => {
@@ -232,7 +295,10 @@ export default function CreatorEdit() {
     const result = await saveTemplate(templateNameInput.trim(), getCurrentData());
     if (result) {
       setActiveTemplateId(result.id);
+      setActiveGalleryTemplateId(null);
+      setActiveGalleryTemplateName(null);
       setUsingDefault(false);
+      setOriginalTemplateSnapshot(cloneTemplateData(result.template_data));
       toast.success(`Template "${templateNameInput.trim()}" salvo!`);
     } else {
       toast.error("Erro ao salvar template");
@@ -246,6 +312,9 @@ export default function CreatorEdit() {
     if (ok) {
       setUsingDefault(true);
       setActiveTemplateId(null);
+      setActiveGalleryTemplateId(null);
+      setActiveGalleryTemplateName(null);
+      setOriginalTemplateSnapshot(cloneTemplateData(getCurrentData()));
       toast.success("Meu Padrão salvo! Este será o template base para criação em lote.");
     } else {
       toast.error("Erro ao salvar Meu Padrão");
@@ -272,8 +341,9 @@ export default function CreatorEdit() {
       if (data.heroReels) await saveHeroReels(data.heroReels);
       if (data.testimonials) await saveTestimonials(data.testimonials);
       await refetch();
-      setOriginalTemplateSnapshot(JSON.parse(JSON.stringify(defaultTemplate.template_data)));
+      setOriginalTemplateSnapshot(cloneTemplateData(defaultTemplate.template_data));
       setActiveTemplateId(null);
+      setActiveGalleryTemplateId(null);
       setUsingDefault(true);
       setActiveGalleryTemplateName(null);
       setShowSwitchConfirm(null);
@@ -295,8 +365,9 @@ export default function CreatorEdit() {
     if (data.heroReels) await saveHeroReels(data.heroReels);
     if (data.testimonials) await saveTestimonials(data.testimonials);
     await refetch();
-    setOriginalTemplateSnapshot(JSON.parse(JSON.stringify(tpl.template_data)));
+    setOriginalTemplateSnapshot(cloneTemplateData(tpl.template_data));
     setActiveTemplateId(templateId);
+    setActiveGalleryTemplateId(null);
     setUsingDefault(false);
     setActiveGalleryTemplateName(null);
     setShowSwitchConfirm(null);
@@ -307,7 +378,12 @@ export default function CreatorEdit() {
     if (!showDeleteConfirm) return;
     const tpl = templates.find(t => t.id === showDeleteConfirm);
     await deleteTemplate(showDeleteConfirm);
-    if (activeTemplateId === showDeleteConfirm) setActiveTemplateId(null);
+    if (activeTemplateId === showDeleteConfirm) {
+      setActiveTemplateId(null);
+      setActiveGalleryTemplateId(null);
+      setActiveGalleryTemplateName(null);
+      setOriginalTemplateSnapshot(null);
+    }
     toast.success(`Template "${tpl?.name}" removido`);
     setShowDeleteConfirm(null);
   };
@@ -386,8 +462,8 @@ export default function CreatorEdit() {
   };
 
   const activeTemplate = templates.find(t => t.id === activeTemplateId);
-  const currentLabel = usingDefault ? "⭐ Meu Padrão" : activeTemplate ? activeTemplate.name : activeGalleryTemplateName ? `✨ ${activeGalleryTemplateName}` : "⭐ Meu Padrão";
-  const totalSavedTemplateCount = templates.length + savedGalleryTemplates.length;
+  const currentLabel = usingDefault ? "⭐ Meu Padrão" : activeGalleryTemplateName ? `✨ ${activeGalleryTemplateName}` : activeTemplate ? activeTemplate.name : "⭐ Meu Padrão";
+  const totalSavedTemplateCount = ownTemplates.length + savedGalleryTemplates.length;
 
   return (
     <div className="max-w-[1400px] mx-auto">
@@ -476,14 +552,14 @@ export default function CreatorEdit() {
                   {/* Section label: Templates próprios */}
                   <p className="px-3 pt-2 pb-1 text-[0.6rem] font-bold text-muted-foreground uppercase tracking-wider flex items-center gap-1.5">
                     <Save className="w-3 h-3" /> Templates próprios
-                    <span className="ml-auto text-[0.55rem] font-normal">{templates.length}</span>
+                    <span className="ml-auto text-[0.55rem] font-normal">{ownTemplates.length}</span>
                   </p>
 
                   {/* Saved templates */}
-                  {templates.length === 0 ? (
+                  {ownTemplates.length === 0 ? (
                     <p className="px-3 py-2 text-xs text-muted-foreground">Nenhum template próprio salvo ainda</p>
                   ) : (
-                    templates.map((tpl) => (
+                    ownTemplates.map((tpl) => (
                       <div key={tpl.id} className={`flex items-center gap-1 px-3 py-2 transition-colors ${
                         activeTemplateId === tpl.id ? "bg-primary/10" : "hover:bg-muted"
                       }`}>
@@ -564,6 +640,12 @@ export default function CreatorEdit() {
                             <span className="truncate block">{gt.name}</span>
                             <span className="text-[0.6rem] text-muted-foreground">{gt.objective}</span>
                           </div>
+                          {galleryTemplateOverrides.has(gt.id) && (
+                            <span className="text-[0.6rem] bg-accent text-accent-foreground px-1.5 py-0.5 rounded-md font-bold flex-shrink-0">EDITADO</span>
+                          )}
+                          {activeGalleryTemplateId === gt.id && (
+                            <span className="text-[0.6rem] bg-primary/20 text-primary px-1.5 py-0.5 rounded-md font-bold flex-shrink-0">ATIVO</span>
+                          )}
                         </button>
                       ))}
                     </>
