@@ -284,6 +284,7 @@ export default function CreatorEdit() {
       if (data.heroReels) await saveHeroReels(data.heroReels);
       if (data.testimonials) await saveTestimonials(data.testimonials);
       await refetch();
+      setOriginalTemplateSnapshot(JSON.parse(JSON.stringify(defaultTemplate.template_data)));
       setActiveTemplateId(null);
       setUsingDefault(true);
       setShowSwitchConfirm(null);
