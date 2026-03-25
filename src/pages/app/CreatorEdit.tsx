@@ -105,6 +105,28 @@ export default function CreatorEdit() {
     savedGalleryIds.map(id => TEMPLATE_DATA.find(t => t.id === id)).filter(Boolean) as FullTemplateData[],
   [savedGalleryIds]);
 
+  // Detect if template has been edited
+  const isTemplateEdited = useMemo(() => {
+    if (!originalTemplateSnapshot || (!activeTemplateId && !usingDefault)) return false;
+    const current = getCurrentData();
+    const snap = originalTemplateSnapshot;
+    // Compare profile fields
+    const profileKeys = ["bio", "font_family", "font_size", "image_shape", "image_shape_links", "image_shape_products", "image_shape_campaigns", "brands_display_mode", "spotify_url", "color_name", "color_bio", "color_section_titles"] as const;
+    for (const key of profileKeys) {
+      if (JSON.stringify((current.profile as any)?.[key]) !== JSON.stringify((snap.profile as any)?.[key])) return true;
+    }
+    if (JSON.stringify(current.profile?.tags) !== JSON.stringify(snap.profile?.tags)) return true;
+    if (JSON.stringify(current.profile?.stats) !== JSON.stringify(snap.profile?.stats)) return true;
+    if (JSON.stringify(current.profile?.brands) !== JSON.stringify(snap.profile?.brands)) return true;
+    if (JSON.stringify(current.profile?.section_order) !== JSON.stringify(snap.profile?.section_order)) return true;
+    // Compare arrays by length + titles
+    if (current.links?.length !== snap.links?.length) return true;
+    if (current.products?.length !== snap.products?.length) return true;
+    if (current.socialLinks?.length !== snap.socialLinks?.length) return true;
+    if (current.testimonials?.length !== snap.testimonials?.length) return true;
+    return false;
+  }, [profile, links, socialLinks, products, campaigns, heroReels, testimonials, originalTemplateSnapshot, activeTemplateId, usingDefault]);
+
   const [applyingGallery, setApplyingGallery] = useState(false);
 
   const handleApplyGalleryTemplate = async (template: FullTemplateData) => {
