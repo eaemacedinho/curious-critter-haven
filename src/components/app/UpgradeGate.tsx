@@ -133,7 +133,7 @@ function UpgradeModal({ featureLabel, onClose }: { featureLabel: string; onClose
           {isPro && (
             <div className="w-full mt-4 p-4 bg-muted/30 border border-border rounded-2xl">
               <div className="flex items-center gap-2 mb-2">
-                <Rocket className="w-4 h-4 text-primary" />
+                <Rocket className="w-4 h-4 text-primary-readable" />
                 <span className="text-sm font-bold text-foreground">Precisa de mais?</span>
               </div>
               <p className="text-xs text-muted-foreground mb-3">
