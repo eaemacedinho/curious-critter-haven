@@ -52,6 +52,7 @@ const App = () => (
               <Route path="/cookies" element={<Cookies />} />
               <Route path="/termos" element={<Terms />} />
               <Route path="/reset-password" element={<ResetPassword />} />
+              <Route path="/verify-email" element={<VerifyEmail />} />
               <Route path="/c/:handle" element={<CreatorPublic />} />
               <Route path="/exemplo" element={<ExampleLink />} />
               <Route path="/convite" element={<Invite />} />

@@ -84,7 +84,12 @@ export default function Login() {
     } else {
       const { error } = await supabase.auth.signInWithPassword({ email, password });
       if (error) {
-        toast.error(error.message);
+        if (error.message === "Email not confirmed") {
+          toast.error("E-mail não confirmado. Verifique seu e-mail.");
+          navigate(`/verify-email?email=${encodeURIComponent(email)}`);
+        } else {
+          toast.error(error.message);
+        }
       } else {
         toast.success("Login realizado!");
         const dest = templateParam ? `/app?template=${templateParam}` : "/app";
