@@ -73,7 +73,7 @@ export default function Templates() {
           </motion.div>
           <motion.h1 variants={fadeUp} custom={1} className="font-display text-4xl font-extrabold tracking-tight sm:text-5xl lg:text-6xl">
             Escolha um modelo.{" "}
-            <span className="text-primary">Comece pronto.</span>
+            <span className="text-primary-readable">Comece pronto.</span>
           </motion.h1>
           <motion.p variants={fadeUp} custom={2} className="mt-5 text-lg text-muted-foreground max-w-xl mx-auto">
             Templates criados para converter — não só para parecer bonito.
