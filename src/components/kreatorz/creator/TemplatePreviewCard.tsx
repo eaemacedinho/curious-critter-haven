@@ -1,6 +1,6 @@
-import { useMemo } from "react";
+import { useMemo, useRef, useEffect, useState } from "react";
 import type { FullTemplateData } from "@/lib/templateData";
-import type { CreatorProfile, CreatorLink, SocialLink, CreatorProduct, CreatorCampaign } from "@/hooks/useCreatorData";
+import type { CreatorProfile, CreatorLink, SocialLink, CreatorProduct, CreatorCampaign, ImageShapeValue } from "@/hooks/useCreatorData";
 import type { HeroReelData } from "./HeroReel";
 import type { Testimonial } from "./TestimonialsSection";
 import CreatorView from "./CreatorView";
@@ -10,16 +10,28 @@ interface Props {
   fullHeight?: boolean;
 }
 
-/**
- * Renders the real CreatorView at a scaled-down size so the template
- * preview is pixel-identical to the actual creator page.
- */
 export default function TemplatePreviewCard({ template, fullHeight }: Props) {
   const { profile: tp, links: tl, socialLinks: ts, products: tpr, testimonials: tt } = template;
+  const containerRef = useRef<HTMLDivElement>(null);
+  const [scale, setScale] = useState(0.75);
 
-  // Map template data → CreatorView props
+  const RENDER_WIDTH = 480;
+
+  useEffect(() => {
+    const el = containerRef.current;
+    if (!el) return;
+    const observer = new ResizeObserver((entries) => {
+      const w = entries[0]?.contentRect.width || 300;
+      setScale(w / RENDER_WIDTH);
+    });
+    observer.observe(el);
+    return () => observer.disconnect();
+  }, []);
+
   const profile = useMemo<CreatorProfile>(() => ({
     id: template.id,
+    user_id: null,
+    agency_id: null,
     name: tp.category,
     slug: template.id,
     bio: tp.bio,
@@ -28,10 +40,10 @@ export default function TemplatePreviewCard({ template, fullHeight }: Props) {
     avatar_url_layout2: "",
     cover_url_layout2: "",
     layout_type: "layout1",
-    image_shape: tp.image_shape,
-    image_shape_links: tp.image_shape_links,
-    image_shape_products: tp.image_shape_products,
-    image_shape_campaigns: tp.image_shape || "rounded",
+    image_shape: (tp.image_shape || "rounded") as ImageShapeValue,
+    image_shape_links: (tp.image_shape_links || "rounded") as ImageShapeValue,
+    image_shape_products: (tp.image_shape_products || "rounded") as ImageShapeValue,
+    image_shape_campaigns: (tp.image_shape || "rounded") as ImageShapeValue,
     font_family: tp.font_family,
     font_size: tp.font_size,
     category: tp.category,
@@ -40,10 +52,13 @@ export default function TemplatePreviewCard({ template, fullHeight }: Props) {
     tags: tp.tags,
     stats: tp.stats,
     brands: tp.brands,
-    brands_display_mode: tp.brands_display_mode,
+    brands_display_mode: (tp.brands_display_mode || "static") as "static" | "marquee",
     spotify_url: "",
     page_effects: { effects: [], color: undefined },
     verified: false,
+    color_name: null,
+    color_bio: null,
+    color_section_titles: null,
   }), [template]);
 
   const links = useMemo<CreatorLink[]>(() =>
@@ -57,7 +72,7 @@ export default function TemplatePreviewCard({ template, fullHeight }: Props) {
       is_featured: l.is_featured,
       is_active: l.is_active,
       sort_order: i,
-      display_mode: l.display_mode,
+      display_mode: (l.display_mode === "half" ? "half" : "full") as "full" | "half",
       image_url: null,
       bg_color: null,
       text_color: null,
@@ -96,6 +111,7 @@ export default function TemplatePreviewCard({ template, fullHeight }: Props) {
   const testimonials = useMemo<Testimonial[]>(() =>
     tt.map((t, i) => ({
       id: `test-${i}`,
+      creator_id: template.id,
       author_name: t.author_name,
       author_role: t.author_role,
       content: t.content,
@@ -104,21 +120,21 @@ export default function TemplatePreviewCard({ template, fullHeight }: Props) {
       sort_order: i,
       author_avatar_url: "",
     })),
-  [tt]);
+  [tt, template.id]);
 
   const campaigns = useMemo<CreatorCampaign[]>(() => [], []);
   const heroReels = useMemo<HeroReelData[]>(() => [], []);
 
-  // Scale factor: render at 480px wide, scaled to fit container
-  const RENDER_WIDTH = 480;
-
   return (
-    <div className={`w-full ${fullHeight ? "min-h-full" : "h-full"} overflow-hidden relative bg-background`}>
+    <div
+      ref={containerRef}
+      className={`w-full ${fullHeight ? "min-h-full" : "h-full"} overflow-hidden relative bg-background`}
+    >
       <div
-        className="origin-top-left"
+        className="pointer-events-none select-none"
         style={{
           width: RENDER_WIDTH,
-          transform: `scale(var(--preview-scale, 0.75))`,
+          transform: `scale(${scale})`,
           transformOrigin: "top left",
         }}
       >
@@ -134,14 +150,6 @@ export default function TemplatePreviewCard({ template, fullHeight }: Props) {
           agencyFooterVisible={false}
         />
       </div>
-      {/* Scale calculator: uses container width / render width */}
-      <style>{`
-        @container (min-width: 0px) {
-          .origin-top-left {
-            --preview-scale: 1;
-          }
-        }
-      `}</style>
     </div>
   );
 }
