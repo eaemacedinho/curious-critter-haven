@@ -136,7 +136,7 @@ export default function CreatorView({ profile, links: rawLinks, socialLinks: raw
                 </div>
               )}
             </div>
-            {profile.verified && (
+            {profile.verified && badgePosition === "photo" && (
               <div className="absolute bottom-0 right-0 z-[3]">
                 <VerifiedBadge size={28} />
               </div>
