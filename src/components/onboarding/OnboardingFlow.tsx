@@ -208,6 +208,28 @@ export default function OnboardingFlow({ onComplete }: { onComplete: () => void 
     setLoadingMsgIdx(0);
 
     try {
+      // Prevent duplicate creators from onboarding re-runs
+      const { data: existingCreators } = await supabase
+        .from("creators")
+        .select("id, slug")
+        .eq("agency_id", agency.id)
+        .limit(1);
+
+      if (existingCreators && existingCreators.length > 0) {
+        // Creator already exists — skip creation, just finish onboarding
+        setCreatedHandle(existingCreators[0].slug);
+        await supabase
+          .from("agency_settings")
+          .update({ onboarding_completed: true })
+          .eq("agency_id", agency.id);
+        await refetch();
+        markOnboardingDone(user.id);
+        clearProgress();
+        await new Promise(r => setTimeout(r, 1500));
+        setStep("done");
+        return;
+      }
+
       const colors = STYLE_MAP[style];
       const name = agencyName.trim() || agency.name || "Minha Agência";
       const slug = name.toLowerCase().replace(/[^a-z0-9]/g, "-").replace(/-+/g, "-");
