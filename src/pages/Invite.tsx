@@ -81,17 +81,31 @@ export default function Invite() {
         {/* Referrer badge */}
         {!loading && referrerName && (
           <motion.div
-            initial={{ opacity: 0, y: -10, scale: 0.95 }}
+79:             initial={{ opacity: 0, y: -10, scale: 0.95 }}
             animate={{ opacity: 1, y: 0, scale: 1 }}
             transition={{ duration: 0.5, ease: [0.16, 1, 0.3, 1] }}
-            className="inline-flex items-center gap-2.5 px-5 py-2.5 bg-card border border-border rounded-full mb-8 shadow-lg"
+            className="inline-flex items-center gap-3 px-5 py-3 bg-card border border-border rounded-full mb-8 shadow-lg"
           >
-            <div className="w-8 h-8 rounded-full gradient-primary flex items-center justify-center text-xs text-primary-foreground font-bold">
-              {referrerName.charAt(0).toUpperCase()}
+            <Avatar className="w-10 h-10 border-2 border-primary/30">
+              {referrerAvatar ? (
+                <AvatarImage src={referrerAvatar} alt={referrerName || ""} />
+              ) : null}
+              <AvatarFallback className="bg-primary/15 text-primary-readable font-bold text-sm">
+                {referrerName?.charAt(0).toUpperCase() || "?"}
+              </AvatarFallback>
+            </Avatar>
+            <div className="text-left">
+              <p className="text-sm font-bold text-foreground leading-tight">
+                {referrerName}
+              </p>
+              {referrerSlug && (
+                <p className="text-xs text-muted-foreground leading-tight">
+                  @{referrerSlug}
+                </p>
+              )}
             </div>
-            <span className="text-sm text-muted-foreground">
-              <strong className="text-foreground">{referrerName}</strong> te convidou!
-            </span>
+            <div className="h-8 w-px bg-border mx-1" />
+            <span className="text-sm text-muted-foreground">te convidou!</span>
             <Sparkles className="w-4 h-4 text-primary-readable" />
           </motion.div>
         )}
