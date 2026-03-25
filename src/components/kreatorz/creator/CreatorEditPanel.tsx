@@ -826,6 +826,28 @@ const CreatorEditPanel = forwardRef<CreatorEditPanelHandle, Props>(function Crea
         </div>
       </div>
 
+      {/* 🌗 Tema padrão */}
+      <div className="mb-8" data-editor-section="effects">
+        <div className={sectionTitle}>🌗 Tema Padrão da Página</div>
+        <p className="text-[0.68rem] text-muted-foreground mb-3">Escolha qual tema os visitantes verão ao abrir sua página. Eles podem trocar depois.</p>
+        <div className="flex gap-2">
+          <button
+            onClick={() => setDefaultTheme("dark")}
+            className={`flex-1 flex items-center justify-center gap-2 py-3 rounded-xl border-2 transition-all duration-200 ${defaultTheme === "dark" ? "border-primary bg-primary/10 shadow-[0_0_12px_hsl(var(--primary)_/_0.2)]" : "border-border bg-card hover:border-primary/30"}`}
+          >
+            <span className="text-lg">🌙</span>
+            <span className={`text-[0.78rem] font-semibold ${defaultTheme === "dark" ? "text-primary-readable" : "text-foreground/70"}`}>Escuro</span>
+          </button>
+          <button
+            onClick={() => setDefaultTheme("light")}
+            className={`flex-1 flex items-center justify-center gap-2 py-3 rounded-xl border-2 transition-all duration-200 ${defaultTheme === "light" ? "border-primary bg-primary/10 shadow-[0_0_12px_hsl(var(--primary)_/_0.2)]" : "border-border bg-card hover:border-primary/30"}`}
+          >
+            <span className="text-lg">☀️</span>
+            <span className={`text-[0.78rem] font-semibold ${defaultTheme === "light" ? "text-primary-readable" : "text-foreground/70"}`}>Claro</span>
+          </button>
+        </div>
+      </div>
+
       <div className="mb-8" data-editor-section="effects">
         <div className={sectionTitle}>✨ Efeitos Visuais</div>
         <p className="text-[0.68rem] text-muted-foreground mb-3">Adicione efeitos animados à sua página pública. Selecione quantos quiser.</p>
