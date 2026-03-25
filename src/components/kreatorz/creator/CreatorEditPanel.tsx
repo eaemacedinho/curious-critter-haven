@@ -345,6 +345,8 @@ const CreatorEditPanel = forwardRef<CreatorEditPanelHandle, Props>(function Crea
     if (!handle.trim()) errors.slug = "Handle é obrigatório";
     else if (/\s/.test(handle)) errors.slug = "Handle não pode conter espaços";
     else if (!/^[a-zA-Z0-9._-]+$/.test(handle.replace(/^@/, ""))) errors.slug = "Handle contém caracteres inválidos";
+    else if (handleAvailable === false) errors.slug = "Handle já está em uso";
+    else if (handleLocked && handle.trim().replace(/^@/, "").toLowerCase() !== originalHandle.current.replace(/^@/, "").toLowerCase()) errors.slug = "Handle bloqueado por 30 dias";
 
     links.forEach((link, i) => {
       const normalizedUrl = normalizeExternalUrl(link.url);
