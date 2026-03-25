@@ -91,6 +91,7 @@ export default function CreatorView({ profile, links: rawLinks, socialLinks: raw
   const effectEmojis = pe.emojis;
   const effectIntensity = pe.intensity;
   const displayModes = pe.display_modes || {};
+  const badgePosition = (pe as any).badge_position || "name";
 
   const fontFam = getFontFamily(profile.font_family || "default");
   const fontScale = getFontSizeScale(profile.font_size || "medium");
