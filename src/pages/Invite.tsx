@@ -81,7 +81,7 @@ export default function Invite() {
         {/* Referrer badge */}
         {!loading && referrerName && (
           <motion.div
-79:             initial={{ opacity: 0, y: -10, scale: 0.95 }}
+initial={{ opacity: 0, y: -10, scale: 0.95 }}
             animate={{ opacity: 1, y: 0, scale: 1 }}
             transition={{ duration: 0.5, ease: [0.16, 1, 0.3, 1] }}
             className="inline-flex items-center gap-3 px-5 py-3 bg-card border border-border rounded-full mb-8 shadow-lg"
