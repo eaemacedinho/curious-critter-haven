@@ -60,7 +60,7 @@ export default function Referrals() {
         {/* Header */}
         <div className="mb-8">
           <h1 className="font-display text-2xl font-bold text-foreground flex items-center gap-2">
-            <Gift className="w-6 h-6 text-primary" />
+            <Gift className="w-6 h-6 text-primary-readable" />
             Programa de Indicações
           </h1>
           <p className="text-sm text-muted-foreground mt-1">
@@ -82,7 +82,7 @@ export default function Referrals() {
               transition={{ delay: 0.1 * i }}
               className="bg-card border border-border rounded-2xl p-4 text-center"
             >
-              <div className="flex justify-center text-primary mb-2">{stat.icon}</div>
+              <div className="flex justify-center text-primary-readable mb-2">{stat.icon}</div>
               <div className="text-xl font-bold text-foreground">{stat.value}</div>
               <div className="text-[0.66rem] text-muted-foreground">{stat.label}</div>
             </motion.div>
@@ -97,7 +97,7 @@ export default function Referrals() {
           className="bg-card border border-border rounded-2xl p-5 mb-6"
         >
           <h2 className="text-sm font-bold text-foreground mb-3 flex items-center gap-2">
-            <Share2 className="w-4 h-4 text-primary" />
+            <Share2 className="w-4 h-4 text-primary-readable" />
             Seu link de convite
           </h2>
           <div className="flex items-center gap-2">
@@ -137,7 +137,7 @@ export default function Referrals() {
           className="bg-card border border-border rounded-2xl p-5"
         >
           <h2 className="text-sm font-bold text-foreground mb-4 flex items-center gap-2">
-            <Trophy className="w-4 h-4 text-primary" />
+            <Trophy className="w-4 h-4 text-primary-readable" />
             Recompensas
           </h2>
 
@@ -164,14 +164,14 @@ export default function Referrals() {
                 {/* Info */}
                 <div className="flex-1 min-w-0">
                   <div className="flex items-center gap-2">
-                    <span className={`text-sm font-bold ${reward.unlocked ? "text-primary" : "text-foreground"}`}>
+                    <span className={`text-sm font-bold ${reward.unlocked ? "text-primary-readable" : "text-foreground"}`}>
                       {reward.label}
                     </span>
                     {reward.unlocked && (
                       <motion.span
                         initial={{ scale: 0 }}
                         animate={{ scale: 1 }}
-                        className="px-2 py-0.5 bg-primary/15 text-primary text-[0.6rem] font-bold rounded-full"
+                        className="px-2 py-0.5 bg-primary/15 text-primary-readable text-[0.6rem] font-bold rounded-full"
                       >
                         DESBLOQUEADO
                       </motion.span>
@@ -182,7 +182,7 @@ export default function Referrals() {
 
                 {/* Progress */}
                 <div className="text-right shrink-0">
-                  <div className={`text-sm font-bold ${reward.unlocked ? "text-primary" : "text-muted-foreground"}`}>
+                  <div className={`text-sm font-bold ${reward.unlocked ? "text-primary-readable" : "text-muted-foreground"}`}>
                     {Math.min(convertedReferrals, reward.threshold)}/{reward.threshold}
                   </div>
                 </div>

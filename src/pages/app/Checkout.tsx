@@ -81,7 +81,7 @@ export default function Checkout() {
           animate={{ scale: 1, opacity: 1 }}
           className="text-center space-y-4"
         >
-          <CheckCircle2 className="w-16 h-16 text-primary mx-auto" />
+          <CheckCircle2 className="w-16 h-16 text-primary-readable mx-auto" />
           <h2 className="text-2xl font-bold text-foreground">Você já é {currentPlan === "scale" ? "Scale" : "Pro"}!</h2>
           <p className="text-muted-foreground">Aproveite todos os recursos premium.</p>
           <Button onClick={() => navigate("/app")} variant="outline">
@@ -101,7 +101,7 @@ export default function Checkout() {
           animate={{ scale: 1, opacity: 1 }}
           className="text-center space-y-4"
         >
-          <CheckCircle2 className="w-16 h-16 text-primary mx-auto" />
+          <CheckCircle2 className="w-16 h-16 text-primary-readable mx-auto" />
           <h2 className="text-2xl font-bold text-foreground">Pagamento confirmado!</h2>
           <p className="text-muted-foreground">Bem-vindo ao plano {plan.label}. Aproveite todos os recursos.</p>
           <Button onClick={() => navigate("/app")}>
@@ -190,9 +190,9 @@ export default function Checkout() {
         <div className="text-center space-y-2">
           <div className="w-14 h-14 rounded-2xl bg-primary/10 flex items-center justify-center mx-auto">
             {planKey === "scale" ? (
-              <Rocket className="w-7 h-7 text-primary" />
+              <Rocket className="w-7 h-7 text-primary-readable" />
             ) : (
-              <Sparkles className="w-7 h-7 text-primary" />
+              <Sparkles className="w-7 h-7 text-primary-readable" />
             )}
           </div>
           <h1 className="text-2xl font-extrabold text-foreground">Upgrade para o {plan.label}</h1>
@@ -206,7 +206,7 @@ export default function Checkout() {
         <div className="grid grid-cols-2 gap-2 p-4 bg-muted/30 rounded-2xl border border-border">
           {plan.features.map((f) => (
             <div key={f} className="flex items-center gap-2 text-sm text-muted-foreground">
-              <CheckCircle2 className="w-3.5 h-3.5 text-primary flex-shrink-0" />
+              <CheckCircle2 className="w-3.5 h-3.5 text-primary-readable flex-shrink-0" />
               {f}
             </div>
           ))}
@@ -235,7 +235,7 @@ export default function Checkout() {
           {/* Customer Info */}
           <div className="space-y-4">
             <h3 className="text-sm font-bold text-foreground flex items-center gap-2">
-              <Shield className="w-4 h-4 text-primary" />
+              <Shield className="w-4 h-4 text-primary-readable" />
               Dados pessoais
             </h3>
             <div className="grid grid-cols-2 gap-3">
@@ -289,7 +289,7 @@ export default function Checkout() {
           {/* Card Info */}
           <div className="space-y-4">
             <h3 className="text-sm font-bold text-foreground flex items-center gap-2">
-              <CreditCard className="w-4 h-4 text-primary" />
+              <CreditCard className="w-4 h-4 text-primary-readable" />
               Dados do cartão
             </h3>
             <div className="grid grid-cols-2 gap-3">

@@ -177,8 +177,8 @@ export default function Settings() {
               onClick={() => setActiveSection(sec.id)}
               className={`flex items-center gap-2.5 px-3 py-2.5 rounded-xl text-sm transition-all whitespace-nowrap text-left ${
                 activeSection === sec.id
-                  ? "bg-accent/20 text-primary font-semibold"
-                  : "text-muted-foreground hover:bg-accent/10 hover:text-foreground"
+                  ? "bg-secondary text-foreground font-semibold border border-border"
+                  : "text-muted-foreground hover:bg-secondary/50 hover:text-foreground"
               }`}
             >
               <span className="text-xs">{sec.icon}</span>
@@ -364,7 +364,7 @@ export default function Settings() {
                   </div>
                   <span className={`px-3 py-1.5 rounded-full text-xs font-semibold flex items-center gap-1.5 ${
                     currentPlan !== "free"
-                      ? "bg-primary/10 text-primary"
+                      ? "bg-primary/10 text-primary-readable"
                       : "bg-muted text-muted-foreground"
                   }`}>
                     <span className="w-1.5 h-1.5 rounded-full bg-current" />

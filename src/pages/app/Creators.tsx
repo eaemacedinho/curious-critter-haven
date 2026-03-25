@@ -262,7 +262,7 @@ export default function Creators() {
                 setBatchPrefix("Creator");
                 setShowBatchDialog(true);
               }}
-              className="flex items-center gap-2 px-4 py-2.5 bg-card border border-border text-foreground font-semibold text-sm rounded-xl transition-all hover:border-primary/30 hover:text-primary"
+              className="flex items-center gap-2 px-4 py-2.5 bg-card border border-border text-foreground font-semibold text-sm rounded-xl transition-all hover:border-primary/30 hover:text-foreground"
             >
               <Users className="w-4 h-4" />
               Criar em lote
@@ -359,7 +359,7 @@ export default function Creators() {
                 </div>
               </div>
               <div className="flex items-center gap-2 flex-shrink-0">
-                <span className="hidden sm:inline-flex px-2.5 py-1 rounded-full text-[0.68rem] font-semibold bg-primary/10 text-muted-foreground">
+                <span className="hidden sm:inline-flex px-2.5 py-1 rounded-full text-[0.68rem] font-semibold bg-primary/10 text-foreground">
                   {cr.layout_type === "layout2" ? "Imersivo" : "Padrão"}
                 </span>
                 <button
@@ -464,7 +464,7 @@ export default function Creators() {
             {defaultTemplate && (
               <div className="flex items-center gap-2 px-3 py-2 bg-primary/10 border border-primary/20 rounded-xl">
                 <span className="text-amber-400">⭐</span>
-                <span className="text-xs text-primary font-semibold">Template "Meu Padrão" será aplicado automaticamente</span>
+                <span className="text-xs text-foreground font-semibold">Template "Meu Padrão" será aplicado automaticamente</span>
               </div>
             )}
           </div>

@@ -87,6 +87,9 @@
     --sidebar-accent-foreground: 240 10% 96%;
     --sidebar-border: 240 10% 12%;
     --sidebar-ring: 74 100% 50%;
+
+    /* Readable variant of primary — always visible as text on dark bg */
+    --primary-readable: 74 100% 50%;
   }
 
   .light {
@@ -140,6 +143,8 @@
     --k-shadow: 0 8px 40px hsl(0 0% 0% / 0.08);
     --k-shadow-primary: 0 8px 40px hsl(74 100% 42% / 0.1);
     --k-shadow-primary-lg: 0 12px 50px hsl(74 100% 42% / 0.15);
+
+    --primary-readable: 74 100% 42%;
   }
 }
 

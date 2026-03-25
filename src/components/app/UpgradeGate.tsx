@@ -49,7 +49,7 @@ export default function UpgradeGate({
         <div className="absolute inset-0 flex items-center justify-center bg-background/60 backdrop-blur-sm rounded-2xl border border-primary/10">
           <div className="flex flex-col items-center gap-2 text-center px-4">
             <div className="w-10 h-10 rounded-xl bg-primary/10 flex items-center justify-center">
-              <Crown className="w-5 h-5 text-primary" />
+              <Crown className="w-5 h-5 text-primary-readable" />
             </div>
             <p className="text-xs font-bold text-foreground">Recurso Pro</p>
             <p className="text-[0.65rem] text-muted-foreground max-w-[200px]">
@@ -93,14 +93,14 @@ function UpgradeModal({ featureLabel, onClose }: { featureLabel: string; onClose
 
         <div className="flex flex-col items-center text-center">
           <div className="w-16 h-16 rounded-2xl bg-primary/10 flex items-center justify-center mb-5">
-            <Sparkles className="w-8 h-8 text-primary" />
+            <Sparkles className="w-8 h-8 text-primary-readable" />
           </div>
 
           <h3 className="font-display text-lg sm:text-xl font-extrabold text-foreground mb-2">
             Desbloqueie o {featureLabel}
           </h3>
           <p className="text-sm text-muted-foreground mb-6 max-w-[320px]">
-            Faça upgrade para o plano <span className="text-primary font-bold">Pro</span> e tenha acesso a todos os recursos premium por apenas <span className="text-foreground font-bold">R$17,90/mês</span>.
+            Faça upgrade para o plano <span className="text-primary-readable font-bold">Pro</span> e tenha acesso a todos os recursos premium por apenas <span className="text-foreground font-bold">R$17,90/mês</span>.
           </p>
 
           <div className="w-full space-y-2.5 mb-6 text-left">
@@ -115,7 +115,7 @@ function UpgradeModal({ featureLabel, onClose }: { featureLabel: string; onClose
               "Selo verificado",
             ].map((f) => (
               <div key={f} className="flex items-center gap-2.5 text-sm text-muted-foreground">
-                <Sparkles className="w-3.5 h-3.5 text-primary flex-shrink-0" />
+                <Sparkles className="w-3.5 h-3.5 text-primary-readable flex-shrink-0" />
                 {f}
               </div>
             ))}
@@ -133,11 +133,11 @@ function UpgradeModal({ featureLabel, onClose }: { featureLabel: string; onClose
           {isPro && (
             <div className="w-full mt-4 p-4 bg-muted/30 border border-border rounded-2xl">
               <div className="flex items-center gap-2 mb-2">
-                <Rocket className="w-4 h-4 text-primary" />
+                <Rocket className="w-4 h-4 text-primary-readable" />
                 <span className="text-sm font-bold text-foreground">Precisa de mais?</span>
               </div>
               <p className="text-xs text-muted-foreground mb-3">
-                O plano <span className="text-primary font-bold">Scale</span> (R$87,90/mês) tem até 10 perfis, membros de equipe e criação em lote. Ou conheça o <span className="text-primary font-bold">Enterprise</span> com white-label completo e domínio customizado.
+                O plano <span className="text-primary-readable font-bold">Scale</span> (R$87,90/mês) tem até 10 perfis, membros de equipe e criação em lote. Ou conheça o <span className="text-primary-readable font-bold">Enterprise</span> com white-label completo e domínio customizado.
               </p>
               <a
                 href="mailto:contato@in1.bio?subject=Plano%20Enterprise"
@@ -162,7 +162,7 @@ function UpgradeModal({ featureLabel, onClose }: { featureLabel: string; onClose
 /** Inline pro badge for menu items / labels */
 export function ProBadge() {
   return (
-    <span className="inline-flex items-center gap-0.5 px-1.5 py-0.5 bg-primary/10 text-primary text-[0.55rem] font-extrabold rounded-md uppercase tracking-wider">
+    <span className="inline-flex items-center gap-0.5 px-1.5 py-0.5 bg-primary/10 text-primary-readable text-[0.55rem] font-extrabold rounded-md uppercase tracking-wider">
       <Crown className="w-2.5 h-2.5" />
       Pro
     </span>

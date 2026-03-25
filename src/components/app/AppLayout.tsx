@@ -43,6 +43,27 @@ function hexToHsl(hex: string): string | null {
   return `${Math.round(h * 360)} ${Math.round(s * 100)}% ${Math.round(l * 100)}%`;
 }
 
+/** Ensure a color is light enough to be readable as text on dark backgrounds */
+function ensureReadableHsl(hslStr: string): string {
+  const parts = hslStr.match(/(\d+)\s+(\d+)%\s+(\d+)%/);
+  if (!parts) return hslStr;
+  const h = parseInt(parts[1]);
+  const s = parseInt(parts[2]);
+  let l = parseInt(parts[3]);
+  // For dark theme text usage, ensure lightness is at least 55%
+  if (l < 55) l = Math.max(55, l + 20);
+  return `${h} ${s}% ${l}%`;
+}
+
+/** Compute the best foreground for a given HSL background */
+function computeForeground(hslStr: string): string {
+  const parts = hslStr.match(/(\d+)\s+(\d+)%\s+(\d+)%/);
+  if (!parts) return "0 0% 100%";
+  const l = parseInt(parts[3]);
+  // If background is light (>55%), use dark text; otherwise use white
+  return l > 55 ? "240 23% 2%" : "0 0% 100%";
+}
+
 export default function AppLayout() {
   const { user, signOut } = useAuth();
   const { agency } = useTenant();
@@ -56,6 +77,7 @@ export default function AppLayout() {
   useEffect(() => {
     if (!agency) return;
     const root = document.documentElement;
+    const isDark = !root.classList.contains("light");
     const primary = hexToHsl(agency.primary_color || "");
     const accent = hexToHsl(agency.accent_color || "");
     if (primary) {
@@ -64,18 +86,19 @@ export default function AppLayout() {
       root.style.setProperty("--accent", primary);
       root.style.setProperty("--sidebar-primary", primary);
       root.style.setProperty("--k-500", primary);
+      root.style.setProperty("--primary-foreground", computeForeground(primary));
+      root.style.setProperty("--accent-foreground", computeForeground(primary));
+      root.style.setProperty("--sidebar-primary-foreground", computeForeground(primary));
+      // Readable version: always light enough for text on dark bg
+      root.style.setProperty("--primary-readable", ensureReadableHsl(primary));
     }
     if (accent) {
       root.style.setProperty("--k-400", accent);
     }
     return () => {
-      // Reset on unmount so public pages use defaults
-      root.style.removeProperty("--primary");
-      root.style.removeProperty("--ring");
-      root.style.removeProperty("--accent");
-      root.style.removeProperty("--sidebar-primary");
-      root.style.removeProperty("--k-500");
-      root.style.removeProperty("--k-400");
+      ["--primary", "--ring", "--accent", "--sidebar-primary", "--k-500", "--k-400",
+       "--primary-foreground", "--accent-foreground", "--sidebar-primary-foreground",
+       "--primary-readable"].forEach(v => root.style.removeProperty(v));
     };
   }, [agency]);
 
@@ -112,7 +135,7 @@ export default function AppLayout() {
               {agency?.name || "Minha Agência"}
             </span>
             <span className={`text-[0.5rem] font-extrabold px-1.5 py-0.5 rounded-md uppercase tracking-wider ${
-              isPro ? "bg-primary/15 text-primary" : "bg-muted text-muted-foreground"
+              isPro ? "bg-primary/15 text-primary-readable" : "bg-muted text-muted-foreground"
             }`}>
               {currentPlan === "scale" ? "Scale" : isPro ? "Pro" : "Free"}
             </span>
@@ -127,7 +150,7 @@ export default function AppLayout() {
       {!isPro && (
         <div className="mx-3 mb-5 p-3 bg-primary/5 border border-primary/10 rounded-xl">
           <div className="flex items-center gap-2 mb-1.5">
-            <Crown className="w-3.5 h-3.5 text-primary" />
+            <Crown className="w-3.5 h-3.5 text-primary-readable" />
             <span className="text-[0.68rem] font-bold text-foreground">Upgrade Pro</span>
           </div>
           <p className="text-[0.6rem] text-muted-foreground mb-2 leading-relaxed">
@@ -159,7 +182,7 @@ export default function AppLayout() {
             <span className="text-xs w-4 text-center">{item.icon}</span>
             {item.label}
             {(item as any).pro && !isPro && (
-              <span className="ml-auto inline-flex items-center gap-0.5 px-1.5 py-0.5 bg-primary/10 text-primary text-[0.55rem] font-extrabold rounded-md uppercase tracking-wider">
+              <span className="ml-auto inline-flex items-center gap-0.5 px-1.5 py-0.5 bg-primary/10 text-primary-readable text-[0.55rem] font-extrabold rounded-md uppercase tracking-wider">
                 <Crown className="w-2.5 h-2.5" />
                 Pro
               </span>
@@ -193,7 +216,7 @@ export default function AppLayout() {
 
       {/* User footer */}
       <div className="mt-auto flex items-center gap-2.5 p-3 border-t border-border">
-        <div className="w-8 h-8 rounded-full bg-primary/20 flex items-center justify-center text-xs font-bold text-primary">
+        <div className="w-8 h-8 rounded-full bg-primary/20 flex items-center justify-center text-xs font-bold text-primary-readable">
           {user?.email?.[0]?.toUpperCase() || "U"}
         </div>
         <div className="min-w-0 flex-1">

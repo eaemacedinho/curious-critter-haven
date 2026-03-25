@@ -24,7 +24,7 @@ const ROLE_LABELS: Record<AppRole, string> = {
 };
 
 const ROLE_COLORS: Record<AppRole, string> = {
-  owner: "bg-primary/20 text-primary",
+  owner: "bg-primary/20 text-primary-readable",
   admin: "bg-blue-500/20 text-blue-400",
   editor: "bg-emerald-500/20 text-emerald-400",
   viewer: "bg-muted text-muted-foreground",
@@ -221,7 +221,7 @@ export default function Members() {
                 }`}
               >
                 {/* Avatar */}
-                <div className="w-10 h-10 rounded-full bg-primary/20 flex items-center justify-center text-sm font-bold text-primary flex-shrink-0">
+                <div className="w-10 h-10 rounded-full bg-primary/20 flex items-center justify-center text-sm font-bold text-primary-readable flex-shrink-0">
                   {member.avatar_url ? (
                     <img src={member.avatar_url} alt="" className="w-full h-full rounded-full object-cover" />
                   ) : (

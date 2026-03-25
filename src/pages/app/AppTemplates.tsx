@@ -287,7 +287,7 @@ export default function AppTemplates() {
           <Save className="w-3.5 h-3.5" />
           {savedTemplates.length}/{maxSaved} salvos
           {!isPro && (
-            <span className="inline-flex items-center gap-1 ml-2 px-2 py-0.5 bg-primary/10 text-primary rounded-md text-[0.6rem] font-bold">
+            <span className="inline-flex items-center gap-1 ml-2 px-2 py-0.5 bg-primary/10 text-primary-readable rounded-md text-[0.6rem] font-bold">
               <Crown className="w-2.5 h-2.5" /> Pro: até 5
             </span>
           )}
@@ -383,7 +383,7 @@ export default function AppTemplates() {
                 <div className="p-4">
                   <h3 className="font-display text-base font-bold text-foreground">{template.name}</h3>
                   <p className="mt-1 text-xs text-muted-foreground leading-relaxed line-clamp-2">{template.description}</p>
-                  <div className="mt-2 flex items-center gap-1.5 text-[0.68rem] font-medium text-primary">
+                  <div className="mt-2 flex items-center gap-1.5 text-[0.68rem] font-medium text-primary-readable">
                     <Sparkles className="h-3 w-3" /> {template.objective}
                   </div>
                 </div>
@@ -420,7 +420,7 @@ export default function AppTemplates() {
                 <TemplatePreviewCard template={selectedTemplate} fullHeight />
               </div>
               <div className="flex w-full flex-col justify-center p-8 md:w-1/2 md:p-10 overflow-y-auto">
-                <div className="mb-4 inline-flex w-fit items-center gap-1.5 rounded-full border border-primary/30 bg-primary/10 px-3 py-1 text-xs font-semibold text-primary">
+                <div className="mb-4 inline-flex w-fit items-center gap-1.5 rounded-full border border-primary/30 bg-primary/10 px-3 py-1 text-xs font-semibold text-primary-readable">
                   <Sparkles className="h-3 w-3" /> Template
                 </div>
                 <h2 className="font-display text-2xl font-extrabold text-foreground">{selectedTemplate.name}</h2>
@@ -434,11 +434,11 @@ export default function AppTemplates() {
                 <div className="mt-4 rounded-xl border border-border bg-background/50 p-4">
                   <p className="text-xs font-semibold text-muted-foreground uppercase tracking-wider mb-2">Incluso neste template</p>
                   <div className="flex flex-wrap gap-2 text-xs">
-                    <span className="px-2 py-1 rounded-lg bg-primary/10 text-primary font-medium">{selectedTemplate.links.length} links</span>
-                    <span className="px-2 py-1 rounded-lg bg-primary/10 text-primary font-medium">{selectedTemplate.socialLinks.length} redes sociais</span>
-                    <span className="px-2 py-1 rounded-lg bg-primary/10 text-primary font-medium">{selectedTemplate.products.length} produtos</span>
+                    <span className="px-2 py-1 rounded-lg bg-primary/10 text-foreground font-medium">{selectedTemplate.links.length} links</span>
+                    <span className="px-2 py-1 rounded-lg bg-primary/10 text-foreground font-medium">{selectedTemplate.socialLinks.length} redes sociais</span>
+                    <span className="px-2 py-1 rounded-lg bg-primary/10 text-foreground font-medium">{selectedTemplate.products.length} produtos</span>
                     {selectedTemplate.testimonials.length > 0 && (
-                      <span className="px-2 py-1 rounded-lg bg-primary/10 text-primary font-medium">{selectedTemplate.testimonials.length} depoimentos</span>
+                      <span className="px-2 py-1 rounded-lg bg-primary/10 text-foreground font-medium">{selectedTemplate.testimonials.length} depoimentos</span>
                     )}
                   </div>
                 </div>
@@ -455,7 +455,7 @@ export default function AppTemplates() {
                           className="w-full flex items-center justify-between gap-2 px-4 py-3 rounded-xl border border-border bg-background hover:border-primary/30 transition-all text-sm"
                         >
                           <span className="font-medium text-foreground">{c.name || "Sem nome"}</span>
-                          <span className="flex items-center gap-1 text-xs text-primary font-semibold">
+                          <span className="flex items-center gap-1 text-xs text-primary-readable font-semibold">
                             {applyingTo === c.id ? "Aplicando..." : <>Aplicar <ArrowRight className="h-3 w-3" /></>}
                           </span>
                         </button>

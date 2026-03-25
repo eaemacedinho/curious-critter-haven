@@ -694,7 +694,7 @@ const CreatorEditPanel = forwardRef<CreatorEditPanelHandle, Props>(function Crea
                           onClick={() => section.setter(opt.value)}
                           className={`flex flex-col items-center gap-1.5 p-2 rounded-xl border transition-all duration-200 active:scale-[0.97] ${
                             section.value === opt.value
-                              ? "border-primary bg-primary/10 text-primary"
+                              ? "border-primary bg-primary/10 text-foreground"
                               : "border-border bg-card text-muted-foreground hover:border-primary/30"
                           }`}
                         >
