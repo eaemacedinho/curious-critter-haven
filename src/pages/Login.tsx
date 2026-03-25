@@ -5,6 +5,7 @@ import { Eye, EyeOff, LogIn, ArrowRight } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { toast } from "sonner";
 import { useAuth } from "@/hooks/useAuth";
+import { Turnstile } from "@marsidev/react-turnstile";
 
 export default function Login() {
   const navigate = useNavigate();
@@ -20,6 +21,7 @@ export default function Login() {
   const [loading, setLoading] = useState(false);
   const [showPassword, setShowPassword] = useState(false);
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
+  const [turnstileToken, setTurnstileToken] = useState<string | null>(null);
 
   useEffect(() => {
     if (!authLoading && user) {
@@ -29,6 +31,10 @@ export default function Login() {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+    if (!turnstileToken) {
+      toast.error("Complete a verificação de segurança.");
+      return;
+    }
     setLoading(true);
 
     if (isSignUp) {
@@ -278,9 +284,19 @@ export default function Login() {
               </div>
             )}
 
+            <div className="flex justify-center">
+              <Turnstile
+                siteKey="0x4AAAAAACvqwP34O2k_fFUT"
+                onSuccess={(token) => setTurnstileToken(token)}
+                onExpire={() => setTurnstileToken(null)}
+                onError={() => setTurnstileToken(null)}
+                options={{ theme: "auto", size: "normal" }}
+              />
+            </div>
+
             <button
               type="submit"
-              disabled={loading || (isSignUp && confirmPassword !== "" && password !== confirmPassword)}
+              disabled={loading || !turnstileToken || (isSignUp && confirmPassword !== "" && password !== confirmPassword)}
               className="w-full py-3.5 bg-primary text-primary-foreground font-semibold text-sm rounded-xl transition-all duration-300 hover:opacity-90 active:scale-[0.98] disabled:opacity-50 flex items-center justify-center gap-2"
             >
               {loading ? (
