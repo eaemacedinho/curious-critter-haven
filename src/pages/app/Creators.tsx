@@ -13,6 +13,7 @@ interface CreatorRow {
   name: string;
   slug: string;
   avatar_url: string;
+  avatar_url_layout2: string;
   bio: string;
   layout_type: string;
   verified: boolean;
@@ -36,7 +37,7 @@ export default function Creators() {
       setLoading(true);
       const { data, error } = await supabase
         .from("creators")
-        .select("id, name, slug, avatar_url, bio, layout_type, verified")
+        .select("id, name, slug, avatar_url, avatar_url_layout2, bio, layout_type, verified")
         .eq("agency_id", agency.id)
         .order("created_at", { ascending: false });
 
@@ -76,7 +77,7 @@ export default function Creators() {
         name: `Creator ${count}`,
         slug: `creator-${count}-${uniqueSuffix}`,
       } as any)
-      .select("id, name, slug, avatar_url, bio, layout_type, verified")
+      .select("id, name, slug, avatar_url, avatar_url_layout2, bio, layout_type, verified")
       .single();
 
     if (error) {
@@ -188,8 +189,22 @@ export default function Creators() {
               className="bg-card border border-border rounded-2xl p-4 sm:p-5 flex items-center gap-4 hover:border-primary/20 transition-all group"
             >
               <div className="w-12 h-12 rounded-full overflow-hidden flex-shrink-0 border-2 border-border">
-                {cr.avatar_url ? (
-                  <img src={cr.avatar_url} alt="" className="w-full h-full object-cover" />
+                {(cr.avatar_url || cr.avatar_url_layout2) ? (
+                  <img
+                    src={cr.avatar_url || cr.avatar_url_layout2}
+                    alt=""
+                    className="w-full h-full object-cover"
+                    onError={(e) => {
+                      const target = e.currentTarget;
+                      // Try layout2 fallback if primary failed
+                      if (cr.avatar_url_layout2 && target.src !== cr.avatar_url_layout2) {
+                        target.src = cr.avatar_url_layout2;
+                      } else {
+                        target.style.display = "none";
+                        target.parentElement!.innerHTML = `<div class="w-full h-full bg-primary/10 flex items-center justify-center text-lg text-muted-foreground">${cr.name?.[0] || "?"}</div>`;
+                      }
+                    }}
+                  />
                 ) : (
                   <div className="w-full h-full bg-primary/10 flex items-center justify-center text-lg text-muted-foreground">
                     {cr.name?.[0] || "?"}
@@ -200,7 +215,7 @@ export default function Creators() {
                 <div className="font-semibold text-foreground flex items-center gap-1.5">
                   {cr.name || "Sem nome"}
                   {cr.verified && (
-                    <svg className="w-4 h-4 flex-shrink-0" viewBox="0 0 24 24" fill="none"><circle cx="12" cy="12" r="10" fill="hsl(var(--primary))" /><path d="M9 12l2 2 4-4" stroke="hsl(var(--primary-foreground))" strokeWidth="2.5" fill="none" /></svg>
+                    <svg className="w-4 h-4 flex-shrink-0" viewBox="0 0 24 24" fill="none"><circle cx="12" cy="12" r="10" fill="#0095f6" /><path d="M9 12l2 2 4-4" stroke="white" strokeWidth="2.5" fill="none" /></svg>
                   )}
                 </div>
                 <div className="text-[0.75rem] text-muted-foreground">

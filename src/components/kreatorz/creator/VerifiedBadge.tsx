@@ -7,13 +7,13 @@ export default function VerifiedBadge({ size = 20 }: { size?: number }) {
       viewBox="0 0 24 24"
       fill="none"
       className="inline-block flex-shrink-0"
-      style={{ filter: `drop-shadow(0 0 ${size * 0.25}px hsl(220 80% 60% / 0.5))` }}
+      style={{ filter: `drop-shadow(0 0 ${size * 0.25}px rgba(0, 149, 246, 0.5))` }}
     >
       <defs>
         <linearGradient id={`${id}-bg`} x1="0" y1="0" x2="24" y2="24" gradientUnits="userSpaceOnUse">
-          <stop offset="0%" stopColor="hsl(220, 85%, 60%)" />
-          <stop offset="50%" stopColor="hsl(240, 75%, 55%)" />
-          <stop offset="100%" stopColor="hsl(260, 80%, 58%)" />
+          <stop offset="0%" stopColor="#0095f6" />
+          <stop offset="50%" stopColor="#0088e0" />
+          <stop offset="100%" stopColor="#0078d4" />
         </linearGradient>
         <linearGradient id={`${id}-shine`} x1="4" y1="2" x2="16" y2="20" gradientUnits="userSpaceOnUse">
           <stop offset="0%" stopColor="white" stopOpacity="0.45" />

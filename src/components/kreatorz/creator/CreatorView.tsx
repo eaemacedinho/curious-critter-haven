@@ -140,9 +140,10 @@ export default function CreatorView({ profile, links: rawLinks, socialLinks: raw
           </div>
 
           {profile.name && (
-            <h1 className="font-display text-[1.85rem] font-normal mt-4 tracking-tight"
+            <h1 className="font-display text-[1.85rem] font-normal mt-4 tracking-tight flex items-center justify-center gap-1.5"
               style={profile.color_name ? { color: profile.color_name } : { color: "hsl(var(--foreground))" }}>
               {profile.name}
+              {profile.verified && <VerifiedBadge size={22} />}
             </h1>
           )}
           {profile.slug && <p className="text-sm text-muted-foreground mt-1">@{profile.slug.replace(/^@+/, "")}</p>}
