@@ -1527,7 +1527,15 @@ const CreatorEditPanel = forwardRef<CreatorEditPanelHandle, Props>(function Crea
       </div>
 
       <div className="mb-8" data-editor-section="past_campaigns">
-        <div className={sectionTitle}>📢 Campanhas / Spotlight</div>
+        <div className="flex items-center justify-between mb-2">
+          <div className={sectionTitle + " mb-0"}>📢 Campanhas / Spotlight</div>
+          {camps.length > 1 && (
+            <div className="flex bg-card border border-border rounded-lg overflow-hidden">
+              <button onClick={() => setDisplayModes(d => ({ ...d, campaigns: "list" }))} className={`px-2 py-1 text-[0.6rem] font-semibold transition-all ${displayModes.campaigns === "list" ? "bg-primary text-primary-foreground" : "text-muted-foreground hover:text-foreground"}`}>Lista</button>
+              <button onClick={() => setDisplayModes(d => ({ ...d, campaigns: "carousel" }))} className={`px-2 py-1 text-[0.6rem] font-semibold transition-all ${displayModes.campaigns === "carousel" ? "bg-primary text-primary-foreground" : "text-muted-foreground hover:text-foreground"}`}>Carrossel</button>
+            </div>
+          )}
+        </div>
         <p className="text-[0.68rem] text-k-4 mb-3">Campanhas marcadas como <strong>"Ao vivo"</strong> aparecem automaticamente no <strong>topo da página</strong> com destaque visual (Spotlight).</p>
         {camps.map((camp, i) => (
           <div
