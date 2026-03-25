@@ -37,6 +37,7 @@ export default function CreatorEdit() {
   const [templateNameInput, setTemplateNameInput] = useState("");
   const [showNewTemplateDialog, setShowNewTemplateDialog] = useState(false);
   const [usingDefault, setUsingDefault] = useState(false);
+  const [activeGalleryTemplateName, setActiveGalleryTemplateName] = useState<string | null>(null);
   const [templateDropdownStyle, setTemplateDropdownStyle] = useState<{ top: number; left: number; width: number } | null>(null);
 
   // Track original template data for "em edição" detection and reset
