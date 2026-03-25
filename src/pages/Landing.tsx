@@ -544,11 +544,11 @@ export default function Landing() {
             </Link>
           </motion.div>
 
-          {/* Enterprise */}
+          {/* Scale */}
           <motion.div variants={cardFade} className="bg-card/80 border border-border rounded-3xl p-8 text-left transition-all duration-300 hover:border-border/80 hover:-translate-y-1">
-            <div className="text-xs font-bold text-muted-foreground uppercase tracking-widest mb-2">Enterprise</div>
-            <div className="text-4xl font-extrabold text-foreground tracking-tight mb-1">R$87,90 <span className="text-base font-medium text-muted-foreground">/mês</span></div>
-            <p className="text-sm text-muted-foreground mb-6">Para agências e equipes maiores.</p>
+            <div className="text-xs font-bold text-muted-foreground uppercase tracking-widest mb-2">Scale</div>
+            <div className="text-3xl font-extrabold text-foreground tracking-tight mb-1">Sob consulta</div>
+            <p className="text-sm text-muted-foreground mb-6">Para agências e equipes com white-label.</p>
             <ul className="space-y-0 mb-7">
               {[
                 "Até 10 perfis",
@@ -558,6 +558,7 @@ export default function Landing() {
                 "Membros de equipe ilimitados",
                 "Templates salvos ilimitados",
                 "Domínio customizado",
+                "White-label completo",
                 "Suporte prioritário",
               ].map((text, i) => (
                 <li key={i} className="flex items-center gap-2.5 py-2 border-b border-border/30 last:border-b-0 text-sm text-muted-foreground">
@@ -566,9 +567,9 @@ export default function Landing() {
                 </li>
               ))}
             </ul>
-            <Link to="/login" className="block w-full py-3.5 text-center rounded-2xl bg-card border border-border text-foreground font-bold text-sm transition-all hover:bg-secondary">
-              Assinar Enterprise
-            </Link>
+            <a href="mailto:contato@in1.bio?subject=Plano%20Scale" className="block w-full py-3.5 text-center rounded-2xl bg-card border border-border text-foreground font-bold text-sm transition-all hover:bg-secondary">
+              Fale conosco
+            </a>
           </motion.div>
         </motion.div>
       </motion.section>
