@@ -160,13 +160,13 @@ export default function Checkout() {
         {/* Features */}
         <div className="grid grid-cols-2 gap-2 p-4 bg-muted/30 rounded-2xl border border-border">
           {[
-            "Creators ilimitados",
+            "Até 2 perfis de creator",
             "Layout Imersivo",
-            "Links ilimitados",
+            "Links & produtos ilimitados",
             "Analytics completo",
             "Campanhas Spotlight",
             "Hero Reels",
-            "Cores personalizadas",
+            "Cores e efeitos personalizados",
             "Selo verificado",
           ].map((f) => (
             <div key={f} className="flex items-center gap-2 text-sm text-muted-foreground">
