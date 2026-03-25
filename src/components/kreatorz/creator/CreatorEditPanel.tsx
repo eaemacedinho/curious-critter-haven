@@ -185,11 +185,12 @@ const CreatorEditPanel = forwardRef<CreatorEditPanelHandle, Props>(function Crea
   const [sectionOrder, setSectionOrder] = useState<string[]>(profile.section_order || ["spotlight", "links", "products", "past_campaigns", "hero_reel", "testimonials"]);
   const [testimonialsList, setTestimonialsList] = useState<Testimonial[]>(initialTestimonials || []);
   const [spotifyUrl, setSpotifyUrl] = useState(profile.spotify_url || "");
-  const [displayModes, setDisplayModes] = useState<{ links: "list" | "carousel"; products: "list" | "carousel"; campaigns: "list" | "carousel" }>({
+  const [displayModes, setDisplayModes] = useState<{ links: "list" | "carousel" | "marquee"; products: "list" | "carousel" | "marquee"; campaigns: "list" | "carousel" | "marquee" }>({
     links: profile.page_effects?.display_modes?.links || "list",
     products: profile.page_effects?.display_modes?.products || "list",
     campaigns: profile.page_effects?.display_modes?.campaigns || "list",
   });
+  const [defaultTheme, setDefaultTheme] = useState<"dark" | "light">((profile.page_effects as any)?.default_theme || "dark");
   const [badgePosition, setBadgePosition] = useState<"name" | "photo">((profile.page_effects as any)?.badge_position || "name");
   const [dragSectionIdx, setDragSectionIdx] = useState<number | null>(null);
   const [saving, setSaving] = useState(false);
