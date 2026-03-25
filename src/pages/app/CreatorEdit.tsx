@@ -458,20 +458,6 @@ export default function CreatorEdit() {
                      width: templateDropdownStyle.width,
                    }}
                  >
-                  {/* Custom / Personalizado */}
-                  <button
-                    onClick={() => { handleSwitchTemplate(null); setShowTemplateDropdown(false); }}
-                    className={`w-full text-left px-3 py-2.5 text-sm transition-colors flex items-center gap-2 ${
-                      !activeTemplateId && !usingDefault ? "bg-secondary text-foreground font-semibold" : "text-foreground hover:bg-muted"
-                    }`}
-                  >
-                    <RotateCcw className="w-3.5 h-3.5 flex-shrink-0" />
-                    <span className="flex-1">Personalizado</span>
-                    {!activeTemplateId && !usingDefault && <span className="text-[0.6rem] bg-primary/20 text-primary-readable px-1.5 py-0.5 rounded-md font-bold">ATIVO</span>}
-                  </button>
-
-                  <div className="border-t border-border my-1" />
-
                   {/* Meu Padrão — agency default */}
                   <div className={`flex items-center gap-1 px-3 py-2.5 transition-colors ${usingDefault ? "bg-primary/10" : "hover:bg-muted"}`}>
                     <button
