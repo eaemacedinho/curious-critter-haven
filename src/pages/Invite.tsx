@@ -30,17 +30,16 @@ export default function Invite() {
       return;
     }
 
-    // Look up the referrer's name
+    // Look up the referrer's name via edge function (public access)
     const fetchReferrer = async () => {
-      const { data } = await supabase
-        .from("profiles")
-        .select("full_name")
-        .eq("referral_code", refCode)
-        .maybeSingle();
-
-      if (data?.full_name) {
-        setReferrerName(data.full_name);
-      }
+      try {
+        const { data } = await supabase.functions.invoke("get-referrer", {
+          body: { ref_code: refCode },
+        });
+        if (data?.name) {
+          setReferrerName(data.name);
+        }
+      } catch {}
       setLoading(false);
     };
 
