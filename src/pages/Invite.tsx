@@ -40,6 +40,8 @@ export default function Invite() {
         });
         if (data?.name) {
           setReferrerName(data.name);
+          setReferrerAvatar(data.avatar_url || null);
+          setReferrerSlug(data.slug || null);
         }
       } catch {}
       setLoading(false);
