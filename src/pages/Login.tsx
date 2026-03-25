@@ -28,6 +28,9 @@ export default function Login() {
     if (!authLoading && user) {
       navigate("/app", { replace: true });
     }
+    if (searchParams.get("verified") === "1") {
+      toast.success("E-mail confirmado! Faça login para continuar.");
+    }
   }, [user, authLoading, navigate]);
 
   const handleSubmit = async (e: React.FormEvent) => {
