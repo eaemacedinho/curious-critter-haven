@@ -303,7 +303,7 @@ export default function Landing() {
               Feito para creators
             </span>
             <h2 className="font-display text-[clamp(1.6rem,3vw,2.6rem)] font-extrabold leading-[1.08] tracking-tight mb-5">
-              Sua presença digital merece ser <span className="text-primary">profissional.</span>
+              Sua presença digital merece ser <span className="text-primary-readable">profissional.</span>
             </h2>
             <p className="text-base text-muted-foreground leading-relaxed mb-8">
               Chega de páginas genéricas que não representam quem você é. Com o in1.bio, cada detalhe da sua página comunica autoridade e profissionalismo.
