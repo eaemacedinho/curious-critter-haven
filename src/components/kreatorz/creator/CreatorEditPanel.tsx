@@ -214,7 +214,53 @@ const CreatorEditPanel = forwardRef<CreatorEditPanelHandle, Props>(function Crea
   const [dragTestimonialIdx, setDragTestimonialIdx] = useState<number | null>(null);
   const [focusSection, setFocusSection] = useState<string | null>(null);
 
-  // IntersectionObserver to detect which editor section is most visible
+  // Handle change cooldown (30 days) + availability check
+  const originalHandle = useRef(profile.slug);
+  const [handleChecking, setHandleChecking] = useState(false);
+  const [handleAvailable, setHandleAvailable] = useState<boolean | null>(null);
+  const [slugChangedAt, setSlugChangedAt] = useState<string | null>(null);
+  const handleDebounce = useRef<ReturnType<typeof setTimeout>>();
+
+  // Fetch slug_changed_at on mount
+  useEffect(() => {
+    if (!profile.id) return;
+    supabase.from("creators").select("slug_changed_at").eq("id", profile.id).single()
+      .then(({ data }) => { if (data) setSlugChangedAt((data as any).slug_changed_at); });
+  }, [profile.id]);
+
+  const handleCooldownDays = useMemo(() => {
+    if (!slugChangedAt) return 0;
+    const diff = Date.now() - new Date(slugChangedAt).getTime();
+    const remaining = 30 - Math.floor(diff / (1000 * 60 * 60 * 24));
+    return remaining > 0 ? remaining : 0;
+  }, [slugChangedAt]);
+
+  const handleLocked = handleCooldownDays > 0;
+
+  // Real-time availability check
+  useEffect(() => {
+    const clean = handle.trim().replace(/^@/, "").toLowerCase();
+    if (!clean || clean.length < 2 || clean === originalHandle.current.replace(/^@/, "").toLowerCase()) {
+      setHandleAvailable(null);
+      setHandleChecking(false);
+      return;
+    }
+    setHandleChecking(true);
+    setHandleAvailable(null);
+    if (handleDebounce.current) clearTimeout(handleDebounce.current);
+    handleDebounce.current = setTimeout(async () => {
+      const { data } = await supabase
+        .from("creators")
+        .select("id")
+        .or(`slug.eq.${clean},slug.eq.@${clean}`)
+        .neq("id", profile.id)
+        .limit(1);
+      setHandleAvailable(!data || data.length === 0);
+      setHandleChecking(false);
+    }, 500);
+    return () => { if (handleDebounce.current) clearTimeout(handleDebounce.current); };
+  }, [handle, profile.id]);
+
   useEffect(() => {
     if (!showPreview) return;
     const editorRoot = document.querySelector('[data-editor-root]');
