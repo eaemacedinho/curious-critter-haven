@@ -359,7 +359,7 @@ export default function Creators() {
                 </div>
               </div>
               <div className="flex items-center gap-2 flex-shrink-0">
-                <span className="hidden sm:inline-flex px-2.5 py-1 rounded-full text-[0.68rem] font-semibold bg-primary/10 text-muted-foreground">
+                <span className="hidden sm:inline-flex px-2.5 py-1 rounded-full text-[0.68rem] font-semibold bg-primary/10 text-foreground">
                   {cr.layout_type === "layout2" ? "Imersivo" : "Padrão"}
                 </span>
                 <button
