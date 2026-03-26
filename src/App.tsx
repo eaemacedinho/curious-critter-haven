@@ -34,6 +34,7 @@ import Referrals from "@/pages/app/Referrals";
 import Subscription from "@/pages/app/Subscription";
 import AppTemplates from "@/pages/app/AppTemplates";
 import AdminCoupons from "@/pages/app/AdminCoupons";
+import Messages from "@/pages/app/Messages";
 
 const queryClient = new QueryClient();
 
