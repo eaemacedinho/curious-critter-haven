@@ -21,6 +21,7 @@ const settingsItems = [
   { icon: "🎁", label: "Indicações", path: "/app/referrals", tour: "referrals" },
   { icon: "👥", label: "Membros", path: "/app/members", tour: "members" },
   { icon: "💎", label: "Assinatura", path: "/app/subscription", tour: "subscription" },
+  { icon: "🎟️", label: "Cupons", path: "/app/coupons", tour: "coupons", adminOnly: true },
   { icon: "⚙", label: "Configurações", path: "/app/settings", tour: "settings" },
 ];
 
