@@ -1,7 +1,7 @@
 import { useState, useEffect, useCallback } from "react";
 import { toast } from "sonner";
 import { supabase } from "@/integrations/supabase/client";
-import { useAuth } from "@/hooks/useAuth";
+import { useSubscription } from "@/hooks/useSubscription";
 
 interface Coupon {
   id: string;
@@ -15,10 +15,8 @@ interface Coupon {
   created_at: string;
 }
 
-const ADMIN_EMAIL = "gamacedo01@gmail.com";
-
 export default function AdminCoupons() {
-  const { user } = useAuth();
+  const { isSuperAdmin } = useSubscription();
   const [coupons, setCoupons] = useState<Coupon[]>([]);
   const [loading, setLoading] = useState(true);
   const [saving, setSaving] = useState(false);
@@ -29,8 +27,6 @@ export default function AdminCoupons() {
   const [newMaxUses, setNewMaxUses] = useState("");
   const [newExpiresAt, setNewExpiresAt] = useState("");
   const [newPlans, setNewPlans] = useState<string[]>(["pro", "scale"]);
-
-  const isAdmin = user?.email === ADMIN_EMAIL;
 
   const fetchCoupons = useCallback(async () => {
     const { data, error } = await supabase
@@ -43,11 +39,11 @@ export default function AdminCoupons() {
   }, []);
 
   useEffect(() => {
-    if (isAdmin) fetchCoupons();
+    if (isSuperAdmin) fetchCoupons();
     else setLoading(false);
-  }, [isAdmin, fetchCoupons]);
+  }, [isSuperAdmin, fetchCoupons]);
 
-  if (!isAdmin) {
+  if (!isSuperAdmin) {
     return (
       <div className="max-w-[900px] mx-auto py-10 text-center">
         <div className="text-4xl mb-3">🔒</div>

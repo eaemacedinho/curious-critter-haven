@@ -18,6 +18,13 @@ Deno.serve(async (req) => {
 
     // Verify the calling user
     const authHeader = req.headers.get("Authorization") || "";
+    if (!authHeader.startsWith("Bearer ")) {
+      return new Response(JSON.stringify({ error: "Não autenticado" }), {
+        status: 401,
+        headers: { ...corsHeaders, "Content-Type": "application/json" },
+      });
+    }
+
     const userClient = createClient(supabaseUrl, anonKey, {
       global: { headers: { Authorization: authHeader } },
     });
@@ -29,8 +36,9 @@ Deno.serve(async (req) => {
       });
     }
 
-    // Check caller is owner of their agency
     const adminClient = createClient(supabaseUrl, serviceRoleKey);
+
+    // Check caller is owner of their agency (server-side verification)
     const { data: callerProfile } = await adminClient
       .from("profiles")
       .select("agency_id, role")
@@ -46,13 +54,21 @@ Deno.serve(async (req) => {
 
     const { email, role, agency_id } = await req.json();
 
-    if (!email || !role || !agency_id) {
+    // Input validation
+    if (!email || typeof email !== "string" || !email.includes("@")) {
+      return new Response(JSON.stringify({ error: "Email inválido" }), {
+        status: 400, headers: { ...corsHeaders, "Content-Type": "application/json" },
+      });
+    }
+
+    if (!role || !agency_id) {
       return new Response(JSON.stringify({ error: "email, role e agency_id são obrigatórios" }), {
         status: 400,
         headers: { ...corsHeaders, "Content-Type": "application/json" },
       });
     }
 
+    // Server-side agency verification - ignore client-sent agency_id, use caller's
     if (agency_id !== callerProfile.agency_id) {
       return new Response(JSON.stringify({ error: "Agência inválida" }), {
         status: 403,
@@ -96,6 +112,16 @@ Deno.serve(async (req) => {
         .update({ agency_id, role })
         .eq("id", existingUser.id);
 
+      // Audit log
+      await adminClient.from("audit_logs").insert({
+        event_type: "member.invited",
+        actor_id: user.id,
+        agency_id,
+        target_table: "profiles",
+        target_id: existingUser.id,
+        metadata: { email, role, existing_user: true },
+      });
+
       return new Response(
         JSON.stringify({ message: "Membro adicionado com sucesso", user_id: existingUser.id }),
         { status: 200, headers: { ...corsHeaders, "Content-Type": "application/json" } }
@@ -129,11 +155,22 @@ Deno.serve(async (req) => {
       });
     }
 
+    // Audit log
+    await adminClient.from("audit_logs").insert({
+      event_type: "member.invited",
+      actor_id: user.id,
+      agency_id,
+      target_table: "profiles",
+      target_id: inviteData?.user?.id || null,
+      metadata: { email, role, existing_user: false },
+    });
+
     return new Response(
       JSON.stringify({ message: "Convite enviado com sucesso", user_id: inviteData?.user?.id }),
       { status: 200, headers: { ...corsHeaders, "Content-Type": "application/json" } }
     );
   } catch (err) {
+    console.error("Invite member error:", err);
     return new Response(JSON.stringify({ error: "Erro interno do servidor" }), {
       status: 500,
       headers: { ...corsHeaders, "Content-Type": "application/json" },

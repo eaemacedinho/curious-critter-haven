@@ -200,7 +200,7 @@ export default function AppLayout() {
           Sistema
         </div>
         {settingsItems
-          .filter((item) => !(item as any).adminOnly || user?.email === "gamacedo01@gmail.com")
+          .filter((item) => !(item as any).adminOnly || isSuperAdmin)
           .map((item) => (
           <Link
             key={item.path}
