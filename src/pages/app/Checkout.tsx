@@ -427,6 +427,13 @@ export default function Checkout() {
           <p className="text-center text-xs text-muted-foreground">
             <Shield className="w-3 h-3 inline mr-1" />Pagamento seguro via Pagar.me. Cancele quando quiser.
           </p>
+          {(isUpgrade || appliedCoupon) && (
+            <p className="text-center text-[0.6rem] text-muted-foreground/60">
+              *{isUpgrade ? "O desconto do plano atual é válido apenas para o 1º mês. " : ""}
+              {appliedCoupon ? "O desconto do cupom é válido apenas para o 1º mês. " : ""}
+              A partir do 2º mês, o valor será de R${((PLAN_PRICES[planKey] || 0) / 100).toFixed(2).replace(".", ",")}/mês.
+            </p>
+          )}
         </form>
       </motion.div>
     </div>

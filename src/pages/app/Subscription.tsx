@@ -202,10 +202,13 @@ export default function Subscription() {
               <span className="text-sm font-bold text-foreground">Upgrade para Scale</span>
               <p className="text-[0.65rem] text-muted-foreground">10 perfis · membros de equipe · criação em lote</p>
               <p className="text-[0.6rem] text-primary-readable font-medium mt-0.5">
-                Desconto de R$17,90 do seu plano Pro atual — pague só R$70,00/mês
+                Desconto de R$17,90 do seu plano Pro atual — pague só R$70,00 no 1º mês
+              </p>
+              <p className="text-[0.55rem] text-muted-foreground/60 mt-0.5">
+                *Desconto válido apenas para o primeiro mês. A partir do 2º mês, o valor volta para R$87,90/mês.
               </p>
             </div>
-            <span className="text-sm font-bold text-primary-readable">R$70,00/mês</span>
+            <span className="text-sm font-bold text-primary-readable">R$70,00<span className="text-[0.5rem] font-normal text-muted-foreground">/1º mês</span></span>
           </button>
           <p className="text-center text-[0.6rem] text-muted-foreground/60">
             Ou conheça o <a href="mailto:contato@in1.bio?subject=Plano%20Enterprise" className="underline hover:text-foreground">Enterprise</a> com white-label completo.
@@ -249,7 +252,7 @@ export default function Subscription() {
                 {currentPlan === "pro" ? "R$12,53" : "R$61,53"}
                 <span className="ml-2 text-xs font-normal text-muted-foreground line-through">{getPlanPrice(currentPlan)}</span>
               </div>
-              <div className="mt-1 text-[0.6rem] text-muted-foreground">Válido para o próximo mês de cobrança</div>
+              <div className="mt-1 text-[0.6rem] text-muted-foreground">*Válido apenas para o próximo mês. Após isso, volta ao valor normal de {getPlanPrice(currentPlan)}/mês.</div>
             </div>
 
             <div className="flex flex-col gap-2">
