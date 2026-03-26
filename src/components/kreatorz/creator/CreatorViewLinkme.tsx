@@ -1,5 +1,6 @@
 import React, { useState, useEffect, useRef, useCallback } from "react";
 import { toast } from "sonner";
+import { supabase } from "@/integrations/supabase/client";
 import { autoTextColor } from "@/lib/utils";
 import SocialIcon, { LinkIcon } from "./SocialIcon";
 import VerifiedBadge from "./VerifiedBadge";
