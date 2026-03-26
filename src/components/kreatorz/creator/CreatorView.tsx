@@ -48,6 +48,10 @@ interface Props {
 
 export default function CreatorView({ profile, links: rawLinks, socialLinks: rawSocial, products: rawProducts, campaigns: rawCampaigns, heroReels: rawReels, testimonials: rawTestimonials, agencyName, agencyLogoUrl, agencyFooterText, agencyFooterVisible = true, agencyFooterLink, embedded, onLinkClick, onCampaignClick }: Props) {
   const [contactOpen, setContactOpen] = useState(false);
+  const [contactName, setContactName] = useState("");
+  const [contactEmail, setContactEmail] = useState("");
+  const [contactMsg, setContactMsg] = useState("");
+  const [contactSending, setContactSending] = useState(false);
   const [clickedLink, setClickedLink] = useState<number | null>(null);
   const [parallaxY, setParallaxY] = useState(0);
   const coverRef = useRef<HTMLDivElement>(null);
