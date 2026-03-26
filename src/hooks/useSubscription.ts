@@ -1,9 +1,6 @@
 import { useEffect, useState, useCallback } from "react";
 import { supabase } from "@/integrations/supabase/client";
 import { useTenant } from "./useTenant";
-import { useAuth } from "./useAuth";
-
-const SUPER_ADMIN_EMAIL = "gamacedo01@gmail.com";
 
 export type PlanType = "free" | "pro" | "scale";
 
@@ -52,33 +49,41 @@ const FREE_LIMITS: PlanLimits = {
 
 export function useSubscription() {
   const { agency } = useTenant();
-  const { user } = useAuth();
-  const isSuperAdmin = user?.email === SUPER_ADMIN_EMAIL;
   const [subscription, setSubscription] = useState<Subscription | null>(null);
   const [limits, setLimits] = useState<PlanLimits>(FREE_LIMITS);
+  const [isSuperAdmin, setIsSuperAdmin] = useState(false);
   const [loading, setLoading] = useState(true);
 
   const fetchSubscription = useCallback(async () => {
     if (!agency?.id) {
       setSubscription(null);
       setLimits(FREE_LIMITS);
+      setIsSuperAdmin(false);
       setLoading(false);
       return;
     }
 
     setLoading(true);
 
-    const [subRes, limitsRes] = await Promise.all([
+    const [subRes, limitsRes, profileRes] = await Promise.all([
       supabase
         .from("subscriptions")
         .select("*")
         .eq("agency_id", agency.id)
         .maybeSingle(),
       supabase.from("plan_limits").select("*"),
+      supabase
+        .from("profiles")
+        .select("is_super_admin")
+        .eq("id", (await supabase.auth.getUser()).data.user?.id || "")
+        .maybeSingle(),
     ]);
 
     const sub = subRes.data as Subscription | null;
     setSubscription(sub);
+
+    // Check super admin from DB (not email)
+    setIsSuperAdmin(profileRes.data?.is_super_admin === true);
 
     // If canceled but expires_at is in the future, keep the current plan active
     let effectivePlan: PlanType = "free";
@@ -123,13 +128,11 @@ export function useSubscription() {
     isScale,
     loading,
     refetch: fetchSubscription,
-    // Helper to check if a feature is available
     isSuperAdmin,
     canUse: (feature: keyof Omit<PlanLimits, "plan" | `max_${string}`>) => {
       if (isSuperAdmin) return true;
       return limits[feature] === true;
     },
-    // Helper to check count limits
     isWithinLimit: (resource: "creators" | "links" | "products" | "campaigns" | "hero_reels", count: number) => {
       if (isSuperAdmin) return true;
       const key = `max_${resource}` as keyof PlanLimits;

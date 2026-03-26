@@ -1,4 +1,5 @@
 import { createClient } from "https://esm.sh/@supabase/supabase-js@2.49.1";
+import { crypto } from "https://deno.land/std@0.208.0/crypto/mod.ts";
 
 const corsHeaders = {
   "Access-Control-Allow-Origin": "*",
@@ -8,6 +9,92 @@ const corsHeaders = {
 
 const PAGARME_API_URL = "https://api.pagar.me/core/v5";
 const PLAN_PRICES: Record<string, number> = { pro: 1790, scale: 8790 };
+
+function getSupabaseAdmin() {
+  return createClient(
+    Deno.env.get("SUPABASE_URL")!,
+    Deno.env.get("SUPABASE_SERVICE_ROLE_KEY")!
+  );
+}
+
+async function logAudit(
+  supabaseAdmin: ReturnType<typeof createClient>,
+  event_type: string,
+  metadata: Record<string, unknown>,
+  agency_id?: string
+) {
+  try {
+    await supabaseAdmin.from("audit_logs").insert({
+      event_type,
+      agency_id: agency_id || null,
+      target_table: "subscriptions",
+      metadata,
+    });
+  } catch (e) {
+    console.error("Audit log error:", e);
+  }
+}
+
+async function checkIdempotency(
+  supabaseAdmin: ReturnType<typeof createClient>,
+  eventType: string,
+  externalId: string
+): Promise<boolean> {
+  const { data } = await supabaseAdmin
+    .from("webhook_events")
+    .select("id")
+    .eq("event_type", eventType)
+    .eq("external_id", externalId)
+    .maybeSingle();
+
+  if (data) return true; // Already processed
+
+  // Record this event
+  const { error } = await supabaseAdmin.from("webhook_events").insert({
+    event_type: eventType,
+    external_id: externalId,
+  });
+
+  // If insert fails due to unique constraint, it was processed concurrently
+  if (error) return true;
+
+  return false;
+}
+
+async function verifyPagarmeSignature(req: Request, body: string): Promise<boolean> {
+  const PAGARME_WEBHOOK_SECRET = Deno.env.get("PAGARME_WEBHOOK_SECRET");
+  if (!PAGARME_WEBHOOK_SECRET) {
+    // TODO: Set PAGARME_WEBHOOK_SECRET in Supabase secrets for full signature validation
+    console.warn("PAGARME_WEBHOOK_SECRET not configured - skipping signature verification");
+    return true;
+  }
+
+  const signature = req.headers.get("x-hub-signature") || req.headers.get("x-webhook-signature") || "";
+  if (!signature) {
+    console.warn("No webhook signature header found");
+    return false;
+  }
+
+  try {
+    const key = await crypto.subtle.importKey(
+      "raw",
+      new TextEncoder().encode(PAGARME_WEBHOOK_SECRET),
+      { name: "HMAC", hash: "SHA-256" },
+      false,
+      ["sign"]
+    );
+    const sig = await crypto.subtle.sign("HMAC", key, new TextEncoder().encode(body));
+    const expectedSig = Array.from(new Uint8Array(sig))
+      .map((b) => b.toString(16).padStart(2, "0"))
+      .join("");
+
+    const receivedSig = signature.replace("sha256=", "").replace("sha1=", "");
+    return expectedSig === receivedSig;
+  } catch (e) {
+    console.error("Signature verification error:", e);
+    return false;
+  }
+}
 
 async function restoreFullPriceIfNeeded(subscriptionData: any) {
   const metadata = subscriptionData.metadata || {};
@@ -19,7 +106,6 @@ async function restoreFullPriceIfNeeded(subscriptionData: any) {
   const pagarmeSubId = subscriptionData.id || subscriptionData.subscription?.id;
   if (!pagarmeSubId) return;
 
-  // Pagar.me current_cycle.cycle > 1 means it's a renewal
   const currentCycle = subscriptionData.current_cycle?.cycle;
   if (!currentCycle || currentCycle <= 1) return;
 
@@ -70,15 +156,24 @@ Deno.serve(async (req) => {
   }
 
   try {
-    const body = await req.json();
+    const bodyText = await req.text();
+
+    // Verify webhook signature
+    const isValid = await verifyPagarmeSignature(req, bodyText);
+    if (!isValid) {
+      console.error("Invalid webhook signature - rejecting");
+      return new Response(JSON.stringify({ error: "Invalid signature" }), {
+        status: 401,
+        headers: { ...corsHeaders, "Content-Type": "application/json" },
+      });
+    }
+
+    const body = JSON.parse(bodyText);
     const eventType = body.type;
 
     console.log("Webhook received:", eventType, JSON.stringify(body).slice(0, 500));
 
-    const supabaseAdmin = createClient(
-      Deno.env.get("SUPABASE_URL")!,
-      Deno.env.get("SUPABASE_SERVICE_ROLE_KEY")!
-    );
+    const supabaseAdmin = getSupabaseAdmin();
 
     const subscriptionData = body.data;
     if (!subscriptionData) {
@@ -92,6 +187,17 @@ Deno.serve(async (req) => {
     if (!pagarmeSubId) {
       console.log("No subscription ID found in webhook data");
       return new Response(JSON.stringify({ received: true }), {
+        status: 200,
+        headers: { ...corsHeaders, "Content-Type": "application/json" },
+      });
+    }
+
+    // Idempotency check
+    const eventId = body.id || `${eventType}_${pagarmeSubId}_${Date.now()}`;
+    const alreadyProcessed = await checkIdempotency(supabaseAdmin, eventType, eventId);
+    if (alreadyProcessed) {
+      console.log(`Event already processed: ${eventType} ${eventId}`);
+      return new Response(JSON.stringify({ received: true, duplicate: true }), {
         status: 200,
         headers: { ...corsHeaders, "Content-Type": "application/json" },
       });
@@ -137,6 +243,12 @@ Deno.serve(async (req) => {
           .update(updateData)
           .eq("agency_id", agencyId);
 
+        await logAudit(supabaseAdmin, `webhook.${eventType}`, {
+          pagarme_sub_id: pagarmeSubId,
+          update_data: updateData,
+          source: "metadata_lookup",
+        }, agencyId);
+
         console.log(`Updated subscription for agency ${agencyId} via metadata`);
       }
     } else {
@@ -164,6 +276,12 @@ Deno.serve(async (req) => {
           .from("subscriptions")
           .update(updateData)
           .eq("id", existingSub.id);
+
+        await logAudit(supabaseAdmin, `webhook.${eventType}`, {
+          pagarme_sub_id: pagarmeSubId,
+          subscription_id: existingSub.id,
+          update_data: updateData,
+        }, existingSub.agency_id);
 
         console.log(`Updated subscription ${existingSub.id}:`, updateData);
       }

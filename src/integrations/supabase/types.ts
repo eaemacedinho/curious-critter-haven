@@ -174,6 +174,50 @@ export type Database = {
           },
         ]
       }
+      audit_logs: {
+        Row: {
+          actor_id: string | null
+          agency_id: string | null
+          created_at: string
+          event_type: string
+          id: string
+          ip_address: string | null
+          metadata: Json | null
+          target_id: string | null
+          target_table: string | null
+        }
+        Insert: {
+          actor_id?: string | null
+          agency_id?: string | null
+          created_at?: string
+          event_type: string
+          id?: string
+          ip_address?: string | null
+          metadata?: Json | null
+          target_id?: string | null
+          target_table?: string | null
+        }
+        Update: {
+          actor_id?: string | null
+          agency_id?: string | null
+          created_at?: string
+          event_type?: string
+          id?: string
+          ip_address?: string | null
+          metadata?: Json | null
+          target_id?: string | null
+          target_table?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "audit_logs_agency_id_fkey"
+            columns: ["agency_id"]
+            isOneToOne: false
+            referencedRelation: "agencies"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       campaign_clicks: {
         Row: {
           campaign_id: string
@@ -883,6 +927,7 @@ export type Database = {
           email: string
           full_name: string
           id: string
+          is_super_admin: boolean
           referral_code: string | null
           role: Database["public"]["Enums"]["app_role"]
           updated_at: string
@@ -894,6 +939,7 @@ export type Database = {
           email?: string
           full_name?: string
           id: string
+          is_super_admin?: boolean
           referral_code?: string | null
           role?: Database["public"]["Enums"]["app_role"]
           updated_at?: string
@@ -905,6 +951,7 @@ export type Database = {
           email?: string
           full_name?: string
           id?: string
+          is_super_admin?: boolean
           referral_code?: string | null
           role?: Database["public"]["Enums"]["app_role"]
           updated_at?: string
@@ -1028,11 +1075,43 @@ export type Database = {
           },
         ]
       }
+      webhook_events: {
+        Row: {
+          event_type: string
+          external_id: string
+          id: string
+          payload_hash: string | null
+          processed_at: string
+        }
+        Insert: {
+          event_type: string
+          external_id: string
+          id?: string
+          payload_hash?: string | null
+          processed_at?: string
+        }
+        Update: {
+          event_type?: string
+          external_id?: string
+          id?: string
+          payload_hash?: string | null
+          processed_at?: string
+        }
+        Relationships: []
+      }
     }
     Views: {
       [_ in never]: never
     }
     Functions: {
+      atomic_consume_coupon: {
+        Args: { p_coupon_code: string; p_plan: string }
+        Returns: {
+          code: string
+          coupon_id: string
+          discount_percent: number
+        }[]
+      }
       current_user_agency_id: { Args: never; Returns: string }
       current_user_role: {
         Args: never
@@ -1045,6 +1124,11 @@ export type Database = {
           _user_id: string
         }
         Returns: boolean
+      }
+      is_super_admin: { Args: { _user_id: string }; Returns: boolean }
+      rollback_coupon_usage: {
+        Args: { p_coupon_id: string }
+        Returns: undefined
       }
     }
     Enums: {

@@ -9,6 +9,33 @@ const corsHeaders = {
 const PAGARME_API_URL = "https://api.pagar.me/core/v5";
 const PLAN_PRICES: Record<string, number> = { pro: 1790, scale: 8790 };
 
+function getSupabaseAdmin() {
+  return createClient(
+    Deno.env.get("SUPABASE_URL")!,
+    Deno.env.get("SUPABASE_SERVICE_ROLE_KEY")!
+  );
+}
+
+async function logAudit(
+  supabaseAdmin: ReturnType<typeof createClient>,
+  event_type: string,
+  metadata: Record<string, unknown>,
+  agency_id: string,
+  actor_id?: string
+) {
+  try {
+    await supabaseAdmin.from("audit_logs").insert({
+      event_type,
+      actor_id: actor_id || null,
+      agency_id,
+      target_table: "subscriptions",
+      metadata,
+    });
+  } catch (e) {
+    console.error("Audit log error:", e);
+  }
+}
+
 Deno.serve(async (req) => {
   if (req.method === "OPTIONS") {
     return new Response(null, { headers: corsHeaders });
@@ -38,19 +65,37 @@ Deno.serve(async (req) => {
     }
 
     const userId = user.id;
-    const { data: profile } = await supabase.from("profiles").select("agency_id").eq("id", userId).single();
+    const supabaseAdmin = getSupabaseAdmin();
+
+    // Get profile and verify role server-side
+    const { data: profile } = await supabaseAdmin
+      .from("profiles")
+      .select("agency_id, role")
+      .eq("id", userId)
+      .single();
+
     if (!profile?.agency_id) {
       return new Response(JSON.stringify({ error: "No agency found" }), {
         status: 400, headers: { ...corsHeaders, "Content-Type": "application/json" },
       });
     }
 
+    // Only owner/admin can manage billing
+    if (!["owner", "admin"].includes(profile.role)) {
+      return new Response(JSON.stringify({ error: "Insufficient permissions" }), {
+        status: 403, headers: { ...corsHeaders, "Content-Type": "application/json" },
+      });
+    }
+
     const body = await req.json();
     const { card, customer, plan: requestedPlan, coupon_code } = body;
+
+    // Server determines the plan price - never trust client
     const planKey = requestedPlan === "scale" ? "scale" : "pro";
     const basePlanPrice = PLAN_PRICES[planKey] || 1790;
     const planLabel = planKey === "scale" ? "Scale" : "Pro";
 
+    // Input validation
     if (!card || !customer) {
       return new Response(JSON.stringify({ error: "Card and customer data are required" }), {
         status: 400, headers: { ...corsHeaders, "Content-Type": "application/json" },
@@ -67,9 +112,17 @@ Deno.serve(async (req) => {
       });
     }
 
-    const supabaseAdmin = createClient(
-      Deno.env.get("SUPABASE_URL")!, Deno.env.get("SUPABASE_SERVICE_ROLE_KEY")!
-    );
+    // Validate input lengths to prevent injection
+    if (card.number.replace(/\D/g, "").length < 13 || card.number.replace(/\D/g, "").length > 19) {
+      return new Response(JSON.stringify({ error: "Invalid card number" }), {
+        status: 400, headers: { ...corsHeaders, "Content-Type": "application/json" },
+      });
+    }
+    if (customer.document.replace(/\D/g, "").length !== 11) {
+      return new Response(JSON.stringify({ error: "Invalid CPF" }), {
+        status: 400, headers: { ...corsHeaders, "Content-Type": "application/json" },
+      });
+    }
 
     // Check existing subscription for prorated upgrade
     const { data: existingSub } = await supabaseAdmin
@@ -103,33 +156,27 @@ Deno.serve(async (req) => {
       }
     }
 
-    // Validate and apply coupon
+    // Validate and apply coupon atomically using server-side function
     let couponId: string | null = null;
-    if (coupon_code) {
-      const { data: coupon } = await supabaseAdmin
-        .from("coupons")
-        .select("*")
-        .eq("code", coupon_code.toUpperCase().trim())
-        .eq("is_active", true)
-        .single();
+    if (coupon_code && typeof coupon_code === "string" && coupon_code.trim().length > 0) {
+      try {
+        const { data: couponResult, error: couponError } = await supabaseAdmin
+          .rpc("atomic_consume_coupon", {
+            p_coupon_code: coupon_code.trim(),
+            p_plan: planKey,
+          });
 
-      if (coupon) {
-        const isValid =
-          (!coupon.expires_at || new Date(coupon.expires_at) > new Date()) &&
-          (coupon.max_uses === null || coupon.current_uses < coupon.max_uses) &&
-          coupon.valid_plans.includes(planKey);
-
-        if (isValid) {
+        if (couponError) {
+          console.warn("Coupon validation failed:", couponError.message);
+          // Don't fail checkout, just skip coupon
+        } else if (couponResult && couponResult.length > 0) {
+          const coupon = couponResult[0];
           finalPrice = Math.round(finalPrice * (1 - coupon.discount_percent / 100));
           discountParts.push(`cupom ${coupon.code} ${coupon.discount_percent}%`);
-          couponId = coupon.id;
-
-          // Increment usage
-          await supabaseAdmin
-            .from("coupons")
-            .update({ current_uses: coupon.current_uses + 1, updated_at: new Date().toISOString() })
-            .eq("id", coupon.id);
+          couponId = coupon.coupon_id;
         }
+      } catch (e) {
+        console.warn("Coupon error:", e);
       }
     }
 
@@ -151,29 +198,29 @@ Deno.serve(async (req) => {
       statement_descriptor: planDescriptor,
       card: {
         number: card.number.replace(/\s/g, ""),
-        holder_name: card.holder_name,
+        holder_name: String(card.holder_name).slice(0, 64),
         exp_month: parseInt(card.exp_month),
         exp_year: parseInt(card.exp_year),
-        cvv: card.cvv,
+        cvv: String(card.cvv).slice(0, 4),
         billing_address: {
-          line_1: customer.address_line || "Rua Exemplo, 123",
-          zip_code: (customer.zip_code || "01001000").replace(/\D/g, ""),
-          city: customer.city || "São Paulo",
-          state: customer.state || "SP",
+          line_1: String(customer.address_line || "Rua Exemplo, 123").slice(0, 256),
+          zip_code: (customer.zip_code || "01001000").replace(/\D/g, "").slice(0, 8),
+          city: String(customer.city || "São Paulo").slice(0, 64),
+          state: String(customer.state || "SP").slice(0, 2),
           country: "BR",
         },
       },
       customer: {
-        name: customer.name,
-        email: customer.email,
-        document: customer.document.replace(/\D/g, ""),
+        name: String(customer.name).slice(0, 128),
+        email: String(customer.email).slice(0, 254),
+        document: customer.document.replace(/\D/g, "").slice(0, 11),
         document_type: "CPF",
         type: "individual",
         phones: {
           mobile_phone: {
             country_code: "55",
-            area_code: customer.phone_area || "11",
-            number: customer.phone_number || "999999999",
+            area_code: String(customer.phone_area || "11").replace(/\D/g, "").slice(0, 2),
+            number: String(customer.phone_number || "999999999").replace(/\D/g, "").slice(0, 9),
           },
         },
       },
@@ -210,10 +257,7 @@ Deno.serve(async (req) => {
       console.error("Pagar.me error:", JSON.stringify(pagarmeData));
       // Rollback coupon usage if payment failed
       if (couponId) {
-        const { data: coupon } = await supabaseAdmin.from("coupons").select("current_uses").eq("id", couponId).single();
-        if (coupon) {
-          await supabaseAdmin.from("coupons").update({ current_uses: Math.max(0, coupon.current_uses - 1) }).eq("id", couponId);
-        }
+        await supabaseAdmin.rpc("rollback_coupon_usage", { p_coupon_id: couponId });
       }
       return new Response(JSON.stringify({
         error: "Payment processing failed",
@@ -227,10 +271,7 @@ Deno.serve(async (req) => {
     if (!isPaymentSuccessful) {
       // Rollback coupon usage
       if (couponId) {
-        const { data: coupon } = await supabaseAdmin.from("coupons").select("current_uses").eq("id", couponId).single();
-        if (coupon) {
-          await supabaseAdmin.from("coupons").update({ current_uses: Math.max(0, coupon.current_uses - 1) }).eq("id", couponId);
-        }
+        await supabaseAdmin.rpc("rollback_coupon_usage", { p_coupon_id: couponId });
       }
       return new Response(JSON.stringify({
         error: "Pagamento recusado",
@@ -243,6 +284,15 @@ Deno.serve(async (req) => {
       plan: planKey, status: "active", payment_id: pagarmeData.id,
       payment_provider: "pagarme", started_at: new Date().toISOString(), expires_at: null,
     }).eq("agency_id", profile.agency_id);
+
+    // Audit log
+    await logAudit(supabaseAdmin, "subscription.checkout", {
+      plan: planKey,
+      final_price: finalPrice,
+      is_upgrade: isUpgrade,
+      coupon_id: couponId,
+      pagarme_subscription_id: pagarmeData.id,
+    }, profile.agency_id, userId);
 
     return new Response(JSON.stringify({
       success: true, subscription_id: pagarmeData.id, status: pagarmeData.status,

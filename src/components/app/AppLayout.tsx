@@ -70,7 +70,7 @@ function computeForeground(hslStr: string): string {
 export default function AppLayout() {
   const { user, signOut } = useAuth();
   const { agency } = useTenant();
-  const { currentPlan, isPro } = useSubscription();
+  const { currentPlan, isPro, isSuperAdmin } = useSubscription();
   const onboarding = useOnboarding();
   const navigate = useNavigate();
   const location = useLocation();
@@ -200,7 +200,7 @@ export default function AppLayout() {
           Sistema
         </div>
         {settingsItems
-          .filter((item) => !(item as any).adminOnly || user?.email === "gamacedo01@gmail.com")
+          .filter((item) => !(item as any).adminOnly || isSuperAdmin)
           .map((item) => (
           <Link
             key={item.path}
