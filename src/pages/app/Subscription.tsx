@@ -252,7 +252,7 @@ export default function Subscription() {
                 {currentPlan === "pro" ? "R$12,53" : "R$61,53"}
                 <span className="ml-2 text-xs font-normal text-muted-foreground line-through">{getPlanPrice(currentPlan)}</span>
               </div>
-              <div className="mt-1 text-[0.6rem] text-muted-foreground">Válido para o próximo mês de cobrança</div>
+              <div className="mt-1 text-[0.6rem] text-muted-foreground">*Válido apenas para o próximo mês. Após isso, volta ao valor normal de {getPlanPrice(currentPlan)}/mês.</div>
             </div>
 
             <div className="flex flex-col gap-2">
