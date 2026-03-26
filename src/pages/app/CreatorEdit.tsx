@@ -126,6 +126,11 @@ export default function CreatorEdit() {
   // Strip old creator_id / id from template data so it can be applied to any creator
   const sanitizeTemplateForCreator = (data: TemplateData, targetCreatorId: string): TemplateData => {
     const clone = cloneTemplateData(data);
+    // Strip identity fields from profile so we don't overwrite the current creator's slug/name/id
+    if (clone.profile) {
+      const { id: _pid, slug: _pslug, name: _pname, user_id: _puid, agency_id: _paid, ...safeProfile } = clone.profile as any;
+      clone.profile = safeProfile;
+    }
     if (clone.links) clone.links = clone.links.map(({ id, creator_id, ...rest }: any) => ({ ...rest, creator_id: targetCreatorId }));
     if (clone.socialLinks) clone.socialLinks = clone.socialLinks.map(({ id, creator_id, ...rest }: any) => ({ ...rest, creator_id: targetCreatorId }));
     if (clone.products) clone.products = clone.products.map(({ id, creator_id, ...rest }: any) => ({ ...rest, creator_id: targetCreatorId }));
