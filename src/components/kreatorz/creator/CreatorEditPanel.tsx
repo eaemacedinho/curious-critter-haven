@@ -1908,6 +1908,21 @@ const CreatorEditPanel = forwardRef<CreatorEditPanelHandle, Props>(function Crea
         </button>
       </div>
 
+      {/* ✉️ Contato comercial */}
+      <div className="mb-8" data-editor-section="contact">
+        <div className={sectionTitle}>✉️ Contato comercial</div>
+        <p className="text-[0.68rem] text-muted-foreground mb-3">Exiba um formulário de contato na página pública para receber mensagens de visitantes.</p>
+        <label className="flex items-center gap-3 cursor-pointer">
+          <div
+            onClick={() => setContactEnabled(!contactEnabled)}
+            className={`w-10 h-5 rounded-full transition-colors duration-200 relative cursor-pointer ${contactEnabled ? "bg-primary" : "bg-muted"}`}
+          >
+            <div className={`absolute top-0.5 left-0.5 w-4 h-4 rounded-full bg-white shadow transition-transform duration-200 ${contactEnabled ? "translate-x-5" : ""}`} />
+          </div>
+          <span className="text-sm text-foreground font-medium">Ativar botão de contato</span>
+        </label>
+      </div>
+
       {/* 🎙 Spotify Embed */}
       <div className="mb-8" data-editor-section="spotify">
         <div className={sectionTitle}>🎙 Spotify / Podcast</div>
