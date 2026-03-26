@@ -218,6 +218,21 @@ export default function Messages() {
           </div>
         </div>
       )}
+
+      <ConfirmDialog
+        open={!!deleteTarget}
+        onOpenChange={(open) => { if (!open) setDeleteTarget(null); }}
+        title="Excluir mensagem"
+        description="Tem certeza que deseja excluir esta mensagem? Esta ação não pode ser desfeita."
+        confirmLabel="Excluir"
+        variant="destructive"
+        onConfirm={() => {
+          if (deleteTarget) {
+            deleteMessage(deleteTarget);
+            setDeleteTarget(null);
+          }
+        }}
+      />
     </div>
   );
 }
