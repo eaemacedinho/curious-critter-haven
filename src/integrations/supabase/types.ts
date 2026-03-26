@@ -104,6 +104,13 @@ export type Database = {
             referencedRelation: "agencies"
             referencedColumns: ["id"]
           },
+          {
+            foreignKeyName: "agency_memberships_agency_id_fkey"
+            columns: ["agency_id"]
+            isOneToOne: false
+            referencedRelation: "agencies_public"
+            referencedColumns: ["id"]
+          },
         ]
       }
       agency_settings: {
@@ -148,6 +155,13 @@ export type Database = {
             referencedRelation: "agencies"
             referencedColumns: ["id"]
           },
+          {
+            foreignKeyName: "agency_settings_agency_id_fkey"
+            columns: ["agency_id"]
+            isOneToOne: true
+            referencedRelation: "agencies_public"
+            referencedColumns: ["id"]
+          },
         ]
       }
       analytics_events: {
@@ -187,6 +201,13 @@ export type Database = {
             columns: ["agency_id"]
             isOneToOne: false
             referencedRelation: "agencies"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "analytics_events_agency_id_fkey"
+            columns: ["agency_id"]
+            isOneToOne: false
+            referencedRelation: "agencies_public"
             referencedColumns: ["id"]
           },
           {
@@ -252,6 +273,13 @@ export type Database = {
             columns: ["agency_id"]
             isOneToOne: false
             referencedRelation: "agencies"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "audit_logs_agency_id_fkey"
+            columns: ["agency_id"]
+            isOneToOne: false
+            referencedRelation: "agencies_public"
             referencedColumns: ["id"]
           },
         ]
@@ -361,6 +389,13 @@ export type Database = {
             referencedColumns: ["id"]
           },
           {
+            foreignKeyName: "creator_campaigns_agency_id_fkey"
+            columns: ["agency_id"]
+            isOneToOne: false
+            referencedRelation: "agencies_public"
+            referencedColumns: ["id"]
+          },
+          {
             foreignKeyName: "creator_campaigns_creator_id_fkey"
             columns: ["creator_id"]
             isOneToOne: false
@@ -433,6 +468,13 @@ export type Database = {
             columns: ["agency_id"]
             isOneToOne: false
             referencedRelation: "agencies"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "contact_messages_agency_id_fkey"
+            columns: ["agency_id"]
+            isOneToOne: false
+            referencedRelation: "agencies_public"
             referencedColumns: ["id"]
           },
           {
@@ -729,6 +771,13 @@ export type Database = {
             referencedColumns: ["id"]
           },
           {
+            foreignKeyName: "creator_templates_agency_id_fkey"
+            columns: ["agency_id"]
+            isOneToOne: false
+            referencedRelation: "agencies_public"
+            referencedColumns: ["id"]
+          },
+          {
             foreignKeyName: "creator_templates_creator_id_fkey"
             columns: ["creator_id"]
             isOneToOne: false
@@ -901,6 +950,13 @@ export type Database = {
             referencedRelation: "agencies"
             referencedColumns: ["id"]
           },
+          {
+            foreignKeyName: "creators_agency_id_fkey"
+            columns: ["agency_id"]
+            isOneToOne: false
+            referencedRelation: "agencies_public"
+            referencedColumns: ["id"]
+          },
         ]
       }
       plan_limits: {
@@ -1002,6 +1058,13 @@ export type Database = {
             referencedRelation: "agencies"
             referencedColumns: ["id"]
           },
+          {
+            foreignKeyName: "profiles_agency_id_fkey"
+            columns: ["agency_id"]
+            isOneToOne: false
+            referencedRelation: "agencies_public"
+            referencedColumns: ["id"]
+          },
         ]
       }
       referrals: {
@@ -1079,6 +1142,13 @@ export type Database = {
             referencedRelation: "agencies"
             referencedColumns: ["id"]
           },
+          {
+            foreignKeyName: "subscriptions_agency_id_fkey"
+            columns: ["agency_id"]
+            isOneToOne: true
+            referencedRelation: "agencies_public"
+            referencedColumns: ["id"]
+          },
         ]
       }
       user_roles: {
@@ -1111,6 +1181,13 @@ export type Database = {
             referencedRelation: "agencies"
             referencedColumns: ["id"]
           },
+          {
+            foreignKeyName: "user_roles_agency_id_fkey"
+            columns: ["agency_id"]
+            isOneToOne: false
+            referencedRelation: "agencies_public"
+            referencedColumns: ["id"]
+          },
         ]
       }
       webhook_events: {
@@ -1139,7 +1216,42 @@ export type Database = {
       }
     }
     Views: {
-      [_ in never]: never
+      agencies_public: {
+        Row: {
+          accent_color: string | null
+          footer_link: string | null
+          footer_text: string | null
+          footer_visible: boolean | null
+          id: string | null
+          logo_url: string | null
+          name: string | null
+          primary_color: string | null
+          slug: string | null
+        }
+        Insert: {
+          accent_color?: string | null
+          footer_link?: string | null
+          footer_text?: string | null
+          footer_visible?: boolean | null
+          id?: string | null
+          logo_url?: string | null
+          name?: string | null
+          primary_color?: string | null
+          slug?: string | null
+        }
+        Update: {
+          accent_color?: string | null
+          footer_link?: string | null
+          footer_text?: string | null
+          footer_visible?: boolean | null
+          id?: string | null
+          logo_url?: string | null
+          name?: string | null
+          primary_color?: string | null
+          slug?: string | null
+        }
+        Relationships: []
+      }
     }
     Functions: {
       atomic_consume_coupon: {
