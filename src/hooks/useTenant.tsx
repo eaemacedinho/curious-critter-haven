@@ -66,18 +66,41 @@ export function TenantProvider({ children }: { children: ReactNode }) {
 
     setLoading(true);
 
-    // profiles is the single source of truth for role + agency_id
-    const { data: profileData, error: profileError } = await supabase
+    // PRIMARY: Use agency_memberships as source of truth
+    const { data: membership, error: membershipError } = await supabase
+      .from("agency_memberships")
+      .select("agency_id, role")
+      .eq("user_id", user.id)
+      .eq("status", "active")
+      .limit(1)
+      .maybeSingle();
+
+    if (membershipError) {
+      console.error("Error fetching membership:", membershipError);
+    }
+
+    if (membership && membership.agency_id) {
+      setUserRole(membership.role as UserRole);
+
+      const [agencyRes, settingsRes] = await Promise.all([
+        supabase.from("agencies").select("*").eq("id", membership.agency_id).maybeSingle(),
+        supabase.from("agency_settings").select("*").eq("agency_id", membership.agency_id).maybeSingle(),
+      ]);
+
+      if (agencyRes.data) setAgency(agencyRes.data as Agency);
+      if (settingsRes.data) setSettings(settingsRes.data as AgencySettings);
+
+      setLoading(false);
+      return;
+    }
+
+    // FALLBACK: profiles.agency_id for backward compatibility only
+    // TODO: Remove this fallback once all users have agency_memberships rows
+    const { data: profileData } = await supabase
       .from("profiles")
       .select("agency_id, role")
       .eq("id", user.id)
       .maybeSingle();
-
-    if (profileError) {
-      console.error("Error fetching profile:", profileError);
-      setLoading(false);
-      return;
-    }
 
     if (profileData && profileData.agency_id) {
       setUserRole(profileData.role as UserRole);
@@ -94,43 +117,37 @@ export function TenantProvider({ children }: { children: ReactNode }) {
       return;
     }
 
-    // Fallback: try legacy owner_id lookup
-    const { data, error } = await supabase
+    // No agency found - create one for new users
+    // This path is only hit if handle_new_user() trigger didn't fire (edge case)
+    const { data: existingAgency } = await supabase
       .from("agencies")
       .select("*")
       .eq("owner_id", user.id)
       .maybeSingle();
 
-    if (error) {
-      console.error("Error fetching agency:", error);
+    if (existingAgency) {
+      setAgency(existingAgency as Agency);
+      setUserRole("owner");
       setLoading(false);
       return;
     }
 
-    if (!data) {
-      // Create agency for new users
-      const { data: newAgency, error: createError } = await supabase
-        .from("agencies")
-        .insert({
-          owner_id: user.id,
-          name: user.user_metadata?.full_name || "Minha Agência",
-          slug: (user.email || user.id).replace("@", "-").replace(/\./g, "-").toLowerCase(),
-        })
-        .select("*")
-        .single();
+    const { data: newAgency, error: createError } = await supabase
+      .from("agencies")
+      .insert({
+        owner_id: user.id,
+        name: user.user_metadata?.full_name || "Minha Agência",
+        slug: (user.email || user.id).replace("@", "-").replace(/\./g, "-").toLowerCase(),
+      })
+      .select("*")
+      .single();
 
-      if (createError) {
-        console.error("Error creating agency:", createError);
-      } else {
-        setAgency(newAgency as Agency);
-        setUserRole("owner");
-      }
-      setLoading(false);
-      return;
+    if (createError) {
+      console.error("Error creating agency:", createError);
+    } else {
+      setAgency(newAgency as Agency);
+      setUserRole("owner");
     }
-
-    setAgency(data as Agency);
-    setUserRole("owner");
     setLoading(false);
   }, [user]);
 

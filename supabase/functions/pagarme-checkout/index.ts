@@ -36,6 +36,23 @@ async function logAudit(
   }
 }
 
+/** Resolve agency_id and role from agency_memberships (source of truth) */
+async function getMembership(
+  supabaseAdmin: ReturnType<typeof createClient>,
+  userId: string
+): Promise<{ agency_id: string; role: string } | null> {
+  const { data } = await supabaseAdmin
+    .from("agency_memberships")
+    .select("agency_id, role")
+    .eq("user_id", userId)
+    .eq("status", "active")
+    .in("role", ["owner", "admin"])
+    .limit(1)
+    .maybeSingle();
+
+  return data;
+}
+
 Deno.serve(async (req) => {
   if (req.method === "OPTIONS") {
     return new Response(null, { headers: corsHeaders });
@@ -67,25 +84,15 @@ Deno.serve(async (req) => {
     const userId = user.id;
     const supabaseAdmin = getSupabaseAdmin();
 
-    // Get profile and verify role server-side
-    const { data: profile } = await supabaseAdmin
-      .from("profiles")
-      .select("agency_id, role")
-      .eq("id", userId)
-      .single();
-
-    if (!profile?.agency_id) {
-      return new Response(JSON.stringify({ error: "No agency found" }), {
-        status: 400, headers: { ...corsHeaders, "Content-Type": "application/json" },
-      });
-    }
-
-    // Only owner/admin can manage billing
-    if (!["owner", "admin"].includes(profile.role)) {
-      return new Response(JSON.stringify({ error: "Insufficient permissions" }), {
+    // Get membership (source of truth) - only owner/admin can manage billing
+    const membership = await getMembership(supabaseAdmin, userId);
+    if (!membership) {
+      return new Response(JSON.stringify({ error: "Insufficient permissions - owner or admin required" }), {
         status: 403, headers: { ...corsHeaders, "Content-Type": "application/json" },
       });
     }
+
+    const agencyId = membership.agency_id;
 
     const body = await req.json();
     const { card, customer, plan: requestedPlan, coupon_code } = body;
@@ -112,7 +119,7 @@ Deno.serve(async (req) => {
       });
     }
 
-    // Validate input lengths to prevent injection
+    // Validate input lengths
     if (card.number.replace(/\D/g, "").length < 13 || card.number.replace(/\D/g, "").length > 19) {
       return new Response(JSON.stringify({ error: "Invalid card number" }), {
         status: 400, headers: { ...corsHeaders, "Content-Type": "application/json" },
@@ -126,7 +133,7 @@ Deno.serve(async (req) => {
 
     // Check existing subscription for prorated upgrade
     const { data: existingSub } = await supabaseAdmin
-      .from("subscriptions").select("*").eq("agency_id", profile.agency_id).single();
+      .from("subscriptions").select("*").eq("agency_id", agencyId).single();
 
     let finalPrice = basePlanPrice;
     let isUpgrade = false;
@@ -156,7 +163,7 @@ Deno.serve(async (req) => {
       }
     }
 
-    // Validate and apply coupon atomically using server-side function
+    // Validate and apply coupon atomically
     let couponId: string | null = null;
     if (coupon_code && typeof coupon_code === "string" && coupon_code.trim().length > 0) {
       try {
@@ -168,7 +175,6 @@ Deno.serve(async (req) => {
 
         if (couponError) {
           console.warn("Coupon validation failed:", couponError.message);
-          // Don't fail checkout, just skip coupon
         } else if (couponResult && couponResult.length > 0) {
           const coupon = couponResult[0];
           finalPrice = Math.round(finalPrice * (1 - coupon.discount_percent / 100));
@@ -230,7 +236,7 @@ Deno.serve(async (req) => {
         pricing_scheme: { scheme_type: "unit", price: finalPrice },
       }],
       metadata: {
-        agency_id: profile.agency_id,
+        agency_id: agencyId,
         user_id: userId,
         is_upgrade: isUpgrade,
         coupon_id: couponId,
@@ -255,7 +261,6 @@ Deno.serve(async (req) => {
 
     if (!pagarmeResponse.ok) {
       console.error("Pagar.me error:", JSON.stringify(pagarmeData));
-      // Rollback coupon usage if payment failed
       if (couponId) {
         await supabaseAdmin.rpc("rollback_coupon_usage", { p_coupon_id: couponId });
       }
@@ -269,7 +274,6 @@ Deno.serve(async (req) => {
     const isPaymentSuccessful = pagarmeStatus === "active" || pagarmeStatus === "paid";
 
     if (!isPaymentSuccessful) {
-      // Rollback coupon usage
       if (couponId) {
         await supabaseAdmin.rpc("rollback_coupon_usage", { p_coupon_id: couponId });
       }
@@ -283,16 +287,12 @@ Deno.serve(async (req) => {
     await supabaseAdmin.from("subscriptions").update({
       plan: planKey, status: "active", payment_id: pagarmeData.id,
       payment_provider: "pagarme", started_at: new Date().toISOString(), expires_at: null,
-    }).eq("agency_id", profile.agency_id);
+    }).eq("agency_id", agencyId);
 
-    // Audit log
     await logAudit(supabaseAdmin, "subscription.checkout", {
-      plan: planKey,
-      final_price: finalPrice,
-      is_upgrade: isUpgrade,
-      coupon_id: couponId,
-      pagarme_subscription_id: pagarmeData.id,
-    }, profile.agency_id, userId);
+      plan: planKey, final_price: finalPrice, is_upgrade: isUpgrade,
+      coupon_id: couponId, pagarme_subscription_id: pagarmeData.id,
+    }, agencyId, userId);
 
     return new Response(JSON.stringify({
       success: true, subscription_id: pagarmeData.id, status: pagarmeData.status,

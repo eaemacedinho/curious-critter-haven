@@ -15,64 +15,62 @@ Deno.serve(async (req) => {
     const authHeader = req.headers.get("Authorization");
     if (!authHeader?.startsWith("Bearer ")) {
       return new Response(JSON.stringify({ error: "Unauthorized" }), {
-        status: 401,
-        headers: { ...corsHeaders, "Content-Type": "application/json" },
+        status: 401, headers: { ...corsHeaders, "Content-Type": "application/json" },
       });
     }
 
     const supabase = createClient(
-      Deno.env.get("SUPABASE_URL")!,
-      Deno.env.get("SUPABASE_ANON_KEY")!,
+      Deno.env.get("SUPABASE_URL")!, Deno.env.get("SUPABASE_ANON_KEY")!,
       { global: { headers: { Authorization: authHeader } } }
     );
 
     const { data: { user }, error: userError } = await supabase.auth.getUser();
     if (userError || !user) {
       return new Response(JSON.stringify({ error: "Unauthorized" }), {
-        status: 401,
-        headers: { ...corsHeaders, "Content-Type": "application/json" },
-      });
-    }
-
-    const { data: profile } = await supabase
-      .from("profiles")
-      .select("agency_id")
-      .eq("id", user.id)
-      .single();
-
-    if (!profile?.agency_id) {
-      return new Response(JSON.stringify({ error: "No agency found" }), {
-        status: 400,
-        headers: { ...corsHeaders, "Content-Type": "application/json" },
+        status: 401, headers: { ...corsHeaders, "Content-Type": "application/json" },
       });
     }
 
     const supabaseAdmin = createClient(
-      Deno.env.get("SUPABASE_URL")!,
-      Deno.env.get("SUPABASE_SERVICE_ROLE_KEY")!
+      Deno.env.get("SUPABASE_URL")!, Deno.env.get("SUPABASE_SERVICE_ROLE_KEY")!
     );
 
+    // Use agency_memberships as source of truth
+    const { data: membership } = await supabaseAdmin
+      .from("agency_memberships")
+      .select("agency_id, role")
+      .eq("user_id", user.id)
+      .eq("status", "active")
+      .limit(1)
+      .maybeSingle();
+
+    if (!membership?.agency_id) {
+      return new Response(JSON.stringify({ error: "No agency found" }), {
+        status: 400, headers: { ...corsHeaders, "Content-Type": "application/json" },
+      });
+    }
+
+    if (!["owner", "admin"].includes(membership.role)) {
+      return new Response(JSON.stringify({ error: "Insufficient permissions" }), {
+        status: 403, headers: { ...corsHeaders, "Content-Type": "application/json" },
+      });
+    }
+
     const { data: sub } = await supabaseAdmin
-      .from("subscriptions")
-      .select("*")
-      .eq("agency_id", profile.agency_id)
-      .single();
+      .from("subscriptions").select("*").eq("agency_id", membership.agency_id).single();
 
     if (!sub) {
       return new Response(JSON.stringify({ error: "No subscription found" }), {
-        status: 400,
-        headers: { ...corsHeaders, "Content-Type": "application/json" },
+        status: 400, headers: { ...corsHeaders, "Content-Type": "application/json" },
       });
     }
 
     if (sub.status !== "canceled") {
       return new Response(JSON.stringify({ error: "Subscription is not canceled" }), {
-        status: 400,
-        headers: { ...corsHeaders, "Content-Type": "application/json" },
+        status: 400, headers: { ...corsHeaders, "Content-Type": "application/json" },
       });
     }
 
-    // Check if still within the active period
     if (sub.expires_at && new Date(sub.expires_at) <= new Date()) {
       return new Response(
         JSON.stringify({ error: "O período ativo já expirou. Faça uma nova assinatura." }),
@@ -80,38 +78,26 @@ Deno.serve(async (req) => {
       );
     }
 
-    // Reactivate: set status back to active, clear expires_at
-    await supabaseAdmin
-      .from("subscriptions")
-      .update({
-        status: "active",
-        expires_at: null,
-        updated_at: new Date().toISOString(),
-      })
-      .eq("agency_id", profile.agency_id);
+    await supabaseAdmin.from("subscriptions").update({
+      status: "active", expires_at: null, updated_at: new Date().toISOString(),
+    }).eq("agency_id", membership.agency_id);
 
-    // Try to reactivate on Pagar.me if there's a payment_id
-    const PAGARME_API_KEY = Deno.env.get("PAGARME_API_KEY");
-    if (sub.payment_id && PAGARME_API_KEY) {
-      try {
-        const pagarmeAuth = btoa(PAGARME_API_KEY + ":");
-        // Pagar.me doesn't have a direct reactivate, so we just log it
-        console.log("Subscription reactivated locally. Pagar.me subscription:", sub.payment_id);
-      } catch (e) {
-        console.warn("Pagar.me reactivation note:", e);
-      }
-    }
+    await supabaseAdmin.from("audit_logs").insert({
+      event_type: "subscription.reactivated",
+      actor_id: user.id,
+      agency_id: membership.agency_id,
+      target_table: "subscriptions",
+      metadata: { plan: sub.plan },
+    });
 
-    return new Response(
-      JSON.stringify({ success: true, plan: sub.plan }),
-      { status: 200, headers: { ...corsHeaders, "Content-Type": "application/json" } }
-    );
+    return new Response(JSON.stringify({ success: true, plan: sub.plan }), {
+      status: 200, headers: { ...corsHeaders, "Content-Type": "application/json" },
+    });
   } catch (error: unknown) {
     console.error("Reactivate error:", error);
     const errorMessage = error instanceof Error ? error.message : "Unknown error";
     return new Response(JSON.stringify({ error: errorMessage }), {
-      status: 500,
-      headers: { ...corsHeaders, "Content-Type": "application/json" },
+      status: 500, headers: { ...corsHeaders, "Content-Type": "application/json" },
     });
   }
 });
