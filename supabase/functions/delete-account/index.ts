@@ -1,34 +1,55 @@
-import { serve } from "https://deno.land/std@0.168.0/http/server.ts";
-import { createClient } from "https://esm.sh/@supabase/supabase-js@2";
+import { createClient } from "https://esm.sh/@supabase/supabase-js@2.49.1";
 
 const corsHeaders = {
   "Access-Control-Allow-Origin": "*",
-  "Access-Control-Allow-Headers": "authorization, x-client-info, apikey, content-type",
+  "Access-Control-Allow-Headers":
+    "authorization, x-client-info, apikey, content-type, x-supabase-client-platform, x-supabase-client-platform-version, x-supabase-client-runtime, x-supabase-client-runtime-version",
 };
 
-serve(async (req) => {
-  if (req.method === "OPTIONS") return new Response("ok", { headers: corsHeaders });
+Deno.serve(async (req) => {
+  if (req.method === "OPTIONS") return new Response(null, { headers: corsHeaders });
 
   try {
     const authHeader = req.headers.get("Authorization");
-    if (!authHeader) throw new Error("Não autenticado");
+    if (!authHeader?.startsWith("Bearer ")) {
+      return new Response(JSON.stringify({ error: "Não autenticado" }), {
+        status: 401, headers: { ...corsHeaders, "Content-Type": "application/json" },
+      });
+    }
 
     const supabaseUrl = Deno.env.get("SUPABASE_URL")!;
     const serviceKey = Deno.env.get("SUPABASE_SERVICE_ROLE_KEY")!;
+    const anonKey = Deno.env.get("SUPABASE_ANON_KEY")!;
 
     // Verify user
-    const anonClient = createClient(supabaseUrl, Deno.env.get("SUPABASE_ANON_KEY")!);
-    const { data: { user }, error: authError } = await anonClient.auth.getUser(authHeader.replace("Bearer ", ""));
-    if (authError || !user) throw new Error("Token inválido");
+    const userClient = createClient(supabaseUrl, anonKey, {
+      global: { headers: { Authorization: authHeader } },
+    });
+    const { data: { user }, error: authError } = await userClient.auth.getUser();
+    if (authError || !user) {
+      return new Response(JSON.stringify({ error: "Token inválido" }), {
+        status: 401, headers: { ...corsHeaders, "Content-Type": "application/json" },
+      });
+    }
 
     const adminClient = createClient(supabaseUrl, serviceKey);
 
-    // Get agency_id
-    const { data: profile } = await adminClient.from("profiles").select("agency_id, role").eq("id", user.id).single();
-    if (!profile) throw new Error("Perfil não encontrado");
-    if (profile.role !== "owner") throw new Error("Apenas o owner pode excluir a conta");
+    // Use agency_memberships as source of truth - only owner can delete
+    const { data: membership } = await adminClient
+      .from("agency_memberships")
+      .select("agency_id, role")
+      .eq("user_id", user.id)
+      .eq("status", "active")
+      .eq("role", "owner")
+      .maybeSingle();
 
-    const agencyId = profile.agency_id;
+    if (!membership) {
+      return new Response(JSON.stringify({ error: "Apenas o owner pode excluir a conta" }), {
+        status: 403, headers: { ...corsHeaders, "Content-Type": "application/json" },
+      });
+    }
+
+    const agencyId = membership.agency_id;
 
     // Get creator IDs
     const { data: creators } = await adminClient.from("creators").select("id").eq("agency_id", agencyId);
@@ -52,6 +73,7 @@ serve(async (req) => {
     await adminClient.from("analytics_events").delete().eq("agency_id", agencyId);
     await adminClient.from("subscriptions").delete().eq("agency_id", agencyId);
     await adminClient.from("agency_settings").delete().eq("agency_id", agencyId);
+    await adminClient.from("agency_memberships").delete().eq("agency_id", agencyId);
     await adminClient.from("user_roles").delete().eq("agency_id", agencyId);
     await adminClient.from("referrals").delete().eq("referrer_user_id", user.id);
     await adminClient.from("profiles").delete().eq("id", user.id);
@@ -59,15 +81,19 @@ serve(async (req) => {
 
     // Delete auth user
     const { error: deleteError } = await adminClient.auth.admin.deleteUser(user.id);
-    if (deleteError) throw new Error("Erro ao remover usuário: " + deleteError.message);
+    if (deleteError) {
+      return new Response(JSON.stringify({ error: "Erro ao remover usuário: " + deleteError.message }), {
+        status: 500, headers: { ...corsHeaders, "Content-Type": "application/json" },
+      });
+    }
 
     return new Response(JSON.stringify({ success: true }), {
       headers: { ...corsHeaders, "Content-Type": "application/json" },
     });
   } catch (err: any) {
-    return new Response(JSON.stringify({ error: err.message }), {
-      status: 400,
-      headers: { ...corsHeaders, "Content-Type": "application/json" },
+    console.error("Delete account error:", err);
+    return new Response(JSON.stringify({ error: err.message || "Erro interno" }), {
+      status: 500, headers: { ...corsHeaders, "Content-Type": "application/json" },
     });
   }
 });
