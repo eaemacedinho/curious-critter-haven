@@ -661,7 +661,7 @@ export default function CreatorEdit() {
                             <span className="text-[0.6rem] text-muted-foreground">{gt.objective}</span>
                           </div>
                           {galleryTemplateOverrides.has(gt.id) && (
-                            <span className="text-[0.6rem] bg-accent text-accent-foreground px-1.5 py-0.5 rounded-md font-bold flex-shrink-0">EDITADO</span>
+                            <span className="text-[0.6rem] bg-primary/15 text-primary px-1.5 py-0.5 rounded-md font-bold flex-shrink-0">PERSONALIZADO</span>
                           )}
                           {activeGalleryTemplateId === gt.id && (
                             <span className="text-[0.6rem] bg-primary/20 text-primary px-1.5 py-0.5 rounded-md font-bold flex-shrink-0">ATIVO</span>
