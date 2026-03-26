@@ -4,6 +4,7 @@ import { useTenant } from "@/hooks/useTenant";
 import { format } from "date-fns";
 import { ptBR } from "date-fns/locale";
 import { Mail, MailOpen, Trash2, User, Clock } from "lucide-react";
+import { ConfirmDialog } from "@/components/ui/confirm-dialog";
 
 interface ContactMessage {
   id: string;
