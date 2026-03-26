@@ -213,28 +213,30 @@ export default function CreatorEdit() {
     }
   };
 
-  const getCurrentData = (): TemplateData => ({
-    profile: profile ? {
-      name: profile.name, slug: profile.slug, bio: profile.bio,
-      avatar_url: profile.avatar_url, cover_url: profile.cover_url,
-      avatar_url_layout2: profile.avatar_url_layout2, cover_url_layout2: profile.cover_url_layout2,
-      verified: profile.verified, layout_type: profile.layout_type,
-      image_shape: profile.image_shape, image_shape_products: profile.image_shape_products,
-      image_shape_campaigns: profile.image_shape_campaigns, image_shape_links: profile.image_shape_links,
-      tags: profile.tags, stats: profile.stats, brands: profile.brands,
-      brands_display_mode: profile.brands_display_mode, page_effects: profile.page_effects,
-      font_family: profile.font_family, font_size: profile.font_size,
-      color_name: profile.color_name, color_bio: profile.color_bio,
-      color_section_titles: profile.color_section_titles, section_order: profile.section_order,
-      spotify_url: profile.spotify_url,
-    } : {},
-    links: links || [],
-    socialLinks: socialLinks || [],
-    products: products || [],
-    campaigns: campaigns || [],
-    heroReels: heroReels || [],
-    testimonials: testimonials || [],
-  });
+  function getCurrentData(): TemplateData {
+    return {
+      profile: profile ? {
+        name: profile.name, slug: profile.slug, bio: profile.bio,
+        avatar_url: profile.avatar_url, cover_url: profile.cover_url,
+        avatar_url_layout2: profile.avatar_url_layout2, cover_url_layout2: profile.cover_url_layout2,
+        verified: profile.verified, layout_type: profile.layout_type,
+        image_shape: profile.image_shape, image_shape_products: profile.image_shape_products,
+        image_shape_campaigns: profile.image_shape_campaigns, image_shape_links: profile.image_shape_links,
+        tags: profile.tags, stats: profile.stats, brands: profile.brands,
+        brands_display_mode: profile.brands_display_mode, page_effects: profile.page_effects,
+        font_family: profile.font_family, font_size: profile.font_size,
+        color_name: profile.color_name, color_bio: profile.color_bio,
+        color_section_titles: profile.color_section_titles, section_order: profile.section_order,
+        spotify_url: profile.spotify_url,
+      } : {},
+      links: links || [],
+      socialLinks: socialLinks || [],
+      products: products || [],
+      campaigns: campaigns || [],
+      heroReels: heroReels || [],
+      testimonials: testimonials || [],
+    };
+  }
 
   const handleSave = async () => {
     if (!editorRef.current) return;
