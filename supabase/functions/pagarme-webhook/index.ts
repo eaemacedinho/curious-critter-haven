@@ -6,6 +6,64 @@ const corsHeaders = {
     "authorization, x-client-info, apikey, content-type",
 };
 
+const PAGARME_API_URL = "https://api.pagar.me/core/v5";
+const PLAN_PRICES: Record<string, number> = { pro: 1790, scale: 8790 };
+
+async function restoreFullPriceIfNeeded(subscriptionData: any) {
+  const metadata = subscriptionData.metadata || {};
+  if (metadata.discount_first_month_only !== "true") return;
+
+  const PAGARME_API_KEY = Deno.env.get("PAGARME_API_KEY");
+  if (!PAGARME_API_KEY) return;
+
+  const pagarmeSubId = subscriptionData.id || subscriptionData.subscription?.id;
+  if (!pagarmeSubId) return;
+
+  // Pagar.me current_cycle.cycle > 1 means it's a renewal
+  const currentCycle = subscriptionData.current_cycle?.cycle;
+  if (!currentCycle || currentCycle <= 1) return;
+
+  const fullPrice = parseInt(metadata.full_price) || PLAN_PRICES[metadata.plan_key] || 1790;
+  const planKey = metadata.plan_key || "pro";
+  const planLabel = planKey === "scale" ? "Scale" : "Pro";
+  const planDescriptor = planKey === "scale" ? "IN1BIO SCALE" : "IN1BIO PRO";
+
+  try {
+    const pagarmeAuth = btoa(PAGARME_API_KEY + ":");
+
+    const updateRes = await fetch(`${PAGARME_API_URL}/subscriptions/${pagarmeSubId}`, {
+      method: "PATCH",
+      headers: {
+        Authorization: `Basic ${pagarmeAuth}`,
+        "Content-Type": "application/json",
+        Accept: "application/json",
+      },
+      body: JSON.stringify({
+        minimum_price: fullPrice,
+        statement_descriptor: planDescriptor,
+        items: [{
+          description: `Plano ${planLabel} - in1.bio`,
+          quantity: 1,
+          pricing_scheme: { scheme_type: "unit", price: fullPrice },
+        }],
+        metadata: {
+          ...metadata,
+          discount_first_month_only: "restored",
+        },
+      }),
+    });
+
+    if (updateRes.ok) {
+      console.log(`Restored full price ${fullPrice} for subscription ${pagarmeSubId} on cycle ${currentCycle}`);
+    } else {
+      const errData = await updateRes.json();
+      console.warn("Failed to restore full price:", JSON.stringify(errData));
+    }
+  } catch (e) {
+    console.error("Error restoring full price:", e);
+  }
+}
+
 Deno.serve(async (req) => {
   if (req.method === "OPTIONS") {
     return new Response(null, { headers: corsHeaders });
@@ -39,6 +97,11 @@ Deno.serve(async (req) => {
       });
     }
 
+    // On charge.paid, restore full price if this is a renewal after a discounted 1st month
+    if (eventType === "charge.paid") {
+      await restoreFullPriceIfNeeded(subscriptionData);
+    }
+
     // Find our subscription by payment_id
     const { data: existingSub } = await supabaseAdmin
       .from("subscriptions")
@@ -47,7 +110,6 @@ Deno.serve(async (req) => {
       .maybeSingle();
 
     if (!existingSub) {
-      // Try metadata fallback
       const agencyId = subscriptionData.metadata?.agency_id;
       if (agencyId) {
         const updateData: Record<string, unknown> = {
@@ -57,11 +119,7 @@ Deno.serve(async (req) => {
 
         switch (eventType) {
           case "subscription.created":
-            updateData.plan = "pro";
-            updateData.status = "active";
-            break;
           case "charge.paid":
-            updateData.plan = "pro";
             updateData.status = "active";
             break;
           case "subscription.canceled":
@@ -88,7 +146,6 @@ Deno.serve(async (req) => {
         case "subscription.updated":
         case "charge.paid":
           updateData.status = "active";
-          updateData.plan = "pro";
           break;
         case "subscription.canceled":
         case "subscription.expired":
@@ -118,7 +175,6 @@ Deno.serve(async (req) => {
     });
   } catch (error: unknown) {
     console.error("Webhook error:", error);
-    // Always return 200 to Pagar.me so it doesn't retry
     return new Response(JSON.stringify({ received: true, error: "processing_error" }), {
       status: 200,
       headers: { ...corsHeaders, "Content-Type": "application/json" },
