@@ -181,7 +181,7 @@ export default function Messages() {
                   </div>
                   <div className="flex items-center gap-2">
                     <button
-                      onClick={() => deleteMessage(selected.id)}
+                      onClick={() => setDeleteTarget(selected.id)}
                       className="p-1.5 rounded-lg text-muted-foreground hover:text-destructive hover:bg-destructive/10 transition-colors"
                       title="Excluir mensagem"
                     >
