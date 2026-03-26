@@ -37,6 +37,7 @@ export interface CreatorProfile {
   color_section_titles: string | null;
   section_order: string[];
   spotify_url: string;
+  contact_enabled: boolean;
 }
 
 export interface CreatorLink {
