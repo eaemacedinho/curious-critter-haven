@@ -71,6 +71,12 @@ export default function Messages() {
     if (selected?.id === msg.id) setSelected({ ...msg, is_read: true });
   };
 
+  const deleteMessage = async (msgId: string) => {
+    await supabase.from("contact_messages").delete().eq("id", msgId);
+    setMessages(prev => prev.filter(m => m.id !== msgId));
+    if (selected?.id === msgId) setSelected(null);
+  };
+
   const handleSelect = (msg: ContactMessage) => {
     setSelected(msg);
     void markAsRead(msg);
@@ -171,7 +177,14 @@ export default function Messages() {
                       </span>
                     </div>
                   </div>
-                  <div className="flex items-center gap-1">
+                  <div className="flex items-center gap-2">
+                    <button
+                      onClick={() => deleteMessage(selected.id)}
+                      className="p-1.5 rounded-lg text-muted-foreground hover:text-destructive hover:bg-destructive/10 transition-colors"
+                      title="Excluir mensagem"
+                    >
+                      <Trash2 className="w-4 h-4" />
+                    </button>
                     {selected.is_read ? (
                       <MailOpen className="w-4 h-4 text-muted-foreground/40" />
                     ) : (
