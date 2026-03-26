@@ -24,9 +24,9 @@ export interface ReferralReward {
 }
 
 const REWARDS: Omit<ReferralReward, "unlocked">[] = [
-  { id: "custom_theme", label: "Tema Exclusivo", description: "Desbloqueie temas premium para sua página", icon: "🎨", threshold: 3 },
-  { id: "premium_highlight", label: "Destaque Premium", description: "Seu perfil ganha destaque especial", icon: "⭐", threshold: 5 },
-  { id: "verified_seal", label: "Selo Verificado", description: "Badge exclusivo de creator verificado", icon: "✅", threshold: 10 },
+  { id: "pro_3_days", label: "3 Dias de Pro Grátis", description: "Ganhe 3 dias de acesso ao plano Pro completo", icon: "⭐", threshold: 3 },
+  { id: "discount_10", label: "10% de Desconto", description: "Cupom de 10% no plano Pro por 30 dias", icon: "🏷️", threshold: 5 },
+  { id: "verified_badge", label: "Selo Verificado", description: "Badge de verificado no seu perfil por 15 dias", icon: "✅", threshold: 10 },
 ];
 
 /** Capture ?ref= param from URL and store it */
@@ -65,10 +65,23 @@ export async function linkReferralOnSignup(newUserId: string) {
   const refCode = getStoredReferralCode();
   if (!refCode) return;
 
+  // Add a small delay to ensure the profile trigger has completed
+  await new Promise((resolve) => setTimeout(resolve, 2000));
+
   try {
-    await supabase.functions.invoke("link-referral", {
+    const { data, error } = await supabase.functions.invoke("link-referral", {
       body: { ref_code: refCode, user_id: newUserId },
     });
+
+    if (error) {
+      console.error("Error linking referral:", error);
+      // Retry once after another delay
+      await new Promise((resolve) => setTimeout(resolve, 3000));
+      await supabase.functions.invoke("link-referral", {
+        body: { ref_code: refCode, user_id: newUserId },
+      });
+    }
+
     clearStoredReferralCode();
   } catch (err) {
     console.error("Error linking referral:", err);
