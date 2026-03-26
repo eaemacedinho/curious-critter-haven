@@ -102,30 +102,38 @@ export default function Members() {
     }
   };
 
-  // TODO: Role changes and member removal should use an edge function for full server-side enforcement.
-  // Currently profiles RLS WITH CHECK blocks role escalation, but ideally this should be a server-side operation.
   const handleChangeRole = async (memberId: string, newRole: AppRole) => {
     if (!agency?.id) return;
-    // Update both agency_memberships (source of truth) and profiles (backward compat)
-    const { error: memError } = await supabase
-      .from("agency_memberships")
-      .update({ role: newRole } as any)
-      .eq("user_id", memberId)
-      .eq("agency_id", agency.id);
+    try {
+      const { data: { session } } = await supabase.auth.getSession();
+      if (!session) throw new Error("Não autenticado");
 
-    // This will only succeed if RLS allows it (owner updating non-self, non-owner role)
-    const { error: profError } = await supabase
-      .from("profiles")
-      .update({ role: newRole })
-      .eq("id", memberId);
+      const projectId = import.meta.env.VITE_SUPABASE_PROJECT_ID;
+      const res = await fetch(
+        `https://${projectId}.supabase.co/functions/v1/change-member-role`,
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${session.access_token}`,
+          },
+          body: JSON.stringify({
+            agency_id: agency.id,
+            target_user_id: memberId,
+            new_role: newRole,
+          }),
+        }
+      );
 
-    if (memError && profError) {
-      toast.error("Erro ao alterar papel");
-    } else {
+      const result = await res.json();
+      if (!res.ok) throw new Error(result.error || "Erro ao alterar papel");
+
       toast.success("Papel atualizado");
       setMembers((prev) =>
         prev.map((m) => (m.id === memberId ? { ...m, role: newRole } : m))
       );
+    } catch (err: any) {
+      toast.error(err.message || "Erro ao alterar papel");
     }
   };
 
@@ -133,14 +141,34 @@ export default function Members() {
     if (!confirm(`Remover ${member.full_name || member.email || "este membro"} da agência?`)) return;
     if (!agency?.id) return;
 
-    // Delete from profiles (RLS allows owner to delete non-self members)
-    const { error } = await supabase.from("profiles").delete().eq("id", member.id);
+    try {
+      const { data: { session } } = await supabase.auth.getSession();
+      if (!session) throw new Error("Não autenticado");
 
-    if (error) {
-      toast.error("Erro ao remover membro");
-    } else {
+      const projectId = import.meta.env.VITE_SUPABASE_PROJECT_ID;
+      const res = await fetch(
+        `https://${projectId}.supabase.co/functions/v1/change-member-role`,
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${session.access_token}`,
+          },
+          body: JSON.stringify({
+            agency_id: agency.id,
+            target_user_id: member.id,
+            action: "remove",
+          }),
+        }
+      );
+
+      const result = await res.json();
+      if (!res.ok) throw new Error(result.error || "Erro ao remover membro");
+
       toast.success("Membro removido");
       setMembers((prev) => prev.filter((m) => m.id !== member.id));
+    } catch (err: any) {
+      toast.error(err.message || "Erro ao remover membro");
     }
   };
 
