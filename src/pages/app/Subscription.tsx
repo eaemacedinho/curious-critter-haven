@@ -278,7 +278,7 @@ export default function Subscription() {
                         "Content-Type": "application/json",
                         Authorization: `Bearer ${session.access_token}`,
                       },
-                      body: JSON.stringify({ discount_percent: 30 }),
+                      body: JSON.stringify({ discount_percent: 30, agency_id: subscription?.agency_id }),
                     });
 
                     const data = await res.json();

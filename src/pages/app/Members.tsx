@@ -102,13 +102,24 @@ export default function Members() {
     }
   };
 
+  // TODO: Role changes and member removal should use an edge function for full server-side enforcement.
+  // Currently profiles RLS WITH CHECK blocks role escalation, but ideally this should be a server-side operation.
   const handleChangeRole = async (memberId: string, newRole: AppRole) => {
-    const { error } = await supabase
+    if (!agency?.id) return;
+    // Update both agency_memberships (source of truth) and profiles (backward compat)
+    const { error: memError } = await supabase
+      .from("agency_memberships")
+      .update({ role: newRole } as any)
+      .eq("user_id", memberId)
+      .eq("agency_id", agency.id);
+
+    // This will only succeed if RLS allows it (owner updating non-self, non-owner role)
+    const { error: profError } = await supabase
       .from("profiles")
       .update({ role: newRole })
       .eq("id", memberId);
 
-    if (error) {
+    if (memError && profError) {
       toast.error("Erro ao alterar papel");
     } else {
       toast.success("Papel atualizado");
@@ -120,7 +131,9 @@ export default function Members() {
 
   const handleRemove = async (member: Member) => {
     if (!confirm(`Remover ${member.full_name || member.email || "este membro"} da agência?`)) return;
+    if (!agency?.id) return;
 
+    // Delete from profiles (RLS allows owner to delete non-self members)
     const { error } = await supabase.from("profiles").delete().eq("id", member.id);
 
     if (error) {
