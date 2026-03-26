@@ -314,6 +314,45 @@ export type Database = {
         }
         Relationships: []
       }
+      coupons: {
+        Row: {
+          code: string
+          created_at: string
+          current_uses: number
+          discount_percent: number
+          expires_at: string | null
+          id: string
+          is_active: boolean
+          max_uses: number | null
+          updated_at: string
+          valid_plans: string[]
+        }
+        Insert: {
+          code: string
+          created_at?: string
+          current_uses?: number
+          discount_percent: number
+          expires_at?: string | null
+          id?: string
+          is_active?: boolean
+          max_uses?: number | null
+          updated_at?: string
+          valid_plans?: string[]
+        }
+        Update: {
+          code?: string
+          created_at?: string
+          current_uses?: number
+          discount_percent?: number
+          expires_at?: string | null
+          id?: string
+          is_active?: boolean
+          max_uses?: number | null
+          updated_at?: string
+          valid_plans?: string[]
+        }
+        Relationships: []
+      }
       creator_hero_reels: {
         Row: {
           aspect_ratio: string

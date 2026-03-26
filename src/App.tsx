@@ -33,6 +33,7 @@ import Members from "@/pages/app/Members";
 import Referrals from "@/pages/app/Referrals";
 import Subscription from "@/pages/app/Subscription";
 import AppTemplates from "@/pages/app/AppTemplates";
+import AdminCoupons from "@/pages/app/AdminCoupons";
 
 const queryClient = new QueryClient();
 
@@ -78,6 +79,7 @@ const App = () => (
                 <Route path="members" element={<Members />} />
                 <Route path="referrals" element={<Referrals />} />
                 <Route path="checkout" element={<Checkout />} />
+                <Route path="coupons" element={<AdminCoupons />} />
               </Route>
 
               <Route path="*" element={<NotFound />} />
