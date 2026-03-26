@@ -198,7 +198,9 @@ export default function AppLayout() {
         <div className="text-[0.6rem] font-bold text-muted-foreground tracking-[0.14em] uppercase px-3 mb-2">
           Sistema
         </div>
-        {settingsItems.map((item) => (
+        {settingsItems
+          .filter((item) => !(item as any).adminOnly || user?.email === "gamacedo01@gmail.com")
+          .map((item) => (
           <Link
             key={item.path}
             to={item.path}
