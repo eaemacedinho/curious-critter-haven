@@ -202,7 +202,10 @@ export default function Subscription() {
               <span className="text-sm font-bold text-foreground">Upgrade para Scale</span>
               <p className="text-[0.65rem] text-muted-foreground">10 perfis · membros de equipe · criação em lote</p>
               <p className="text-[0.6rem] text-primary-readable font-medium mt-0.5">
-                Desconto de R$17,90 do seu plano Pro atual — pague só R$70,00/mês
+                Desconto de R$17,90 do seu plano Pro atual — pague só R$70,00 no 1º mês
+              </p>
+              <p className="text-[0.55rem] text-muted-foreground/60 mt-0.5">
+                *Desconto válido apenas para o primeiro mês. A partir do 2º mês, o valor volta para R$87,90/mês.
               </p>
             </div>
             <span className="text-sm font-bold text-primary-readable">R$70,00/mês</span>
