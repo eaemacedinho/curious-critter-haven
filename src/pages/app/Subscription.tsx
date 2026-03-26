@@ -208,7 +208,7 @@ export default function Subscription() {
                 *Desconto válido apenas para o primeiro mês. A partir do 2º mês, o valor volta para R$87,90/mês.
               </p>
             </div>
-            <span className="text-sm font-bold text-primary-readable">R$70,00/mês</span>
+            <span className="text-sm font-bold text-primary-readable">R$70,00<span className="text-[0.5rem] font-normal text-muted-foreground">/1º mês</span></span>
           </button>
           <p className="text-center text-[0.6rem] text-muted-foreground/60">
             Ou conheça o <a href="mailto:contato@in1.bio?subject=Plano%20Enterprise" className="underline hover:text-foreground">Enterprise</a> com white-label completo.
