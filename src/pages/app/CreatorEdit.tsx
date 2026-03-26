@@ -242,11 +242,11 @@ export default function CreatorEdit() {
     if (!editorRef.current) return;
     setSaving(true);
     try {
-      const saved = await editorRef.current.saveAll();
-      if (!saved) return;
+      const savedData = await editorRef.current.saveAll();
+      if (!savedData) return;
 
       await refetch();
-      const currentData = getCurrentData();
+      const currentData = cloneTemplateData(savedData);
 
       if (usingDefault) {
         const ok = await saveDefaultTemplate(currentData);
