@@ -4,6 +4,7 @@ import { useTenant } from "@/hooks/useTenant";
 import { format } from "date-fns";
 import { ptBR } from "date-fns/locale";
 import { Mail, MailOpen, Trash2, User, Clock } from "lucide-react";
+import { ConfirmDialog } from "@/components/ui/confirm-dialog";
 
 interface ContactMessage {
   id: string;
@@ -22,6 +23,7 @@ export default function Messages() {
   const [messages, setMessages] = useState<ContactMessage[]>([]);
   const [loading, setLoading] = useState(true);
   const [selected, setSelected] = useState<ContactMessage | null>(null);
+  const [deleteTarget, setDeleteTarget] = useState<string | null>(null);
 
   const fetchMessages = useCallback(async () => {
     if (!agency?.id) return;
@@ -179,7 +181,7 @@ export default function Messages() {
                   </div>
                   <div className="flex items-center gap-2">
                     <button
-                      onClick={() => deleteMessage(selected.id)}
+                      onClick={() => setDeleteTarget(selected.id)}
                       className="p-1.5 rounded-lg text-muted-foreground hover:text-destructive hover:bg-destructive/10 transition-colors"
                       title="Excluir mensagem"
                     >
@@ -216,6 +218,21 @@ export default function Messages() {
           </div>
         </div>
       )}
+
+      <ConfirmDialog
+        open={!!deleteTarget}
+        onOpenChange={(open) => { if (!open) setDeleteTarget(null); }}
+        title="Excluir mensagem"
+        description="Tem certeza que deseja excluir esta mensagem? Esta ação não pode ser desfeita."
+        confirmLabel="Excluir"
+        variant="destructive"
+        onConfirm={() => {
+          if (deleteTarget) {
+            deleteMessage(deleteTarget);
+            setDeleteTarget(null);
+          }
+        }}
+      />
     </div>
   );
 }
