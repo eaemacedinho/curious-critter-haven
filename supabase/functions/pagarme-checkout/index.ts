@@ -36,23 +36,6 @@ async function logAudit(
   }
 }
 
-/** Resolve agency_id and role from agency_memberships (source of truth) */
-async function getMembership(
-  supabaseAdmin: ReturnType<typeof createClient>,
-  userId: string
-): Promise<{ agency_id: string; role: string } | null> {
-  const { data } = await supabaseAdmin
-    .from("agency_memberships")
-    .select("agency_id, role")
-    .eq("user_id", userId)
-    .eq("status", "active")
-    .in("role", ["owner", "admin"])
-    .limit(1)
-    .maybeSingle();
-
-  return data;
-}
-
 Deno.serve(async (req) => {
   if (req.method === "OPTIONS") {
     return new Response(null, { headers: corsHeaders });
@@ -84,18 +67,32 @@ Deno.serve(async (req) => {
     const userId = user.id;
     const supabaseAdmin = getSupabaseAdmin();
 
-    // Get membership (source of truth) - only owner/admin can manage billing
-    const membership = await getMembership(supabaseAdmin, userId);
-    if (!membership) {
+    const body = await req.json();
+    const { card, customer, plan: requestedPlan, coupon_code, agency_id } = body;
+
+    // REQUIRE explicit agency_id
+    if (!agency_id || typeof agency_id !== "string") {
+      return new Response(JSON.stringify({ error: "agency_id is required" }), {
+        status: 400, headers: { ...corsHeaders, "Content-Type": "application/json" },
+      });
+    }
+
+    // Validate membership for THIS specific agency - owner/admin only
+    const { data: membership } = await supabaseAdmin
+      .from("agency_memberships")
+      .select("role")
+      .eq("user_id", userId)
+      .eq("agency_id", agency_id)
+      .eq("status", "active")
+      .single();
+
+    if (!membership || !["owner", "admin"].includes(membership.role)) {
       return new Response(JSON.stringify({ error: "Insufficient permissions - owner or admin required" }), {
         status: 403, headers: { ...corsHeaders, "Content-Type": "application/json" },
       });
     }
 
-    const agencyId = membership.agency_id;
-
-    const body = await req.json();
-    const { card, customer, plan: requestedPlan, coupon_code } = body;
+    const agencyId = agency_id;
 
     // Server determines the plan price - never trust client
     const planKey = requestedPlan === "scale" ? "scale" : "pro";

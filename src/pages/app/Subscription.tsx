@@ -21,12 +21,16 @@ export default function Subscription() {
       if (!session) throw new Error("Não autenticado");
 
       const projectId = import.meta.env.VITE_SUPABASE_PROJECT_ID;
+      const { data: mem } = await supabase.from("agency_memberships").select("agency_id").eq("user_id", session.user.id).eq("status", "active").limit(1).maybeSingle();
+      if (!mem?.agency_id) throw new Error("Agência não encontrada");
+
       const res = await fetch(`https://${projectId}.supabase.co/functions/v1/pagarme-cancel`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
           Authorization: `Bearer ${session.access_token}`,
         },
+        body: JSON.stringify({ agency_id: mem.agency_id }),
       });
 
       const data = await res.json();
@@ -49,12 +53,16 @@ export default function Subscription() {
       if (!session) throw new Error("Não autenticado");
 
       const projectId = import.meta.env.VITE_SUPABASE_PROJECT_ID;
+      const { data: mem } = await supabase.from("agency_memberships").select("agency_id").eq("user_id", session.user.id).eq("status", "active").limit(1).maybeSingle();
+      if (!mem?.agency_id) throw new Error("Agência não encontrada");
+
       const res = await fetch(`https://${projectId}.supabase.co/functions/v1/pagarme-reactivate`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
           Authorization: `Bearer ${session.access_token}`,
         },
+        body: JSON.stringify({ agency_id: mem.agency_id }),
       });
 
       const data = await res.json();
@@ -270,7 +278,7 @@ export default function Subscription() {
                         "Content-Type": "application/json",
                         Authorization: `Bearer ${session.access_token}`,
                       },
-                      body: JSON.stringify({ discount_percent: 30 }),
+                      body: JSON.stringify({ discount_percent: 30, agency_id: subscription?.agency_id }),
                     });
 
                     const data = await res.json();

@@ -66,7 +66,7 @@ export function TenantProvider({ children }: { children: ReactNode }) {
 
     setLoading(true);
 
-    // PRIMARY: Use agency_memberships as source of truth
+    // agency_memberships is the SOLE source of truth — no profiles fallback
     const { data: membership, error: membershipError } = await supabase
       .from("agency_memberships")
       .select("agency_id, role")
@@ -94,31 +94,8 @@ export function TenantProvider({ children }: { children: ReactNode }) {
       return;
     }
 
-    // FALLBACK: profiles.agency_id for backward compatibility only
-    // TODO: Remove this fallback once all users have agency_memberships rows
-    const { data: profileData } = await supabase
-      .from("profiles")
-      .select("agency_id, role")
-      .eq("id", user.id)
-      .maybeSingle();
-
-    if (profileData && profileData.agency_id) {
-      setUserRole(profileData.role as UserRole);
-
-      const [agencyRes, settingsRes] = await Promise.all([
-        supabase.from("agencies").select("*").eq("id", profileData.agency_id).maybeSingle(),
-        supabase.from("agency_settings").select("*").eq("agency_id", profileData.agency_id).maybeSingle(),
-      ]);
-
-      if (agencyRes.data) setAgency(agencyRes.data as Agency);
-      if (settingsRes.data) setSettings(settingsRes.data as AgencySettings);
-
-      setLoading(false);
-      return;
-    }
-
-    // No agency found - create one for new users
-    // This path is only hit if handle_new_user() trigger didn't fire (edge case)
+    // No membership found — this is an edge case where handle_new_user() didn't fire.
+    // Try to find an agency the user owns directly and create the membership.
     const { data: existingAgency } = await supabase
       .from("agencies")
       .select("*")
@@ -132,6 +109,7 @@ export function TenantProvider({ children }: { children: ReactNode }) {
       return;
     }
 
+    // Last resort: create agency (should rarely happen)
     const { data: newAgency, error: createError } = await supabase
       .from("agencies")
       .insert({

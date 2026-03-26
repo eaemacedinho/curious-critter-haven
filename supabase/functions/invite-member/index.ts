@@ -16,12 +16,10 @@ Deno.serve(async (req) => {
     const serviceRoleKey = Deno.env.get("SUPABASE_SERVICE_ROLE_KEY")!;
     const anonKey = Deno.env.get("SUPABASE_ANON_KEY") || Deno.env.get("SUPABASE_PUBLISHABLE_KEY") || "";
 
-    // Verify the calling user
     const authHeader = req.headers.get("Authorization") || "";
     if (!authHeader.startsWith("Bearer ")) {
       return new Response(JSON.stringify({ error: "Não autenticado" }), {
-        status: 401,
-        headers: { ...corsHeaders, "Content-Type": "application/json" },
+        status: 401, headers: { ...corsHeaders, "Content-Type": "application/json" },
       });
     }
 
@@ -31,78 +29,50 @@ Deno.serve(async (req) => {
     const { data: { user }, error: authError } = await userClient.auth.getUser();
     if (authError || !user) {
       return new Response(JSON.stringify({ error: "Não autenticado" }), {
-        status: 401,
-        headers: { ...corsHeaders, "Content-Type": "application/json" },
+        status: 401, headers: { ...corsHeaders, "Content-Type": "application/json" },
       });
     }
 
     const adminClient = createClient(supabaseUrl, serviceRoleKey);
 
-    // Check caller is owner via agency_memberships (source of truth)
-    const { data: callerMembership } = await adminClient
-      .from("agency_memberships")
-      .select("agency_id, role")
-      .eq("user_id", user.id)
-      .eq("status", "active")
-      .eq("role", "owner")
-      .maybeSingle();
-
-    // Fallback to profiles if no membership found yet (backward compat)
-    let callerAgencyId: string | null = null;
-    let callerRole: string | null = null;
-
-    if (callerMembership) {
-      callerAgencyId = callerMembership.agency_id;
-      callerRole = callerMembership.role;
-    } else {
-      const { data: callerProfile } = await adminClient
-        .from("profiles")
-        .select("agency_id, role")
-        .eq("id", user.id)
-        .single();
-
-      if (callerProfile) {
-        callerAgencyId = callerProfile.agency_id;
-        callerRole = callerProfile.role;
-      }
-    }
-
-    if (!callerAgencyId || callerRole !== "owner") {
-      return new Response(JSON.stringify({ error: "Apenas o owner pode convidar membros" }), {
-        status: 403,
-        headers: { ...corsHeaders, "Content-Type": "application/json" },
-      });
-    }
-
     const { email, role, agency_id } = await req.json();
 
     // Input validation
+    if (!agency_id || typeof agency_id !== "string") {
+      return new Response(JSON.stringify({ error: "agency_id é obrigatório" }), {
+        status: 400, headers: { ...corsHeaders, "Content-Type": "application/json" },
+      });
+    }
     if (!email || typeof email !== "string" || !email.includes("@")) {
       return new Response(JSON.stringify({ error: "Email inválido" }), {
         status: 400, headers: { ...corsHeaders, "Content-Type": "application/json" },
       });
     }
-
-    if (!role || !agency_id) {
-      return new Response(JSON.stringify({ error: "email, role e agency_id são obrigatórios" }), {
-        status: 400,
-        headers: { ...corsHeaders, "Content-Type": "application/json" },
-      });
-    }
-
-    // Server-side agency verification - ignore client-sent agency_id, use caller's
-    if (agency_id !== callerAgencyId) {
-      return new Response(JSON.stringify({ error: "Agência inválida" }), {
-        status: 403,
-        headers: { ...corsHeaders, "Content-Type": "application/json" },
+    if (!role) {
+      return new Response(JSON.stringify({ error: "role é obrigatório" }), {
+        status: 400, headers: { ...corsHeaders, "Content-Type": "application/json" },
       });
     }
 
     const validRoles = ["admin", "editor", "viewer"];
     if (!validRoles.includes(role)) {
       return new Response(JSON.stringify({ error: "Papel inválido" }), {
-        status: 400,
-        headers: { ...corsHeaders, "Content-Type": "application/json" },
+        status: 400, headers: { ...corsHeaders, "Content-Type": "application/json" },
+      });
+    }
+
+    // Validate caller is owner of THIS specific agency
+    const { data: callerMembership } = await adminClient
+      .from("agency_memberships")
+      .select("role")
+      .eq("user_id", user.id)
+      .eq("agency_id", agency_id)
+      .eq("status", "active")
+      .single();
+
+    if (!callerMembership || callerMembership.role !== "owner") {
+      return new Response(JSON.stringify({ error: "Apenas o owner pode convidar membros" }), {
+        status: 403, headers: { ...corsHeaders, "Content-Type": "application/json" },
       });
     }
 
@@ -124,8 +94,7 @@ Deno.serve(async (req) => {
 
       if (existingMembership) {
         return new Response(JSON.stringify({ error: "Este usuário já é membro desta agência" }), {
-          status: 409,
-          headers: { ...corsHeaders, "Content-Type": "application/json" },
+          status: 409, headers: { ...corsHeaders, "Content-Type": "application/json" },
         });
       }
 
@@ -150,7 +119,6 @@ Deno.serve(async (req) => {
         role,
       }, { onConflict: "user_id,agency_id" as any });
 
-      // Audit log
       await adminClient.from("audit_logs").insert({
         event_type: "member.invited",
         actor_id: user.id,
@@ -177,12 +145,10 @@ Deno.serve(async (req) => {
 
     if (inviteError) {
       return new Response(JSON.stringify({ error: inviteError.message }), {
-        status: 500,
-        headers: { ...corsHeaders, "Content-Type": "application/json" },
+        status: 500, headers: { ...corsHeaders, "Content-Type": "application/json" },
       });
     }
 
-    // Create membership + profile for the invited user
     if (inviteData?.user) {
       await adminClient.from("agency_memberships").upsert({
         user_id: inviteData.user.id,
@@ -200,7 +166,6 @@ Deno.serve(async (req) => {
       });
     }
 
-    // Audit log
     await adminClient.from("audit_logs").insert({
       event_type: "member.invited",
       actor_id: user.id,
@@ -217,8 +182,7 @@ Deno.serve(async (req) => {
   } catch (err) {
     console.error("Invite member error:", err);
     return new Response(JSON.stringify({ error: "Erro interno do servidor" }), {
-      status: 500,
-      headers: { ...corsHeaders, "Content-Type": "application/json" },
+      status: 500, headers: { ...corsHeaders, "Content-Type": "application/json" },
     });
   }
 });

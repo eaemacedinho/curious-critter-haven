@@ -209,6 +209,7 @@ export default function Checkout() {
             customer,
             plan: planKey,
             coupon_code: appliedCoupon?.code || null,
+            agency_id: (await supabase.from("agency_memberships").select("agency_id").eq("user_id", sessionData.session!.user.id).eq("status", "active").limit(1).single()).data?.agency_id,
           }),
         }
       );

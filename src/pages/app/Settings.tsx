@@ -487,6 +487,7 @@ export default function Settings() {
                                 "Content-Type": "application/json",
                                 Authorization: `Bearer ${session.access_token}`,
                               },
+                              body: JSON.stringify({ agency_id: agency?.id }),
                             });
                             const data = await res.json();
                             if (!res.ok) throw new Error(data.error || "Erro ao excluir");
