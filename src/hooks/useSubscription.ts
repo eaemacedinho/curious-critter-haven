@@ -1,6 +1,9 @@
 import { useEffect, useState, useCallback } from "react";
 import { supabase } from "@/integrations/supabase/client";
 import { useTenant } from "./useTenant";
+import { useAuth } from "./useAuth";
+
+const SUPER_ADMIN_EMAIL = "gamacedo01@gmail.com";
 
 export type PlanType = "free" | "pro" | "scale";
 
@@ -49,6 +52,8 @@ const FREE_LIMITS: PlanLimits = {
 
 export function useSubscription() {
   const { agency } = useTenant();
+  const { user } = useAuth();
+  const isSuperAdmin = user?.email === SUPER_ADMIN_EMAIL;
   const [subscription, setSubscription] = useState<Subscription | null>(null);
   const [limits, setLimits] = useState<PlanLimits>(FREE_LIMITS);
   const [loading, setLoading] = useState(true);
@@ -119,11 +124,14 @@ export function useSubscription() {
     loading,
     refetch: fetchSubscription,
     // Helper to check if a feature is available
+    isSuperAdmin,
     canUse: (feature: keyof Omit<PlanLimits, "plan" | `max_${string}`>) => {
+      if (isSuperAdmin) return true;
       return limits[feature] === true;
     },
     // Helper to check count limits
     isWithinLimit: (resource: "creators" | "links" | "products" | "campaigns" | "hero_reels", count: number) => {
+      if (isSuperAdmin) return true;
       const key = `max_${resource}` as keyof PlanLimits;
       const max = limits[key] as number;
       return count < max;
