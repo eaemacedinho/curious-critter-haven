@@ -35,32 +35,40 @@ Deno.serve(async (req) => {
       Deno.env.get("SUPABASE_URL")!, Deno.env.get("SUPABASE_SERVICE_ROLE_KEY")!
     );
 
-    // Use agency_memberships as source of truth
-    const { data: membership } = await supabaseAdmin
-      .from("agency_memberships")
-      .select("agency_id, role")
-      .eq("user_id", user.id)
-      .eq("status", "active")
-      .limit(1)
-      .maybeSingle();
+    const body = await req.json();
+    const { agency_id, discount_percent } = body;
 
-    if (!membership?.agency_id) {
-      return new Response(JSON.stringify({ error: "No agency found" }), {
+    // REQUIRE explicit agency_id from client
+    if (!agency_id || typeof agency_id !== "string") {
+      return new Response(JSON.stringify({ error: "agency_id is required" }), {
         status: 400, headers: { ...corsHeaders, "Content-Type": "application/json" },
       });
     }
 
-    const body = await req.json();
-    const discountPercent = body.discount_percent;
+    // Validate membership for THIS specific agency_id - owner/admin only
+    const { data: membership } = await supabaseAdmin
+      .from("agency_memberships")
+      .select("role")
+      .eq("user_id", user.id)
+      .eq("agency_id", agency_id)
+      .eq("status", "active")
+      .single();
 
+    if (!membership || !["owner", "admin"].includes(membership.role)) {
+      return new Response(JSON.stringify({ error: "Insufficient permissions - owner or admin required" }), {
+        status: 403, headers: { ...corsHeaders, "Content-Type": "application/json" },
+      });
+    }
+
+    const discountPercent = Number(discount_percent);
     if (!discountPercent || discountPercent < 1 || discountPercent > 50) {
-      return new Response(JSON.stringify({ error: "Invalid discount" }), {
+      return new Response(JSON.stringify({ error: "Invalid discount (1-50)" }), {
         status: 400, headers: { ...corsHeaders, "Content-Type": "application/json" },
       });
     }
 
     const { data: sub } = await supabaseAdmin
-      .from("subscriptions").select("*").eq("agency_id", membership.agency_id).single();
+      .from("subscriptions").select("*").eq("agency_id", agency_id).single();
 
     if (!sub || sub.status !== "active" || sub.plan === "free") {
       return new Response(JSON.stringify({ error: "No active paid subscription" }), {
@@ -112,7 +120,7 @@ Deno.serve(async (req) => {
     await supabaseAdmin.from("audit_logs").insert({
       event_type: "subscription.discount_applied",
       actor_id: user.id,
-      agency_id: membership.agency_id,
+      agency_id,
       target_table: "subscriptions",
       metadata: { discount_percent: discountPercent, plan: sub.plan },
     });

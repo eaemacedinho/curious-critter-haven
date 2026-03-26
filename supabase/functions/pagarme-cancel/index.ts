@@ -49,30 +49,33 @@ Deno.serve(async (req) => {
       Deno.env.get("SUPABASE_URL")!, Deno.env.get("SUPABASE_SERVICE_ROLE_KEY")!
     );
 
-    // Use agency_memberships as source of truth
-    const { data: membership } = await supabaseAdmin
-      .from("agency_memberships")
-      .select("agency_id, role")
-      .eq("user_id", user.id)
-      .eq("status", "active")
-      .limit(1)
-      .maybeSingle();
+    const body = await req.json();
+    const { agency_id } = body;
 
-    if (!membership?.agency_id) {
-      return new Response(JSON.stringify({ error: "No agency found" }), {
+    // REQUIRE explicit agency_id
+    if (!agency_id || typeof agency_id !== "string") {
+      return new Response(JSON.stringify({ error: "agency_id is required" }), {
         status: 400, headers: { ...corsHeaders, "Content-Type": "application/json" },
       });
     }
 
-    // Only owner/admin can cancel
-    if (!["owner", "admin"].includes(membership.role)) {
+    // Validate membership for THIS specific agency - owner/admin only
+    const { data: membership } = await supabaseAdmin
+      .from("agency_memberships")
+      .select("role")
+      .eq("user_id", user.id)
+      .eq("agency_id", agency_id)
+      .eq("status", "active")
+      .single();
+
+    if (!membership || !["owner", "admin"].includes(membership.role)) {
       return new Response(JSON.stringify({ error: "Insufficient permissions" }), {
         status: 403, headers: { ...corsHeaders, "Content-Type": "application/json" },
       });
     }
 
     const { data: sub } = await supabaseAdmin
-      .from("subscriptions").select("*").eq("agency_id", membership.agency_id).single();
+      .from("subscriptions").select("*").eq("agency_id", agency_id).single();
 
     if (!sub || sub.plan === "free") {
       return new Response(JSON.stringify({ error: "No active subscription to cancel" }), {
@@ -96,12 +99,12 @@ Deno.serve(async (req) => {
 
     await supabaseAdmin.from("subscriptions").update({
       status: "canceled", expires_at: expiresAt, updated_at: new Date().toISOString(),
-    }).eq("agency_id", membership.agency_id);
+    }).eq("agency_id", agency_id);
 
     await supabaseAdmin.from("audit_logs").insert({
       event_type: "subscription.canceled",
       actor_id: user.id,
-      agency_id: membership.agency_id,
+      agency_id,
       target_table: "subscriptions",
       metadata: { plan: sub.plan, expires_at: expiresAt },
     });

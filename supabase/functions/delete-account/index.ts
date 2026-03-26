@@ -21,7 +21,6 @@ Deno.serve(async (req) => {
     const serviceKey = Deno.env.get("SUPABASE_SERVICE_ROLE_KEY")!;
     const anonKey = Deno.env.get("SUPABASE_ANON_KEY")!;
 
-    // Verify user
     const userClient = createClient(supabaseUrl, anonKey, {
       global: { headers: { Authorization: authHeader } },
     });
@@ -34,25 +33,33 @@ Deno.serve(async (req) => {
 
     const adminClient = createClient(supabaseUrl, serviceKey);
 
-    // Use agency_memberships as source of truth - only owner can delete
+    const body = await req.json();
+    const { agency_id } = body;
+
+    // REQUIRE explicit agency_id
+    if (!agency_id || typeof agency_id !== "string") {
+      return new Response(JSON.stringify({ error: "agency_id is required" }), {
+        status: 400, headers: { ...corsHeaders, "Content-Type": "application/json" },
+      });
+    }
+
+    // Validate ownership of THIS specific agency
     const { data: membership } = await adminClient
       .from("agency_memberships")
-      .select("agency_id, role")
+      .select("role")
       .eq("user_id", user.id)
+      .eq("agency_id", agency_id)
       .eq("status", "active")
-      .eq("role", "owner")
-      .maybeSingle();
+      .single();
 
-    if (!membership) {
+    if (!membership || membership.role !== "owner") {
       return new Response(JSON.stringify({ error: "Apenas o owner pode excluir a conta" }), {
         status: 403, headers: { ...corsHeaders, "Content-Type": "application/json" },
       });
     }
 
-    const agencyId = membership.agency_id;
-
     // Get creator IDs
-    const { data: creators } = await adminClient.from("creators").select("id").eq("agency_id", agencyId);
+    const { data: creators } = await adminClient.from("creators").select("id").eq("agency_id", agency_id);
     const creatorIds = (creators || []).map((c: any) => c.id);
 
     // Delete all related data
@@ -67,17 +74,17 @@ Deno.serve(async (req) => {
       );
       await adminClient.from("campaigns").delete().in("creator_id", creatorIds);
       await adminClient.from("analytics_events").delete().in("creator_id", creatorIds);
-      await adminClient.from("creators").delete().eq("agency_id", agencyId);
+      await adminClient.from("creators").delete().eq("agency_id", agency_id);
     }
 
-    await adminClient.from("analytics_events").delete().eq("agency_id", agencyId);
-    await adminClient.from("subscriptions").delete().eq("agency_id", agencyId);
-    await adminClient.from("agency_settings").delete().eq("agency_id", agencyId);
-    await adminClient.from("agency_memberships").delete().eq("agency_id", agencyId);
-    await adminClient.from("user_roles").delete().eq("agency_id", agencyId);
+    await adminClient.from("analytics_events").delete().eq("agency_id", agency_id);
+    await adminClient.from("subscriptions").delete().eq("agency_id", agency_id);
+    await adminClient.from("agency_settings").delete().eq("agency_id", agency_id);
+    await adminClient.from("agency_memberships").delete().eq("agency_id", agency_id);
+    await adminClient.from("user_roles").delete().eq("agency_id", agency_id);
     await adminClient.from("referrals").delete().eq("referrer_user_id", user.id);
     await adminClient.from("profiles").delete().eq("id", user.id);
-    await adminClient.from("agencies").delete().eq("id", agencyId);
+    await adminClient.from("agencies").delete().eq("id", agency_id);
 
     // Delete auth user
     const { error: deleteError } = await adminClient.auth.admin.deleteUser(user.id);
