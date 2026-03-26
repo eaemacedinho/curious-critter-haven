@@ -7,6 +7,7 @@ const corsHeaders = {
 };
 
 const PAGARME_API_URL = "https://api.pagar.me/core/v5";
+const PLAN_PRICES: Record<string, number> = { pro: 1790, scale: 8790 };
 
 Deno.serve(async (req) => {
   if (req.method === "OPTIONS") {
@@ -19,7 +20,6 @@ Deno.serve(async (req) => {
       throw new Error("PAGARME_API_KEY is not configured");
     }
 
-    // Authenticate user
     const authHeader = req.headers.get("Authorization");
     if (!authHeader?.startsWith("Bearer ")) {
       return new Response(JSON.stringify({ error: "Unauthorized" }), {
@@ -44,7 +44,6 @@ Deno.serve(async (req) => {
 
     const userId = user.id;
 
-    // Get user's agency
     const { data: profile } = await supabase
       .from("profiles")
       .select("agency_id")
@@ -61,11 +60,9 @@ Deno.serve(async (req) => {
     const body = await req.json();
     const { card, customer, plan: requestedPlan } = body;
 
-    // Determine plan and price (in cents)
     const planKey = requestedPlan === "scale" ? "scale" : "pro";
-    const planPrice = planKey === "scale" ? 8790 : 1790;
+    const basePlanPrice = PLAN_PRICES[planKey] || 1790;
     const planLabel = planKey === "scale" ? "Scale" : "Pro";
-    const planDescriptor = planKey === "scale" ? "IN1BIO SCALE" : "IN1BIO PRO";
 
     if (!card || !customer) {
       return new Response(
@@ -74,7 +71,6 @@ Deno.serve(async (req) => {
       );
     }
 
-    // Validate required fields
     if (!card.number || !card.holder_name || !card.exp_month || !card.exp_year || !card.cvv) {
       return new Response(
         JSON.stringify({ error: "All card fields are required" }),
@@ -89,7 +85,56 @@ Deno.serve(async (req) => {
       );
     }
 
-    // Create subscription on Pagar.me v5
+    // Check existing subscription for prorated upgrade
+    const supabaseAdmin = createClient(
+      Deno.env.get("SUPABASE_URL")!,
+      Deno.env.get("SUPABASE_SERVICE_ROLE_KEY")!
+    );
+
+    const { data: existingSub } = await supabaseAdmin
+      .from("subscriptions")
+      .select("*")
+      .eq("agency_id", profile.agency_id)
+      .single();
+
+    let finalPrice = basePlanPrice;
+    let isUpgrade = false;
+    let discountDescription = "";
+
+    // Prorated upgrade: if user is currently on an active paid plan and upgrading
+    if (existingSub && existingSub.plan !== "free") {
+      const isActivePlan = existingSub.status === "active" ||
+        (existingSub.status === "canceled" && existingSub.expires_at && new Date(existingSub.expires_at) > new Date());
+
+      if (isActivePlan) {
+        const currentPlanPrice = PLAN_PRICES[existingSub.plan] || 0;
+        if (basePlanPrice > currentPlanPrice) {
+          // Upgrade: discount the current plan price
+          finalPrice = basePlanPrice - currentPlanPrice;
+          isUpgrade = true;
+          discountDescription = ` (upgrade de ${existingSub.plan === "pro" ? "Pro" : "Scale"}, desconto de R$${(currentPlanPrice / 100).toFixed(2).replace(".", ",")})`;
+
+          // Cancel the old Pagar.me subscription if exists
+          if (existingSub.payment_id) {
+            try {
+              const pagarmeAuth = btoa(PAGARME_API_KEY + ":");
+              await fetch(`${PAGARME_API_URL}/subscriptions/${existingSub.payment_id}`, {
+                method: "DELETE",
+                headers: {
+                  Authorization: `Basic ${pagarmeAuth}`,
+                  "Content-Type": "application/json",
+                  Accept: "application/json",
+                },
+              });
+            } catch (e) {
+              console.warn("Failed to cancel old subscription on Pagar.me:", e);
+            }
+          }
+        }
+      }
+    }
+
+    const planDescriptor = planKey === "scale" ? "IN1BIO SCALE" : "IN1BIO PRO";
     const pagarmeAuth = btoa(PAGARME_API_KEY + ":");
 
     const subscriptionPayload = {
@@ -99,7 +144,7 @@ Deno.serve(async (req) => {
       interval_count: 1,
       billing_type: "prepaid",
       installments: 1,
-      minimum_price: planPrice,
+      minimum_price: finalPrice,
       statement_descriptor: planDescriptor,
       card: {
         number: card.number.replace(/\s/g, ""),
@@ -129,26 +174,28 @@ Deno.serve(async (req) => {
           },
         },
       },
-      // Items array — required by Pagar.me v5 for subscription pricing
       items: [
         {
-          description: `Plano ${planLabel} - in1.bio`,
+          description: `Plano ${planLabel} - in1.bio${discountDescription}`,
           quantity: 1,
           pricing_scheme: {
             scheme_type: "unit",
-            price: planPrice,
+            price: finalPrice,
           },
         },
       ],
       metadata: {
         agency_id: profile.agency_id,
         user_id: userId,
+        is_upgrade: isUpgrade,
       },
     };
 
-    console.log("Creating subscription with payload:", JSON.stringify({
+    console.log("Creating subscription:", JSON.stringify({
       plan: planKey,
-      price: planPrice,
+      base_price: basePlanPrice,
+      final_price: finalPrice,
+      is_upgrade: isUpgrade,
       customer_email: customer.email,
     }));
 
@@ -175,17 +222,11 @@ Deno.serve(async (req) => {
       );
     }
 
-    console.log("Pagar.me response:", JSON.stringify({
-      id: pagarmeData.id,
-      status: pagarmeData.status,
-    }));
-
-    // Only activate if payment was successful
     const pagarmeStatus = pagarmeData.status;
     const isPaymentSuccessful = pagarmeStatus === "active" || pagarmeStatus === "paid";
 
     if (!isPaymentSuccessful) {
-      console.error("Payment not successful. Pagar.me status:", pagarmeStatus);
+      console.error("Payment not successful. Status:", pagarmeStatus);
       return new Response(
         JSON.stringify({
           error: "Pagamento recusado",
@@ -196,12 +237,6 @@ Deno.serve(async (req) => {
       );
     }
 
-    // Update subscription in our database using service role
-    const supabaseAdmin = createClient(
-      Deno.env.get("SUPABASE_URL")!,
-      Deno.env.get("SUPABASE_SERVICE_ROLE_KEY")!
-    );
-
     await supabaseAdmin
       .from("subscriptions")
       .update({
@@ -210,6 +245,7 @@ Deno.serve(async (req) => {
         payment_id: pagarmeData.id,
         payment_provider: "pagarme",
         started_at: new Date().toISOString(),
+        expires_at: null,
       })
       .eq("agency_id", profile.agency_id);
 
@@ -218,6 +254,8 @@ Deno.serve(async (req) => {
         success: true,
         subscription_id: pagarmeData.id,
         status: pagarmeData.status,
+        is_upgrade: isUpgrade,
+        final_price: finalPrice,
       }),
       { status: 200, headers: { ...corsHeaders, "Content-Type": "application/json" } }
     );

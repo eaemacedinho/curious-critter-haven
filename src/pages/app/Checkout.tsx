@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useMemo } from "react";
 import { motion } from "framer-motion";
 import { CreditCard, Shield, ArrowLeft, CheckCircle2, Loader2, Sparkles, Rocket } from "lucide-react";
 import { Input } from "@/components/ui/input";
@@ -6,7 +6,7 @@ import { Label } from "@/components/ui/label";
 import { Button } from "@/components/ui/button";
 import { useNavigate, useSearchParams } from "react-router-dom";
 import { supabase } from "@/integrations/supabase/client";
-import { useSubscription, PlanType } from "@/hooks/useSubscription";
+import { useSubscription } from "@/hooks/useSubscription";
 import { toast } from "sonner";
 
 const PLAN_INFO: Record<string, { label: string; price: string; priceValue: number; features: string[] }> = {
@@ -41,6 +41,8 @@ const PLAN_INFO: Record<string, { label: string; price: string; priceValue: numb
   },
 };
 
+const PLAN_PRICES: Record<string, number> = { free: 0, pro: 1790, scale: 8790 };
+
 export default function Checkout() {
   const navigate = useNavigate();
   const [searchParams] = useSearchParams();
@@ -48,7 +50,7 @@ export default function Checkout() {
   const plan = PLAN_INFO[targetPlan] || PLAN_INFO.pro;
   const planKey = PLAN_INFO[targetPlan] ? targetPlan : "pro";
 
-  const { currentPlan, refetch } = useSubscription();
+  const { currentPlan, subscription, refetch } = useSubscription();
   const [loading, setLoading] = useState(false);
   const [success, setSuccess] = useState(false);
 
@@ -68,6 +70,29 @@ export default function Checkout() {
     phone_number: "",
     zip_code: "",
   });
+
+  // Calculate prorated price for upgrades
+  const { isUpgrade, finalPrice, finalPriceLabel, discount } = useMemo(() => {
+    const targetPrice = PLAN_PRICES[planKey] || 0;
+    const currentPrice = PLAN_PRICES[currentPlan] || 0;
+
+    if (currentPlan !== "free" && targetPrice > currentPrice) {
+      const diff = targetPrice - currentPrice;
+      return {
+        isUpgrade: true,
+        finalPrice: diff,
+        finalPriceLabel: `R$${(diff / 100).toFixed(2).replace(".", ",")}/mês`,
+        discount: currentPrice,
+      };
+    }
+
+    return {
+      isUpgrade: false,
+      finalPrice: targetPrice,
+      finalPriceLabel: plan.price,
+      discount: 0,
+    };
+  }, [planKey, currentPlan, plan.price]);
 
   // Already on this plan or higher
   const planOrder: Record<string, number> = { free: 0, pro: 1, scale: 2 };
@@ -103,7 +128,9 @@ export default function Checkout() {
         >
           <CheckCircle2 className="w-16 h-16 text-primary-readable mx-auto" />
           <h2 className="text-2xl font-bold text-foreground">Pagamento confirmado!</h2>
-          <p className="text-muted-foreground">Bem-vindo ao plano {plan.label}. Aproveite todos os recursos.</p>
+          <p className="text-muted-foreground">
+            {isUpgrade ? `Upgrade para ${plan.label} realizado!` : `Bem-vindo ao plano ${plan.label}.`} Aproveite todos os recursos.
+          </p>
           <Button onClick={() => navigate("/app")}>
             Ir para o painel
           </Button>
@@ -160,7 +187,7 @@ export default function Checkout() {
 
       await refetch();
       setSuccess(true);
-      toast.success(`Assinatura ${plan.label} ativada com sucesso!`);
+      toast.success(isUpgrade ? `Upgrade para ${plan.label} realizado!` : `Assinatura ${plan.label} ativada com sucesso!`);
     } catch (err: unknown) {
       const msg = err instanceof Error ? err.message : "Erro desconhecido";
       toast.error(msg);
@@ -195,12 +222,35 @@ export default function Checkout() {
               <Sparkles className="w-7 h-7 text-primary-readable" />
             )}
           </div>
-          <h1 className="text-2xl font-extrabold text-foreground">Upgrade para o {plan.label}</h1>
+          <h1 className="text-2xl font-extrabold text-foreground">
+            {isUpgrade ? `Upgrade para o ${plan.label}` : `Upgrade para o ${plan.label}`}
+          </h1>
           <p className="text-muted-foreground">
-            Desbloqueie todos os recursos por{" "}
-            <span className="text-foreground font-bold">{plan.price}</span>
+            {isUpgrade ? (
+              <>
+                Pague apenas a diferença:{" "}
+                <span className="text-foreground font-bold">{finalPriceLabel}</span>
+                <span className="ml-2 text-xs line-through text-muted-foreground">{plan.price}</span>
+              </>
+            ) : (
+              <>
+                Desbloqueie todos os recursos por{" "}
+                <span className="text-foreground font-bold">{plan.price}</span>
+              </>
+            )}
           </p>
         </div>
+
+        {/* Upgrade discount banner */}
+        {isUpgrade && (
+          <div className="rounded-2xl border border-primary/20 bg-primary/10 p-4 text-center">
+            <div className="text-xs text-muted-foreground mb-1">Desconto do plano {currentPlan === "pro" ? "Pro" : "Scale"} atual</div>
+            <div className="text-lg font-extrabold text-primary-readable">
+              -R${(discount / 100).toFixed(2).replace(".", ",")}
+              <span className="text-xs font-normal text-muted-foreground ml-2">aplicado automaticamente</span>
+            </div>
+          </div>
+        )}
 
         {/* Features */}
         <div className="grid grid-cols-2 gap-2 p-4 bg-muted/30 rounded-2xl border border-border">
@@ -212,7 +262,7 @@ export default function Checkout() {
           ))}
         </div>
 
-        {/* Plan switcher for users who might want the other plan */}
+        {/* Plan switcher for free users */}
         {currentPlan === "free" && (
           <div className="flex items-center justify-center gap-2">
             <button
@@ -369,7 +419,7 @@ export default function Checkout() {
                 Processando...
               </>
             ) : (
-              `Assinar ${plan.label} — ${plan.price}`
+              `${isUpgrade ? "Fazer upgrade" : "Assinar"} ${plan.label} — ${finalPriceLabel}`
             )}
           </Button>
 
