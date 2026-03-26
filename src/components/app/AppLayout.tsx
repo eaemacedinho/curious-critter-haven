@@ -15,6 +15,7 @@ const navItems = [
   { icon: "📢", label: "Campanhas", path: "/app/campaigns", tour: "campaigns" },
   { icon: "🎨", label: "Templates", path: "/app/templates", tour: "templates" },
   { icon: "📊", label: "Analytics", path: "/app/analytics", tour: "analytics", pro: true },
+  { icon: "✉️", label: "Mensagens", path: "/app/messages", tour: "messages" },
 ];
 
 const settingsItems = [

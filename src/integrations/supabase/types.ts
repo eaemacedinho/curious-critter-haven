@@ -314,6 +314,54 @@ export type Database = {
         }
         Relationships: []
       }
+      contact_messages: {
+        Row: {
+          agency_id: string
+          created_at: string
+          creator_id: string
+          id: string
+          is_read: boolean
+          message: string
+          sender_email: string
+          sender_name: string
+        }
+        Insert: {
+          agency_id: string
+          created_at?: string
+          creator_id: string
+          id?: string
+          is_read?: boolean
+          message?: string
+          sender_email?: string
+          sender_name?: string
+        }
+        Update: {
+          agency_id?: string
+          created_at?: string
+          creator_id?: string
+          id?: string
+          is_read?: boolean
+          message?: string
+          sender_email?: string
+          sender_name?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "contact_messages_agency_id_fkey"
+            columns: ["agency_id"]
+            isOneToOne: false
+            referencedRelation: "agencies"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "contact_messages_creator_id_fkey"
+            columns: ["creator_id"]
+            isOneToOne: false
+            referencedRelation: "creators"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       coupons: {
         Row: {
           code: string
@@ -666,6 +714,7 @@ export type Database = {
           color_bio: string | null
           color_name: string | null
           color_section_titles: string | null
+          contact_enabled: boolean
           cover_url: string | null
           cover_url_layout2: string | null
           created_at: string
@@ -701,6 +750,7 @@ export type Database = {
           color_bio?: string | null
           color_name?: string | null
           color_section_titles?: string | null
+          contact_enabled?: boolean
           cover_url?: string | null
           cover_url_layout2?: string | null
           created_at?: string
@@ -736,6 +786,7 @@ export type Database = {
           color_bio?: string | null
           color_name?: string | null
           color_section_titles?: string | null
+          contact_enabled?: boolean
           cover_url?: string | null
           cover_url_layout2?: string | null
           created_at?: string

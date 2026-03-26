@@ -188,6 +188,7 @@ const CreatorEditPanel = forwardRef<CreatorEditPanelHandle, Props>(function Crea
   const [sectionOrder, setSectionOrder] = useState<string[]>(profile.section_order || ["spotlight", "links", "products", "past_campaigns", "hero_reel", "testimonials"]);
   const [testimonialsList, setTestimonialsList] = useState<Testimonial[]>(initialTestimonials || []);
   const [spotifyUrl, setSpotifyUrl] = useState(profile.spotify_url || "");
+  const [contactEnabled, setContactEnabled] = useState(profile.contact_enabled ?? true);
   const [displayModes, setDisplayModes] = useState<{ links: "list" | "carousel" | "marquee"; products: "list" | "carousel" | "marquee"; campaigns: "list" | "carousel" | "marquee" }>({
     links: profile.page_effects?.display_modes?.links || "list",
     products: profile.page_effects?.display_modes?.products || "list",
@@ -322,7 +323,8 @@ const CreatorEditPanel = forwardRef<CreatorEditPanelHandle, Props>(function Crea
     color_section_titles: colorSectionTitles || null,
     section_order: sectionOrder,
     spotify_url: spotifyUrl,
-  }), [profile, name, handle, bio, avatarUrl, coverUrl, avatarUrlL2, coverUrlL2, verified, tags, stats, brands, brandsDisplayMode, shapeProducts, shapeCampaigns, shapeLinks, pageEffects, effectColor, effectEmojis, effectIntensity, displayModes, badgePosition, defaultTheme, fontFamily, fontSize, colorName, colorBio, colorSectionTitles, sectionOrder, spotifyUrl]);
+    contact_enabled: contactEnabled,
+  }), [profile, name, handle, bio, avatarUrl, coverUrl, avatarUrlL2, coverUrlL2, verified, tags, stats, brands, brandsDisplayMode, shapeProducts, shapeCampaigns, shapeLinks, pageEffects, effectColor, effectEmojis, effectIntensity, displayModes, badgePosition, defaultTheme, fontFamily, fontSize, colorName, colorBio, colorSectionTitles, sectionOrder, spotifyUrl, contactEnabled]);
 
   const isValidUrl = (url: string) => {
     if (!url) return true;
@@ -487,7 +489,7 @@ const CreatorEditPanel = forwardRef<CreatorEditPanelHandle, Props>(function Crea
         }))
         .filter((testimonial) => testimonial.content);
 
-      const baseProfile = { name, slug: handle, bio, avatar_url: avatarUrl, cover_url: coverUrl, avatar_url_layout2: avatarUrlL2, cover_url_layout2: coverUrlL2, verified, tags, stats, brands, brands_display_mode: brandsDisplayMode, image_shape: shapeProducts, image_shape_products: shapeProducts, image_shape_campaigns: shapeCampaigns, image_shape_links: shapeLinks, page_effects: { effects: pageEffects, color: effectColor, emojis: effectEmojis, intensity: effectIntensity, display_modes: displayModes, badge_position: badgePosition, default_theme: defaultTheme }, font_family: fontFamily, font_size: fontSize, color_name: colorName || null, color_bio: colorBio || null, color_section_titles: colorSectionTitles || null, section_order: sectionOrder, spotify_url: spotifyUrl };
+      const baseProfile = { name, slug: handle, bio, avatar_url: avatarUrl, cover_url: coverUrl, avatar_url_layout2: avatarUrlL2, cover_url_layout2: coverUrlL2, verified, tags, stats, brands, brands_display_mode: brandsDisplayMode, image_shape: shapeProducts, image_shape_products: shapeProducts, image_shape_campaigns: shapeCampaigns, image_shape_links: shapeLinks, page_effects: { effects: pageEffects, color: effectColor, emojis: effectEmojis, intensity: effectIntensity, display_modes: displayModes, badge_position: badgePosition, default_theme: defaultTheme }, font_family: fontFamily, font_size: fontSize, color_name: colorName || null, color_bio: colorBio || null, color_section_titles: colorSectionTitles || null, section_order: sectionOrder, spotify_url: spotifyUrl, contact_enabled: contactEnabled };
 
       if (cropImage) {
         const { file, type } = cropImage;
@@ -1904,6 +1906,21 @@ const CreatorEditPanel = forwardRef<CreatorEditPanelHandle, Props>(function Crea
           className="flex items-center justify-center gap-2 w-full p-3 border border-dashed border-k-glow rounded-xl text-muted-foreground text-sm font-medium mt-2 transition-all hover:border-k-400 hover:text-foreground hover:bg-k-glow active:scale-[0.98]">
           + Adicionar campanha
         </button>
+      </div>
+
+      {/* ✉️ Contato comercial */}
+      <div className="mb-8" data-editor-section="contact">
+        <div className={sectionTitle}>✉️ Contato comercial</div>
+        <p className="text-[0.68rem] text-muted-foreground mb-3">Exiba um formulário de contato na página pública para receber mensagens de visitantes.</p>
+        <label className="flex items-center gap-3 cursor-pointer">
+          <div
+            onClick={() => setContactEnabled(!contactEnabled)}
+            className={`w-10 h-5 rounded-full transition-colors duration-200 relative cursor-pointer ${contactEnabled ? "bg-primary" : "bg-muted"}`}
+          >
+            <div className={`absolute top-0.5 left-0.5 w-4 h-4 rounded-full bg-white shadow transition-transform duration-200 ${contactEnabled ? "translate-x-5" : ""}`} />
+          </div>
+          <span className="text-sm text-foreground font-medium">Ativar botão de contato</span>
+        </label>
       </div>
 
       {/* 🎙 Spotify Embed */}

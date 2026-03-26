@@ -37,6 +37,7 @@ export interface CreatorProfile {
   color_section_titles: string | null;
   section_order: string[];
   spotify_url: string;
+  contact_enabled: boolean;
 }
 
 export interface CreatorLink {
@@ -130,6 +131,7 @@ const normalizeProfile = (creator: any): CreatorProfile => ({
     return { effects: [], color: undefined, emojis: undefined, intensity: undefined, display_modes: undefined };
   })(),
   spotify_url: creator.spotify_url || "",
+  contact_enabled: creator.contact_enabled ?? true,
 });
 
 export function useCreatorData(agencyId: string | undefined, creatorId?: string) {
