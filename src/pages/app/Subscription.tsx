@@ -10,6 +10,9 @@ export default function Subscription() {
   const [canceling, setCanceling] = useState(false);
   const [showCancelModal, setShowCancelModal] = useState(false);
 
+  const isCanceled = subscription?.status === "canceled";
+  const canceledButActive = isCanceled && subscription?.expires_at && new Date(subscription.expires_at) > new Date();
+
   const executeCancelSubscription = async () => {
     setCanceling(true);
     try {
@@ -28,7 +31,7 @@ export default function Subscription() {
       const data = await res.json();
       if (!res.ok) throw new Error(data.error || "Erro ao cancelar");
 
-      toast.success("Assinatura cancelada com sucesso.");
+      toast.success("Assinatura cancelada. Seu plano continua ativo até o fim do período.");
       setShowCancelModal(false);
       refetch();
     } catch (err: any) {
@@ -49,6 +52,11 @@ export default function Subscription() {
     }
 
     return next.toLocaleDateString("pt-BR", { day: "2-digit", month: "long", year: "numeric" });
+  };
+
+  const getExpiresDate = () => {
+    if (!subscription?.expires_at) return null;
+    return new Date(subscription.expires_at).toLocaleDateString("pt-BR", { day: "2-digit", month: "long", year: "numeric" });
   };
 
   const getPlanPrice = (plan: string) => {
@@ -82,13 +90,29 @@ export default function Subscription() {
             )}
           </div>
           <span className={`flex items-center gap-1.5 rounded-full px-3 py-1.5 text-xs font-semibold ${
-            currentPlan !== "free" ? "bg-primary/10 text-primary-readable" : "bg-muted text-muted-foreground"
+            canceledButActive
+              ? "bg-destructive/10 text-destructive"
+              : currentPlan !== "free"
+                ? "bg-primary/10 text-primary-readable"
+                : "bg-muted text-muted-foreground"
           }`}>
             <span className="h-1.5 w-1.5 rounded-full bg-current" />
-            {currentPlan !== "free" ? "Ativo" : "Free"}
+            {canceledButActive ? "Cancelado" : currentPlan !== "free" ? "Ativo" : "Free"}
           </span>
         </div>
-        {currentPlan !== "free" && getNextRenewalDate() && (
+
+        {canceledButActive && getExpiresDate() && (
+          <div className="mt-3 rounded-xl border border-destructive/20 bg-destructive/5 p-3">
+            <p className="text-xs text-foreground font-medium">
+              ⚠️ Seu plano foi cancelado mas continua ativo até <strong>{getExpiresDate()}</strong>.
+            </p>
+            <p className="text-[0.65rem] text-muted-foreground mt-1">
+              Após essa data, seu plano será revertido para Free automaticamente.
+            </p>
+          </div>
+        )}
+
+        {!canceledButActive && currentPlan !== "free" && getNextRenewalDate() && (
           <p className="mt-3 text-[0.7rem] text-muted-foreground">Próxima renovação: {getNextRenewalDate()}</p>
         )}
       </div>
@@ -120,7 +144,7 @@ export default function Subscription() {
         </div>
       )}
 
-      {currentPlan === "pro" && (
+      {currentPlan === "pro" && !canceledButActive && (
         <div className="space-y-3 rounded-2xl border border-border bg-card p-5">
           <div className="text-sm font-bold text-foreground">Precisa de mais?</div>
           <button
@@ -144,7 +168,7 @@ export default function Subscription() {
           <div className="flex items-center justify-between gap-4">
             <div>
               <div className="text-sm font-medium text-foreground">Cancelar assinatura</div>
-              <div className="text-[0.66rem] text-muted-foreground">Seu plano será revertido para Free</div>
+              <div className="text-[0.66rem] text-muted-foreground">Seu plano continuará ativo até o fim do período atual</div>
             </div>
             <button
               onClick={() => setShowCancelModal(true)}
@@ -197,7 +221,7 @@ export default function Subscription() {
             </div>
 
             <p className="text-center text-[0.6rem] text-muted-foreground/50">
-              Ao cancelar, seu plano será revertido para Free imediatamente e você perderá acesso aos recursos premium.
+              Ao cancelar, seu plano continuará ativo até {getNextRenewalDate() || "o fim do período"}. Após essa data, será revertido para Free.
             </p>
           </div>
         </div>

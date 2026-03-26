@@ -75,9 +75,21 @@ export function useSubscription() {
     const sub = subRes.data as Subscription | null;
     setSubscription(sub);
 
-    const plan = sub?.plan || "free";
+    // If canceled but expires_at is in the future, keep the current plan active
+    let effectivePlan: PlanType = "free";
+    if (sub) {
+      if (sub.status === "active") {
+        effectivePlan = sub.plan;
+      } else if (sub.status === "canceled" && sub.expires_at) {
+        const expiresAt = new Date(sub.expires_at);
+        if (expiresAt > new Date()) {
+          effectivePlan = sub.plan;
+        }
+      }
+    }
+
     const allLimits = (limitsRes.data || []) as unknown as PlanLimits[];
-    const planLimits = allLimits.find((l) => l.plan === plan);
+    const planLimits = allLimits.find((l) => l.plan === effectivePlan);
     setLimits(planLimits || FREE_LIMITS);
     setLoading(false);
   }, [agency?.id]);
@@ -86,7 +98,15 @@ export function useSubscription() {
     void fetchSubscription();
   }, [fetchSubscription]);
 
-  const currentPlan = subscription?.plan || "free";
+  // Derive effective plan considering canceled-but-still-active subscriptions
+  const currentPlan: PlanType = (() => {
+    if (!subscription) return "free";
+    if (subscription.status === "active") return subscription.plan;
+    if (subscription.status === "canceled" && subscription.expires_at) {
+      return new Date(subscription.expires_at) > new Date() ? subscription.plan : "free";
+    }
+    return "free";
+  })();
   const isPro = currentPlan === "pro" || currentPlan === "scale";
   const isScale = currentPlan === "scale";
 

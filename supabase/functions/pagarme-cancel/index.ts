@@ -8,6 +8,17 @@ const corsHeaders = {
 
 const PAGARME_API_URL = "https://api.pagar.me/core/v5";
 
+/** Calculate the next renewal date from `started_at` */
+function getNextRenewalDate(startedAt: string): string {
+  const started = new Date(startedAt);
+  const now = new Date();
+  const next = new Date(started);
+  while (next <= now) {
+    next.setMonth(next.getMonth() + 1);
+  }
+  return next.toISOString();
+}
+
 Deno.serve(async (req) => {
   if (req.method === "OPTIONS") {
     return new Response(null, { headers: corsHeaders });
@@ -15,9 +26,6 @@ Deno.serve(async (req) => {
 
   try {
     const PAGARME_API_KEY = Deno.env.get("PAGARME_API_KEY");
-    if (!PAGARME_API_KEY) {
-      throw new Error("PAGARME_API_KEY is not configured");
-    }
 
     const authHeader = req.headers.get("Authorization");
     if (!authHeader?.startsWith("Bearer ")) {
@@ -44,7 +52,6 @@ Deno.serve(async (req) => {
 
     const userId = claimsData.user.id;
 
-    // Get user's agency
     const { data: profile } = await supabase
       .from("profiles")
       .select("agency_id")
@@ -58,7 +65,6 @@ Deno.serve(async (req) => {
       });
     }
 
-    // Get subscription
     const supabaseAdmin = createClient(
       Deno.env.get("SUPABASE_URL")!,
       Deno.env.get("SUPABASE_SERVICE_ROLE_KEY")!
@@ -70,48 +76,53 @@ Deno.serve(async (req) => {
       .eq("agency_id", profile.agency_id)
       .single();
 
-    if (!sub?.payment_id) {
+    if (!sub || sub.plan === "free") {
       return new Response(
-        JSON.stringify({ error: "No active subscription found" }),
+        JSON.stringify({ error: "No active subscription to cancel" }),
         { status: 400, headers: { ...corsHeaders, "Content-Type": "application/json" } }
       );
     }
 
-    // Cancel on Pagar.me
-    const pagarmeAuth = btoa(PAGARME_API_KEY + ":");
-    const cancelResponse = await fetch(
-      `${PAGARME_API_URL}/subscriptions/${sub.payment_id}`,
-      {
-        method: "DELETE",
-        headers: {
-          Authorization: `Basic ${pagarmeAuth}`,
-          "Content-Type": "application/json",
-          Accept: "application/json",
-        },
+    // Calculate when the current billing period ends
+    const expiresAt = sub.started_at ? getNextRenewalDate(sub.started_at) : new Date().toISOString();
+
+    // Try to cancel on Pagar.me if there's a payment_id and API key
+    if (sub.payment_id && PAGARME_API_KEY) {
+      try {
+        const pagarmeAuth = btoa(PAGARME_API_KEY + ":");
+        const cancelResponse = await fetch(
+          `${PAGARME_API_URL}/subscriptions/${sub.payment_id}`,
+          {
+            method: "DELETE",
+            headers: {
+              Authorization: `Basic ${pagarmeAuth}`,
+              "Content-Type": "application/json",
+              Accept: "application/json",
+            },
+          }
+        );
+
+        if (!cancelResponse.ok) {
+          const errorData = await cancelResponse.json();
+          console.warn("Pagar.me cancel warning (proceeding with local cancel):", JSON.stringify(errorData));
+        }
+      } catch (pagarmeErr) {
+        console.warn("Pagar.me cancel request failed (proceeding with local cancel):", pagarmeErr);
       }
-    );
-
-    if (!cancelResponse.ok) {
-      const errorData = await cancelResponse.json();
-      console.error("Pagar.me cancel error:", JSON.stringify(errorData));
-      return new Response(
-        JSON.stringify({ error: "Failed to cancel subscription", details: errorData }),
-        { status: 400, headers: { ...corsHeaders, "Content-Type": "application/json" } }
-      );
     }
 
-    // Update local DB
+    // Mark subscription as canceled but keep current plan until expires_at
     await supabaseAdmin
       .from("subscriptions")
       .update({
-        plan: "free",
         status: "canceled",
+        expires_at: expiresAt,
         updated_at: new Date().toISOString(),
       })
       .eq("agency_id", profile.agency_id);
 
     return new Response(
-      JSON.stringify({ success: true }),
+      JSON.stringify({ success: true, expires_at: expiresAt }),
       { status: 200, headers: { ...corsHeaders, "Content-Type": "application/json" } }
     );
   } catch (error: unknown) {
