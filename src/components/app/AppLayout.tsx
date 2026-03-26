@@ -70,7 +70,7 @@ function computeForeground(hslStr: string): string {
 export default function AppLayout() {
   const { user, signOut } = useAuth();
   const { agency } = useTenant();
-  const { currentPlan, isPro } = useSubscription();
+  const { currentPlan, isPro, isSuperAdmin } = useSubscription();
   const onboarding = useOnboarding();
   const navigate = useNavigate();
   const location = useLocation();
