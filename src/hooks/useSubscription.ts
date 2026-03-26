@@ -75,9 +75,21 @@ export function useSubscription() {
     const sub = subRes.data as Subscription | null;
     setSubscription(sub);
 
-    const plan = sub?.plan || "free";
+    // If canceled but expires_at is in the future, keep the current plan active
+    let effectivePlan: PlanType = "free";
+    if (sub) {
+      if (sub.status === "active") {
+        effectivePlan = sub.plan;
+      } else if (sub.status === "canceled" && sub.expires_at) {
+        const expiresAt = new Date(sub.expires_at);
+        if (expiresAt > new Date()) {
+          effectivePlan = sub.plan;
+        }
+      }
+    }
+
     const allLimits = (limitsRes.data || []) as unknown as PlanLimits[];
-    const planLimits = allLimits.find((l) => l.plan === plan);
+    const planLimits = allLimits.find((l) => l.plan === effectivePlan);
     setLimits(planLimits || FREE_LIMITS);
     setLoading(false);
   }, [agency?.id]);
