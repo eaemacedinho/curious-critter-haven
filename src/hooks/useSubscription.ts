@@ -52,6 +52,8 @@ const FREE_LIMITS: PlanLimits = {
 
 export function useSubscription() {
   const { agency } = useTenant();
+  const { user } = useAuth();
+  const isSuperAdmin = user?.email === SUPER_ADMIN_EMAIL;
   const [subscription, setSubscription] = useState<Subscription | null>(null);
   const [limits, setLimits] = useState<PlanLimits>(FREE_LIMITS);
   const [loading, setLoading] = useState(true);
