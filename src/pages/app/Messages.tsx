@@ -71,6 +71,12 @@ export default function Messages() {
     if (selected?.id === msg.id) setSelected({ ...msg, is_read: true });
   };
 
+  const deleteMessage = async (msgId: string) => {
+    await supabase.from("contact_messages").delete().eq("id", msgId);
+    setMessages(prev => prev.filter(m => m.id !== msgId));
+    if (selected?.id === msgId) setSelected(null);
+  };
+
   const handleSelect = (msg: ContactMessage) => {
     setSelected(msg);
     void markAsRead(msg);
