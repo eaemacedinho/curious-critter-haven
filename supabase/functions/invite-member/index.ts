@@ -38,14 +38,36 @@ Deno.serve(async (req) => {
 
     const adminClient = createClient(supabaseUrl, serviceRoleKey);
 
-    // Check caller is owner of their agency (server-side verification)
-    const { data: callerProfile } = await adminClient
-      .from("profiles")
+    // Check caller is owner via agency_memberships (source of truth)
+    const { data: callerMembership } = await adminClient
+      .from("agency_memberships")
       .select("agency_id, role")
-      .eq("id", user.id)
-      .single();
+      .eq("user_id", user.id)
+      .eq("status", "active")
+      .eq("role", "owner")
+      .maybeSingle();
 
-    if (!callerProfile || callerProfile.role !== "owner") {
+    // Fallback to profiles if no membership found yet (backward compat)
+    let callerAgencyId: string | null = null;
+    let callerRole: string | null = null;
+
+    if (callerMembership) {
+      callerAgencyId = callerMembership.agency_id;
+      callerRole = callerMembership.role;
+    } else {
+      const { data: callerProfile } = await adminClient
+        .from("profiles")
+        .select("agency_id, role")
+        .eq("id", user.id)
+        .single();
+
+      if (callerProfile) {
+        callerAgencyId = callerProfile.agency_id;
+        callerRole = callerProfile.role;
+      }
+    }
+
+    if (!callerAgencyId || callerRole !== "owner") {
       return new Response(JSON.stringify({ error: "Apenas o owner pode convidar membros" }), {
         status: 403,
         headers: { ...corsHeaders, "Content-Type": "application/json" },
@@ -69,7 +91,7 @@ Deno.serve(async (req) => {
     }
 
     // Server-side agency verification - ignore client-sent agency_id, use caller's
-    if (agency_id !== callerProfile.agency_id) {
+    if (agency_id !== callerAgencyId) {
       return new Response(JSON.stringify({ error: "Agência inválida" }), {
         status: 403,
         headers: { ...corsHeaders, "Content-Type": "application/json" },
@@ -91,33 +113,49 @@ Deno.serve(async (req) => {
     );
 
     if (existingUser) {
-      // Check if already in this agency
-      const { data: existingProfile } = await adminClient
-        .from("profiles")
+      // Check if already in this agency via memberships
+      const { data: existingMembership } = await adminClient
+        .from("agency_memberships")
         .select("id")
-        .eq("id", existingUser.id)
+        .eq("user_id", existingUser.id)
         .eq("agency_id", agency_id)
+        .eq("status", "active")
         .maybeSingle();
 
-      if (existingProfile) {
+      if (existingMembership) {
         return new Response(JSON.stringify({ error: "Este usuário já é membro desta agência" }), {
           status: 409,
           headers: { ...corsHeaders, "Content-Type": "application/json" },
         });
       }
 
-      // Update existing profile to join this agency
+      // Create membership (source of truth) + update profile for backward compat
+      await adminClient
+        .from("agency_memberships")
+        .upsert({
+          user_id: existingUser.id,
+          agency_id,
+          role,
+          status: "active",
+        }, { onConflict: "user_id,agency_id" });
+
       await adminClient
         .from("profiles")
         .update({ agency_id, role })
         .eq("id", existingUser.id);
+
+      await adminClient.from("user_roles").upsert({
+        user_id: existingUser.id,
+        agency_id,
+        role,
+      }, { onConflict: "user_id,agency_id" as any });
 
       // Audit log
       await adminClient.from("audit_logs").insert({
         event_type: "member.invited",
         actor_id: user.id,
         agency_id,
-        target_table: "profiles",
+        target_table: "agency_memberships",
         target_id: existingUser.id,
         metadata: { email, role, existing_user: true },
       });
@@ -144,8 +182,15 @@ Deno.serve(async (req) => {
       });
     }
 
-    // Create the profile for the invited user immediately
+    // Create membership + profile for the invited user
     if (inviteData?.user) {
+      await adminClient.from("agency_memberships").upsert({
+        user_id: inviteData.user.id,
+        agency_id,
+        role,
+        status: "invited",
+      }, { onConflict: "user_id,agency_id" });
+
       await adminClient.from("profiles").upsert({
         id: inviteData.user.id,
         agency_id,
@@ -160,7 +205,7 @@ Deno.serve(async (req) => {
       event_type: "member.invited",
       actor_id: user.id,
       agency_id,
-      target_table: "profiles",
+      target_table: "agency_memberships",
       target_id: inviteData?.user?.id || null,
       metadata: { email, role, existing_user: false },
     });
