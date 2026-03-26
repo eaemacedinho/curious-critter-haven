@@ -141,14 +141,34 @@ export default function Members() {
     if (!confirm(`Remover ${member.full_name || member.email || "este membro"} da agência?`)) return;
     if (!agency?.id) return;
 
-    // Delete from profiles (RLS allows owner to delete non-self members)
-    const { error } = await supabase.from("profiles").delete().eq("id", member.id);
+    try {
+      const { data: { session } } = await supabase.auth.getSession();
+      if (!session) throw new Error("Não autenticado");
 
-    if (error) {
-      toast.error("Erro ao remover membro");
-    } else {
+      const projectId = import.meta.env.VITE_SUPABASE_PROJECT_ID;
+      const res = await fetch(
+        `https://${projectId}.supabase.co/functions/v1/change-member-role`,
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${session.access_token}`,
+          },
+          body: JSON.stringify({
+            agency_id: agency.id,
+            target_user_id: member.id,
+            action: "remove",
+          }),
+        }
+      );
+
+      const result = await res.json();
+      if (!res.ok) throw new Error(result.error || "Erro ao remover membro");
+
       toast.success("Membro removido");
       setMembers((prev) => prev.filter((m) => m.id !== member.id));
+    } catch (err: any) {
+      toast.error(err.message || "Erro ao remover membro");
     }
   };
 
