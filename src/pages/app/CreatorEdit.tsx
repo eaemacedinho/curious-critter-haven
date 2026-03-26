@@ -2,7 +2,7 @@ import { useRef, useState, useEffect, useMemo } from "react";
 import { createPortal } from "react-dom";
 import { Link, useParams, useNavigate } from "react-router-dom";
 import { toast } from "sonner";
-import { Sparkles, Save, ChevronDown, Trash2, Pencil, RotateCcw, Star, Info, Palette } from "lucide-react";
+import { Sparkles, Save, ChevronDown, Trash2, Pencil, RotateCcw, Star, Info, Palette, AlertTriangle } from "lucide-react";
 import { useTenant } from "@/hooks/useTenant";
 import { useCreatorData } from "@/hooks/useCreatorData";
 import { useSubscription } from "@/hooks/useSubscription";
@@ -733,9 +733,24 @@ export default function CreatorEdit() {
           <button
             onClick={() => void handleSave()}
             disabled={saving}
-            className="px-4 sm:px-5 py-2 bg-primary text-primary-foreground font-semibold text-[0.68rem] sm:text-sm rounded-xl transition-all hover:opacity-90 active:scale-[0.97] disabled:opacity-60 flex-shrink-0 whitespace-nowrap ml-auto"
+            className={`px-4 sm:px-5 py-2 font-semibold text-[0.68rem] sm:text-sm rounded-xl transition-all hover:opacity-90 active:scale-[0.97] disabled:opacity-60 flex-shrink-0 whitespace-nowrap ml-auto ${
+              isTemplateEdited
+                ? "bg-accent text-accent-foreground ring-2 ring-accent/50 shadow-[0_0_12px_hsl(var(--accent)_/_0.3)]"
+                : "bg-primary text-primary-foreground"
+            }`}
           >
-            {saving ? "Salvando..." : <><span className="hidden sm:inline">Salvar alterações</span><span className="sm:hidden">Salvar</span></>}
+            {saving ? "Salvando..." : isTemplateEdited ? (
+              <span className="flex items-center gap-1.5">
+                <span className="relative flex h-2 w-2">
+                  <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-accent-foreground/60 opacity-75" />
+                  <span className="relative inline-flex rounded-full h-2 w-2 bg-accent-foreground" />
+                </span>
+                <span className="hidden sm:inline">Salvar rascunho</span>
+                <span className="sm:hidden">Salvar</span>
+              </span>
+            ) : (
+              <><span className="hidden sm:inline">Salvar alterações</span><span className="sm:hidden">Salvar</span></>
+            )}
           </button>
         </div>
 
@@ -781,16 +796,19 @@ export default function CreatorEdit() {
       <ConfirmDialog
         open={!!showSwitchConfirm}
         onOpenChange={(open) => !open && setShowSwitchConfirm(null)}
-        title="Trocar de template?"
+        title={isTemplateEdited ? "⚠️ Alterações não salvas!" : "Trocar de template?"}
         description={
-          showSwitchConfirm?.isDefault
-            ? "Os dados atuais serão substituídos pelo Meu Padrão da agência. Deseja continuar?"
-            : showSwitchConfirm?.templateId
-            ? "Os dados atuais serão substituídos pelos dados do template selecionado. Deseja continuar?"
-            : "Deseja voltar ao modo personalizado? Os dados atuais serão mantidos."
+          isTemplateEdited
+            ? "Você tem alterações não salvas que serão perdidas ao trocar de template. Salve antes de trocar ou confirme para descartar."
+            : showSwitchConfirm?.isDefault
+              ? "Os dados atuais serão substituídos pelo Meu Padrão da agência. Deseja continuar?"
+              : showSwitchConfirm?.templateId
+                ? "Os dados atuais serão substituídos pelos dados do template selecionado. Deseja continuar?"
+                : "Deseja voltar ao modo personalizado? Os dados atuais serão mantidos."
         }
-        confirmLabel="Confirmar"
+        confirmLabel={isTemplateEdited ? "Descartar e trocar" : "Confirmar"}
         cancelLabel="Cancelar"
+        variant={isTemplateEdited ? "destructive" : undefined}
         onConfirm={confirmSwitch}
       />
 
