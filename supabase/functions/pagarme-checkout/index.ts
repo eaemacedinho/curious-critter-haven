@@ -187,6 +187,9 @@ Deno.serve(async (req) => {
         user_id: userId,
         is_upgrade: isUpgrade,
         coupon_id: couponId,
+        discount_first_month_only: (isUpgrade || couponId) ? "true" : "false",
+        full_price: basePlanPrice,
+        plan_key: planKey,
       },
     };
 

@@ -116,6 +116,11 @@ Deno.serve(async (req) => {
                   },
                 },
               ],
+              metadata: {
+                discount_first_month_only: "true",
+                full_price: currentPrice,
+                plan_key: sub.plan,
+              },
             }),
           }
         );
