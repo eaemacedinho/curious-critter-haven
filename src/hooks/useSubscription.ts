@@ -98,7 +98,15 @@ export function useSubscription() {
     void fetchSubscription();
   }, [fetchSubscription]);
 
-  const currentPlan = subscription?.plan || "free";
+  // Derive effective plan considering canceled-but-still-active subscriptions
+  const currentPlan: PlanType = (() => {
+    if (!subscription) return "free";
+    if (subscription.status === "active") return subscription.plan;
+    if (subscription.status === "canceled" && subscription.expires_at) {
+      return new Date(subscription.expires_at) > new Date() ? subscription.plan : "free";
+    }
+    return "free";
+  })();
   const isPro = currentPlan === "pro" || currentPlan === "scale";
   const isScale = currentPlan === "scale";
 
