@@ -123,6 +123,18 @@ export default function CreatorEdit() {
 
   const cloneTemplateData = (data: TemplateData): TemplateData => JSON.parse(JSON.stringify(data)) as TemplateData;
 
+  // Strip old creator_id / id from template data so it can be applied to any creator
+  const sanitizeTemplateForCreator = (data: TemplateData, targetCreatorId: string): TemplateData => {
+    const clone = cloneTemplateData(data);
+    if (clone.links) clone.links = clone.links.map(({ id, creator_id, ...rest }: any) => ({ ...rest, creator_id: targetCreatorId }));
+    if (clone.socialLinks) clone.socialLinks = clone.socialLinks.map(({ id, creator_id, ...rest }: any) => ({ ...rest, creator_id: targetCreatorId }));
+    if (clone.products) clone.products = clone.products.map(({ id, creator_id, ...rest }: any) => ({ ...rest, creator_id: targetCreatorId }));
+    if (clone.campaigns) clone.campaigns = clone.campaigns.map(({ id, creator_id, ...rest }: any) => ({ ...rest, creator_id: targetCreatorId }));
+    if (clone.heroReels) clone.heroReels = clone.heroReels.map(({ id, creator_id, ...rest }: any) => ({ ...rest, creator_id: targetCreatorId }));
+    if (clone.testimonials) clone.testimonials = clone.testimonials.map(({ id, creator_id, ...rest }: any) => ({ ...rest, creator_id: targetCreatorId }));
+    return clone;
+  };
+
   // Detect if template has been edited
   const isTemplateEdited = useMemo(() => {
     if (!originalTemplateSnapshot || (!activeTemplateId && !usingDefault && !activeGalleryTemplateId)) return false;
@@ -138,7 +150,8 @@ export default function CreatorEdit() {
     setApplyingGallery(true);
     try {
       const override = galleryTemplateOverrides.get(template.id);
-      const data = override?.template_data;
+      const rawData = override?.template_data;
+      const data = rawData ? sanitizeTemplateForCreator(rawData, creatorId) : null;
 
       if (data?.profile) {
         await saveProfile(data.profile as any);
@@ -334,7 +347,7 @@ export default function CreatorEdit() {
     const { templateId, isDefault } = showSwitchConfirm;
 
     if (isDefault && defaultTemplate) {
-      const data = defaultTemplate.template_data;
+      const data = creatorId ? sanitizeTemplateForCreator(defaultTemplate.template_data, creatorId) : defaultTemplate.template_data;
       if (data.profile) await saveProfile(data.profile as any);
       if (data.links) await saveLinks(data.links);
       if (data.socialLinks) await saveSocialLinks(data.socialLinks);
@@ -358,7 +371,7 @@ export default function CreatorEdit() {
     const tpl = templates.find(t => t.id === templateId);
     if (!tpl) return;
 
-    const data = tpl.template_data;
+    const data = creatorId ? sanitizeTemplateForCreator(tpl.template_data, creatorId) : tpl.template_data;
     if (data.profile) await saveProfile(data.profile as any);
     if (data.links) await saveLinks(data.links);
     if (data.socialLinks) await saveSocialLinks(data.socialLinks);
