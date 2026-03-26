@@ -188,6 +188,7 @@ const CreatorEditPanel = forwardRef<CreatorEditPanelHandle, Props>(function Crea
   const [sectionOrder, setSectionOrder] = useState<string[]>(profile.section_order || ["spotlight", "links", "products", "past_campaigns", "hero_reel", "testimonials"]);
   const [testimonialsList, setTestimonialsList] = useState<Testimonial[]>(initialTestimonials || []);
   const [spotifyUrl, setSpotifyUrl] = useState(profile.spotify_url || "");
+  const [contactEnabled, setContactEnabled] = useState(profile.contact_enabled ?? true);
   const [displayModes, setDisplayModes] = useState<{ links: "list" | "carousel" | "marquee"; products: "list" | "carousel" | "marquee"; campaigns: "list" | "carousel" | "marquee" }>({
     links: profile.page_effects?.display_modes?.links || "list",
     products: profile.page_effects?.display_modes?.products || "list",
