@@ -502,25 +502,44 @@ export default function CreatorViewLinkme({ profile, links: rawLinks, socialLink
             })}
 
             {/* Contact CTA */}
-            <div className="px-4 mt-8">
-              <button onClick={() => setContactOpen(!contactOpen)}
-                className="w-full p-4 sm:p-5 bg-card/70 backdrop-blur-xl border border-border rounded-2xl text-foreground font-body font-semibold text-sm flex items-center justify-center gap-2.5 transition-all duration-300 hover:border-primary/30 active:scale-[0.98] min-h-[52px]">
-                ✉️ Contato comercial
-              </button>
+            {profile.contact_enabled !== false && (
+              <div className="px-4 mt-8">
+                <button onClick={() => setContactOpen(!contactOpen)}
+                  className="w-full p-4 sm:p-5 bg-card/70 backdrop-blur-xl border border-border rounded-2xl text-foreground font-body font-semibold text-sm flex items-center justify-center gap-2.5 transition-all duration-300 hover:border-primary/30 active:scale-[0.98] min-h-[52px]">
+                  ✉️ Contato comercial
+                </button>
 
-              {contactOpen && (
-                <div className="bg-card/80 backdrop-blur-xl border border-border rounded-2xl p-5 mt-3 animate-k-fade-up space-y-3">
-                  <h4 className="text-sm font-bold text-foreground">Entre em contato</h4>
-                  <input placeholder="Seu nome" className="w-full px-4 py-3 bg-secondary border border-border rounded-xl text-foreground text-sm outline-none focus:border-primary/40 transition-all placeholder:text-muted-foreground" />
-                  <input placeholder="seu@email.com" className="w-full px-4 py-3 bg-secondary border border-border rounded-xl text-foreground text-sm outline-none focus:border-primary/40 transition-all placeholder:text-muted-foreground" />
-                  <textarea placeholder="Mensagem..." className="w-full px-4 py-3 bg-secondary border border-border rounded-xl text-foreground text-sm outline-none focus:border-primary/40 transition-all resize-none min-h-[80px] placeholder:text-muted-foreground" />
-                  <button onClick={() => { toast.success("Mensagem enviada! ✉️"); setContactOpen(false); }}
-                    className="w-full py-3.5 bg-primary text-primary-foreground font-semibold text-sm rounded-xl transition-all hover:opacity-90 active:scale-[0.97] min-h-[48px]">
-                    Enviar mensagem
-                  </button>
-                </div>
-              )}
-            </div>
+                {contactOpen && (
+                  <div className="bg-card/80 backdrop-blur-xl border border-border rounded-2xl p-5 mt-3 animate-k-fade-up space-y-3">
+                    <h4 className="text-sm font-bold text-foreground">Entre em contato</h4>
+                    <input value={contactName} onChange={e => setContactName(e.target.value)} placeholder="Seu nome" className="w-full px-4 py-3 bg-secondary border border-border rounded-xl text-foreground text-sm outline-none focus:border-primary/40 transition-all placeholder:text-muted-foreground" />
+                    <input value={contactEmail} onChange={e => setContactEmail(e.target.value)} placeholder="seu@email.com" className="w-full px-4 py-3 bg-secondary border border-border rounded-xl text-foreground text-sm outline-none focus:border-primary/40 transition-all placeholder:text-muted-foreground" />
+                    <textarea value={contactMsg} onChange={e => setContactMsg(e.target.value)} placeholder="Mensagem..." className="w-full px-4 py-3 bg-secondary border border-border rounded-xl text-foreground text-sm outline-none focus:border-primary/40 transition-all resize-none min-h-[80px] placeholder:text-muted-foreground" />
+                    <button
+                      disabled={contactSending || !contactMsg.trim()}
+                      onClick={async () => {
+                        if (!contactMsg.trim()) return;
+                        setContactSending(true);
+                        const { error } = await supabase.from("contact_messages").insert({
+                          creator_id: profile.id,
+                          agency_id: profile.agency_id || "",
+                          sender_name: contactName.trim(),
+                          sender_email: contactEmail.trim(),
+                          message: contactMsg.trim(),
+                        } as any);
+                        setContactSending(false);
+                        if (error) { toast.error("Erro ao enviar mensagem"); return; }
+                        toast.success("Mensagem enviada! ✉️");
+                        setContactOpen(false);
+                        setContactName(""); setContactEmail(""); setContactMsg("");
+                      }}
+                      className="w-full py-3.5 bg-primary text-primary-foreground font-semibold text-sm rounded-xl transition-all hover:opacity-90 active:scale-[0.97] min-h-[48px] disabled:opacity-50">
+                      {contactSending ? "Enviando..." : "Enviar mensagem"}
+                    </button>
+                  </div>
+                )}
+              </div>
+            )}
 
             {/* Footer */}
             {agencyFooterVisible !== false && (
