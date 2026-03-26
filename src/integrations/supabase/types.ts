@@ -68,6 +68,44 @@ export type Database = {
         }
         Relationships: []
       }
+      agency_memberships: {
+        Row: {
+          agency_id: string
+          created_at: string
+          id: string
+          role: Database["public"]["Enums"]["app_role"]
+          status: string
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          agency_id: string
+          created_at?: string
+          id?: string
+          role?: Database["public"]["Enums"]["app_role"]
+          status?: string
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          agency_id?: string
+          created_at?: string
+          id?: string
+          role?: Database["public"]["Enums"]["app_role"]
+          status?: string
+          updated_at?: string
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "agency_memberships_agency_id_fkey"
+            columns: ["agency_id"]
+            isOneToOne: false
+            referencedRelation: "agencies"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       agency_settings: {
         Row: {
           agency_id: string
@@ -1129,6 +1167,14 @@ export type Database = {
       rollback_coupon_usage: {
         Args: { p_coupon_id: string }
         Returns: undefined
+      }
+      user_has_membership: {
+        Args: { _agency_id: string; _user_id: string }
+        Returns: boolean
+      }
+      user_membership_role: {
+        Args: { _agency_id: string; _user_id: string }
+        Returns: Database["public"]["Enums"]["app_role"]
       }
     }
     Enums: {

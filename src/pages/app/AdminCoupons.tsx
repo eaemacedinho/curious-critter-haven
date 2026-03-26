@@ -15,6 +15,28 @@ interface Coupon {
   created_at: string;
 }
 
+async function callCouponApi(action: string, payload: Record<string, unknown> = {}) {
+  const projectId = import.meta.env.VITE_SUPABASE_PROJECT_ID;
+  const session = (await supabase.auth.getSession()).data.session;
+  if (!session) throw new Error("Não autenticado");
+
+  const res = await fetch(
+    `https://${projectId}.supabase.co/functions/v1/manage-coupons`,
+    {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${session.access_token}`,
+      },
+      body: JSON.stringify({ action, ...payload }),
+    }
+  );
+
+  const data = await res.json();
+  if (!res.ok) throw new Error(data.error || "Erro na operação");
+  return data;
+}
+
 export default function AdminCoupons() {
   const { isSuperAdmin } = useSubscription();
   const [coupons, setCoupons] = useState<Coupon[]>([]);
@@ -29,12 +51,12 @@ export default function AdminCoupons() {
   const [newPlans, setNewPlans] = useState<string[]>(["pro", "scale"]);
 
   const fetchCoupons = useCallback(async () => {
-    const { data, error } = await supabase
-      .from("coupons")
-      .select("*")
-      .order("created_at", { ascending: false });
-
-    if (!error && data) setCoupons(data as unknown as Coupon[]);
+    try {
+      const data = await callCouponApi("list");
+      setCoupons(data.coupons || []);
+    } catch (err: any) {
+      console.error("Fetch coupons error:", err);
+    }
     setLoading(false);
   }, []);
 
@@ -59,21 +81,14 @@ export default function AdminCoupons() {
     if (newPlans.length === 0) return toast.error("Selecione ao menos um plano.");
 
     setSaving(true);
-    const payload: Record<string, unknown> = {
-      code: newCode.trim().toUpperCase(),
-      discount_percent: newDiscount,
-      valid_plans: newPlans,
-      is_active: true,
-      current_uses: 0,
-    };
-    if (newMaxUses) payload.max_uses = parseInt(newMaxUses);
-    if (newExpiresAt) payload.expires_at = new Date(newExpiresAt).toISOString();
-
-    const { error } = await supabase.from("coupons").insert(payload as any);
-
-    if (error) {
-      toast.error(error.message.includes("duplicate") ? "Esse código já existe." : error.message);
-    } else {
+    try {
+      await callCouponApi("create", {
+        code: newCode.trim().toUpperCase(),
+        discount_percent: newDiscount,
+        valid_plans: newPlans,
+        max_uses: newMaxUses ? parseInt(newMaxUses) : null,
+        expires_at: newExpiresAt ? new Date(newExpiresAt).toISOString() : null,
+      });
       toast.success("Cupom criado!");
       setShowForm(false);
       setNewCode("");
@@ -82,29 +97,29 @@ export default function AdminCoupons() {
       setNewExpiresAt("");
       setNewPlans(["pro", "scale"]);
       fetchCoupons();
+    } catch (err: any) {
+      toast.error(err.message || "Erro ao criar cupom");
     }
     setSaving(false);
   };
 
   const toggleActive = async (coupon: Coupon) => {
-    const { error } = await supabase
-      .from("coupons")
-      .update({ is_active: !coupon.is_active, updated_at: new Date().toISOString() } as any)
-      .eq("id", coupon.id);
-
-    if (error) toast.error("Erro ao atualizar");
-    else {
+    try {
+      await callCouponApi("toggle", { coupon_id: coupon.id, is_active: !coupon.is_active });
       toast.success(coupon.is_active ? "Cupom desativado" : "Cupom ativado");
       fetchCoupons();
+    } catch (err: any) {
+      toast.error(err.message || "Erro ao atualizar");
     }
   };
 
   const deleteCoupon = async (id: string) => {
-    const { error } = await supabase.from("coupons").delete().eq("id", id);
-    if (error) toast.error("Erro ao excluir");
-    else {
+    try {
+      await callCouponApi("delete", { coupon_id: id });
       toast.success("Cupom excluído");
       fetchCoupons();
+    } catch (err: any) {
+      toast.error(err.message || "Erro ao excluir");
     }
   };
 

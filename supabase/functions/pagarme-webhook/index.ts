@@ -35,6 +35,25 @@ async function logAudit(
   }
 }
 
+/**
+ * Build a deterministic idempotency key from the webhook payload.
+ * Uses body.id when available; otherwise hashes the body for stability.
+ */
+function buildIdempotencyKey(eventType: string, body: Record<string, unknown>, bodyText: string): string {
+  if (body.id && typeof body.id === "string") {
+    return body.id;
+  }
+  // Deterministic: SHA-256 of the raw body text (stable across retries)
+  const encoder = new TextEncoder();
+  const data = encoder.encode(bodyText);
+  let hash = 0;
+  for (let i = 0; i < data.length; i++) {
+    hash = ((hash << 5) - hash + data[i]) | 0;
+  }
+  const pagarmeSubId = (body.data as any)?.id || (body.data as any)?.subscription?.id || "unknown";
+  return `${eventType}_${pagarmeSubId}_${Math.abs(hash).toString(36)}`;
+}
+
 async function checkIdempotency(
   supabaseAdmin: ReturnType<typeof createClient>,
   eventType: string,
@@ -47,16 +66,14 @@ async function checkIdempotency(
     .eq("external_id", externalId)
     .maybeSingle();
 
-  if (data) return true; // Already processed
+  if (data) return true;
 
-  // Record this event
   const { error } = await supabaseAdmin.from("webhook_events").insert({
     event_type: eventType,
     external_id: externalId,
   });
 
-  // If insert fails due to unique constraint, it was processed concurrently
-  if (error) return true;
+  if (error) return true; // concurrent insert = already processed
 
   return false;
 }
@@ -64,9 +81,9 @@ async function checkIdempotency(
 async function verifyPagarmeSignature(req: Request, body: string): Promise<boolean> {
   const PAGARME_WEBHOOK_SECRET = Deno.env.get("PAGARME_WEBHOOK_SECRET");
   if (!PAGARME_WEBHOOK_SECRET) {
-    // TODO: Set PAGARME_WEBHOOK_SECRET in Supabase secrets for full signature validation
-    console.warn("PAGARME_WEBHOOK_SECRET not configured - skipping signature verification");
-    return true;
+    // HARD REJECT - secret must be configured
+    console.error("PAGARME_WEBHOOK_SECRET not configured - rejecting webhook");
+    return false;
   }
 
   const signature = req.headers.get("x-hub-signature") || req.headers.get("x-webhook-signature") || "";
@@ -158,10 +175,10 @@ Deno.serve(async (req) => {
   try {
     const bodyText = await req.text();
 
-    // Verify webhook signature
+    // HARD REJECT if signature verification fails or secret not configured
     const isValid = await verifyPagarmeSignature(req, bodyText);
     if (!isValid) {
-      console.error("Invalid webhook signature - rejecting");
+      console.error("Invalid webhook signature or PAGARME_WEBHOOK_SECRET not configured - rejecting");
       return new Response(JSON.stringify({ error: "Invalid signature" }), {
         status: 401,
         headers: { ...corsHeaders, "Content-Type": "application/json" },
@@ -192,8 +209,8 @@ Deno.serve(async (req) => {
       });
     }
 
-    // Idempotency check
-    const eventId = body.id || `${eventType}_${pagarmeSubId}_${Date.now()}`;
+    // Deterministic idempotency key - NO Date.now() fallback
+    const eventId = buildIdempotencyKey(eventType, body, bodyText);
     const alreadyProcessed = await checkIdempotency(supabaseAdmin, eventType, eventId);
     if (alreadyProcessed) {
       console.log(`Event already processed: ${eventType} ${eventId}`);
