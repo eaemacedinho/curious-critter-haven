@@ -8,6 +8,7 @@ export default function Subscription() {
   const navigate = useNavigate();
   const { subscription, currentPlan, loading, refetch } = useSubscription();
   const [canceling, setCanceling] = useState(false);
+  const [reactivating, setReactivating] = useState(false);
   const [showCancelModal, setShowCancelModal] = useState(false);
 
   const isCanceled = subscription?.status === "canceled";
@@ -38,6 +39,33 @@ export default function Subscription() {
       toast.error(err.message || "Erro ao cancelar assinatura");
     } finally {
       setCanceling(false);
+    }
+  };
+
+  const executeReactivateSubscription = async () => {
+    setReactivating(true);
+    try {
+      const { data: { session } } = await supabase.auth.getSession();
+      if (!session) throw new Error("Não autenticado");
+
+      const projectId = import.meta.env.VITE_SUPABASE_PROJECT_ID;
+      const res = await fetch(`https://${projectId}.supabase.co/functions/v1/pagarme-reactivate`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${session.access_token}`,
+        },
+      });
+
+      const data = await res.json();
+      if (!res.ok) throw new Error(data.error || "Erro ao reativar");
+
+      toast.success("Assinatura reativada com sucesso! 🎉");
+      refetch();
+    } catch (err: any) {
+      toast.error(err.message || "Erro ao reativar assinatura");
+    } finally {
+      setReactivating(false);
     }
   };
 
@@ -117,6 +145,24 @@ export default function Subscription() {
         )}
       </div>
 
+      {/* Reactivation card for canceled-but-active subscriptions */}
+      {canceledButActive && (
+        <div className="space-y-3 rounded-2xl border border-primary/30 bg-primary/5 p-5">
+          <div className="text-sm font-bold text-foreground">Mudou de ideia? 🎉</div>
+          <p className="text-xs text-muted-foreground">
+            Reative sua assinatura e continue com todos os recursos do plano <strong className="text-foreground capitalize">{currentPlan}</strong> sem interrupção.
+          </p>
+          <button
+            onClick={executeReactivateSubscription}
+            disabled={reactivating}
+            className="w-full rounded-xl bg-primary py-3 text-sm font-bold text-primary-foreground transition-all hover:opacity-90 disabled:opacity-60"
+          >
+            {reactivating ? "Reativando..." : `Reativar plano ${currentPlan === "pro" ? "Pro" : "Scale"}`}
+          </button>
+        </div>
+      )}
+
+      {/* Upgrade from free */}
       {currentPlan === "free" && (
         <div className="space-y-3 rounded-2xl border border-border bg-card p-5">
           <div className="text-sm font-bold text-foreground">Fazer upgrade</div>
@@ -144,6 +190,7 @@ export default function Subscription() {
         </div>
       )}
 
+      {/* Upgrade from Pro to Scale */}
       {currentPlan === "pro" && !canceledButActive && (
         <div className="space-y-3 rounded-2xl border border-border bg-card p-5">
           <div className="text-sm font-bold text-foreground">Precisa de mais?</div>
@@ -154,8 +201,11 @@ export default function Subscription() {
             <div className="text-left">
               <span className="text-sm font-bold text-foreground">Upgrade para Scale</span>
               <p className="text-[0.65rem] text-muted-foreground">10 perfis · membros de equipe · criação em lote</p>
+              <p className="text-[0.6rem] text-primary-readable font-medium mt-0.5">
+                Desconto de R$17,90 do seu plano Pro atual — pague só R$70,00/mês
+              </p>
             </div>
-            <span className="text-sm font-bold text-primary-readable">R$87,90/mês</span>
+            <span className="text-sm font-bold text-primary-readable">R$70,00/mês</span>
           </button>
           <p className="text-center text-[0.6rem] text-muted-foreground/60">
             Ou conheça o <a href="mailto:contato@in1.bio?subject=Plano%20Enterprise" className="underline hover:text-foreground">Enterprise</a> com white-label completo.
@@ -163,6 +213,7 @@ export default function Subscription() {
         </div>
       )}
 
+      {/* Cancel section */}
       {currentPlan !== "free" && subscription?.status === "active" && (
         <div className="rounded-2xl border border-border bg-card p-5">
           <div className="flex items-center justify-between gap-4">
@@ -203,9 +254,30 @@ export default function Subscription() {
 
             <div className="flex flex-col gap-2">
               <button
-                onClick={() => {
+                onClick={async () => {
                   setShowCancelModal(false);
-                  toast.success("Ótimo! Seu desconto de 30% será aplicado na próxima fatura. 🎉");
+                  try {
+                    const { data: { session } } = await supabase.auth.getSession();
+                    if (!session) throw new Error("Não autenticado");
+
+                    const projectId = import.meta.env.VITE_SUPABASE_PROJECT_ID;
+                    const res = await fetch(`https://${projectId}.supabase.co/functions/v1/pagarme-apply-discount`, {
+                      method: "POST",
+                      headers: {
+                        "Content-Type": "application/json",
+                        Authorization: `Bearer ${session.access_token}`,
+                      },
+                      body: JSON.stringify({ discount_percent: 30 }),
+                    });
+
+                    const data = await res.json();
+                    if (!res.ok) throw new Error(data.error || "Erro ao aplicar desconto");
+
+                    toast.success("Desconto de 30% aplicado na próxima fatura! 🎉");
+                    refetch();
+                  } catch (err: any) {
+                    toast.error(err.message || "Erro ao aplicar desconto");
+                  }
                 }}
                 className="w-full rounded-xl bg-primary py-3 text-sm font-bold text-primary-foreground transition-all hover:opacity-90"
               >
