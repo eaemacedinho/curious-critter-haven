@@ -3,6 +3,7 @@ import { supabase } from "@/integrations/supabase/client";
 import { CheckCircle2, XCircle, Loader2, AlertTriangle } from "lucide-react";
 import { toast } from "sonner";
 import type { CreatorProfile, CreatorLink, SocialLink, CreatorProduct, CreatorCampaign } from "@/hooks/useCreatorData";
+import type { TemplateData } from "@/hooks/useCreatorTemplates";
 import type { Testimonial } from "./TestimonialsSection";
 import type { HeroReelData } from "./HeroReel";
 import ImageCropper from "./ImageCropper";
@@ -115,7 +116,7 @@ interface Props {
 }
 
 export interface CreatorEditPanelHandle {
-  saveAll: () => Promise<boolean>;
+  saveAll: () => Promise<TemplateData | null>;
 }
 
 // Generic crop state for content images (products, campaigns, brands)
@@ -411,15 +412,15 @@ const CreatorEditPanel = forwardRef<CreatorEditPanelHandle, Props>(function Crea
     reader.readAsDataURL(file);
   }, []);
 
-  const handleSaveAll = async ({ closeAfterSave = true }: { closeAfterSave?: boolean } = {}): Promise<boolean> => {
-    if (saving) return false;
+  const handleSaveAll = async ({ closeAfterSave = true }: { closeAfterSave?: boolean } = {}): Promise<TemplateData | null> => {
+    if (saving) return null;
 
     if (uploadingImage) {
       toast.info("Aguarde o upload da imagem terminar antes de salvar.");
-      return false;
+      return null;
     }
 
-    if (!validate()) return false;
+    if (!validate()) return null;
 
     try {
       setSaving(true);
@@ -453,6 +454,39 @@ const CreatorEditPanel = forwardRef<CreatorEditPanelHandle, Props>(function Crea
           }))
           .filter((camp) => !isEmptyCampaignEntry(camp));
 
+      const sanitizedSocial = social
+        .map((item, index) => ({
+          ...item,
+          sort_order: index,
+          platform: item.platform.trim(),
+          label: (item.label || "").trim(),
+          url: buildSocialUrl(item.platform, item.url.trim()),
+        }))
+        .filter((item) => item.platform || item.label || item.url);
+
+      const sanitizedHeroReels = heroReels
+        .map((reel, index) => ({
+          ...reel,
+          sort_order: index,
+          title: (reel.title || "").trim(),
+          subtitle: (reel.subtitle || "").trim(),
+          video_url: (reel.video_url || "").trim(),
+          thumbnail_url: (reel.thumbnail_url || "").trim(),
+          cta_label: (reel.cta_label || "").trim(),
+          cta_url: normalizeExternalUrl(reel.cta_url),
+        }))
+        .filter((reel) => reel.video_url);
+
+      const sanitizedTestimonials = testimonialsList
+        .map((testimonial, index) => ({
+          ...testimonial,
+          sort_order: index,
+          author_name: (testimonial.author_name || "").trim(),
+          author_role: (testimonial.author_role || "").trim(),
+          content: (testimonial.content || "").trim(),
+        }))
+        .filter((testimonial) => testimonial.content);
+
       const baseProfile = { name, slug: handle, bio, avatar_url: avatarUrl, cover_url: coverUrl, avatar_url_layout2: avatarUrlL2, cover_url_layout2: coverUrlL2, verified, tags, stats, brands, brands_display_mode: brandsDisplayMode, image_shape: shapeProducts, image_shape_products: shapeProducts, image_shape_campaigns: shapeCampaigns, image_shape_links: shapeLinks, page_effects: { effects: pageEffects, color: effectColor, emojis: effectEmojis, intensity: effectIntensity, display_modes: displayModes, badge_position: badgePosition, default_theme: defaultTheme }, font_family: fontFamily, font_size: fontSize, color_name: colorName || null, color_bio: colorBio || null, color_section_titles: colorSectionTitles || null, section_order: sectionOrder, spotify_url: spotifyUrl };
 
       if (cropImage) {
@@ -465,7 +499,7 @@ const CreatorEditPanel = forwardRef<CreatorEditPanelHandle, Props>(function Crea
           else if (type === "cover_layout2") baseProfile.cover_url_layout2 = url;
         } else {
           toast.error("Falha ao salvar imagem pendente.");
-          return false;
+          return null;
         }
         setCropImage(null);
       }
@@ -479,19 +513,30 @@ const CreatorEditPanel = forwardRef<CreatorEditPanelHandle, Props>(function Crea
         setSlugChangedAt(new Date().toISOString());
       }
 
-        await onSaveLinks(sanitizedLinks);
-      await onSaveSocialLinks(social);
-        await onSaveProducts(sanitizedProducts);
-        await onSaveCampaigns(sanitizedCampaigns);
-      await onSaveHeroReels(heroReels.filter(r => r.video_url?.trim()));
-      await onSaveTestimonials(testimonialsList.filter(t => t.content?.trim()));
+      await onSaveLinks(sanitizedLinks);
+      await onSaveSocialLinks(sanitizedSocial);
+      await onSaveProducts(sanitizedProducts);
+      await onSaveCampaigns(sanitizedCampaigns);
+      await onSaveHeroReels(sanitizedHeroReels);
+      await onSaveTestimonials(sanitizedTestimonials);
+
+      const templateSnapshot: TemplateData = {
+        profile: baseProfile,
+        links: sanitizedLinks,
+        socialLinks: sanitizedSocial,
+        products: sanitizedProducts,
+        campaigns: sanitizedCampaigns,
+        heroReels: sanitizedHeroReels,
+        testimonials: sanitizedTestimonials,
+      };
+
       toast.success("Tudo salvo! 🎉");
       if (closeAfterSave) onDone();
-      return true;
+      return templateSnapshot;
     } catch (error) {
       console.error("Save all error:", error);
       toast.error("Não foi possível salvar as alterações.");
-      return false;
+      return null;
     } finally {
       setSaving(false);
     }
