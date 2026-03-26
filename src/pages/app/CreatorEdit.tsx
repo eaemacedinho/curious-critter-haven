@@ -110,10 +110,10 @@ export default function CreatorEdit() {
   const galleryTemplateOverrides = useMemo(
     () => new Map(
       templates
-        .filter((template) => template.template_data?.sourceGalleryTemplateId)
+        .filter((template) => template.template_data?.sourceGalleryTemplateId && template.creator_id === creatorId)
         .map((template) => [template.template_data.sourceGalleryTemplateId as string, template]),
     ),
-    [templates],
+    [templates, creatorId],
   );
 
   const ownTemplates = useMemo(

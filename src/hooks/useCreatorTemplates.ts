@@ -6,6 +6,7 @@ import type { Testimonial } from "@/components/kreatorz/creator/TestimonialsSect
 
 export interface SavedTemplate {
   id: string;
+  creator_id: string | null;
   name: string;
   template_data: TemplateData;
   is_default: boolean;
