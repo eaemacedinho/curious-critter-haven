@@ -1,6 +1,9 @@
 import { useEffect, useState, useCallback } from "react";
 import { supabase } from "@/integrations/supabase/client";
 import { useTenant } from "./useTenant";
+import { useAuth } from "./useAuth";
+
+const SUPER_ADMIN_EMAIL = "gamacedo01@gmail.com";
 
 export type PlanType = "free" | "pro" | "scale";
 
