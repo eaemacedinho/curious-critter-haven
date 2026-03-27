@@ -130,7 +130,7 @@ export default function CreatorPublic() {
       // Fetch agency name for footer
       if (creator.agency_id) {
         const { data: agencyData } = await supabase
-          .from("agencies")
+          .from("agencies_public")
           .select("name, primary_color, accent_color, logo_url, footer_text, footer_visible, footer_link")
           .eq("id", creator.agency_id)
           .maybeSingle();
