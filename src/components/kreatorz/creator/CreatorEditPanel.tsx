@@ -263,6 +263,81 @@ const CreatorEditPanel = forwardRef<CreatorEditPanelHandle, Props>(function Crea
     return () => { if (handleDebounce.current) clearTimeout(handleDebounce.current); };
   }, [handle, profile.id]);
 
+  // Sync local state when props change (e.g. after template apply + refetch)
+  const prevProfileId = useRef(profile.id);
+  const prevProfileUpdated = useRef(profile.updated_at);
+  useEffect(() => {
+    // Only sync when the profile data actually changes (refetch after template apply)
+    if (prevProfileId.current === profile.id && prevProfileUpdated.current === profile.updated_at) return;
+    prevProfileId.current = profile.id;
+    prevProfileUpdated.current = profile.updated_at;
+
+    setName(profile.name);
+    setHandle(profile.slug);
+    setBio(profile.bio || "");
+    setTags(profile.tags || []);
+    setStats(profile.stats || []);
+    setBrands(profile.brands || []);
+    setBrandsDisplayMode(profile.brands_display_mode || "static");
+    setAvatarUrl(profile.avatar_url || "");
+    setCoverUrl(profile.cover_url || "");
+    setAvatarUrlL2(profile.avatar_url_layout2 || "");
+    setCoverUrlL2(profile.cover_url_layout2 || "");
+    setVerified(profile.verified ?? false);
+    setShapeProducts(profile.image_shape_products || "rounded");
+    setShapeCampaigns(profile.image_shape_campaigns || "rounded");
+    setShapeLinks(profile.image_shape_links || "rounded");
+    setPageEffects((profile.page_effects?.effects || []) as PageEffect[]);
+    setEffectColor(profile.page_effects?.color || "#8B5CF6");
+    setEffectEmojis(profile.page_effects?.emojis || [...DEFAULT_EMOJIS]);
+    setEffectIntensity(profile.page_effects?.intensity || {});
+    setFontFamily(profile.font_family || "default");
+    setFontSize(profile.font_size || "medium");
+    setColorName(profile.color_name || "");
+    setColorBio(profile.color_bio || "");
+    setColorSectionTitles(profile.color_section_titles || "");
+    setSectionOrder(profile.section_order || ["spotlight", "links", "products", "past_campaigns", "hero_reel", "testimonials"]);
+    setSpotifyUrl(profile.spotify_url || "");
+    setContactEnabled(profile.contact_enabled ?? true);
+    setDisplayModes({
+      links: profile.page_effects?.display_modes?.links || "list",
+      products: profile.page_effects?.display_modes?.products || "list",
+      campaigns: profile.page_effects?.display_modes?.campaigns || "list",
+    });
+    setDefaultTheme((profile.page_effects as any)?.default_theme || "dark");
+    setBadgePosition((profile.page_effects as any)?.badge_position || "name");
+    originalHandle.current = profile.slug;
+  }, [profile]);
+
+  // Sync lists when props change (after template apply)
+  useEffect(() => {
+    setLinks(initialLinks);
+  }, [initialLinks]);
+
+  useEffect(() => {
+    setSocial(initialSocial.map((s) => {
+      if (s.label && s.label.trim()) return s;
+      const opt = getSocialOption(s.platform);
+      return opt ? { ...s, label: opt.emoji } : s;
+    }));
+  }, [initialSocial]);
+
+  useEffect(() => {
+    setProds(initialProducts);
+  }, [initialProducts]);
+
+  useEffect(() => {
+    setCamps(initialCampaigns);
+  }, [initialCampaigns]);
+
+  useEffect(() => {
+    setHeroReels(initialHeroReels);
+  }, [initialHeroReels]);
+
+  useEffect(() => {
+    setTestimonialsList(initialTestimonials || []);
+  }, [initialTestimonials]);
+
   useEffect(() => {
     if (!showPreview) return;
     const editorRoot = document.querySelector('[data-editor-root]');
