@@ -88,16 +88,16 @@ export default function Analytics() {
               </Link>
             </div>
 
-            <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 mt-12 w-full max-w-2xl">
+            <div className="grid grid-cols-1 sm:grid-cols-3 gap-3 sm:gap-4 mt-12 w-full max-w-2xl">
               {[
-                { icon: "🖱", title: "Cliques", desc: "Total de cliques em campanhas e links dos seus creators." },
-                { icon: "📈", title: "CTR", desc: "Taxa de conversão das campanhas Spotlight ativas." },
-                { icon: "🔥", title: "Performance", desc: "Ranking de campanhas por engajamento e cliques." },
+                { icon: "🖱", title: "Cliques", desc: "Cliques em campanhas e links." },
+                { icon: "📈", title: "CTR", desc: "Conversão das Spotlight ativas." },
+                { icon: "🔥", title: "Performance", desc: "Ranking por engajamento." },
               ].map((item, i) => (
-                <div key={i} className="bg-card border border-border rounded-2xl p-5 text-center group hover:border-primary/20 transition-all">
-                  <div className="text-2xl mb-3">{item.icon}</div>
-                  <h4 className="text-sm font-semibold text-foreground mb-1">{item.title}</h4>
-                  <p className="text-[0.72rem] text-muted-foreground leading-relaxed">{item.desc}</p>
+                <div key={i} className="bg-card border border-border rounded-2xl p-4 sm:p-5 text-center group hover:border-primary/20 transition-all min-w-0">
+                  <div className="text-xl sm:text-2xl mb-2">{item.icon}</div>
+                  <h4 className="text-xs sm:text-sm font-semibold text-foreground mb-0.5 truncate">{item.title}</h4>
+                  <p className="text-[0.65rem] sm:text-[0.72rem] text-muted-foreground leading-relaxed line-clamp-2">{item.desc}</p>
                 </div>
               ))}
             </div>
