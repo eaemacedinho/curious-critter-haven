@@ -59,17 +59,17 @@ export default function CookieMetrics() {
     <div className="space-y-4">
       <h3 className="text-base font-bold text-foreground">🍪 Consentimento de Cookies</h3>
 
-      <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
+      <div className="grid grid-cols-2 md:grid-cols-4 gap-2 sm:gap-3">
         {[
           { label: "Total", value: metrics.total, icon: "📊" },
           { label: "Aceitar todos", value: metrics.acceptAll, icon: "✅" },
           { label: "Configurado", value: metrics.custom, icon: "⚙️" },
-          { label: "Marketing ativo", value: metrics.marketingOn, icon: "📢" },
+          { label: "Marketing", value: metrics.marketingOn, icon: "📢" },
         ].map((s) => (
-          <div key={s.label} className="bg-card border border-border rounded-xl p-3 text-center">
-            <div className="text-lg">{s.icon}</div>
-            <div className="text-xl font-bold text-foreground">{s.value}</div>
-            <div className="text-[0.65rem] text-muted-foreground">{s.label}</div>
+          <div key={s.label} className="bg-card border border-border rounded-xl p-2.5 sm:p-3 text-center min-w-0">
+            <div className="text-base sm:text-lg">{s.icon}</div>
+            <div className="text-lg sm:text-xl font-bold text-foreground truncate">{s.value}</div>
+            <div className="text-[0.6rem] sm:text-[0.65rem] text-muted-foreground truncate">{s.label}</div>
           </div>
         ))}
       </div>
