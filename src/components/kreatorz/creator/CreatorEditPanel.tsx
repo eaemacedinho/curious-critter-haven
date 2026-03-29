@@ -264,13 +264,11 @@ const CreatorEditPanel = forwardRef<CreatorEditPanelHandle, Props>(function Crea
   }, [handle, profile.id]);
 
   // Sync local state when props change (e.g. after template apply + refetch)
-  const prevProfileId = useRef(profile.id);
-  const prevProfileUpdated = useRef(profile.updated_at);
+  const syncKeyRef = useRef(`${profile.id}-${profile.avatar_url}-${profile.cover_url}-${profile.bio}-${profile.font_family}`);
   useEffect(() => {
-    // Only sync when the profile data actually changes (refetch after template apply)
-    if (prevProfileId.current === profile.id && prevProfileUpdated.current === profile.updated_at) return;
-    prevProfileId.current = profile.id;
-    prevProfileUpdated.current = profile.updated_at;
+    const newKey = `${profile.id}-${profile.avatar_url}-${profile.cover_url}-${profile.bio}-${profile.font_family}`;
+    if (syncKeyRef.current === newKey) return;
+    syncKeyRef.current = newKey;
 
     setName(profile.name);
     setHandle(profile.slug);
